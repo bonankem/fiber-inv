@@ -1,0 +1,12 @@
+output:
+  - meta
+  - failures
+  - summary
+  - empty_summary
+no_tty: true
+pre-commit:
+  jobs:
+    - name: Check with Biome
+      glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
+      run: npx @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
+      stage_fixed: true
