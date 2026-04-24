@@ -9,12 +9,13 @@
     "@biomejs/biome": "2.4.12",
     "@types/node": "^25.6.0",
     "lefthook": "^2.1.6",
+    "tsx": "^4.21.0",
     "turbo": "^2.9.6",
     "typescript": "^6.0.3"
   },
   "scripts": {
     "dev": "turbo dev --ui tui",
-    "build": "turbo build"
+    "build": "turbo build",
+    "clean": "rm -rf apps/*/dist"
   }
 }
-
