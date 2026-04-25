@@ -5,8 +5,12 @@ dist
 *.gz
 *.tz
 *.zip
+.DS_Store
 .local
 .turbo
+.nitro
+.tanstack
+.output
 .swc
 .env
 .env.*
