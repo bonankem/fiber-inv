@@ -1,0 +1,64 @@
+model Password {
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId String @unique @db.Uuid
+
+    hashed String
+
+    history String[]
+
+    lastChange DateTime @default(now())
+
+    mustChange Boolean
+
+    mfaMode MfaMode
+}
+
+enum MfaMode {
+    NONE
+    EMAIL
+    SMS
+    WHATSAPP
+    AUTHENTICATOR
+    UNDECIDED
+}
+
+model Authenticator {
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId String @unique @db.Uuid
+
+    secret String
+
+    qrCode String
+
+    installed Boolean
+}
+
+model Session {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId String @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    expiresAt DateTime
+
+    hashed String
+}
+
+model PasswordAttempt {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    time DateTime @default(now())
+
+    email String @db.Citext
+
+    success Boolean
+
+    ipAddress String
+
+    userAgent String
+
+    @@index([email])
+}

@@ -1,0 +1,25 @@
+model User {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name String
+
+    email String @unique @db.Citext
+
+    phone String?
+
+    isAdmin Boolean?
+
+    staffRole StaffRole?
+
+    vendor   Vendor? @relation(fields: [vendorId], references: [id])
+    vendorId String? @db.Uuid
+
+    password Password?
+
+    authenticator Authenticator?
+
+    sessions Session[]
+}

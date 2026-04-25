@@ -1,0 +1,10 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/prisma/generated"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  extensions = [citext, postgis]
+}

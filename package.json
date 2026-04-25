@@ -16,6 +16,7 @@
   "scripts": {
     "dev": "turbo dev --ui tui",
     "build": "turbo build",
-    "clean": "rm -rf apps/*/dist"
+    "clean": "rm -rf apps/*/dist",
+    "prisma": "pnpm -F server exec prisma"
   }
 }
