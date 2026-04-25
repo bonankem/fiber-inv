@@ -6,20 +6,24 @@
     "outDir": "./dist",
     "sourceMap": true,
     "declaration": false,
-    "paths": { "#/*": ["./src/*.js"] },
-    "moduleResolution": "nodenext",
+    "paths": { "#/*": ["./src/*"] },
+    "moduleResolution": "bundler",
 
     // Environment Settings
-    "module": "nodenext",
-    "target": "esnext",
-    "lib": ["esnext"],
+    "module": "esnext",
+    "target": "es2024",
+    "lib": ["ES2024"],
     "types": ["node"],
 
     // Recommended Options
     "strict": true,
+    "esModuleInterop": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "noUncheckedSideEffectImports": true,
     "skipLibCheck": true
+  },
+  "tsc-alias": {
+    "resolveFullPaths": true
   }
 }
