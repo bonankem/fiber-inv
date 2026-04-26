@@ -9,38 +9,156 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UserRouteRouteImport } from './routes/_user/route'
+import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UserVendorsRouteImport } from './routes/_user/vendors'
+import { Route as UserStaffRouteImport } from './routes/_user/staff'
+import { Route as UserFtthSurveysRouteImport } from './routes/_user/ftth-surveys'
+import { Route as UserFtthProjectsRouteImport } from './routes/_user/ftth-projects'
+import { Route as UserFtthConnectionsRouteImport } from './routes/_user/ftth-connections'
+import { Route as AuthResetRouteImport } from './routes/_auth/reset'
+import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 
+const UserRouteRoute = UserRouteRouteImport.update({
+  id: '/_user',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRouteRoute = AuthRouteRouteImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UserVendorsRoute = UserVendorsRouteImport.update({
+  id: '/vendors',
+  path: '/vendors',
+  getParentRoute: () => UserRouteRoute,
+} as any)
+const UserStaffRoute = UserStaffRouteImport.update({
+  id: '/staff',
+  path: '/staff',
+  getParentRoute: () => UserRouteRoute,
+} as any)
+const UserFtthSurveysRoute = UserFtthSurveysRouteImport.update({
+  id: '/ftth-surveys',
+  path: '/ftth-surveys',
+  getParentRoute: () => UserRouteRoute,
+} as any)
+const UserFtthProjectsRoute = UserFtthProjectsRouteImport.update({
+  id: '/ftth-projects',
+  path: '/ftth-projects',
+  getParentRoute: () => UserRouteRoute,
+} as any)
+const UserFtthConnectionsRoute = UserFtthConnectionsRouteImport.update({
+  id: '/ftth-connections',
+  path: '/ftth-connections',
+  getParentRoute: () => UserRouteRoute,
+} as any)
+const AuthResetRoute = AuthResetRouteImport.update({
+  id: '/reset',
+  path: '/reset',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof AuthLoginRoute
+  '/reset': typeof AuthResetRoute
+  '/ftth-connections': typeof UserFtthConnectionsRoute
+  '/ftth-projects': typeof UserFtthProjectsRoute
+  '/ftth-surveys': typeof UserFtthSurveysRoute
+  '/staff': typeof UserStaffRoute
+  '/vendors': typeof UserVendorsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof AuthLoginRoute
+  '/reset': typeof AuthResetRoute
+  '/ftth-connections': typeof UserFtthConnectionsRoute
+  '/ftth-projects': typeof UserFtthProjectsRoute
+  '/ftth-surveys': typeof UserFtthSurveysRoute
+  '/staff': typeof UserStaffRoute
+  '/vendors': typeof UserVendorsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_auth': typeof AuthRouteRouteWithChildren
+  '/_user': typeof UserRouteRouteWithChildren
+  '/_auth/login': typeof AuthLoginRoute
+  '/_auth/reset': typeof AuthResetRoute
+  '/_user/ftth-connections': typeof UserFtthConnectionsRoute
+  '/_user/ftth-projects': typeof UserFtthProjectsRoute
+  '/_user/ftth-surveys': typeof UserFtthSurveysRoute
+  '/_user/staff': typeof UserStaffRoute
+  '/_user/vendors': typeof UserVendorsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/reset'
+    | '/ftth-connections'
+    | '/ftth-projects'
+    | '/ftth-surveys'
+    | '/staff'
+    | '/vendors'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/login'
+    | '/reset'
+    | '/ftth-connections'
+    | '/ftth-projects'
+    | '/ftth-surveys'
+    | '/staff'
+    | '/vendors'
+  id:
+    | '__root__'
+    | '/'
+    | '/_auth'
+    | '/_user'
+    | '/_auth/login'
+    | '/_auth/reset'
+    | '/_user/ftth-connections'
+    | '/_user/ftth-projects'
+    | '/_user/ftth-surveys'
+    | '/_user/staff'
+    | '/_user/vendors'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  UserRouteRoute: typeof UserRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_user': {
+      id: '/_user'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof UserRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +166,96 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_user/vendors': {
+      id: '/_user/vendors'
+      path: '/vendors'
+      fullPath: '/vendors'
+      preLoaderRoute: typeof UserVendorsRouteImport
+      parentRoute: typeof UserRouteRoute
+    }
+    '/_user/staff': {
+      id: '/_user/staff'
+      path: '/staff'
+      fullPath: '/staff'
+      preLoaderRoute: typeof UserStaffRouteImport
+      parentRoute: typeof UserRouteRoute
+    }
+    '/_user/ftth-surveys': {
+      id: '/_user/ftth-surveys'
+      path: '/ftth-surveys'
+      fullPath: '/ftth-surveys'
+      preLoaderRoute: typeof UserFtthSurveysRouteImport
+      parentRoute: typeof UserRouteRoute
+    }
+    '/_user/ftth-projects': {
+      id: '/_user/ftth-projects'
+      path: '/ftth-projects'
+      fullPath: '/ftth-projects'
+      preLoaderRoute: typeof UserFtthProjectsRouteImport
+      parentRoute: typeof UserRouteRoute
+    }
+    '/_user/ftth-connections': {
+      id: '/_user/ftth-connections'
+      path: '/ftth-connections'
+      fullPath: '/ftth-connections'
+      preLoaderRoute: typeof UserFtthConnectionsRouteImport
+      parentRoute: typeof UserRouteRoute
+    }
+    '/_auth/reset': {
+      id: '/_auth/reset'
+      path: '/reset'
+      fullPath: '/reset'
+      preLoaderRoute: typeof AuthResetRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/login': {
+      id: '/_auth/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
   }
 }
 
+interface AuthRouteRouteChildren {
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthResetRoute: typeof AuthResetRoute
+}
+
+const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthLoginRoute: AuthLoginRoute,
+  AuthResetRoute: AuthResetRoute,
+}
+
+const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
+  AuthRouteRouteChildren,
+)
+
+interface UserRouteRouteChildren {
+  UserFtthConnectionsRoute: typeof UserFtthConnectionsRoute
+  UserFtthProjectsRoute: typeof UserFtthProjectsRoute
+  UserFtthSurveysRoute: typeof UserFtthSurveysRoute
+  UserStaffRoute: typeof UserStaffRoute
+  UserVendorsRoute: typeof UserVendorsRoute
+}
+
+const UserRouteRouteChildren: UserRouteRouteChildren = {
+  UserFtthConnectionsRoute: UserFtthConnectionsRoute,
+  UserFtthProjectsRoute: UserFtthProjectsRoute,
+  UserFtthSurveysRoute: UserFtthSurveysRoute,
+  UserStaffRoute: UserStaffRoute,
+  UserVendorsRoute: UserVendorsRoute,
+}
+
+const UserRouteRouteWithChildren = UserRouteRoute._addFileChildren(
+  UserRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRouteRoute: AuthRouteRouteWithChildren,
+  UserRouteRoute: UserRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
