@@ -1,0 +1,26 @@
+model Upload {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    name String
+
+    type String
+
+    size Int
+
+    sentAt DateTime @default(now())
+
+    madeAt DateTime?
+
+    inDb UploadInDb?
+
+    workLogs WorkLog[]
+
+    workDocs WorkDoc[]
+}
+
+model UploadInDb {
+    upload   Upload @relation(fields: [uploadId], references: [id])
+    uploadId String @unique @db.Uuid
+
+    data Bytes
+}

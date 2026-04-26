@@ -1,0 +1,75 @@
+model FtthSurvey {
+    id String @id @db.Uuid
+
+    work Work @relation(fields: [id], references: [id])
+
+    boundary   Boundary? @relation(fields: [boundaryId], references: [id])
+    boundaryId String?   @unique @db.Uuid
+
+    contactName String?
+
+    contactPhone String?
+
+    report FhsReport?
+
+    boxes FhsBox[]
+
+    projects FtthProject[]
+}
+
+model FhsReport {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    survey   FtthSurvey @relation(fields: [surveyId], references: [id])
+    surveyId String     @unique @db.Uuid
+
+    hpPavillon Int
+    hpImmeuble Int
+
+    existingOlt   Olt?    @relation(fields: [existingOltId], references: [id])
+    existingOltId String? @db.Uuid
+
+    newOlts Int
+
+    oltCards Int
+
+    hubBoxes Int
+
+    subBoxes Int
+
+    endBoxes Int
+
+    manholes Int
+
+    closures Int
+
+    metalPoles Int
+
+    concretePoles Int
+
+    feederLengthM Int
+
+    distLengthM Int
+}
+
+model FhsBox {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    survey   FtthSurvey @relation(fields: [surveyId], references: [id])
+    surveyId String     @db.Uuid
+
+    type BoxType
+
+    name String
+
+    coords   Coords? @relation(fields: [coordsId], references: [id])
+    coordsId BigInt?
+
+    @@unique([surveyId, name], name: "uniq")
+}

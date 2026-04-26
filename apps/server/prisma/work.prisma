@@ -1,0 +1,126 @@
+enum WorkStatus {
+    REQUESTED
+    ASSIGNED
+    ONGOING
+    REVIEW
+    REVIEW_FAILED
+    CANCELLED
+    CLOSED
+}
+
+model Work {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    sid String @unique
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name String
+
+    status WorkStatus
+
+    vendor   Vendor? @relation(fields: [vendorId], references: [id])
+    vendorId String? @db.Uuid
+
+    coords   Coords? @relation(fields: [coordsId], references: [id])
+    coordsId BigInt?
+
+    locality   Locality? @relation(fields: [localityId], references: [id])
+    localityId String?   @db.Uuid
+
+    workers Worker[]
+
+    logs WorkLog[]
+
+    docs WorkDoc[]
+
+    fhs FtthSurvey?
+
+    fhp FtthProject?
+
+    fhc FtthConnection?
+}
+
+model Worker {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user   User   @relation(fields: [userId], references: [id])
+    userId String @db.Uuid
+
+    work   Work   @relation(fields: [workId], references: [id])
+    workId String @db.Uuid
+
+    role StaffRole
+
+    @@unique([workId, role], name: "uniq")
+}
+
+enum WorkAction {
+    REQUEST
+    REJECT_REQUEST
+    ASSIGN_ENGINEER
+    ASSIGN_VENDOR
+    UPDATE_ODN
+    SUBMIT_REPORT
+    FAIL_REVIEW
+    PASS_REVIEW
+    ADD_COMMENT
+}
+
+model WorkLog {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    work   Work   @relation(fields: [workId], references: [id])
+    workId String @db.Uuid
+
+    action WorkAction
+
+    newStatus WorkStatus?
+
+    fromUser   User?   @relation(fields: [fromUserId], references: [id])
+    fromUserId String? @db.Uuid
+
+    comment String?
+
+    uploads Upload[]
+}
+
+enum WorkDocType {
+    PLAQUE_KMZ
+    PLAN_KMZ
+    PLAN_BOQ
+    PLAN_DIAGRAM
+    SYNOPTIC_DIAGRAM
+    SYNOPTIC_TABLE
+    COORDINATES
+    CABLE_LENGTHS
+    AS_BUILT_KMZ
+    AS_BUILT_BOQ
+    HC_IMAGE
+}
+
+model WorkDoc {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    work   Work   @relation(fields: [workId], references: [id])
+    workId String @db.Uuid
+
+    type WorkDocType
+
+    upload   Upload @relation(fields: [uploadId], references: [id])
+    uploadId String @db.Uuid
+
+    key String @default("")
+
+    @@unique([workId, type, key], name: "uniq")
+}

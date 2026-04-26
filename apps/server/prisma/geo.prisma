@@ -1,0 +1,65 @@
+model Coords {
+    id  BigInt @id
+    lat Float
+    lng Float
+
+    works Work[]
+
+    fhsBoxes FhsBox[]
+}
+
+model Boundary {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    geometry Unsupported("geometry(Point, 4326)")?
+
+    geoJson Json?
+
+    territory Territory?
+
+    locality Locality?
+
+    ftthSurvey FtthSurvey?
+
+    plaque Plaque?
+
+    hub Hub?
+}
+
+model Territory {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name String @unique
+
+    key String @unique
+
+    localities Locality[]
+
+    boundary   Boundary? @relation(fields: [boundaryId], references: [id])
+    boundaryId String?   @unique @db.Uuid
+}
+
+model Locality {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name String @unique
+
+    key String @unique
+
+    territory   Territory @relation(fields: [territoryId], references: [id])
+    territoryId String    @db.Uuid
+
+    boundary   Boundary? @relation(fields: [boundaryId], references: [id])
+    boundaryId String?   @unique @db.Uuid
+
+    works Work[]
+}

@@ -9,4 +9,6 @@ model Vendor {
     name String
 
     users User[]
+
+    works Work[]
 }

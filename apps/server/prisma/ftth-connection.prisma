@@ -1,0 +1,27 @@
+model FtthConnection {
+    id String @id @db.Uuid
+
+    work Work @relation(fields: [id], references: [id])
+
+    contactEmail String?
+
+    contactPhone String?
+
+    plaque   Plaque @relation(fields: [plaqueId], references: [id])
+    plaqueId String @db.Uuid
+
+    olt   Olt?    @relation(fields: [oltId], references: [id])
+    oltId String? @db.Uuid
+
+    fat   Fat?    @relation(fields: [fatId], references: [id])
+    fatId String? @db.Uuid
+
+    ont   Ont?    @relation(fields: [ontId], references: [id])
+    ontId String? @unique @db.Uuid
+
+    oltPort String?
+
+    fatPort Int?
+
+    cableLength Int?
+}

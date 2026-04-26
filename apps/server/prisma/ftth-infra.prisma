@@ -1,0 +1,125 @@
+model Plaque {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name String
+
+    boundary   Boundary? @relation(fields: [boundaryId], references: [id])
+    boundaryId String?   @unique @db.Uuid
+
+    hubs Hub[]
+
+    connections FtthConnection[]
+}
+
+model Oem {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name String
+
+    olts Olt[]
+
+    hubs Hub[]
+    onts Ont[]
+}
+
+model Olt {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name String
+
+    ip String? @unique
+
+    oem   Oem    @relation(fields: [oemId], references: [id])
+    oemId String @db.Uuid
+
+    hubs Hub[]
+
+    fhsReports FhsReport[]
+
+    fhpPlans FhpPlan[]
+
+    fhc FtthConnection[]
+}
+
+enum BoxType {
+    X_BOX
+    HUB_BOX
+    SUB_BOX
+    END_BOX
+}
+
+model Hub {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name String @unique
+
+    oem   Oem    @relation(fields: [oemId], references: [id])
+    oemId String @db.Uuid
+
+    olt   Olt    @relation(fields: [oltId], references: [id])
+    oltId String @db.Uuid
+
+    plaque   Plaque @relation(fields: [plaqueId], references: [id])
+    plaqueId String @db.Uuid
+
+    boundary   Boundary? @relation(fields: [boundaryId], references: [id])
+    boundaryId String?   @unique @db.Uuid
+
+    fats Fat[]
+}
+
+enum FatType {
+    SUB_BOX
+    END_BOX
+}
+
+model Fat {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name String
+
+    serial String? @unique
+
+    type FatType
+
+    hub   Hub    @relation(fields: [hubId], references: [id])
+    hubId String @db.Uuid
+
+    prev   Fat    @relation(fields: [prevId], references: [id], name: "prev")
+    prevId String @db.Uuid
+
+    next Fat[] @relation("prev")
+
+    fhc FtthConnection[]
+}
+
+model Ont {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    serial String @unique
+
+    model String?
+
+    oem   Oem    @relation(fields: [oemId], references: [id])
+    oemId String @db.Uuid
+
+    fhc FtthConnection?
+}

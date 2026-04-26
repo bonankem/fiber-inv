@@ -22,4 +22,8 @@ model User {
     authenticator Authenticator?
 
     sessions Session[]
+
+    works Worker[]
+
+    workLogs WorkLog[]
 }

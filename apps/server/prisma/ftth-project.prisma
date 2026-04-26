@@ -1,0 +1,51 @@
+model FtthProject {
+    id String @id @db.Uuid
+
+    work Work @relation(fields: [id], references: [id])
+
+    survey   FtthSurvey? @relation(fields: [surveyId], references: [id])
+    surveyId String?     @db.Uuid
+
+    plan FhpPlan?
+}
+
+model FhpPlan {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    project   FtthProject @relation(fields: [projectId], references: [id])
+    projectId String      @unique @db.Uuid
+
+    startDate String
+    dueDate   String
+
+    hpPavillon Int
+    hpImmeuble Int
+
+    existingOlt   Olt?    @relation(fields: [existingOltId], references: [id])
+    existingOltId String? @db.Uuid
+
+    newOlts Int
+
+    oltCards Int
+
+    hubBoxes Int
+
+    subBoxes Int
+
+    endBoxes Int
+
+    manholes Int
+
+    closures Int
+
+    metalPoles Int
+
+    concretePoles Int
+
+    feederLengthM Int
+
+    distLengthM Int
+}
