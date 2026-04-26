@@ -14,6 +14,7 @@ declare module "@tanstack/react-router" {
   }
 }
 
+// biome-ignore lint/style/noNonNullAssertion: #app definitely exists
 const rootElement = document.getElementById("app")!;
 
 if (!rootElement.innerHTML) {
