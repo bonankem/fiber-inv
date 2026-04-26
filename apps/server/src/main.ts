@@ -13,6 +13,7 @@ import {
   serializerCompiler,
   validatorCompiler,
 } from "fastify-zod-openapi";
+import api from "./api";
 import { appEnv } from "./env";
 
 const app = fastify({
@@ -41,6 +42,8 @@ await app.register(fastifySwagger, {
   openapi: { openapi: "3.1.0" },
   ...fastifyZodOpenApiTransformers,
 });
+
+app.register(api);
 
 app.get("/", () => ({ name: "ServiceX" }));
 
