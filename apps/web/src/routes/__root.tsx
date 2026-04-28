@@ -11,15 +11,26 @@ export const Route = createRootRoute({
   notFoundComponent: NotFound,
 });
 
-const theme: ThemeConfig = {
-  token: { colorPrimary: "#ffcb05", fontFamily: "inherit" },
-  components: { Button: { primaryColor: "black" } },
+const appTheme: ThemeConfig = {
+  token: {
+    colorPrimary: "#ffcb05",
+    fontFamily: "inherit",
+  },
+  components: {
+    Button: {
+      primaryColor: "black",
+    },
+    Form: {
+      itemMarginBottom: 16,
+      verticalLabelPadding: "0 0 4px",
+    },
+  },
 };
 
 function RootComponent() {
   return (
     <>
-      <ConfigProvider theme={theme}>
+      <ConfigProvider theme={appTheme}>
         <Outlet />
       </ConfigProvider>
 

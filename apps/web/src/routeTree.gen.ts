@@ -14,6 +14,7 @@ import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UserVendorsRouteImport } from './routes/_user/vendors'
 import { Route as UserStaffRouteImport } from './routes/_user/staff'
+import { Route as UserOverviewRouteImport } from './routes/_user/overview'
 import { Route as UserFtthSurveysRouteImport } from './routes/_user/ftth-surveys'
 import { Route as UserFtthProjectsRouteImport } from './routes/_user/ftth-projects'
 import { Route as UserFtthConnectionsRouteImport } from './routes/_user/ftth-connections'
@@ -41,6 +42,11 @@ const UserVendorsRoute = UserVendorsRouteImport.update({
 const UserStaffRoute = UserStaffRouteImport.update({
   id: '/staff',
   path: '/staff',
+  getParentRoute: () => UserRouteRoute,
+} as any)
+const UserOverviewRoute = UserOverviewRouteImport.update({
+  id: '/overview',
+  path: '/overview',
   getParentRoute: () => UserRouteRoute,
 } as any)
 const UserFtthSurveysRoute = UserFtthSurveysRouteImport.update({
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/ftth-connections': typeof UserFtthConnectionsRoute
   '/ftth-projects': typeof UserFtthProjectsRoute
   '/ftth-surveys': typeof UserFtthSurveysRoute
+  '/overview': typeof UserOverviewRoute
   '/staff': typeof UserStaffRoute
   '/vendors': typeof UserVendorsRoute
 }
@@ -86,6 +93,7 @@ export interface FileRoutesByTo {
   '/ftth-connections': typeof UserFtthConnectionsRoute
   '/ftth-projects': typeof UserFtthProjectsRoute
   '/ftth-surveys': typeof UserFtthSurveysRoute
+  '/overview': typeof UserOverviewRoute
   '/staff': typeof UserStaffRoute
   '/vendors': typeof UserVendorsRoute
 }
@@ -99,6 +107,7 @@ export interface FileRoutesById {
   '/_user/ftth-connections': typeof UserFtthConnectionsRoute
   '/_user/ftth-projects': typeof UserFtthProjectsRoute
   '/_user/ftth-surveys': typeof UserFtthSurveysRoute
+  '/_user/overview': typeof UserOverviewRoute
   '/_user/staff': typeof UserStaffRoute
   '/_user/vendors': typeof UserVendorsRoute
 }
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
     | '/ftth-connections'
     | '/ftth-projects'
     | '/ftth-surveys'
+    | '/overview'
     | '/staff'
     | '/vendors'
   fileRoutesByTo: FileRoutesByTo
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/ftth-connections'
     | '/ftth-projects'
     | '/ftth-surveys'
+    | '/overview'
     | '/staff'
     | '/vendors'
   id:
@@ -133,6 +144,7 @@ export interface FileRouteTypes {
     | '/_user/ftth-connections'
     | '/_user/ftth-projects'
     | '/_user/ftth-surveys'
+    | '/_user/overview'
     | '/_user/staff'
     | '/_user/vendors'
   fileRoutesById: FileRoutesById
@@ -178,6 +190,13 @@ declare module '@tanstack/react-router' {
       path: '/staff'
       fullPath: '/staff'
       preLoaderRoute: typeof UserStaffRouteImport
+      parentRoute: typeof UserRouteRoute
+    }
+    '/_user/overview': {
+      id: '/_user/overview'
+      path: '/overview'
+      fullPath: '/overview'
+      preLoaderRoute: typeof UserOverviewRouteImport
       parentRoute: typeof UserRouteRoute
     }
     '/_user/ftth-surveys': {
@@ -236,6 +255,7 @@ interface UserRouteRouteChildren {
   UserFtthConnectionsRoute: typeof UserFtthConnectionsRoute
   UserFtthProjectsRoute: typeof UserFtthProjectsRoute
   UserFtthSurveysRoute: typeof UserFtthSurveysRoute
+  UserOverviewRoute: typeof UserOverviewRoute
   UserStaffRoute: typeof UserStaffRoute
   UserVendorsRoute: typeof UserVendorsRoute
 }
@@ -244,6 +264,7 @@ const UserRouteRouteChildren: UserRouteRouteChildren = {
   UserFtthConnectionsRoute: UserFtthConnectionsRoute,
   UserFtthProjectsRoute: UserFtthProjectsRoute,
   UserFtthSurveysRoute: UserFtthSurveysRoute,
+  UserOverviewRoute: UserOverviewRoute,
   UserStaffRoute: UserStaffRoute,
   UserVendorsRoute: UserVendorsRoute,
 }

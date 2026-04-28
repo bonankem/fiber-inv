@@ -5,17 +5,26 @@
   font-style: normal;
 }
 
+/* THe font is a bit bold, so we use the light variant as regular instrad */
+
 @font-face {
   font-family: "MTNBrighterSans";
-  src: url("MTNBrighterSans-Regular.woff2") format("woff2");
+  src: url("MTNBrighterSans-Light.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
   font-family: "MTNBrighterSans";
-  src: url("MTNBrighterSans-Medium.woff2") format("woff2");
+  src: url("MTNBrighterSans-Regular.woff2") format("woff2");
   font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "MTNBrighterSans";
+  src: url("MTNBrighterSans-Medium.woff2") format("woff2");
+  font-weight: 600;
   font-style: normal;
 }
 

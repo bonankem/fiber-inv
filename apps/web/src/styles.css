@@ -1,7 +1,24 @@
+/** biome-ignore-all lint/complexity/noImportantStyles: !important is needed for Antd style overrides */
 @import "tailwindcss";
 
 * {
   box-sizing: border-box;
+}
+
+li {
+  padding-left: 0;
+}
+
+@layer components {
+  .centered {
+    @apply flex items-center justify-center;
+  }
+
+  .full-screen {
+    width: 100vw;
+    height: 100vh;
+    overflow-y: auto;
+  }
 }
 
 html,
@@ -14,4 +31,16 @@ body,
 :root {
   font-family: "MTNBrighterSans", --system-ui, sans-serif;
   font-size: 14px;
+}
+
+#nav-drawer .ant-drawer-body {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.ant-menu-item,
+.ant-menu-item * {
+  transition:
+    background-color 0s,
+    color 0s !important;
 }

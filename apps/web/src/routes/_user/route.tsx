@@ -1,14 +1,8 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import NotFound from "#/components/NotFound";
+import UserLayout from "#/modules/user-layout/UserLayout";
 
 export const Route = createFileRoute("/_user")({
-  component: RouteComponent,
+  component: UserLayout,
+  notFoundComponent: NotFound,
 });
-
-function RouteComponent() {
-  return (
-    <div>
-      <h1>User</h1>
-      <Outlet />
-    </div>
-  );
-}
