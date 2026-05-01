@@ -3,36 +3,20 @@ import "../styles.css";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { ConfigProvider, type ThemeConfig } from "antd";
 import NotFound from "#/components/NotFound";
+import ThemeProvider from "#/theme";
 
 export const Route = createRootRoute({
   component: RootComponent,
   notFoundComponent: NotFound,
 });
 
-const appTheme: ThemeConfig = {
-  token: {
-    colorPrimary: "#ffcb05",
-    fontFamily: "inherit",
-  },
-  components: {
-    Button: {
-      primaryColor: "black",
-    },
-    Form: {
-      itemMarginBottom: 16,
-      verticalLabelPadding: "0 0 4px",
-    },
-  },
-};
-
 function RootComponent() {
   return (
     <>
-      <ConfigProvider theme={appTheme}>
+      <ThemeProvider>
         <Outlet />
-      </ConfigProvider>
+      </ThemeProvider>
 
       <TanStackDevtools
         config={{ position: "bottom-right" }}
