@@ -18,9 +18,9 @@ model Boundary {
 
     geoJson Json?
 
-    territory Territory?
+    district District?
 
-    locality Locality?
+    city City?
 
     ftthSurvey FtthSurvey?
 
@@ -29,7 +29,7 @@ model Boundary {
     hub Hub?
 }
 
-model Territory {
+model District {
     id String @id @default(uuid(7)) @db.Uuid
 
     createdAt DateTime @default(now())
@@ -39,13 +39,13 @@ model Territory {
 
     key String @unique
 
-    localities Locality[]
+    cities City[]
 
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
     boundaryId String?   @unique @db.Uuid
 }
 
-model Locality {
+model City {
     id String @id @default(uuid(7)) @db.Uuid
 
     createdAt DateTime @default(now())
@@ -55,11 +55,13 @@ model Locality {
 
     key String @unique
 
-    territory   Territory @relation(fields: [territoryId], references: [id])
-    territoryId String    @db.Uuid
+    district   District @relation(fields: [districtId], references: [id])
+    districtId String   @db.Uuid
 
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
     boundaryId String?   @unique @db.Uuid
 
     works Work[]
+
+    plaques Plaque[]
 }
