@@ -17,6 +17,9 @@ importers:
       lefthook:
         specifier: ^2.1.6
         version: 2.1.6
+      tsc-alias:
+        specifier: ^1.8.16
+        version: 1.8.16
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
@@ -175,9 +178,6 @@ importers:
       prisma:
         specifier: ^7.8.0
         version: 7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@6.0.3)
-      tsc-alias:
-        specifier: ^1.8.16
-        version: 1.8.16
 
   apps/web:
     dependencies:

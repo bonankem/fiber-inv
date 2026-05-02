@@ -4,22 +4,22 @@
     // File Layout
     "rootDir": "./src",
     "outDir": "./dist",
-    "sourceMap": true,
-    "declaration": false,
     "paths": { "#/*": ["./src/*"] },
-    "moduleResolution": "bundler",
 
     // Environment Settings
     "module": "esnext",
     "target": "es2024",
     "lib": ["ES2024"],
     "types": ["node"],
+    "moduleResolution": "bundler",
 
-    // Recommended Options
     "strict": true,
+    "sourceMap": true,
     "esModuleInterop": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
     "noUncheckedSideEffectImports": true,
     "skipLibCheck": true
   },
