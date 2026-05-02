@@ -1,0 +1,45 @@
+import type { JWT } from "@fastify/jwt";
+import { hashSync } from "bcryptjs";
+import { AuthStatus, type AuthSuccessT } from "schema/auth";
+import { userFullP } from "schema/people";
+import { type Prisma, prisma } from "#/prisma";
+import type { UserSelect } from "#/prisma/generated/models";
+import { bad, newUuid } from "#/utils";
+
+export function badLogin(): never {
+  bad("Invalid email or password");
+}
+
+const loginUserS = {
+  id: true,
+  isAdmin: true,
+  password: true,
+  authenticator: true,
+} satisfies UserSelect;
+
+export function getLoginUser(where: Prisma.UserWhereUniqueInput) {
+  return prisma.user.findUnique({ where, select: loginUserS });
+}
+
+export async function authSuccess(
+  jwt: JWT,
+  userId: string,
+  existing?: string,
+): Promise<AuthSuccessT> {
+  const id = existing || newUuid();
+  const ids = { userId, sessionId: id };
+  const token = jwt.sign(ids, { expiresIn: "1h" });
+  const refresh = jwt.sign(ids, { expiresIn: "7d" });
+  const expiry = new Date(Date.now() + 7 * 86400000);
+  const hashed = hashSync(refresh);
+
+  const { user } = await prisma.session.upsert({
+    where: { id },
+    update: { hashed, expiry, userId },
+    create: { hashed, expiry, userId, id },
+    select: { user: userFullP },
+  });
+
+  const status = AuthStatus.SUCCESS;
+  return { status, user, token, refresh };
+}

@@ -10,7 +10,7 @@ model User {
 
     phone String?
 
-    isAdmin Boolean?
+    isAdmin Boolean
 
     staffRole StaffRole?
 

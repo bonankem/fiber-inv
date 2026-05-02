@@ -2,6 +2,7 @@ import type * as H from "node:http";
 import { httpErrors } from "@fastify/sensible";
 import type * as F from "fastify";
 import type * as Z from "fastify-zod-openapi";
+import { uuidv7 } from "uuidv7";
 import z from "zod";
 
 type FS = F.FastifySchema;
@@ -65,4 +66,8 @@ export type ErrorWhy = string | Error | (() => Error);
 export function bad(why: ErrorWhy): never {
   if (typeof why === "string") throw httpErrors.badRequest(why);
   throw typeof why === "function" ? why() : why;
+}
+
+export function newUuid() {
+  return uuidv7();
 }

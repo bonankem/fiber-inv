@@ -7,11 +7,13 @@ import {
   Pagination,
   Select,
   Table,
+  type TableColumnsType,
   type ThemeConfig,
   theme,
 } from "antd";
 import { Filter } from "lucide-react";
 import { type ReactNode, useState } from "react";
+import { sumBy } from "remeda";
 import { twJoin } from "tailwind-merge";
 import { fakeSurveys } from "#/data/fake";
 import TownSelect from "./TownSelect";
@@ -47,6 +49,7 @@ function SubsetCard(props: {
       style={{
         backgroundColor: props.active ? "#ffcb05" : token.colorBgContainer,
       }}
+      onClick={props.onClick}
     >
       <div className="w-full flex flex-col leading-0 text-center md:text-start mx-3 md:mx-4 overflow-hidden">
         <div className="text-xs md:text-base font-bold">
@@ -102,6 +105,7 @@ type FilterNode = () => ReactNode;
 
 export default function FakePage() {
   const [filtering, setFiltering] = useState(false);
+  const [card, setCard] = useState("Total");
 
   const cards = [
     { label: "Total", count: 123 },
@@ -151,69 +155,80 @@ export default function FakePage() {
     );
   };
 
+  const columns = [
+    {
+      title: titled("ID", fText("ID"), fDate("Date")),
+      responsive: ["sm"],
+      dataIndex: "sid",
+      width: 120,
+    },
+    {
+      title: titled("Name", fText("Name"), fCity, true),
+      dataIndex: "name",
+      width: 200,
+      render: (_, t) => <WithCaption title={t.name} caption={t.city} />,
+    },
+    {
+      title: titled("Assigned", fDrop("Engineer"), fDrop("Vendor")),
+      key: "assigned",
+      width: 150,
+      render: (_, t) => <WithCaption title={t.engineer} caption={t.vendor} />,
+    },
+    {
+      title: titled("Status", fDrop("Status"), fDrop("Pending On")),
+      dataIndex: "status",
+      width: 150,
+      render: (_, t) => <WithCaption title={t.status} caption={t.vendor} />,
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      width: 50,
+      fixed: "right",
+      align: "center",
+      render: () => (
+        <Button size="small" type="text">
+          <EllipsisOutlined className="text-2xl" />
+        </Button>
+      ),
+    },
+  ] satisfies TableColumnsType;
+
+  const width = sumBy(columns, (c) => c.width + 40);
+
   return (
     <div className="py-4 px-4 md:px-8 flex flex-col items-stretch gap-3">
       <ConfigProvider theme={statTheme}>
         <div className="grid grid-cols-5 gap-2 sm:gap-3">
           {cards.map((c) => (
-            <SubsetCard key={c.label} {...c} active={c.label === "Total"} />
+            <SubsetCard
+              {...c}
+              key={c.label}
+              active={c.label === card}
+              onClick={() => setCard(c.label)}
+            />
           ))}
         </div>
       </ConfigProvider>
 
       <Table
-        dataSource={fakeSurveys}
+        dataSource={fakeSurveys.slice(
+          0,
+          cards.find((c) => c.label === card)?.count || 100,
+        )}
         size="small"
         bordered
         rowKey={(r) => r.sid}
-        scroll={{ y: "100dvh", x: 800 }}
+        scroll={{ x: width }}
         pagination={false}
         classNames={{
-          header: { cell: "text-sm" },
-          body: { cell: "text-sm one-line" },
+          header: { cell: "text-sm", wrapper: "sticky top-0 z-100" },
+          body: {
+            cell: "text-sm one-line",
+          },
+          content: "max-h-[calc(100dvh-240px)]! overflow-y-scroll!",
         }}
-        columns={[
-          {
-            title: titled("ID", fText("ID"), fDate("Date")),
-            responsive: ["sm"],
-            dataIndex: "sid",
-            width: 120,
-          },
-          {
-            title: titled("Name", fText("Name"), fCity, true),
-            dataIndex: "name",
-            width: 200,
-            render: (_, t) => <WithCaption title={t.name} caption={t.city} />,
-          },
-          {
-            title: titled("Assigned", fDrop("Engineer"), fDrop("Vendor")),
-            key: "assigned",
-            width: 150,
-            render: (_, t) => (
-              <WithCaption title={t.engineer} caption={t.vendor} />
-            ),
-          },
-          {
-            title: titled("Status", fDrop("Status"), fDrop("Pending On")),
-            dataIndex: "status",
-            width: 150,
-            render: (_, t) => (
-              <WithCaption title={t.status} caption={t.vendor} />
-            ),
-          },
-          {
-            title: "Action",
-            dataIndex: "action",
-            width: 50,
-            fixed: "right",
-            align: "center",
-            render: () => (
-              <Button size="small" type="text">
-                <EllipsisOutlined className="text-2xl" />
-              </Button>
-            ),
-          },
-        ]}
+        columns={columns}
         footer={() => (
           <footer className="flex items-center justify-between">
             <div>

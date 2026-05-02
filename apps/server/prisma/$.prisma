@@ -4,6 +4,12 @@ generator client {
   previewFeatures = ["postgresqlExtensions"]
 }
 
+generator schema {
+  provider        = "prisma-client"
+  output          = "../../../packages/schema/src/generated"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
 datasource db {
   provider   = "postgresql"
   extensions = [citext, postgis]

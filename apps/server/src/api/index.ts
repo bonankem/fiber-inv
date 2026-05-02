@@ -1,8 +1,8 @@
 import { appPlugin } from "#/utils";
-import loginRoute from "./auth/login.route";
-import seedRoute from "./users/seed.route";
+import authLogin from "./auth/login.api";
+import usersSeed from "./users/seed.api";
 
 export default appPlugin(async (app) => {
-  app.register(loginRoute);
-  app.register(seedRoute);
+  app.register(authLogin);
+  app.register(usersSeed);
 });

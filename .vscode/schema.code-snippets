@@ -1,0 +1,37 @@
+{
+  "Zod schema": {
+    "prefix": "zsc",
+    "include": ["**/*.ts"],
+    "body": [
+      "import { z, zObject } from \"../common\";",
+      "",
+      "export const ${1:${TM_FILENAME_BASE/-([a-z])/${1:/upcase}/g}}Z = zObject(\"${1/^(.)/${1:/upcase}/}T\", {",
+      "  $0",
+      "});",
+      "",
+      "export type ${1/^(.)/${1:/upcase}/}T = z.infer<typeof $1Z>;"
+    ]
+  },
+  "Prisma + Zod schema": {
+    "prefix": "zpsc",
+    "include": ["**/*.ts"],
+    "body": [
+      "import { z, zStr, zObject, Prisma } from \"../common\";",
+      "",
+      "export const ${1:${TM_FILENAME_BASE/-([a-z])/${1:/upcase}/g}}S = {",
+      "  $4",
+      "} satisfies Prisma.$2;",
+      "",
+      "export const $1Z = zObject(\"${3:${1/^(.)/${1:/upcase}/}}T\", {",
+      "  $0${4/:.+/: zStr(\"\"),/g}",
+      "} satisfies Record<keyof typeof $1S, object>);",
+      "",
+      "export const $1P = { select: $1S };",
+      "",
+      "type $3P = Prisma.${2/Select/GetPayload/}<typeof $1P>;",
+      "type $3Z = z.infer<typeof $1Z>;",
+      "",
+      "export type $3T = Same<$3P, $3Z>;"
+    ]
+  }
+}
