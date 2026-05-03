@@ -50,11 +50,12 @@ export async function seed(req: SeedReq) {
   const queries = req.users.map((u) => {
     const { vendorName, ...data } = u;
     const vendor = makeVendor(vendorName);
+    const key = data.name.toLowerCase();
 
     return prisma.user.upsert({
       where: { email: u.email },
-      create: { ...data, password, vendor },
-      update: { ...data, vendor },
+      create: { ...data, key, password, vendor },
+      update: { ...data, key, vendor },
     });
   });
 

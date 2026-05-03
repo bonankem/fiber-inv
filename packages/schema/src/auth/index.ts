@@ -4,5 +4,6 @@ export * from "./auth-needs-change";
 export * from "./auth-needs-install";
 export * from "./auth-needs-mfa-mode";
 export * from "./auth-needs-otp";
+export * from "./auth-result";
 export * from "./auth-status";
 export * from "./auth-success";

@@ -55,6 +55,43 @@ export function postRoute<B extends FS["body"], T>(
   }));
 }
 
+export function getRoute<Q extends FS["querystring"], T>(
+  url: string,
+  query: () => Q,
+  f: AppRouteFunc<{ querystring: Q }, T>,
+) {
+  return appRoute(() => ({
+    url,
+    method: "GET",
+    schema: { querystring: query() },
+    handler(this, req, reply) {
+      return f(req, this, reply);
+    },
+  }));
+}
+
+type IdParamUrl = `${string}/:id` | `${string}/:id/${string}`;
+
+const idParamZ = z.strictObject({
+  id: z.string().describe("The selected UUID"),
+});
+
+type IdParamT = z.infer<typeof idParamZ>;
+
+export function idRoute<T>(
+  url: IdParamUrl,
+  f: AppRouteFunc<{ params: typeof idParamZ }, T>,
+) {
+  return appRoute(() => ({
+    url,
+    method: "GET",
+    schema: { params: idParamZ },
+    handler(this, req, reply) {
+      return f(req, this, reply);
+    },
+  }));
+}
+
 export function shape<T extends object>(f: (zod: typeof z) => T) {
   return z.strictObject(f(z));
 }

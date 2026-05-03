@@ -1,6 +1,6 @@
 import type { JWT } from "@fastify/jwt";
 import { hashSync } from "bcryptjs";
-import { AuthStatus, type AuthSuccessT } from "schema/auth";
+import { type AuthResultT, AuthStatus, type AuthSuccessT } from "schema/auth";
 import { userFullP } from "schema/people";
 import { type Prisma, prisma } from "#/prisma";
 import type { UserSelect } from "#/prisma/generated/models";
@@ -16,6 +16,8 @@ const loginUserS = {
   password: true,
   authenticator: true,
 } satisfies UserSelect;
+
+type LoginUserT = Prisma.UserGetPayload<{ select: typeof loginUserS }>;
 
 export function getLoginUser(where: Prisma.UserWhereUniqueInput) {
   return prisma.user.findUnique({ where, select: loginUserS });
@@ -42,4 +44,12 @@ export async function authSuccess(
 
   const status = AuthStatus.SUCCESS;
   return { status, user, token, refresh };
+}
+
+export async function authResult(
+  jwt: JWT,
+  user: LoginUserT,
+): Promise<AuthResultT> {
+  // TODO: implement other auth statuses
+  return authSuccess(jwt, user.id);
 }
