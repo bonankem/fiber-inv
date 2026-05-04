@@ -1,9 +1,15 @@
 import type * as H from "node:http";
 import { httpErrors } from "@fastify/sensible";
+import dayjs from "dayjs";
+import timeZone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import type * as F from "fastify";
 import type * as Z from "fastify-zod-openapi";
 import { uuidv7 } from "uuidv7";
 import z from "zod";
+
+dayjs.extend(timeZone);
+dayjs.extend(utc);
 
 export type Maybe<T> = T | null | undefined;
 
@@ -59,13 +65,13 @@ export function postRoute<B extends FS["body"], T>(
 
 export function getRoute<Q extends FS["querystring"], T>(
   url: string,
-  query: () => Q,
+  query: (() => Q) | null,
   f: AppRouteFunc<{ querystring: Q }, T>,
 ) {
   return appRoute(() => ({
     url,
     method: "GET",
-    schema: { querystring: query() },
+    schema: query ? { querystring: query() } : undefined,
     handler(this, req, reply) {
       return f(req, this, reply);
     },
@@ -113,4 +119,21 @@ export function notFound(message = "Not found"): never {
 
 export function newUuid() {
   return uuidv7();
+}
+
+export type HasId = string | { id: string };
+
+export function idOf(i: HasId) {
+  return typeof i === "string" ? i : i.id;
+}
+export function connectId(i: HasId) {
+  return { connect: { id: idOf(i) } };
+}
+
+export function maybeConnect(i: Maybe<HasId>) {
+  return i ? connectId(i) : undefined;
+}
+
+export function currentTime() {
+  return dayjs().tz("Africa/Abidjan");
 }

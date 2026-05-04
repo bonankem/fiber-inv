@@ -1,22 +1,12 @@
 import { appPlugin } from "#/utils";
-import authLogin from "./auth/login.api";
-import uploadsClear from "./uploads/clear.api";
-import uploadsCreate from "./uploads/create.api";
-import uploadsGet from "./uploads/get.api";
-import uploadsList from "./uploads/list.api";
-import usersGet from "./users/get.api";
-import usersList from "./users/list.api";
-import usersSeed from "./users/seed.api";
+import auth from "./auth";
+import ftthSurveys from "./ftth-surveys";
+import uploads from "./uploads";
+import users from "./users";
 
 export default appPlugin(async (app) => {
-  app.register(authLogin);
-
-  app.register(usersSeed);
-  app.register(usersList);
-  app.register(usersGet);
-
-  app.register(uploadsCreate);
-  app.register(uploadsClear);
-  app.register(uploadsList);
-  app.register(uploadsGet);
+  app.register(auth);
+  app.register(ftthSurveys);
+  app.register(users);
+  app.register(uploads);
 });

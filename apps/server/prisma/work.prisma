@@ -20,6 +20,10 @@ model Work {
 
     status WorkStatus
 
+    requestDate String
+
+    closeDate String?
+
     vendor   Vendor? @relation(fields: [vendorId], references: [id])
     vendorId String? @db.Uuid
 

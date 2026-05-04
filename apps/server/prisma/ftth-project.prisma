@@ -3,6 +3,8 @@ model FtthProject {
 
     work Work @relation(fields: [id], references: [id])
 
+    createdAt DateTime @default(now())
+
     survey   FtthSurvey? @relation(fields: [surveyId], references: [id])
     surveyId String?     @db.Uuid
 

@@ -3,6 +3,8 @@ model FtthConnection {
 
     work Work @relation(fields: [id], references: [id])
 
+    createdAt DateTime @default(now())
+
     contactEmail String?
 
     contactPhone String?

@@ -3,6 +3,8 @@ model FtthSurvey {
 
     work Work @relation(fields: [id], references: [id])
 
+    createdAt DateTime @default(now())
+
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
     boundaryId String?   @unique @db.Uuid
 
