@@ -11,6 +11,8 @@ model Upload {
 
     madeAt DateTime?
 
+    parsed Json?
+
     inDb UploadInDb?
 
     workLogs WorkLog[]
@@ -19,7 +21,7 @@ model Upload {
 }
 
 model UploadInDb {
-    upload   Upload @relation(fields: [uploadId], references: [id])
+    upload   Upload @relation(fields: [uploadId], references: [id], onDelete: Cascade)
     uploadId String @unique @db.Uuid
 
     data Bytes

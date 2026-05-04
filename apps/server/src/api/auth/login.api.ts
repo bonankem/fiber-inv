@@ -1,10 +1,9 @@
 import type { IncomingHttpHeaders } from "node:http";
 import type { JWT } from "@fastify/jwt";
-import { compareSync } from "bcryptjs";
 import { type AuthLoginReqT, authLoginReqZ } from "schema/auth";
 import { prisma } from "#/prisma";
 import { bad, postRoute } from "#/utils";
-import { authSuccess, badLogin, getLoginUser } from "./utils";
+import { authResult, badLogin, checkHash, getLoginUser } from "./utils";
 
 export default postRoute(
   "/auth/login",
@@ -18,18 +17,26 @@ type Req = {
   ip: string;
 };
 
-export async function login(req: Req, jwt: JWT) {
-  const userAgent = req.headers["user-agent"] || bad("No User-Agent");
-  const ipAddress = req.ip || bad("No IP Address");
-
+async function login(req: Req, jwt: JWT) {
   const { email, password } = req.body;
   const u = await getLoginUser({ email });
-  const p = u?.password || badLogin();
 
-  const success = compareSync(password, p.hashed);
-  await prisma.passwordAttempt.create({
-    data: { email, success, ipAddress, userAgent },
+  if (!checkHash(password, u?.password?.hashed)) {
+    await attempt(req, false);
+    badLogin();
+  }
+
+  await attempt(req, true);
+  return authResult(jwt, u);
+}
+
+function attempt(req: Req, success: boolean) {
+  return prisma.passwordAttempt.create({
+    data: {
+      success,
+      email: req.body.email,
+      ipAddress: req.ip || bad("No IP"),
+      userAgent: req.headers["user-agent"] || bad("No UA"),
+    },
   });
-
-  return success ? authSuccess(jwt, p.userId) : badLogin();
 }

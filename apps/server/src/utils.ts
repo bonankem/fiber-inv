@@ -5,6 +5,8 @@ import type * as Z from "fastify-zod-openapi";
 import { uuidv7 } from "uuidv7";
 import z from "zod";
 
+export type Maybe<T> = T | null | undefined;
+
 type FS = F.FastifySchema;
 
 export type AppPlugin = Z.FastifyPluginAsyncZodOpenApi;
@@ -26,7 +28,7 @@ export type AppHandler<S extends FS> = AppRoute<S>["handler"];
 
 export type AppRequest<S extends FS> = Parameters<AppHandler<S>>[0];
 
-export type AppReply<S extends FS> = Parameters<AppHandler<S>>[1];
+export type AppReply<S extends FS = FS> = Parameters<AppHandler<S>>[1];
 
 export type AppRouteFunc<S extends FS, T> = (
   req: AppRequest<S>,
@@ -103,6 +105,10 @@ export type ErrorWhy = string | Error | (() => Error);
 export function bad(why: ErrorWhy): never {
   if (typeof why === "string") throw httpErrors.badRequest(why);
   throw typeof why === "function" ? why() : why;
+}
+
+export function notFound(message = "Not found"): never {
+  throw httpErrors.notFound(message);
 }
 
 export function newUuid() {

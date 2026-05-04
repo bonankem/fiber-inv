@@ -1,10 +1,10 @@
 import type { JWT } from "@fastify/jwt";
-import { hashSync } from "bcryptjs";
+import { compareSync, hashSync } from "bcryptjs";
 import { type AuthResultT, AuthStatus, type AuthSuccessT } from "schema/auth";
 import { userFullP } from "schema/people";
 import { type Prisma, prisma } from "#/prisma";
 import type { UserSelect } from "#/prisma/generated/models";
-import { bad, newUuid } from "#/utils";
+import { bad, type Maybe, newUuid } from "#/utils";
 
 export function badLogin(): never {
   bad("Invalid email or password");
@@ -21,6 +21,13 @@ type LoginUserT = Prisma.UserGetPayload<{ select: typeof loginUserS }>;
 
 export function getLoginUser(where: Prisma.UserWhereUniqueInput) {
   return prisma.user.findUnique({ where, select: loginUserS });
+}
+
+export function checkHash(
+  plain: string,
+  hashed: Maybe<string>,
+): hashed is string {
+  return !!hashed && compareSync(plain, hashed);
 }
 
 export async function authSuccess(
