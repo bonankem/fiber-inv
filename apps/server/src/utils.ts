@@ -13,6 +13,8 @@ dayjs.extend(utc);
 
 export type Maybe<T> = T | null | undefined;
 
+export type Falsey<T> = T | null | undefined | "" | false;
+
 type FS = F.FastifySchema;
 
 export type AppPlugin = Z.FastifyPluginAsyncZodOpenApi;
@@ -50,13 +52,13 @@ export function appRoute<S extends FS>(r: () => AppRoute<S>) {
 
 export function postRoute<B extends FS["body"], T>(
   url: string,
-  body: () => B,
+  body: (() => B) | null,
   f: AppRouteFunc<{ body: B }, T>,
 ) {
   return appRoute(() => ({
     url,
     method: "POST",
-    schema: { body: body() },
+    schema: body ? { body: body() } : undefined,
     handler(this, req, reply) {
       return f(req, this, reply);
     },

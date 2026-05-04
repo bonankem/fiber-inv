@@ -1,6 +1,6 @@
 import type { Prisma, WorkAction, WorkDocType, WorkStatus } from "#/prisma";
 import type { StringFilter } from "#/prisma/generated/commonInputTypes";
-import { currentTime, type Maybe, maybeConnect } from "#/utils";
+import { currentTime, type Falsey, type Maybe, maybeConnect } from "#/utils";
 
 export async function nextId(tx: Prisma.TransactionClient, pre: string) {
   const now = currentTime();
@@ -29,7 +29,8 @@ export function setCoords(
   src: Maybe<{ lat: Maybe<number>; lng: Maybe<number> }>,
 ): Prisma.CoordsCreateNestedOneWithoutWorksInput | undefined {
   if (!src?.lat || !src?.lng) return undefined;
-  const { lat, lng } = src;
+  const lat = Math.round(src.lat * 100000) / 100000;
+  const lng = Math.round(src.lng * 100000) / 100000;
   const id = coordsId(src.lat, src.lng);
   return { connectOrCreate: { where: { id }, create: { id, lat, lng } } };
 }
@@ -96,4 +97,33 @@ export function qSidIs(sid: Maybe<string>) {
 
   // partial sid match
   return qContains(sid);
+}
+
+export function makeKey(text: string) {
+  const norm = text.normalize("NFKD");
+  return norm.toLowerCase().replace(/[\W_]+/g, "");
+}
+
+export function filterNotNull<T>(list: Maybe<T>[]) {
+  return list.filter((t) => t !== null && t !== undefined) as T[];
+}
+
+export function filterTruthy<T>(list: Falsey<T>[]) {
+  return list.filter((t) => t) as T[];
+}
+
+export function qOr<T>(list: Falsey<T>[]) {
+  const actual = filterTruthy(list);
+  const n = actual.length;
+  if (n === 0) return undefined;
+  if (n === 1) return actual[0];
+  return { OR: actual };
+}
+
+export function qAnd<T>(list: Falsey<T>[]) {
+  const actual = filterTruthy(list);
+  const n = actual.length;
+  if (n === 0) return undefined;
+  if (n === 1) return actual[0];
+  return { AND: actual };
 }

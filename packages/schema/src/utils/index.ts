@@ -1,0 +1,51 @@
+import type { ZodRawShape } from "zod";
+import z from "zod";
+
+function prepText(v: unknown) {
+  return typeof v === "string" ? v.trim() || undefined : v;
+}
+
+function prepBool(v: unknown) {
+  if (typeof v !== "string") return v;
+  if (v === "false") return false;
+  if (v === "true") return true;
+  if (v === "on") return true;
+  return v;
+}
+
+function prepNum(v: unknown) {
+  if (!v || typeof v !== "string") return v;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : v;
+}
+
+type ZType = ZodRawShape[keyof ZodRawShape];
+
+function prepFunc(t: ZType) {
+  if (t instanceof z.ZodOptional) return prepFunc(t.unwrap());
+  if (t instanceof z.ZodDefault) return prepFunc(t.unwrap());
+  if (t instanceof z.ZodString) return prepText;
+  if (t instanceof z.ZodNumber) return prepNum;
+  if (t instanceof z.ZodBoolean) return prepBool;
+  if (t instanceof z.ZodStringFormat) return prepText;
+  if (t instanceof z.ZodNumberFormat) return prepNum;
+  return null;
+}
+
+function withPrepFunc<T extends ZType>(t: T) {
+  const func = prepFunc(t);
+  console.log("Is", func?.name);
+  if (!func) return t;
+  return func ? z.preprocess(func, t) : t;
+}
+
+export function zFormObject<T extends ZodRawShape>(id: string, shape: T) {
+  // biome-ignore lint/suspicious/noExplicitAny: strictt type checking not needed here
+  const result: Record<string, any> = {};
+
+  for (const [k, v] of Object.entries(shape)) {
+    console.log("For", k);
+    result[k] = withPrepFunc(v);
+  }
+  return z.strictObject(result as T).meta({ id });
+}
