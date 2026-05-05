@@ -43,18 +43,18 @@ export default function UserHeader(props: UserLayoutProps) {
             size="small"
             icon={<ReloadOutlined className="text-[0.8em]" />}
           >
-            Refresh
+            Actualiser
           </Button>
 
           <Button
             size="small"
             icon={<FileExcelOutlined className="text-[0.8em]" />}
           >
-            Report
+            Rapport
           </Button>
 
           <Button size="small" type="primary">
-            New Request
+            Nouvelle demande
           </Button>
         </section>
       </main>

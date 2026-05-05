@@ -55,7 +55,7 @@ function SubsetCard(props: {
         <div className="text-xs md:text-base font-bold">
           {props.count ?? "-"}
         </div>
-        <div className="text-xs md:text-sm font-medium whitespace-nowrap text-ellipsis">
+        <div className="text-xs md:text-sm whitespace-nowrap text-ellipsis">
           {props.label}
         </div>
       </div>
@@ -108,11 +108,11 @@ export default function FakePage() {
   const [card, setCard] = useState("Total");
 
   const cards = [
-    { label: "Total", count: 123 },
-    { label: "My Pending", count: 8 },
-    { label: "Open", count: 90 },
-    { label: "Stopped", count: 5 },
-    { label: "Closed", count: 28 },
+    { label: "Toutes", count: 123 },
+    { label: "Mes attentes", count: 8 },
+    { label: "Ouvertes", count: 90 },
+    { label: "Arrêtées", count: 5 },
+    { label: "Terminées", count: 28 },
   ];
 
   const titled = (
@@ -128,15 +128,15 @@ export default function FakePage() {
         <Button
           className={twJoin(
             "text-yellow-600 hover:text-yellow-500",
-            "h-5! text-base! p-2! gap-2!",
+            "h-5! text-sm! font-normal! p-2! gap-2!",
           )}
           onClick={() => setFiltering((f) => !f)}
         >
           {filtering ? (
-            "Clear"
+            "Réinitialiser"
           ) : (
             <span className="flex flex-row items-center gap-1">
-              <Filter size={10} /> Filter
+              <Filter size={10} /> Filtrer
             </span>
           )}
         </Button>
@@ -163,19 +163,19 @@ export default function FakePage() {
       width: 120,
     },
     {
-      title: titled("Name", fText("Name"), fCity, true),
+      title: titled("Nom", fText("Name"), fCity, true),
       dataIndex: "name",
       width: 200,
       render: (_, t) => <WithCaption title={t.name} caption={t.city} />,
     },
     {
-      title: titled("Assigned", fDrop("Engineer"), fDrop("Vendor")),
+      title: titled("Assigné à", fDrop("Engineer"), fDrop("Vendor")),
       key: "assigned",
       width: 150,
       render: (_, t) => <WithCaption title={t.engineer} caption={t.vendor} />,
     },
     {
-      title: titled("Status", fDrop("Status"), fDrop("Pending On")),
+      title: titled("Statut", fDrop("Status"), fDrop("Pending On")),
       dataIndex: "status",
       width: 150,
       render: (_, t) => <WithCaption title={t.status} caption={t.vendor} />,
@@ -217,14 +217,14 @@ export default function FakePage() {
           cards.find((c) => c.label === card)?.count || 100,
         )}
         size="small"
-        bordered
+        bordered={false}
         rowKey={(r) => r.sid}
         scroll={{ x: width }}
         pagination={false}
         classNames={{
           header: { cell: "text-sm", wrapper: "sticky top-0 z-100" },
           body: {
-            cell: "text-sm one-line",
+            cell: "text-xs one-line",
           },
           content: "max-h-[calc(100dvh-240px)]! overflow-y-scroll!",
         }}
