@@ -11,7 +11,7 @@ import {
   type ThemeConfig,
   theme,
 } from "antd";
-import { Filter } from "lucide-react";
+import { Filter, X } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import { sumBy } from "remeda";
 import { twJoin } from "tailwind-merge";
@@ -67,7 +67,7 @@ const fText = (name: string) => () => (
   <Input
     allowClear
     size="small"
-    placeholder={`Filter ${name}`}
+    placeholder={`Filtre: ${name}`}
     className="font-normal w-full text-sm!"
   />
 );
@@ -76,7 +76,7 @@ const fCity = () => (
   <TownSelect
     size="small"
     className="w-full! font-normal text-sm!"
-    placeholder="Filter City"
+    placeholder="Filtre: District/Ville"
     changeOnSelect
   />
 );
@@ -85,8 +85,9 @@ const fDate = (name: string) => () => (
   <DatePicker
     allowClear
     size="small"
-    placeholder={`Filter ${name}`}
+    placeholder={`Filtre: ${name}`}
     className="font-normal w-full text-sm!"
+    classNames={{ input: "text-sm!" }}
   />
 );
 
@@ -94,7 +95,7 @@ const fDrop = (name: string) => () => (
   <Select
     allowClear
     size="small"
-    placeholder={`Filter ${name}`}
+    placeholder={`Filtre: ${name}`}
     className="font-normal w-full text-sm!"
   />
 );
@@ -133,16 +134,18 @@ export default function FakePage() {
           onClick={() => setFiltering((f) => !f)}
         >
           {filtering ? (
-            "Réinitialiser"
+            <span className="flex flex-row items-center gap-1">
+              <X size={12} /> Réinitialiser
+            </span>
           ) : (
             <span className="flex flex-row items-center gap-1">
-              <Filter size={10} /> Filtrer
+              <Filter size={12} /> Filtrer
             </span>
           )}
         </Button>
       </div>
     ) : (
-      name
+      <div className="h-5">{name}</div>
     );
 
     if (!filtering) return header;
@@ -163,19 +166,19 @@ export default function FakePage() {
       width: 120,
     },
     {
-      title: titled("Nom", fText("Name"), fCity, true),
+      title: titled("Nom", fText("Nom"), fCity, true),
       dataIndex: "name",
       width: 200,
       render: (_, t) => <WithCaption title={t.name} caption={t.city} />,
     },
     {
-      title: titled("Assigné à", fDrop("Engineer"), fDrop("Vendor")),
+      title: titled("Assigné à", fDrop("Charge"), fDrop("Fournisseur")),
       key: "assigned",
       width: 150,
       render: (_, t) => <WithCaption title={t.engineer} caption={t.vendor} />,
     },
     {
-      title: titled("Statut", fDrop("Status"), fDrop("Pending On")),
+      title: titled("Statut", fDrop("Statut"), fDrop("En attente de...")),
       dataIndex: "status",
       width: 150,
       render: (_, t) => <WithCaption title={t.status} caption={t.vendor} />,

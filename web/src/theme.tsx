@@ -15,7 +15,7 @@ const baseTheme: ThemeConfig = {
   },
   components: {
     DatePicker: {
-      controlHeightSM: 25,
+      controlHeightSM: 28,
     },
     Button: {
       primaryColor: "black",

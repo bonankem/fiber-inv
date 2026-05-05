@@ -1,6 +1,8 @@
 packages:
-  - apps/*
-  - packages/*
+  - server
+  - schema
+  - mobile
+  - web
 allowBuilds:
   '@prisma/engines': true
   esbuild: true

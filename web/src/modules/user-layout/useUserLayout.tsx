@@ -35,7 +35,7 @@ export function useUserLayout() {
           onClick: () => setDrawerOpen(false),
           icon: (
             <Link to={i.path}>
-              <i.icon size={collapsed ? 18 : 14} />
+              <i.icon size={collapsed ? 18 : 16} />
             </Link>
           ),
         })),

@@ -13,11 +13,11 @@
     "zod": "^4.3.6"
   },
   "nodemonConfig": {
-    "ext": "ts",
     "watch": "src",
-    "exec": "pnpm build && touch ../../apps/server/src/main.ts",
+    "ext": "ts",
+    "exec": "pnpm build && touch ../server/src/main.ts",
     "comment": [
-      "During pnpm dev, changes to schema can cause server to raise an error,",
+      "During pnpm dev, rebuilding schema can cause server to raise errors,",
       "so we touch main.ts to refresh the server state and clear the error."
     ]
   }
