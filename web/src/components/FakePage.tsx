@@ -110,9 +110,9 @@ export default function FakePage() {
 
   const cards = [
     { label: "Toutes", count: 123 },
-    { label: "Mes attentes", count: 8 },
+    { label: "Mes tâches", count: 8 },
     { label: "Ouvertes", count: 90 },
-    { label: "Arrêtées", count: 5 },
+    { label: "Rejetées", count: 5 },
     { label: "Terminées", count: 28 },
   ];
 
