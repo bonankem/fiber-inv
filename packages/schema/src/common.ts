@@ -9,8 +9,8 @@ export function zObject<T extends z.ZodRawShape>(id: string, shape: T) {
 }
 
 export const zStr = (desc: string) => z.string().describe(desc);
-
 export const zStrNul = (desc: string) => zStr(desc).nullable();
+export const zStrOpt = (desc: string) => zStr(desc).optional();
 
 export const zEnumUpper = <E extends Record<string, string>>(e: E) =>
   z.string().toUpperCase().pipe(z.enum(e));

@@ -53,12 +53,17 @@ export function addLog(
   body: BasicPost,
   action: WorkAction,
   status: Maybe<WorkStatus>,
+  to: Falsey<string | { name: string }>[] = [],
 ): Prisma.WorkLogCreateNestedManyWithoutWorkInput {
+  const toNames = filterTruthy(to).map((t) => {
+    return typeof t === "string" ? t : t.name;
+  });
   return create({
     action,
     newStatus: status || null,
     comment: body.comment,
     uploads: addUploads(body.uploads),
+    toNames,
   });
 }
 

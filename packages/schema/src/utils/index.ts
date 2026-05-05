@@ -7,6 +7,7 @@ function prepText(v: unknown) {
 
 function prepBool(v: unknown) {
   if (typeof v !== "string") return v;
+  if (v === "") return undefined;
   if (v === "false") return false;
   if (v === "true") return true;
   if (v === "on") return true;
@@ -15,6 +16,7 @@ function prepBool(v: unknown) {
 
 function prepNum(v: unknown) {
   if (!v || typeof v !== "string") return v;
+  if (v === "") return undefined;
   const n = Number(v);
   return Number.isFinite(n) ? n : v;
 }
@@ -34,8 +36,6 @@ function prepFunc(t: ZType) {
 
 function withPrepFunc<T extends ZType>(t: T) {
   const func = prepFunc(t);
-  console.log("Is", func?.name);
-  if (!func) return t;
   return func ? z.preprocess(func, t) : t;
 }
 
@@ -44,7 +44,6 @@ export function zFormObject<T extends ZodRawShape>(id: string, shape: T) {
   const result: Record<string, any> = {};
 
   for (const [k, v] of Object.entries(shape)) {
-    console.log("For", k);
     result[k] = withPrepFunc(v);
   }
   return z.strictObject(result as T).meta({ id });

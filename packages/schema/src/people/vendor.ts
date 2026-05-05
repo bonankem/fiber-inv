@@ -12,7 +12,9 @@ export const vendorZ = zObject("VendorT", {
   name: zStr("The vendor's name"),
 } satisfies Record<keyof typeof vendorS, object>);
 
-export const vendorP = { select: vendorS };
+export const vendorP = {
+  select: vendorS,
+} satisfies Prisma.VendorFindManyArgs;
 
 type VendorP = Prisma.VendorGetPayload<typeof vendorP>;
 type VendorZ = z.infer<typeof vendorZ>;

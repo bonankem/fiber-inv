@@ -1,5 +1,11 @@
 import { type FhsRequestT, fhsRequestZ, ftthSurveyS } from "schema/fhs";
-import { prisma, WorkAction, WorkDocType, WorkStatus } from "#/prisma";
+import {
+  prisma,
+  StaffRole,
+  WorkAction,
+  WorkDocType,
+  WorkStatus,
+} from "#/prisma";
 import { connectId, postRoute } from "#/utils";
 import {
   addLog,
@@ -32,6 +38,10 @@ async function fhsRequest(body: FhsRequestT) {
           coords: setCoords(body),
           docs: setDocsFrom(body, WorkDocType.PLAQUE_KMZ),
           logs: addLog(body, action, status),
+          workers: create({
+            userId: body.managerId,
+            role: StaffRole.PLANNING_MANAGER,
+          }),
         }),
         contactName: body.contactName,
         contactPhone: body.contactPhone,
