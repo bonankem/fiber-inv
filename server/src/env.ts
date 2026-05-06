@@ -4,12 +4,12 @@ import z from "zod";
 configDotenv({ quiet: true });
 
 const schema = z.object({
+  PORT: z.preprocess((s) => s && Number(s), z.int().default(3000)),
   NODE_ENV: z.string().optional(),
   JWT_SECRET: z.string().optional(),
   CRYPTO_KEY: z.string().optional(),
-  PORT: z.number().default(3000),
   DATABASE_URL: z.url({
-    protocol: /postgresql/,
+    protocol: /postgres/,
     error: "Invalid URL",
   }),
 });
