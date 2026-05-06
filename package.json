@@ -18,7 +18,7 @@
   "scripts": {
     "dev": "turbo dev --ui tui",
     "build": "turbo build",
-    "start": "pnpm -F server start",
+    "start": "cd server && pnpm start",
     "clean": "rm -rf */dist",
     "prisma": "pnpm -F server exec prisma",
     "heroku-postbuild": "pnpm prisma generate && pnpm prisma db push && turbo --filter server build"
