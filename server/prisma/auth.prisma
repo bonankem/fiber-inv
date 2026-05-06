@@ -11,6 +11,8 @@ model Password {
     mustChange Boolean
 
     mfaMode MfaMode
+
+    mfaVerified Boolean @default(false)
 }
 
 enum MfaMode {
@@ -28,9 +30,20 @@ model Authenticator {
 
     secret String
 
-    qrCode String
-
     installed Boolean
+}
+
+model Otp {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId String @db.Uuid
+
+    createdAt DateTime @default(now())
+
+    mode MfaMode
+
+    hashed String
 }
 
 model Session {

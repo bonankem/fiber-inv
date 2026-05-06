@@ -1,4 +1,5 @@
 export * from "./auth-change-req";
+export * from "./auth-choose-req";
 export * from "./auth-login-req";
 export * from "./auth-needs-change";
 export * from "./auth-needs-install";
@@ -7,3 +8,4 @@ export * from "./auth-needs-otp";
 export * from "./auth-result";
 export * from "./auth-status";
 export * from "./auth-success";
+export * from "./auth-verify-req";

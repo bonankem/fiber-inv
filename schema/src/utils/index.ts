@@ -21,6 +21,13 @@ function prepNum(v: unknown) {
   return Number.isFinite(n) ? n : v;
 }
 
+function prepArray(v: unknown) {
+  if (Array.isArray(v)) return v;
+  if (v === "") return undefined;
+  if (v === null || v === undefined) return v;
+  return [v];
+}
+
 type ZType = ZodRawShape[keyof ZodRawShape];
 
 function prepFunc(t: ZType) {
@@ -31,6 +38,7 @@ function prepFunc(t: ZType) {
   if (t instanceof z.ZodBoolean) return prepBool;
   if (t instanceof z.ZodStringFormat) return prepText;
   if (t instanceof z.ZodNumberFormat) return prepNum;
+  if (t instanceof z.ZodArray) return prepArray;
   return null;
 }
 

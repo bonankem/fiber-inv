@@ -6,6 +6,7 @@ configDotenv({ quiet: true });
 const schema = z.object({
   NODE_ENV: z.string().optional(),
   JWT_SECRET: z.string().optional(),
+  CRYPTO_KEY: z.string().optional(),
   PORT: z.number().default(3000),
   DATABASE_URL: z.url({
     protocol: /postgresql/,

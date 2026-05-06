@@ -21,7 +21,9 @@
     "dotenv": "^17.4.2",
     "fastify": "^5.8.5",
     "fastify-zod-openapi": "^5.6.1",
+    "otplib": "^13.4.0",
     "pg": "^8.20.0",
+    "qrcode": "^1.5.4",
     "schema": "workspace:*",
     "uuidv7": "^1.2.1",
     "yauzl-promise": "^4.0.0",
@@ -29,6 +31,7 @@
   },
   "devDependencies": {
     "@types/pg": "^8.20.0",
+    "@types/qrcode": "^1.5.6",
     "@types/yauzl-promise": "^4.0.1",
     "prisma": "^7.8.0"
   }

@@ -23,6 +23,8 @@ model User {
 
     authenticator Authenticator?
 
+    otps Otp[]
+
     sessions Session[]
 
     works Worker[]

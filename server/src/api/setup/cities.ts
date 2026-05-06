@@ -1,3 +1,7 @@
+import { uuidv7 } from "uuidv7";
+import { prisma } from "#/prisma";
+import { makeKey } from "../utils/queries";
+
 export const geoDefaults = [
   {
     name: "Abidjan",
@@ -184,3 +188,28 @@ export const geoDefaults = [
     ],
   },
 ];
+
+export function seedCities() {
+  const districts = geoDefaults.map(({ name }) => ({
+    id: uuidv7(),
+    key: makeKey(name),
+    name,
+  }));
+
+  const districtIds = Object.fromEntries(districts.map((d) => [d.name, d.id]));
+
+  const cities = geoDefaults.flatMap((d) => {
+    return d.list.map((name) => {
+      const id = uuidv7();
+      const key = makeKey(name);
+      // biome-ignore lint/style/noNonNullAssertion: -
+      const districtId = districtIds[d.name]!;
+      return { id, key, name, districtId };
+    });
+  });
+
+  return [
+    prisma.district.createMany({ data: districts, skipDuplicates: true }),
+    prisma.city.createMany({ data: cities, skipDuplicates: true }),
+  ];
+}

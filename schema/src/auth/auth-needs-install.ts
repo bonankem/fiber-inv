@@ -8,6 +8,7 @@ export const authNeedsInstallZ = zObject("AuthNeedsInstallT", {
   token: zStr("Token for completing authentication"),
   userId: zStr("The UUID of the user being authenticated"),
   secret: zStr("TOTP secret"),
+  otpUri: zStr("The otpauth:// URI"),
   qrCode: zStr("TOTP QR code data URI"),
 });
 

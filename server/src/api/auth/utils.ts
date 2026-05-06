@@ -1,17 +1,30 @@
+import { randomInt } from "node:crypto";
 import type { JWT } from "@fastify/jwt";
 import { compareSync, hashSync } from "bcryptjs";
+import { generateSecret, generateURI } from "otplib";
+import { toDataURL } from "qrcode";
 import { type AuthResultT, AuthStatus, type AuthSuccessT } from "schema/auth";
 import { userFullP } from "schema/people";
-import { type Prisma, prisma } from "#/prisma";
+import z from "zod";
+import { appEnv } from "#/env";
+import { MfaMode, type Prisma, prisma } from "#/prisma";
 import type { UserSelect } from "#/prisma/generated/models";
 import { bad, type Maybe, newUuid } from "#/utils";
+import { decrypt, encrypt } from "../utils/encryption";
+
+const isDev = appEnv.NODE_ENV !== "production";
 
 export function badLogin(): never {
   bad("Invalid email or password");
 }
 
-const loginUserS = {
+export function badToken(): never {
+  bad("Invalid or expired token");
+}
+
+export const loginUserS = {
   id: true,
+  email: true,
   isAdmin: true,
   password: true,
   authenticator: true,
@@ -53,10 +66,79 @@ export async function authSuccess(
   return { status, user, token, refresh };
 }
 
+async function getAuthenticator(userId: string) {
+  const db = prisma.authenticator;
+  const a = await db.findUnique({ where: { userId } });
+  if (a) {
+    const secret = decrypt(a.secret);
+    const installed = a.installed;
+    return { secret, installed };
+  }
+
+  const installed = false;
+  const secret = generateSecret();
+  const s = encrypt(secret);
+  await db.create({ data: { userId, installed, secret: s } });
+  return { secret, installed };
+}
+
+async function authInstall(u: LoginUserT, secret: string) {
+  const otpUri = generateURI({ issuer: "ServiceX", label: u.email, secret });
+  const qrCode = await toDataURL(otpUri);
+  return { secret, otpUri, qrCode };
+}
+
 export async function authResult(
   jwt: JWT,
   user: LoginUserT,
 ): Promise<AuthResultT> {
-  // TODO: implement other auth statuses
+  const S = AuthStatus;
+  const M = MfaMode;
+
+  const incomplete = <S extends AuthStatus, T>(status: S, data: T) => {
+    const userId = user.id;
+    const token = jwt.sign({ userId }, { expiresIn: "1h" });
+    return { status, userId, token, ...data };
+  };
+
+  const pass = user.password;
+  const mode = pass?.mfaMode;
+
+  if (pass?.mustChange) {
+    return incomplete(S.NEEDS_CHANGE, {});
+  }
+
+  if (mode === M.UNDECIDED || !mode) {
+    return incomplete(S.NEEDS_MFA_MODE, {});
+  }
+
+  if (mode === M.AUTHENTICATOR) {
+    const { secret, installed } = await getAuthenticator(user.id);
+    if (installed) return incomplete(S.NEEDS_OTP, { mode });
+
+    const data = await authInstall(user, secret);
+    return incomplete(S.NEEDS_INSTALL, data);
+  }
+
+  if (mode !== M.NONE) {
+    const otp = isDev ? "456789" : randomInt(111111, 999999).toString();
+    const hashed = hashSync(otp);
+    await prisma.otp.create({
+      data: { userId: user.id, mode, hashed },
+    });
+    return incomplete(S.NEEDS_OTP, { mode });
+  }
+
   return authSuccess(jwt, user.id);
+}
+
+const tempTokenZ = z.object({ userId: z.string() });
+
+export function verifyTempToken(jwt: JWT, token: string) {
+  try {
+    return tempTokenZ.parse(jwt.verify(token));
+  } catch (e) {
+    if (isDev) console.error(e);
+    badToken();
+  }
 }

@@ -103,8 +103,8 @@ model Fat {
     hub   Hub    @relation(fields: [hubId], references: [id])
     hubId String @db.Uuid
 
-    prev   Fat    @relation(fields: [prevId], references: [id], name: "prev")
-    prevId String @db.Uuid
+    prev   Fat?    @relation(fields: [prevId], references: [id], name: "prev")
+    prevId String? @db.Uuid
 
     next Fat[] @relation("prev")
 
