@@ -2,7 +2,6 @@ import { randomInt } from "node:crypto";
 import type { JWT } from "@fastify/jwt";
 import { compareSync, hashSync } from "bcryptjs";
 import { generateSecret, generateURI } from "otplib";
-import { toDataURL } from "qrcode";
 import { type AuthResultT, AuthStatus, type AuthSuccessT } from "schema/auth";
 import { userFullP } from "schema/people";
 import z from "zod";
@@ -84,8 +83,7 @@ async function getAuthenticator(userId: string) {
 
 async function authInstall(u: LoginUserT, secret: string) {
   const otpUri = generateURI({ issuer: "ServiceX", label: u.email, secret });
-  const qrCode = await toDataURL(otpUri);
-  return { secret, otpUri, qrCode };
+  return { secret, otpUri };
 }
 
 export async function authResult(

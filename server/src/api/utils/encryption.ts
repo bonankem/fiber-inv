@@ -1,12 +1,23 @@
-import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
+import {
+  createCipheriv,
+  createDecipheriv,
+  randomBytes,
+  scryptSync,
+} from "node:crypto";
 import { appEnv } from "#/env";
 import { bad } from "#/utils";
 
 const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 16;
 
+let savedKey: Buffer;
+
 function encryptionKey() {
-  return appEnv.CRYPTO_KEY || bad("Auth encryption disabled");
+  if (savedKey) return savedKey;
+  const value = appEnv.CRYPTO_KEY || bad("Auth encryption disabled");
+  const key = scryptSync(value, "key.salt", 32);
+  savedKey = key;
+  return key;
 }
 
 export function encrypt(s: string) {

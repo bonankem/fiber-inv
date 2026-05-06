@@ -1,34 +1,47 @@
 import { useNavigate } from "@tanstack/react-router";
-import { Button, Form, Input } from "antd";
-import TextLink from "#/components/TextLink";
-import AuthHeader from "./AuthHeader";
+import { message } from "antd";
+import { useState } from "react";
+import { type AuthResultT, AuthStatus } from "schema/auth";
+import AuthChangeForm from "./AuthChangeForm";
+import AuthChooseForm from "./AuthChooseForm";
+import AuthInstallForm from "./AuthInstallForm";
+import AuthLoginForm from "./AuthLoginForm";
+import AuthOtpForm from "./AuthOtpForm";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const onSubmit = () => {
-    navigate({ to: "/ftth-surveys" });
+  const [result, setResult] = useState<AuthResultT>();
+
+  const onResult = (res: AuthResultT) => {
+    if (res.status === AuthStatus.SUCCESS) {
+      message.success(`Bienvenue, ${res.user.name}`);
+      navigate({ to: "/ftth-surveys", replace: true });
+    } else {
+      setResult(res);
+    }
   };
-  return (
-    <main>
-      <AuthHeader title="Connectez-vous à ServiceX" />
 
-      <Form layout="vertical" onFinish={onSubmit}>
-        <Form.Item>
-          <Input type="email" placeholder="E-mail" required />
-        </Form.Item>
+  const onCancel = () => {
+    setResult(undefined);
+  };
 
-        <Form.Item>
-          <Input.Password placeholder="Mot de passe" required />
-        </Form.Item>
+  const props = { onResult, onCancel };
 
-        <Button htmlType="submit" block type="primary">
-          Se connecter
-        </Button>
+  if (result?.status === AuthStatus.NEEDS_OTP) {
+    return <AuthOtpForm {...props} res={result} />;
+  }
 
-        <section className="mt-4 flex justify-end">
-          <TextLink to="/reset">Mot de passe oublié?</TextLink>
-        </section>
-      </Form>
-    </main>
-  );
+  if (result?.status === AuthStatus.NEEDS_CHANGE) {
+    return <AuthChangeForm {...props} res={result} />;
+  }
+
+  if (result?.status === AuthStatus.NEEDS_MFA_MODE) {
+    return <AuthChooseForm {...props} res={result} />;
+  }
+
+  if (result?.status === AuthStatus.NEEDS_INSTALL) {
+    return <AuthInstallForm {...props} res={result} />;
+  }
+
+  return <AuthLoginForm {...props} />;
 }

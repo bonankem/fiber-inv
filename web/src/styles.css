@@ -58,3 +58,7 @@ button,
     background-color 0s,
     color 0s !important;
 }
+
+.ant-message {
+  font-family: inherit !important;
+}

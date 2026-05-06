@@ -9,7 +9,6 @@ export const authNeedsInstallZ = zObject("AuthNeedsInstallT", {
   userId: zStr("The UUID of the user being authenticated"),
   secret: zStr("TOTP secret"),
   otpUri: zStr("The otpauth:// URI"),
-  qrCode: zStr("TOTP QR code data URI"),
 });
 
 export type AuthNeedsInstallT = z.infer<typeof authNeedsInstallZ>;

@@ -10,7 +10,7 @@ import {
 const baseTheme: ThemeConfig = {
   token: {
     colorPrimary: "#ffcb05",
-    fontFamily: "inherit",
+    fontFamily: "MTNBrighterSans",
     controlHeightSM: 28,
   },
   components: {

@@ -1,4 +1,5 @@
 import type { JWT } from "@fastify/jwt";
+import type { PrismaPromise } from "@prisma/client/runtime/client";
 import { compareSync } from "bcryptjs";
 import { verifySync } from "otplib";
 import { type AuthVerifyReqT, authVerifyReqZ } from "schema/auth";
@@ -26,23 +27,42 @@ async function authVerify(req: AuthVerifyReqT, jwt: JWT) {
 
   async function result(valid: boolean) {
     if (!valid) badOtp();
-    await prisma.otp.deleteMany({ where: { userId } });
+
+    const actions: PrismaPromise<unknown>[] = [];
+    actions.push(prisma.otp.deleteMany({ where: { userId } }));
 
     if (user.password?.mfaVerified === false) {
-      await prisma.password.update({
-        where: { userId },
-        data: { mfaMode: mode, mfaVerified: true },
-      });
+      actions.push(
+        prisma.password.update({
+          where: { userId },
+          data: { mfaMode: mode, mfaVerified: true },
+        }),
+      );
     }
 
+    if (mode === MfaMode.AUTHENTICATOR) {
+      actions.push(
+        prisma.authenticator.update({
+          where: { userId },
+          data: { installed: true },
+        }),
+      );
+    }
+
+    await prisma.$transaction(actions);
     return authSuccess(jwt, userId);
   }
 
   if (mode === MfaMode.AUTHENTICATOR) {
     const db = prisma.authenticator;
-    const a = (await db.findUnique({ where: { userId } })) || badOtp();
-    const secret = decrypt(a.secret);
-    return result(verifySync({ secret, token: req.otp }).valid);
+    const a = await db.findUnique({ where: { userId } });
+    if (!a) badOtp();
+    const verified = verifySync({
+      secret: decrypt(a.secret),
+      token: req.otp,
+      epochTolerance: 30,
+    });
+    return result(verified.valid);
   }
 
   const since = new Date(Date.now() - OTP_EXPIRY_MINUTES * 60000);

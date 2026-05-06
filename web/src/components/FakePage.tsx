@@ -229,7 +229,7 @@ export default function FakePage() {
           body: {
             cell: "text-xs one-line",
           },
-          content: "max-h-[calc(100dvh-240px)]! overflow-y-scroll!",
+          content: "max-h-[calc(100dvh-230px)]! overflow-y-scroll!",
         }}
         columns={columns}
         footer={() => (
