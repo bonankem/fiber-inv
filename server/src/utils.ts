@@ -1,8 +1,8 @@
 import type * as H from "node:http";
 import { httpErrors } from "@fastify/sensible";
 import dayjs from "dayjs";
-import timeZone from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
+import timeZone from "dayjs/plugin/timezone.js";
+import utc from "dayjs/plugin/utc.js";
 import type * as F from "fastify";
 import type * as Z from "fastify-zod-openapi";
 import { uuidv7 } from "uuidv7";
@@ -85,8 +85,6 @@ type IdParamUrl = `${string}/:id` | `${string}/:id/${string}`;
 const idParamZ = z.strictObject({
   id: z.string().describe("The selected UUID"),
 });
-
-type IdParamT = z.infer<typeof idParamZ>;
 
 export function idRoute<T>(
   url: IdParamUrl,
