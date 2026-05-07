@@ -51,8 +51,8 @@ function SubsetCard(props: {
       }}
       onClick={props.onClick}
     >
-      <div className="w-full flex flex-col leading-0 text-center md:text-start mx-3 md:mx-4 overflow-hidden">
-        <div className="text-xs md:text-base font-bold">
+      <div className="w-full flex flex-col leading-0 text-center md:text-start mx-1 md:mx-4 overflow-hidden">
+        <div className="text-sm md:text-base font-bold">
           {props.count ?? "-"}
         </div>
         <div className="text-xs md:text-sm whitespace-nowrap text-ellipsis">
@@ -127,10 +127,7 @@ export default function FakePage() {
         {name}
 
         <Button
-          className={twJoin(
-            "text-yellow-600 hover:text-yellow-500",
-            "h-5! text-sm! font-normal! p-2! gap-2!",
-          )}
+          className="h-5! text-sm! font-normal! p-2! gap-2!"
           onClick={() => setFiltering((f) => !f)}
         >
           {filtering ? (
@@ -168,7 +165,7 @@ export default function FakePage() {
     {
       title: titled("Nom", fText("Nom"), fCity, true),
       dataIndex: "name",
-      width: 200,
+      width: "calc(min(200px,40dvw))",
       render: (_, t) => <WithCaption title={t.name} caption={t.city} />,
     },
     {
@@ -197,7 +194,13 @@ export default function FakePage() {
     },
   ] satisfies TableColumnsType;
 
-  const width = sumBy(columns, (c) => c.width + 40);
+  const width = sumBy(
+    columns,
+    (c) =>
+      (typeof c.width === "number"
+        ? c.width
+        : Number(/\d+(?=px)/.exec(c.width)?.[0]) || 200) + 40,
+  );
 
   return (
     <div className="py-4 px-4 md:px-8 flex flex-col items-stretch gap-3">

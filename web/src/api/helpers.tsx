@@ -1,6 +1,8 @@
 import { message } from "antd";
 
-const base: string = import.meta.env.VITE_API_URL || "http://localhost:3000";
+const base = (
+  (import.meta.env.VITE_API_URL as string) || "http://localhost:3000"
+).replace(/localhost|127.0.0.1/, window.location.hostname);
 
 function fullUrl(url: string) {
   if (/^https?:/i.test(url)) return url;

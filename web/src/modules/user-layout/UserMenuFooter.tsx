@@ -41,7 +41,6 @@ export default function UserMenuFooter({ collapsed }: Props) {
                 { key: "en", label: "English" },
                 { key: "fr", label: "Français" },
               ],
-              rootClassName: "fle",
             },
             {
               key: "theme",
@@ -53,7 +52,6 @@ export default function UserMenuFooter({ collapsed }: Props) {
                 onClick: () => theme.setValue(t.key),
                 itemIcon: t.key === theme.value ? check : undefined,
               })),
-              rootClassName: "fle",
             },
             { type: "divider" },
             {

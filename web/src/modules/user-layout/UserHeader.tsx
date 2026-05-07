@@ -1,15 +1,19 @@
 import {
   FileExcelOutlined,
   MenuOutlined,
+  PlusOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, theme } from "antd";
 import { twJoin } from "tailwind-merge";
+import { useModalViewer } from "#/hooks/useModalViewer";
+import FhsRequestForm from "../ftth-surveys/FhsRequestForm";
 import NotificationBell from "./NotificationBell";
 import type { UserLayoutProps } from "./useUserLayout";
 
 export default function UserHeader(props: UserLayoutProps) {
   const { token } = theme.useToken();
+  const modal = useModalViewer();
 
   return (
     <Layout.Header
@@ -53,10 +57,21 @@ export default function UserHeader(props: UserLayoutProps) {
             Rapport
           </Button>
 
-          <Button size="small" type="primary">
+          <Button
+            size="small"
+            type="primary"
+            onClick={() => modal.open(FhsRequestForm)}
+          >
             Nouvelle demande
           </Button>
         </section>
+
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => modal.open(FhsRequestForm)}
+          className="mr-2! inline-block lg:hidden"
+        />
       </main>
     </Layout.Header>
   );

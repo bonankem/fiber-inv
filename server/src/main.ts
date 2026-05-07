@@ -47,4 +47,6 @@ app.register(api);
 
 app.get("/", () => ({ name: "ServiceX" }));
 
-app.listen({ port: appEnv.PORT });
+const remote = process.argv.includes("--host");
+app.log.info(`remote:: ${remote}`);
+app.listen({ port: appEnv.PORT, host: remote ? "0.0.0.0" : undefined });

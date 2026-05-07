@@ -17,6 +17,7 @@
   },
   "scripts": {
     "dev": "turbo dev --ui tui",
+    "dev:host": "turbo dev:host --ui tui",
     "build": "turbo build",
     "start": "cd server && pnpm start",
     "clean": "rm -rf */dist",

@@ -9,8 +9,6 @@ function setPageTitle(...parts: string[]) {
   document.title = parts.join(" | ");
 }
 
-const year = new Date().getFullYear();
-
 export default function UserContent(props: UserLayoutProps) {
   const title = props.title;
   useEffect(() => {

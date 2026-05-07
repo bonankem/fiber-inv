@@ -6,8 +6,9 @@
     "./enums": "./dist/generated/enums.js"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc && tsc-alias",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "dev:host": "nodemon",
+    "build": "rm -rf dist && tsc && tsc-alias"
   },
   "dependencies": {
     "@prisma/client": "^7.8.0",
@@ -16,10 +17,10 @@
   "nodemonConfig": {
     "watch": "src",
     "ext": "ts",
-    "exec": "pnpm build && touch ../server/src/main.ts",
+    "exec": "pnpm build && touch ../server/src/main.ts ../web/src/main.tsx",
     "comment": [
-      "During pnpm dev, rebuilding schema can cause server to raise errors,",
-      "so we touch main.ts to refresh the server state and clear the error."
+      "During pnpm dev, rebuilding schema can cause its dependants to throw errors,",
+      "so we touch files in each module to reset their states and clear the errors."
     ]
   }
 }
