@@ -42,7 +42,10 @@ export default function UserHeader(props: UserLayoutProps) {
 
         <NotificationBell className="mr-2! lg:mr-4!" />
 
-        <section className="hidden lg:flex items-center gap-2">
+        <section
+          id="header-actions-desktop"
+          className="hidden lg:flex items-center gap-2"
+        >
           <Button
             size="small"
             icon={<ReloadOutlined className="text-[0.8em]" />}
@@ -66,12 +69,13 @@ export default function UserHeader(props: UserLayoutProps) {
           </Button>
         </section>
 
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => modal.open(FhsRequestForm)}
-          className="mr-2! inline-block lg:hidden"
-        />
+        <section id="header-actions-mobile" className="mr-2 block lg:hidden">
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => modal.open(FhsRequestForm)}
+          />
+        </section>
       </main>
     </Layout.Header>
   );

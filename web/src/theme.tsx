@@ -23,8 +23,8 @@ const baseTheme: ThemeConfig = {
       paddingInlineSM: 12,
     },
     Form: {
-      itemMarginBottom: 16,
-      verticalLabelPadding: "0 0 4px",
+      itemMarginBottom: 12,
+      verticalLabelPadding: "0 0 0px",
     },
     Cascader: {
       dropdownHeight: "fit-content",
