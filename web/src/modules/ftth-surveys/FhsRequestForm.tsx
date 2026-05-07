@@ -27,7 +27,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
       mask={{ blur: true, closable: false }}
       open={props.state.isOpen}
       onCancel={props.state.close}
-      className="text-sm"
+      className="text-sm pb-8!"
     >
       <ConfigProvider
         theme={{
@@ -59,20 +59,16 @@ export default function FhsRequestForm(props: ModalStateProps) {
               <TownSelect />
             </Form.Item>
 
-            <Form.Item label="Nom du contact">
-              <Input required />
+            <Form.Item label="Contact local">
+              <Input required placeholder="Nom et téléphone" />
             </Form.Item>
 
-            <Form.Item label="Téléphone du contact">
-              <Input />
-            </Form.Item>
-
-            <Form.Item label="Envoyer à">
-              <Select size="small" placeholder="Responsable planning" />
+            <Form.Item label="Envoyer à Responsable">
+              <Select />
             </Form.Item>
 
             <Form.Item label="Commentaire">
-              <Input.TextArea rows={4} className="resize-none!" />
+              <Input.TextArea rows={3} className="resize-none!" />
             </Form.Item>
           </div>
 
