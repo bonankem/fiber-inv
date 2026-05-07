@@ -13,17 +13,16 @@ import TownSelect from "#/components/TownSelect";
 import type { ModalStateProps } from "#/hooks/useModalViewer";
 
 function Title(props: PropsWithChildren) {
-  return <h2 className="text-center mb-4">{props.children}</h2>;
+  return <h2 className="mb-4">{props.children}</h2>;
 }
 
 export default function FhsRequestForm(props: ModalStateProps) {
   const fz = 13;
   return (
     <Modal
-      title={<Title>Nouvelle demande d'etude</Title>}
+      title={<Title>Demande d'etude FTTH</Title>}
       width={320}
       footer={null}
-      closable={false}
       mask={{ blur: true, closable: false }}
       open={props.state.isOpen}
       onCancel={props.state.close}
@@ -51,12 +50,12 @@ export default function FhsRequestForm(props: ModalStateProps) {
               <FileUpload placeholder="Choisir un fichier KMZ ou KML" />
             </Form.Item>
 
-            <Form.Item label="Nom de la plaque">
-              <Input required />
-            </Form.Item>
-
             <Form.Item label="Ville">
               <TownSelect />
+            </Form.Item>
+
+            <Form.Item label="Nom de la plaque">
+              <Input required />
             </Form.Item>
 
             <Form.Item label="Contact local">

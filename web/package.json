@@ -30,7 +30,8 @@
     "remeda": "^2.34.0",
     "schema": "workspace:*",
     "tailwind-merge": "^3.5.0",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "uuidv7": "^1.2.1"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",

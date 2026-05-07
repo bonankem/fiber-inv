@@ -1,11 +1,12 @@
 import type { MultipartFile } from "@fastify/multipart";
+import { zFormObject } from "schema/utils";
 import { uuidv7 } from "uuidv7";
 import z from "zod";
 import { prisma, WorkDocType } from "#/prisma";
 import { appRoute, bad, type Maybe } from "#/utils";
 import { maybeParse } from "./parsers";
 
-const uploadQueryZ = z.strictObject({
+const uploadQueryZ = zFormObject("UploadQueryT", {
   id: z.uuidv7().optional(),
   parser: z.enum(WorkDocType).optional(),
   noSave: z.coerce.boolean().default(false),
@@ -16,9 +17,7 @@ type UploadQueryT = z.infer<typeof uploadQueryZ>;
 export default appRoute(() => ({
   method: "POST",
   url: "/uploads",
-  schema: {
-    querystring: uploadQueryZ,
-  },
+  schema: { querystring: uploadQueryZ },
   handler: async (req) => {
     return createUpload(await req.file(), req.query);
   },

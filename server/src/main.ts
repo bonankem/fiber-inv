@@ -18,6 +18,7 @@ import { appEnv } from "./env";
 
 const app = fastify({
   logger: { transport: { target: "@fastify/one-line-logger" } },
+  bodyLimit: 50 * 1024 * 1024, // 100MB
 }).withTypeProvider<FastifyZodOpenApiTypeProvider>();
 
 app.setValidatorCompiler(validatorCompiler);

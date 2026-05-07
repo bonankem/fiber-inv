@@ -4,19 +4,19 @@ const base = (
   (import.meta.env.VITE_API_URL as string) || "http://localhost:3000"
 ).replace(/localhost|127.0.0.1/, window.location.hostname);
 
-function fullUrl(url: string) {
+export function apiUrl(url: string) {
   if (/^https?:/i.test(url)) return url;
   if (base.endsWith("/")) return `${base}${url.replace(/^\//, "")}`;
   if (url.startsWith("/")) return `${base}${url}`;
   return `${base}/${url}`;
 }
 
-export function postFn<I, O>(url: string) {
+export function postFn<I, O = void>(url: string) {
   return (body: I) => postJson<O>(url, body);
 }
 
 export async function postJson<R>(url: string, body: unknown) {
-  const res = await fetch(fullUrl(url), {
+  const res = await fetch(apiUrl(url), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),

@@ -259,6 +259,9 @@ importers:
       tailwindcss:
         specifier: ^4.1.18
         version: 4.2.4
+      uuidv7:
+        specifier: ^1.2.1
+        version: 1.2.1
     devDependencies:
       '@tailwindcss/typography':
         specifier: ^0.5.16
