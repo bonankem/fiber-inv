@@ -1,0 +1,1 @@
+web: pnpm -F server start --host

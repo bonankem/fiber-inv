@@ -19,7 +19,6 @@
     "dev": "turbo dev --ui tui",
     "dev:host": "turbo dev:host --ui tui",
     "build": "turbo build",
-    "start": "cd server && pnpm start",
     "clean": "rm -rf */dist",
     "prisma": "pnpm -F server exec prisma",
     "heroku-postbuild": "pnpm prisma generate && pnpm prisma db push && turbo --filter server build"
