@@ -100,7 +100,6 @@ export function useUploaderImpl(): Uploader {
     xhr.addEventListener("abort", () => update(CANCELLED));
 
     xhr.addEventListener("loadend", () => {
-      console.log("onloadend", xhr.readyState, xhr.status);
       if (xhr.readyState !== 4) return;
       update(xhr.status < 300 ? SUCCESS : FAILED);
     });

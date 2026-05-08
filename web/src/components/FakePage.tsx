@@ -77,7 +77,7 @@ const fCity = () => (
     size="small"
     className="w-full! font-normal text-sm!"
     placeholder="Filtre: District/Ville"
-    changeOnSelect
+    canPickDistrict
   />
 );
 

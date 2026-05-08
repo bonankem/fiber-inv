@@ -1,33 +1,31 @@
 import { PaperClipOutlined } from "@ant-design/icons";
-import { Button, Input, Upload } from "antd";
-import { useState } from "react";
-import { uuidv7 } from "uuidv7";
+import { Button, Input, Upload, type UploadProps } from "antd";
 import { UploadStatus, useUploader } from "#/hooks/useUploader";
 
 type Props = {
   value?: string;
   onChange?: (id: string) => void;
   placeholder?: string;
+  accept?: UploadProps["accept"];
+  formId?: string;
 };
-
-const formId = uuidv7();
 
 export default function FileUpload(props: Props) {
   const uploader = useUploader();
-  const [id, setId] = useState<string>();
-  const up = uploader.find(id || "");
-  const showProgress = up.status === UploadStatus.SENDING;
+  const record = uploader.find(props.value || "");
+  const showProgress = record.status === UploadStatus.SENDING;
 
   const onUpload = (file: File) => {
-    const u = uploader.send(file, formId);
-    if (id) uploader.cancel(id);
-    setId(u.id);
+    const u = uploader.send(file, props.formId || "");
+    if (props.value) uploader.cancel(props.value);
+    props.onChange?.(u.id);
     return false;
   };
 
   return (
     <Upload
       fileList={[]}
+      accept={props.accept}
       beforeUpload={onUpload}
       classNames={{ root: "block", trigger: "w-full" }}
     >
@@ -36,7 +34,7 @@ export default function FileUpload(props: Props) {
           <Input
             readOnly
             size="small"
-            value={up.name}
+            value={record.name}
             className="cursor-pointer w-full"
             placeholder={props.placeholder}
           />
@@ -45,9 +43,9 @@ export default function FileUpload(props: Props) {
             <div
               className="transition-w duration-500 bg-green-600 h-1 rounded-sm"
               style={{
-                transition: up.percent < 10 ? "none" : "all 500ms ease",
+                transition: record.percent < 10 ? "none" : "all 500ms ease",
                 opacity: showProgress ? 100 : 0,
-                width: `${up.percent}%`,
+                width: `${record.percent}%`,
               }}
             />
           </div>

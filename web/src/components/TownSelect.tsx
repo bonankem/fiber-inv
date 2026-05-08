@@ -27,21 +27,54 @@ const data = [
     children: d.list.map((n) => makeEntry(n)),
   })),
 ];
+const cities = new Set(data.flatMap((d) => d.children.map((c) => c.value)));
+const districts = new Set(data.map((d) => d.value));
+const cityDistrict = Object.fromEntries(
+  data.flatMap((d) => d.children.map((c) => [c.value, d.value])),
+);
 
-export default function TownSelect(props: Omit<CascaderAutoProps, "options">) {
+type AntProps = Pick<CascaderAutoProps, "size" | "className" | "placeholder">;
+
+type Props = AntProps & {
+  value?: string;
+  onChange?: (v: string | undefined) => void;
+  canPickDistrict?: boolean;
+};
+
+function actualValue(v: string | undefined) {
+  console.log("value =", v);
+  const value = !v ? undefined : cities.has(v) ? [cityDistrict[v], v] : [v];
+  console.log("actual value =", value);
+  return value;
+}
+
+export default function TownSelect(props: Props) {
   const ref = useRef<HTMLElement>(null);
 
   return (
     <Cascader
       ref={ref}
-      // biome-ignore lint/suspicious/noExplicitAny: suppress false-negative type error
-      {...(props as any)}
+      {...props}
+      value={actualValue(props.value)}
       options={data}
+      multiple={false}
       expandTrigger="click"
       classNames={{
         popup: { list: "max-h-[40dvh] lg:max-h-[65dvh]! text-sm!" },
       }}
-      onChange={(v) => v.length > 1 && ref.current?.blur()}
+      onChange={(v) => {
+        const oc = props.onChange;
+        if (!oc) return;
+        if (!v) return oc(undefined);
+
+        const n = v.length;
+        const value = v[n - 1];
+        if (cities.has(value) || props.canPickDistrict) {
+          oc(value);
+          if (n > 1) ref.current?.blur();
+        }
+      }}
+      changeOnSelect={props.canPickDistrict}
       displayRender={(l) =>
         l.length === 1 ? `${l[0]} (District)` : l.join(" / ")
       }

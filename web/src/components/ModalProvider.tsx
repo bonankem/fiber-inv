@@ -14,8 +14,10 @@ import {
 
 // biome-ignore lint/suspicious/noExplicitAny: allow any here
 type AnyModal = ModalFC | ModalItemFC<any>;
+const nothing = () => setTimeout(() => {}, 0);
 
 export function ModalProvider(props: PropsWithChildren) {
+  const [closing, setClosing] = useState(nothing);
   const [ModalFC, setModalFC] = useState<AnyModal>();
   const [isOpen, setIsOpen] = useState(false);
   const [item, setItem] = useState<unknown>();
@@ -27,8 +29,13 @@ export function ModalProvider(props: PropsWithChildren) {
 
   const doClose = useCallback(() => {
     setIsOpen(false);
-    setModalFC(undefined);
     setItem(undefined);
+    setClosing((c) => {
+      clearTimeout(c);
+      // delay removing the modal component,
+      // so that the closing animation plays out
+      return setTimeout(() => setModalFC(undefined), 500);
+    });
   }, []);
 
   useEffect(() => {
@@ -59,6 +66,7 @@ export function ModalProvider(props: PropsWithChildren) {
     }
 
     function open(m: ModalFC) {
+      clearTimeout(closing);
       setModalFC(() => m);
       setItem(undefined);
       setIsOpen(true);
@@ -66,6 +74,7 @@ export function ModalProvider(props: PropsWithChildren) {
     }
 
     function openWith<T>(m: ModalItemFC<T>, i: T) {
+      clearTimeout(closing);
       setModalFC(() => m);
       setItem(i);
       setIsOpen(true);
@@ -73,7 +82,7 @@ export function ModalProvider(props: PropsWithChildren) {
     }
 
     return { open, openWith };
-  }, [navigate]);
+  }, [navigate, closing]);
 
   const close = () => {
     router.history.back();

@@ -63,3 +63,20 @@ button,
 .ant-message {
   font-family: inherit !important;
 }
+
+.ant-form-vertical .ant-form-item-required::before {
+  display: none !important;
+}
+
+.ant-form-vertical
+  .ant-form-item-required:not(
+    .ant-form-item-required-mark-hidden,
+    .ant-form-item-required-mark-optional
+  )::after {
+  @apply visible! text-red-500! text-xs;
+  content: "*" !important;
+}
+
+.ant-modal-close {
+  margin: 4px;
+}
