@@ -11,18 +11,40 @@ export function apiUrl(url: string) {
   return `${base}/${url}`;
 }
 
+type Query = { [key in string]?: string | number | boolean | Date | null };
+
 export function postFn<I, O = void>(url: string) {
-  return (body: I) => postJson<O>(url, body);
+  return (body: I) => postJson<I, O>(url, body);
 }
 
-export async function postJson<R>(url: string, body: unknown) {
+export async function postJson<I, O>(url: string, body: I) {
   const res = await fetch(apiUrl(url), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
   const data = await res.json();
-  if (res.ok) return data as R;
+  if (res.ok) return data as O;
+
+  const message = data.message || "API error";
+  throw new Error(message);
+}
+
+export async function getJson<O, I extends Query = Query>(
+  getUrl: string,
+  query?: I,
+) {
+  const url = new URL(apiUrl(getUrl));
+  if (query) {
+    Object.entries(query).forEach(([k, v]) => {
+      if (v === null || v === undefined) return;
+      const s = v instanceof Date ? v.toISOString() : v.toString();
+      url.searchParams.append(k, s);
+    });
+  }
+  const res = await fetch(url);
+  const data = await res.json();
+  if (res.ok) return data as O;
 
   const message = data.message || "API error";
   throw new Error(message);

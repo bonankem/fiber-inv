@@ -16,7 +16,7 @@ import { Filter, X } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import { sumBy } from "remeda";
 import { twJoin } from "tailwind-merge";
-import TownSelect from "./TownSelect";
+import CitySelect from "./CitySelect";
 import WithCaption from "./WithCaption";
 
 const statTheme: ThemeConfig = {
@@ -73,7 +73,7 @@ const fText = (name: string) => () => (
 );
 
 const fCity = () => (
-  <TownSelect
+  <CitySelect
     size="small"
     className="w-full! font-normal text-sm!"
     placeholder="Filtre: District/Ville"

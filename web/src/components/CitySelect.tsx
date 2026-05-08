@@ -48,7 +48,7 @@ function actualValue(v: string | undefined) {
   return value;
 }
 
-export default function TownSelect(props: Props) {
+export default function CitySelect(props: Props) {
   const ref = useRef<HTMLElement>(null);
 
   return (
