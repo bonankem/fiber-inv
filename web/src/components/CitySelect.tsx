@@ -28,7 +28,6 @@ const data = [
   })),
 ];
 const cities = new Set(data.flatMap((d) => d.children.map((c) => c.value)));
-const districts = new Set(data.map((d) => d.value));
 const cityDistrict = Object.fromEntries(
   data.flatMap((d) => d.children.map((c) => [c.value, d.value])),
 );
