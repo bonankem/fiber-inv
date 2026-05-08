@@ -1,4 +1,5 @@
 import { DownloadOutlined, EllipsisOutlined } from "@ant-design/icons";
+import { useLocation } from "@tanstack/react-router";
 import {
   Button,
   ConfigProvider,
@@ -15,7 +16,6 @@ import { Filter, X } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import { sumBy } from "remeda";
 import { twJoin } from "tailwind-merge";
-import { fakeSurveys } from "#/data/fake";
 import TownSelect from "./TownSelect";
 import WithCaption from "./WithCaption";
 
@@ -104,17 +104,11 @@ const fNone = () => <Input size="small" disabled className="invisible" />;
 
 type FilterNode = () => ReactNode;
 
+const cards = ["Toutes", "Mes tâches", "Ouvertes", "Rejetées", "Terminées"];
+
 export default function FakePage() {
   const [filtering, setFiltering] = useState(false);
-  const [card, setCard] = useState("Total");
-
-  const cards = [
-    { label: "Toutes", count: 123 },
-    { label: "Mes tâches", count: 8 },
-    { label: "Ouvertes", count: 90 },
-    { label: "Rejetées", count: 5 },
-    { label: "Terminées", count: 28 },
-  ];
+  const [card, setCard] = useState(cards[0]);
 
   const titled = (
     name: ReactNode,
@@ -202,26 +196,29 @@ export default function FakePage() {
         : Number(/\d+(?=px)/.exec(c.width)?.[0]) || 200) + 40,
   );
 
+  const { pathname } = useLocation();
+  const hasSubsets = /ftth/.test(pathname);
+
   return (
     <div className="py-4 px-4 md:px-8 flex flex-col items-stretch gap-3">
-      <ConfigProvider theme={statTheme}>
-        <div className="grid grid-cols-5 gap-2 sm:gap-3">
-          {cards.map((c) => (
-            <SubsetCard
-              {...c}
-              key={c.label}
-              active={c.label === card}
-              onClick={() => setCard(c.label)}
-            />
-          ))}
-        </div>
-      </ConfigProvider>
+      {hasSubsets && (
+        <ConfigProvider theme={statTheme}>
+          <div className="grid grid-cols-5 gap-2 sm:gap-3">
+            {cards.map((c) => (
+              <SubsetCard
+                key={c}
+                label={c}
+                count={0}
+                active={c === card}
+                onClick={() => setCard(c)}
+              />
+            ))}
+          </div>
+        </ConfigProvider>
+      )}
 
       <Table
-        dataSource={fakeSurveys.slice(
-          0,
-          cards.find((c) => c.label === card)?.count || 100,
-        )}
+        dataSource={[]}
         size="small"
         bordered={false}
         rowKey={(r) => r.sid}
