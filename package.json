@@ -16,11 +16,13 @@
     "typescript": "^6.0.3"
   },
   "scripts": {
-    "dev": "turbo dev --ui tui",
-    "dev:host": "turbo dev:host --ui tui",
     "build": "turbo build",
     "clean": "rm -rf */dist",
     "prisma": "pnpm -F server exec prisma",
-    "heroku-postbuild": "pnpm prisma generate && pnpm prisma db push && turbo --filter server build"
+    "prisma:sync": "pnpm prisma generate && pnpm prisma db push",
+    "build:schema": "turbo --filter schema build",
+    "dev": "pnpm build:schema && turbo dev --ui tui",
+    "dev:expose": "pnpm build:schema && turbo dev:expose --ui tui",
+    "heroku-postbuild": "pnpm prisma:sync && turbo --filter server build"
   }
 }

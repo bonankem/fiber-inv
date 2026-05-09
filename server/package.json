@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx --watch src/main.ts",
-    "dev:host": "tsx --watch src/main.ts --host",
+    "dev:expose": "tsx --watch src/main.ts --host",
     "build": "rm -rf dist && tsc && tsc-alias",
     "start": "node --enable-source-maps dist/main.js"
   },

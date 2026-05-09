@@ -9,12 +9,12 @@
       "dependsOn": ["^check-types"]
     },
     "dev": {
-      "persistent": true,
-      "cache": false
+      "cache": false,
+      "persistent": true
     },
-    "dev:host": {
-      "persistent": true,
-      "cache": false
+    "dev:expose": {
+      "cache": false,
+      "persistent": true
     }
   }
 }
