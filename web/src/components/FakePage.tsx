@@ -17,6 +17,8 @@ import { type ReactNode, useState } from "react";
 import { sumBy } from "remeda";
 import { twJoin } from "tailwind-merge";
 import CitySelect from "./CitySelect";
+import StaffSelect from "./StaffSelect";
+import VendorSelect from "./VendorSelect";
 import WithCaption from "./WithCaption";
 
 const statTheme: ThemeConfig = {
@@ -69,15 +71,6 @@ const fText = (name: string) => () => (
     size="small"
     placeholder={`Filtre: ${name}`}
     className="font-normal w-full text-sm!"
-  />
-);
-
-const fCity = () => (
-  <CitySelect
-    size="small"
-    className="w-full! font-normal text-sm!"
-    placeholder="Filtre: District/Ville"
-    canPickDistrict
   />
 );
 
@@ -157,13 +150,43 @@ export default function FakePage() {
       width: 120,
     },
     {
-      title: titled("Nom", fText("Nom"), fCity, true),
+      title: titled(
+        "Nom",
+        fText("Nom"),
+        () => (
+          <CitySelect
+            size="small"
+            className="w-full! font-normal text-sm!"
+            placeholder="Filtre: District/Ville"
+            canPickDistrict
+          />
+        ),
+        true,
+      ),
       dataIndex: "name",
       width: "calc(min(200px,40dvw))",
       render: (_, t) => <WithCaption title={t.name} caption={t.city} />,
     },
     {
-      title: titled("Assigné à", fDrop("Charge"), fDrop("Fournisseur")),
+      title: titled(
+        "Assigné à",
+        () => (
+          <StaffSelect
+            allowClear
+            size="small"
+            placeholder={`Filtre: Chargé`}
+            className="font-normal w-full text-sm!"
+          />
+        ),
+        () => (
+          <VendorSelect
+            allowClear
+            size="small"
+            placeholder={`Filtre: Fournisseur`}
+            className="font-normal w-full text-sm!"
+          />
+        ),
+      ),
       key: "assigned",
       width: 150,
       render: (_, t) => <WithCaption title={t.engineer} caption={t.vendor} />,

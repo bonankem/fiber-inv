@@ -33,7 +33,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
       </Form.Item>
 
       <Form.Item name="managerId" label="Envoyer à responsable" required>
-        <StaffSelect staffRole="PLANNING_MANAGER" />
+        <StaffSelect filter="PLANNING_MANAGER" />
       </Form.Item>
 
       <Form.Item name="comment" label="Commentaire">
