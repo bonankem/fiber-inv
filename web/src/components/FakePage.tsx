@@ -16,9 +16,9 @@ import { Filter, X } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import { sumBy } from "remeda";
 import { twJoin } from "tailwind-merge";
-import CitySelect from "./CitySelect";
-import StaffSelect from "./StaffSelect";
-import VendorSelect from "./VendorSelect";
+import CitySelect from "./inputs/CitySelect";
+import StaffSelect from "./inputs/StaffSelect";
+import VendorSelect from "./inputs/VendorSelect";
 import WithCaption from "./WithCaption";
 
 const statTheme: ThemeConfig = {

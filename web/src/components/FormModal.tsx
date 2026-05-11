@@ -4,6 +4,7 @@ import {
   ConfigProvider,
   Drawer,
   Form,
+  Modal,
   type ThemeConfig,
   theme,
 } from "antd";
@@ -48,18 +49,23 @@ export default function FormModal<T>(props: FormModalProps<T>) {
   const { isOpen, close } = props.state;
   const { token } = theme.useToken();
 
+  const useModal = true;
+  const Root = useModal ? Modal : Drawer;
+
   return (
-    <Drawer
+    <Root
       title={
         <header>
           <h2>{props.title}</h2>
           {props.subtitle && <p>{props.subtitle}</p>}
         </header>
       }
+      style={{ top: 20 }}
       width={props.width || 320}
       mask={{ blur: true, closable: props.maskCloseable ?? empty }}
       open={isOpen}
       onClose={close}
+      onCancel={close}
       closable={false}
       className="text-sm pb-8!"
       footer={null}
@@ -95,6 +101,6 @@ export default function FormModal<T>(props: FormModalProps<T>) {
           </div>
         </Form>
       </ConfigProvider>
-    </Drawer>
+    </Root>
   );
 }

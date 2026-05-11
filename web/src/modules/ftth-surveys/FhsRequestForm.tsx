@@ -1,9 +1,10 @@
 import { Form, Input } from "antd";
 import { WorkDocType } from "schema/enums";
-import CitySelect from "#/components/CitySelect";
-import FileUpload from "#/components/FileUpload";
 import FormModal from "#/components/FormModal";
-import StaffSelect from "#/components/StaffSelect";
+import CitySelect from "#/components/inputs/CitySelect";
+import CoordsInput from "#/components/inputs/CoordsInput";
+import FileUpload from "#/components/inputs/FileUpload";
+import StaffSelect from "#/components/inputs/StaffSelect";
 import type { ModalStateProps } from "#/hooks/useModalViewer";
 
 export default function FhsRequestForm(props: ModalStateProps) {
@@ -22,6 +23,10 @@ export default function FhsRequestForm(props: ModalStateProps) {
 
       <Form.Item name="cityId" label="Ville" required>
         <CitySelect />
+      </Form.Item>
+
+      <Form.Item name="coords" label="Coordonnées" required>
+        <CoordsInput required size="small" />
       </Form.Item>
 
       <Form.Item name="name" label="Nom de la plaque" required>

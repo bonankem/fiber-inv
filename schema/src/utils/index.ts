@@ -56,3 +56,5 @@ export function zFormObject<T extends ZodRawShape>(id: string, shape: T) {
   }
   return z.strictObject(result as T).meta({ id });
 }
+
+export type Maybe<T> = T | null | undefined;
