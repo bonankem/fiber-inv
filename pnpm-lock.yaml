@@ -186,6 +186,9 @@ importers:
       pg:
         specifier: ^8.20.0
         version: 8.20.0
+      remeda:
+        specifier: ^2.34.0
+        version: 2.34.0
       schema:
         specifier: workspace:*
         version: link:../schema
