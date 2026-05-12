@@ -6,8 +6,8 @@ model Plaque {
 
     name String
 
-    city   City?   @relation(fields: [cityId], references: [id])
-    cityId String? @db.Uuid
+    locality   Locality? @relation(fields: [localityId], references: [id])
+    localityId String?   @db.Uuid
 
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
     boundaryId String?   @unique @db.Uuid

@@ -1,55 +1,40 @@
 import { useMutation } from "@tanstack/react-query";
 import { createContext, use, useCallback, useMemo, useState } from "react";
 import { omit } from "remeda";
+import type { WorkDocType } from "schema/enums";
+import { type UploadParsedT, uploadFullZ } from "schema/uploads";
 import { uuidv7 } from "uuidv7";
-import { apiUrl, postFn } from "#/api/helpers";
-
-export enum UploadStatus {
-  SENDING = "SENDING",
-  SUCCESS = "SUCCESS",
-  FAILED = "FAILED",
-  CANCELLED = "CANCELLED",
-  NONE = "NONE",
-}
+import { apiUrl, postFn, showAppError } from "#/api/helpers";
 
 export type UploadRecord = {
   id: string;
   name: string;
   size: number;
-  status: UploadStatus;
+  done: boolean;
   percent: number;
   formId?: string;
 };
 
-const none: UploadRecord = {
-  id: "",
-  name: "",
-  size: 0,
-  status: UploadStatus.NONE,
-  percent: 0,
+type SendArgs = {
+  type?: WorkDocType;
+  formId?: string;
+  onParse?: (p: UploadParsedT | null) => void;
 };
 
-const getNone = () => none;
-
 export type Uploader = {
-  find(id: string): UploadRecord;
-  findMany(ids: string[]): UploadRecord[];
-
-  send(file: File, formId: string): UploadRecord;
-  sendMany(files: File[], formId: string): UploadRecord[];
-
-  cancel(id: string | string[]): void;
-
+  find(id: string): UploadRecord | undefined;
+  send(file: File, args?: SendArgs): UploadRecord;
+  cancel(ids: string[]): void;
   finish(formId: string): void;
 };
 
 export const UploaderContext = createContext<Uploader>({
-  find: getNone,
-  send: getNone,
-  cancel: getNone,
+  send: (): never => {
+    throw new Error("No Uploader context");
+  },
+  find: () => undefined,
+  cancel: () => undefined,
   finish: () => {},
-  findMany: (a) => a.map(getNone),
-  sendMany: (a) => a.map(getNone),
 });
 
 export function useUploader() {
@@ -60,98 +45,104 @@ export function useUploaderImpl(): Uploader {
   type Dict<T> = Record<string, T>;
   const [records, setRecords] = useState<Dict<UploadRecord>>({});
   const [pending, setPending] = useState<Dict<XMLHttpRequest>>({});
-  const { SENDING, SUCCESS, CANCELLED, FAILED } = UploadStatus;
 
   const cleanup = useMutation({
     mutationFn: postFn<{ ids: string[] }>("uploads/cleanup"),
   });
 
-  const upload = useCallback((file: File, formId: string) => {
+  const send = useCallback((file: File, args?: SendArgs) => {
     const record: UploadRecord = {
       id: uuidv7(),
       name: file.name,
       size: file.size,
-      status: SENDING,
+      done: false,
       percent: 0,
-      formId,
+      formId: args?.formId ?? "",
     };
     setRecords((rs) => ({ ...rs, [record.id]: record }));
 
     const id = record.id;
     const xhr = new XMLHttpRequest();
-    const clearXhr = () => setPending((p) => omit(p, [id]));
 
-    const update = (status: UploadStatus | number) => {
-      if (typeof status === "number") {
-        return setRecords((rs) => {
-          if (rs[id]?.status !== SENDING) return rs;
-          return { ...rs, [id]: { ...rs[id], percent: status } };
-        });
-      }
-      setRecords((rs) => {
-        if (!rs[id]) return rs;
-        return { ...rs, [id]: { ...rs[id], status, percent: 100 } };
-      });
-      // if a final status has been set, the request is over
-      if (typeof status !== "number") clearXhr();
+    setPending((p) => ({ ...p, [id]: xhr }));
+
+    const stop = (failed: boolean) => {
+      if (failed) showAppError(`Upload failed: ${record.name}`);
+      setRecords((rs) => omit(rs, [record.id]));
+      setPending((ps) => omit(ps, [id]));
     };
 
-    xhr.addEventListener("error", () => update(FAILED));
-    xhr.addEventListener("abort", () => update(CANCELLED));
+    const finish = () => {
+      setRecords((rs) => {
+        if (!rs[id]) return rs;
+        const update = { done: true, percent: 100 };
+        return { ...rs, [id]: { ...rs[id], ...update } };
+      });
+      setPending((ps) => omit(ps, [id]));
+    };
+
+    const percent = (percent: number) => {
+      percent = Math.round(percent);
+      return setRecords((rs) => {
+        if (rs[id]?.done !== false) return rs;
+        return { ...rs, [id]: { ...rs[id], percent } };
+      });
+    };
+
+    xhr.addEventListener("error", () => stop(true));
+    xhr.addEventListener("abort", () => stop(false));
 
     xhr.addEventListener("loadend", () => {
       if (xhr.readyState !== 4) return;
-      update(xhr.status < 300 ? SUCCESS : FAILED);
+      if (xhr.status >= 300) {
+        return stop(true);
+      }
+      try {
+        const json = JSON.parse(xhr.responseText);
+        const data = uploadFullZ.safeParse(json).data ?? json;
+        args?.onParse?.(data?.parsed || null);
+      } catch (_) {
+        args?.onParse?.(null);
+      }
+      return finish();
     });
 
-    xhr.upload.addEventListener("progress", (event) => {
-      if (!event.lengthComputable) return;
-      const fraction = event.loaded / event.total;
-      update(Math.round(fraction * 100));
+    xhr.upload.addEventListener("progress", (e) => {
+      if (!e.lengthComputable) return;
+      percent((100 * e.loaded) / e.total);
     });
-
-    setPending((p) => ({ ...p, [id]: xhr }));
-    const url = new URL(apiUrl("uploads"));
-    url.searchParams.set("id", id);
-    xhr.open("POST", url, true);
 
     const data = new FormData();
     data.append("file", file);
-    xhr.send(data);
 
+    const url = new URL(apiUrl("uploads"));
+    url.searchParams.set("id", id);
+    if (args?.type) {
+      url.searchParams.set("parser", args?.type);
+    }
+    xhr.open("POST", url, true);
+    xhr.send(data);
     return record;
   }, []);
 
   return useMemo(() => {
-    const find = (id: string) => records[id] || none;
-
-    const findMany = (ids: string[]) => ids.map(find);
-
-    const send = (file: File, formId: string) => {
-      return upload(file, formId);
-    };
-
-    const sendMany = (fs: File[], i: string) => {
-      return fs.map((f) => upload(f, i));
-    };
-
-    const abort = (id: string) => {
-      pending[id]?.abort();
-    };
+    const find = (id: string) => records[id];
 
     const cancel = (id: string | string[]) => {
       const ids = Array.isArray(id) ? id : [id];
-      ids.forEach(abort);
+      ids.forEach((id) => void pending[id]?.abort);
       cleanup.mutate({ ids });
       setPending((ps) => omit(ps, ids));
       setRecords((rs) => omit(rs, ids));
     };
 
     const finish = (formId: string) => {
-      const items = Object.values(records).filter((r) => r.formId === formId);
-      cancel(items.map((i) => i.id));
+      const ids = Object.values(records)
+        .filter((r) => r.formId === formId)
+        .map((r) => r.id);
+      cancel(ids);
     };
 
-    return { find, findMany, send, sendMany, cancel, finish };
-  }, [pending, records, upload, cleanup.mutate]);
+    return { find, send, cancel, finish };
+  }, [pending, records, cleanup.mutate, send]);
 }

@@ -9,5 +9,5 @@ const parsers: Parsers = {
 };
 
 export async function maybeParse(input: ParserInput, key?: WorkDocType | null) {
-  return (key && (await parsers[key]?.(input))) || undefined;
+  return (key && (await parsers[key]?.(input))) || null;
 }

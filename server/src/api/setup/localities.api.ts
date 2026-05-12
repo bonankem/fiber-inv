@@ -1,6 +1,14 @@
 import { uuidv7 } from "uuidv7";
 import { prisma } from "#/prisma";
+import { postRoute } from "#/utils";
 import { makeKey } from "../utils/queries";
+
+export default postRoute("/setup/localities", null, async () => {
+  const old = await prisma.district.findMany({
+    select: { id: true, key: true, name: true },
+  });
+  return prisma.$transaction(setupLocalities(old));
+});
 
 export const geoDefaults = [
   {
@@ -189,16 +197,20 @@ export const geoDefaults = [
   },
 ];
 
-export function seedCities() {
-  const districts = geoDefaults.map(({ name }) => ({
-    id: uuidv7(),
-    key: makeKey(name),
-    name,
-  }));
+export function setupLocalities(
+  old?: { id: string; key: string; name: string }[],
+) {
+  const districts = old?.length
+    ? old
+    : geoDefaults.map(({ name }) => ({
+        id: uuidv7(),
+        key: makeKey(name),
+        name,
+      }));
 
   const districtIds = Object.fromEntries(districts.map((d) => [d.name, d.id]));
 
-  const cities = geoDefaults.flatMap((d) => {
+  const localities = geoDefaults.flatMap((d) => {
     return d.list.map((name) => {
       const id = uuidv7();
       const key = makeKey(name);
@@ -210,6 +222,6 @@ export function seedCities() {
 
   return [
     prisma.district.createMany({ data: districts, skipDuplicates: true }),
-    prisma.city.createMany({ data: cities, skipDuplicates: true }),
+    prisma.locality.createMany({ data: localities, skipDuplicates: true }),
   ];
 }

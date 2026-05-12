@@ -1,5 +1,5 @@
 import { text } from "node:stream/consumers";
-import type { InputJsonValue } from "@prisma/client/runtime/client";
+import type { UploadParsedT } from "schema/uploads";
 import { fromBuffer } from "yauzl-promise";
 
 export type ParserInput = {
@@ -8,7 +8,7 @@ export type ParserInput = {
   type: string;
 };
 
-type Result = InputJsonValue;
+type Result = UploadParsedT;
 
 export type ParserFunc<T extends Result = Result> = (
   p: ParserInput,

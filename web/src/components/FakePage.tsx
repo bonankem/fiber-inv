@@ -16,7 +16,7 @@ import { Filter, X } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import { sumBy } from "remeda";
 import { twJoin } from "tailwind-merge";
-import CitySelect from "./inputs/CitySelect";
+import LocalitySelect from "./inputs/LocalitySelect";
 import StaffSelect from "./inputs/StaffSelect";
 import VendorSelect from "./inputs/VendorSelect";
 import WithCaption from "./WithCaption";
@@ -154,10 +154,10 @@ export default function FakePage() {
         "Nom",
         fText("Nom"),
         () => (
-          <CitySelect
+          <LocalitySelect
             size="small"
             className="w-full! font-normal text-sm!"
-            placeholder="Filtre: District/Ville"
+            placeholder="Filtre: District/Localité"
             canPickDistrict
           />
         ),
@@ -165,7 +165,7 @@ export default function FakePage() {
       ),
       dataIndex: "name",
       width: "calc(min(200px,40dvw))",
-      render: (_, t) => <WithCaption title={t.name} caption={t.city} />,
+      render: (_, t) => <WithCaption title={t.name} caption={t.locality} />,
     },
     {
       title: titled(

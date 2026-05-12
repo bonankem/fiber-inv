@@ -20,7 +20,7 @@ model Boundary {
 
     district District?
 
-    city City?
+    locality Locality?
 
     ftthSurvey FtthSurvey?
 
@@ -39,13 +39,13 @@ model District {
 
     key String @unique
 
-    cities City[]
+    localities Locality[]
 
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
     boundaryId String?   @unique @db.Uuid
 }
 
-model City {
+model Locality {
     id String @id @default(uuid(7)) @db.Uuid
 
     createdAt DateTime @default(now())

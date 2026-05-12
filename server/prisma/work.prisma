@@ -30,8 +30,8 @@ model Work {
     coords   Coords? @relation(fields: [coordsId], references: [id])
     coordsId BigInt?
 
-    city   City?   @relation(fields: [cityId], references: [id])
-    cityId String? @db.Uuid
+    locality   Locality? @relation(fields: [localityId], references: [id])
+    localityId String?   @db.Uuid
 
     workers Worker[]
 

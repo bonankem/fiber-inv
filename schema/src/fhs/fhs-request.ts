@@ -1,13 +1,13 @@
 import { z } from "../common";
+import { coordsZ } from "../geo";
 import { zFormObject } from "../utils";
 
 export const fhsRequestZ = zFormObject("FhsRequestT", {
   PLAQUE_KMZ: z.uuid(),
   name: z.string(),
-  cityId: z.string(),
+  localityId: z.string(),
   managerId: z.string(),
-  lat: z.number().min(-90).max(90),
-  lng: z.number().min(-180).max(180),
+  coords: coordsZ.optional(),
   contactName: z.string().optional(),
   contactPhone: z.string().optional(),
 

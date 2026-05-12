@@ -36,7 +36,7 @@ async function wipeDb(q: QueryT) {
     p.plaque,
     p.boundary,
     p.coords,
-    p.city,
+    p.locality,
     p.district,
     q.fully && p.user,
     q.fully && p.vendor,

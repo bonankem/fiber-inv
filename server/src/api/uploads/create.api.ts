@@ -1,29 +1,28 @@
 import type { MultipartFile } from "@fastify/multipart";
-import { zFormObject } from "schema/utils";
+import {
+  type UploadFullT,
+  type UploadOptionsT,
+  uploadFullS,
+  uploadOptionsZ,
+} from "schema/uploads";
 import { uuidv7 } from "uuidv7";
-import z from "zod";
-import { prisma, WorkDocType } from "#/prisma";
+import { prisma } from "#/prisma";
 import { appRoute, bad, type Maybe } from "#/utils";
 import { maybeParse } from "./parsers";
-
-const uploadQueryZ = zFormObject("UploadQueryT", {
-  id: z.uuidv7().optional(),
-  parser: z.enum(WorkDocType).optional(),
-  noSave: z.coerce.boolean().default(false),
-});
-
-type UploadQueryT = z.infer<typeof uploadQueryZ>;
 
 export default appRoute(() => ({
   method: "POST",
   url: "/uploads",
-  schema: { querystring: uploadQueryZ },
+  schema: { querystring: uploadOptionsZ },
   handler: async (req) => {
     return createUpload(await req.file(), req.query);
   },
 }));
 
-async function createUpload(file: Maybe<MultipartFile>, query: UploadQueryT) {
+async function createUpload(
+  file: Maybe<MultipartFile>,
+  query: UploadOptionsT,
+): Promise<UploadFullT> {
   if (!file) bad("No file");
 
   const data = (await file.toBuffer()) as Buffer<ArrayBuffer>;
@@ -35,8 +34,15 @@ async function createUpload(file: Maybe<MultipartFile>, query: UploadQueryT) {
   if (typeof parsed === "string") return parsed;
 
   if (query.noSave) {
-    const id = query.id ?? "";
-    return { id, name, size, type, parsed };
+    return {
+      id: query.id ?? "",
+      name,
+      size,
+      type,
+      parsed,
+      madeAt: null,
+      sentAt: new Date(),
+    };
   }
 
   const id = query.id || uuidv7();
@@ -49,15 +55,9 @@ async function createUpload(file: Maybe<MultipartFile>, query: UploadQueryT) {
       size,
       type,
       sentAt,
-      parsed,
+      parsed: parsed || undefined,
       inDb: { create: { data } },
     },
-    select: {
-      id: true,
-      name: true,
-      size: true,
-      type: true,
-      parsed: true,
-    },
+    select: uploadFullS,
   });
 }

@@ -11,6 +11,7 @@ model Upload {
 
     madeAt DateTime?
 
+    /// [UploadParsedJson]
     parsed Json?
 
     inDb UploadInDb?

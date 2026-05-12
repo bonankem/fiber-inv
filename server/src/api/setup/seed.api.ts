@@ -4,7 +4,7 @@ import z from "zod";
 import { MfaMode, type Prisma, prisma, StaffRole } from "#/prisma";
 import { postRoute } from "#/utils";
 import { create, makeKey } from "../utils/queries";
-import { seedCities } from "./cities";
+import { setupLocalities } from "./localities.api";
 
 export default postRoute(
   "/setup/seed",
@@ -64,5 +64,5 @@ async function seed(req: SeedReq) {
     });
   });
 
-  return prisma.$transaction([seedVendors, ...seedCities(), ...seedUsers]);
+  return prisma.$transaction([seedVendors, ...setupLocalities(), ...seedUsers]);
 }

@@ -50,8 +50,13 @@ export async function getJson<O, I extends Query = Query>(
   throw new Error(message);
 }
 
-export function showApiError(e: unknown) {
-  const error = e instanceof Error ? e.message : "Failed";
+export function showAppError(e: unknown) {
+  const error =
+    e instanceof Error
+      ? e.message
+      : typeof e === "string"
+        ? e
+        : "An error occured";
   message.error(error);
 }
 
@@ -60,7 +65,7 @@ export function apiCall<I, O>(f: (i: I) => O) {
     try {
       return await f(i);
     } catch (e) {
-      showApiError(e);
+      showAppError(e);
     }
   };
 }

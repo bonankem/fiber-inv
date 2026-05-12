@@ -4,6 +4,7 @@ import {
   ConfigProvider,
   Drawer,
   Form,
+  type FormInstance,
   Modal,
   type ThemeConfig,
   theme,
@@ -12,6 +13,7 @@ import { type ReactNode, useState } from "react";
 import type { ModalState } from "#/hooks/useModalViewer";
 
 export type FormModalProps<T> = {
+  form?: FormInstance<T>;
   state: ModalState;
   title: ReactNode;
   width?: number | string;
@@ -72,14 +74,12 @@ export default function FormModal<T>(props: FormModalProps<T>) {
     >
       <ConfigProvider theme={themeConfig}>
         <Form
+          form={props.form}
           size="small"
           layout="vertical"
           className="flex flex-col gap-4"
           onFinish={props.onSubmit}
-          onFieldsChange={() => {
-            console.log("Changed");
-            setEmpty(false);
-          }}
+          onFieldsChange={() => setEmpty(false)}
         >
           <fieldset className={props.className || "flex flex-col gap-2"}>
             {props.children}

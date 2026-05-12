@@ -43,25 +43,25 @@ function renderName(path: string[]) {
   return path.join(" / ");
 }
 
-export default function CitySelect(props: Props) {
+export default function LocalitySelect(props: Props) {
   const ref = useRef<HTMLElement>(null);
   const query = useQuery({
     queryFn: () => getJson<DistrictNestedT[]>("geo/districts"),
-    queryKey: ["cities"],
+    queryKey: ["districts"],
   });
 
   const data = useMemo(() => {
     const list = query.data ?? [];
     const options = list.map((d) => ({
       ...makeEntry(d),
-      children: d.cities.map(makeEntry),
+      children: d.localities.map(makeEntry),
     }));
 
     const districtIds = new Set(list.map((d) => d.id));
-    const cityMap = Object.fromEntries(
-      list.flatMap((d) => d.cities.map((c) => [c.id, d.id])),
+    const localityMap = Object.fromEntries(
+      list.flatMap((d) => d.localities.map((c) => [c.id, d.id])),
     );
-    return { options, cityMap, districtIds };
+    return { options, localityMap, districtIds };
   }, [query.data]);
 
   const value = useMemo((): string[] | undefined => {
@@ -69,7 +69,7 @@ export default function CitySelect(props: Props) {
     if (!id) return undefined;
     if (id in data.districtIds && props.canPickDistrict) return [id] as const;
 
-    const districtId = data.cityMap[id];
+    const districtId = data.localityMap[id];
     if (districtId) return [districtId, id] as const;
 
     return undefined;

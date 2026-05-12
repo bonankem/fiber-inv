@@ -34,8 +34,8 @@ async function fhsRequest(body: FhsRequestT) {
           sid,
           requestDate,
           name: body.name,
-          city: connectId(body.cityId),
-          coords: setCoords(body),
+          locality: connectId(body.localityId),
+          coords: setCoords(body.coords),
           docs: setDocsFrom(body, WorkDocType.PLAQUE_KMZ),
           logs: addLog(body, action, status),
           workers: create({
