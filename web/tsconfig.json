@@ -1,5 +1,9 @@
 {
   "include": ["**/*.ts", "**/*.tsx"],
+
+  // this is to fix an issue where VsCode keeps suggesting imports
+  // directly from "../schema" rather than just "schema"
+  "exclude": ["../schema"],
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",

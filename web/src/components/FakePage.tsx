@@ -2,68 +2,22 @@ import { DownloadOutlined, EllipsisOutlined } from "@ant-design/icons";
 import { useLocation } from "@tanstack/react-router";
 import {
   Button,
-  ConfigProvider,
   DatePicker,
   Input,
   Pagination,
   Select,
   Table,
   type TableColumnsType,
-  type ThemeConfig,
-  theme,
 } from "antd";
 import { Filter, X } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import { sumBy } from "remeda";
-import { twJoin } from "tailwind-merge";
+import { Subset } from "schema/common";
 import LocalitySelect from "./inputs/LocalitySelect";
 import StaffSelect from "./inputs/StaffSelect";
 import VendorSelect from "./inputs/VendorSelect";
+import SubsetCards from "./SubsetCards";
 import WithCaption from "./WithCaption";
-
-const statTheme: ThemeConfig = {
-  components: {
-    Statistic: {
-      contentFontSize: 20,
-      titleFontSize: 12,
-    },
-  },
-  token: {
-    lineHeight: 1.1,
-  },
-};
-
-function SubsetCard(props: {
-  label: string;
-  count?: number | null;
-  active?: boolean;
-  onClick?: () => void;
-}) {
-  const { token } = theme.useToken();
-  return (
-    <button
-      type="button"
-      className={twJoin(
-        "h-15 rounded-md cursor-pointer overflow-hidden",
-        "flex justify-between items-center text-start",
-        props.active && "bg-[#ffcb05]! text-black!",
-      )}
-      style={{
-        backgroundColor: props.active ? "#ffcb05" : token.colorBgContainer,
-      }}
-      onClick={props.onClick}
-    >
-      <div className="w-full flex flex-col leading-0 text-center md:text-start mx-1 md:mx-4 overflow-hidden">
-        <div className="text-sm md:text-base font-bold">
-          {props.count ?? "-"}
-        </div>
-        <div className="text-xs md:text-sm whitespace-nowrap text-ellipsis">
-          {props.label}
-        </div>
-      </div>
-    </button>
-  );
-}
 
 const fText = (name: string) => () => (
   <Input
@@ -97,11 +51,9 @@ const fNone = () => <Input size="small" disabled className="invisible" />;
 
 type FilterNode = () => ReactNode;
 
-const cards = ["Toutes", "Mes tâches", "Ouvertes", "Rejetées", "Terminées"];
-
 export default function FakePage() {
   const [filtering, setFiltering] = useState(false);
-  const [card, setCard] = useState(cards[0]);
+  const [subset, setSubset] = useState(Subset.TOTAL);
 
   const titled = (
     name: ReactNode,
@@ -225,19 +177,7 @@ export default function FakePage() {
   return (
     <div className="py-4 px-4 md:px-8 flex flex-col items-stretch gap-3">
       {hasSubsets && (
-        <ConfigProvider theme={statTheme}>
-          <div className="grid grid-cols-5 gap-2 sm:gap-3">
-            {cards.map((c) => (
-              <SubsetCard
-                key={c}
-                label={c}
-                count={0}
-                active={c === card}
-                onClick={() => setCard(c)}
-              />
-            ))}
-          </div>
-        </ConfigProvider>
+        <SubsetCards.Default selected={subset} onSelect={setSubset} />
       )}
 
       <Table

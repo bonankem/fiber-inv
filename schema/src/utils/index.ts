@@ -1,5 +1,11 @@
-import type { ZodRawShape } from "zod";
+import type { ZodRawShape, ZodType } from "zod";
 import z from "zod";
+
+export type { ZodType } from "zod";
+
+export function zArray<T>(zt: ZodType<T>) {
+  return z.array(zt);
+}
 
 function prepText(v: unknown) {
   return typeof v === "string" ? v.trim() || undefined : v;
@@ -58,3 +64,8 @@ export function zFormObject<T extends ZodRawShape>(id: string, shape: T) {
 }
 
 export type Maybe<T> = T | null | undefined;
+
+export function jsonResponse<T>(res: unknown, shape: ZodType<T>) {
+  const json = typeof res === "string" ? JSON.parse(res) : res;
+  return shape.safeParse(json).data ?? (res as T);
+}

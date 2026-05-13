@@ -2,7 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Select, type SelectProps } from "antd";
 import { useMemo } from "react";
 import type { StaffRole } from "schema/enums";
-import type { VendorT } from "schema/people";
+import { vendorZ } from "schema/people";
+import { zArray } from "schema/utils";
 import { getJson } from "#/api/helpers";
 
 type Props = Omit<SelectProps, "options"> & {
@@ -11,7 +12,7 @@ type Props = Omit<SelectProps, "options"> & {
 
 export default function VendorSelect({ staffRole, ...props }: Props) {
   const query = useQuery({
-    queryFn: () => getJson<VendorT[]>("vendors"),
+    queryFn: () => getJson("vendors", zArray(vendorZ)),
     queryKey: ["vendors"],
   });
 

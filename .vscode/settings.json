@@ -5,6 +5,7 @@
     "source.fixAll.biome": "explicit",
     "source.organizeImports.biome": "explicit"
   },
+  "js/ts.preferences.autoImportSpecifierExcludeRegexes": ["(\\.\\./){2}"],
   "files.watcherExclude": {
     "**/routeTree.gen.ts": true
   },

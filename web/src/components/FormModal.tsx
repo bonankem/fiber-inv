@@ -20,6 +20,7 @@ export type FormModalProps<T> = {
   subtitle?: ReactNode;
   children?: ReactNode;
   onSubmit?: (data: T) => void;
+  submitting?: boolean;
   className?: string;
   checkbox?: boolean | string;
   maskCloseable?: boolean;
@@ -95,7 +96,7 @@ export default function FormModal<T>(props: FormModalProps<T>) {
           >
             <Button onClick={close}>Annuler</Button>
 
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={props.submitting}>
               Envoyer
             </Button>
           </div>

@@ -7,10 +7,8 @@ export const fhsRequestZ = zFormObject("FhsRequestT", {
   name: z.string(),
   localityId: z.string(),
   managerId: z.string(),
-  coords: coordsZ.optional(),
-  contactName: z.string().optional(),
-  contactPhone: z.string().optional(),
-
+  coords: coordsZ,
+  contact: z.string(),
   comment: z.string().optional(),
   uploads: z.array(z.uuid()).optional(),
 });

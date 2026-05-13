@@ -11,15 +11,13 @@ import { workP, workZ } from "../work/work";
 export const ftthSurveyS = {
   id: true,
   work: workP,
-  contactName: true,
-  contactPhone: true,
+  contact: true,
 } satisfies Prisma.FtthSurveySelect;
 
 export const ftthSurveyZ = zObject("FtthSurveyT", {
   id: zStr("The work entry UUID"),
   work: workZ,
-  contactName: zStrNul("The contact person's name"),
-  contactPhone: zStrNul("The contact person's phone number"),
+  contact: zStrNul("The local contact information"),
 } satisfies Record<keyof typeof ftthSurveyS, object>);
 
 export const ftthSurveyP = { select: ftthSurveyS };

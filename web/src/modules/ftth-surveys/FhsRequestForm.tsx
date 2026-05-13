@@ -1,7 +1,9 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Form, Input, message } from "antd";
 import { WorkDocType } from "schema/enums";
-import type { FhsRequestT } from "schema/fhs";
+import type { FhsRequestT, FtthSurveyT } from "schema/fhs";
 import type { UpPlaqueKmzT } from "schema/uploads";
+import { apiCall, postFn } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import CoordsInput from "#/components/inputs/CoordsInput";
 import FileUpload from "#/components/inputs/FileUpload";
@@ -11,11 +13,13 @@ import type { ModalStateProps } from "#/hooks/useModalViewer";
 
 export default function FhsRequestForm(props: ModalStateProps) {
   const [form] = Form.useForm<FhsRequestT>();
-  const onSubmit = (data: unknown) => {
-    message.success(
-      <pre className="text-left">{JSON.stringify(data, null, 1)}</pre>,
-    );
-  };
+  const qc = useQueryClient();
+
+  const submitM = useMutation({
+    mutationFn: postFn<FhsRequestT, FtthSurveyT>("/fhs"),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["fhs"] }),
+  });
+
   const onParse = (data: UpPlaqueKmzT) => {
     console.log("Set", data);
     form.setFieldsValue({
@@ -24,12 +28,19 @@ export default function FhsRequestForm(props: ModalStateProps) {
     });
   };
 
+  const onSubmit = apiCall(async (data: FhsRequestT) => {
+    const result = await submitM.mutateAsync(data);
+    message.success(`Submitted ${result.work.sid}`);
+    props.state.close();
+  });
+
   return (
     <FormModal
       form={form}
       title="Demande d'etude FTTH"
       state={props.state}
       onSubmit={onSubmit}
+      submitting={submitM.isPending}
       maskCloseable
     >
       <Form.Item

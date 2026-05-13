@@ -3,7 +3,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Cascader, type CascaderAutoProps } from "antd";
 import { useMemo, useRef } from "react";
-import type { DistrictNestedT } from "schema/geo";
+import { districtNestedZ } from "schema/geo";
+import { zArray } from "schema/utils";
 import { getJson } from "#/api/helpers";
 import {
   makeSearchKey,
@@ -46,7 +47,7 @@ function renderName(path: string[]) {
 export default function LocalitySelect(props: Props) {
   const ref = useRef<HTMLElement>(null);
   const query = useQuery({
-    queryFn: () => getJson<DistrictNestedT[]>("geo/districts"),
+    queryFn: () => getJson("geo/districts", zArray(districtNestedZ)),
     queryKey: ["districts"],
   });
 

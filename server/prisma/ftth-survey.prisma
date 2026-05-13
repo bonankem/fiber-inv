@@ -8,9 +8,7 @@ model FtthSurvey {
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
     boundaryId String?   @unique @db.Uuid
 
-    contactName String?
-
-    contactPhone String?
+    contact String?
 
     report FhsReport?
 

@@ -1,4 +1,5 @@
 import { message } from "antd";
+import { jsonResponse, type ZodType } from "schema/utils";
 
 const base = (
   (import.meta.env.VITE_API_URL as string) || "http://localhost:3000"
@@ -11,7 +12,14 @@ export function apiUrl(url: string) {
   return `${base}/${url}`;
 }
 
-type Query = { [key in string]?: string | number | boolean | Date | null };
+type Query = {
+  [key in string]?:
+    | null
+    | string
+    | number
+    | boolean
+    | { toJSON(): string | number };
+};
 
 export function postFn<I, O = void>(url: string) {
   return (body: I) => postJson<I, O>(url, body);
@@ -32,32 +40,33 @@ export async function postJson<I, O>(url: string, body: I) {
 
 export async function getJson<O, I extends Query = Query>(
   getUrl: string,
+  zShape: ZodType<O>,
   query?: I,
 ) {
   const url = new URL(apiUrl(getUrl));
   if (query) {
     Object.entries(query).forEach(([k, v]) => {
       if (v === null || v === undefined) return;
-      const s = v instanceof Date ? v.toISOString() : v.toString();
-      url.searchParams.append(k, s);
+      const s = typeof v === "object" ? v.toJSON() : v;
+      url.searchParams.append(k, s.toString());
     });
   }
   const res = await fetch(url);
   const data = await res.json();
-  if (res.ok) return data as O;
 
+  if (res.ok) return jsonResponse(data, zShape);
   const message = data.message || "API error";
   throw new Error(message);
 }
 
+function errorMessage(e: unknown) {
+  if (e instanceof Error) return e.message;
+  if (typeof e === "string") return e;
+  return "An error occured";
+}
+
 export function showAppError(e: unknown) {
-  const error =
-    e instanceof Error
-      ? e.message
-      : typeof e === "string"
-        ? e
-        : "An error occured";
-  message.error(error);
+  message.error(errorMessage(e));
 }
 
 export function apiCall<I, O>(f: (i: I) => O) {

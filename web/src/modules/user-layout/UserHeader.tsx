@@ -23,7 +23,7 @@ export default function UserHeader(props: UserLayoutProps) {
       <main
         className={twJoin(
           props.contentClass,
-          "flex items-center gap-3 md:gap-6 h-full px-4 md:px-8 overflow-hidden!",
+          "flex items-center gap-5 h-full px-4 md:px-8 overflow-hidden!",
         )}
       >
         <button

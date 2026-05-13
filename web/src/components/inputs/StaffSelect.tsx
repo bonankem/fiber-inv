@@ -2,7 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Select, type SelectProps } from "antd";
 import { useEffect, useMemo } from "react";
 import type { StaffRole } from "schema/enums";
-import type { UserT } from "schema/people";
+import { userZ } from "schema/people";
+import { zArray } from "schema/utils";
 import { getJson } from "#/api/helpers";
 
 type Props = Omit<SelectProps, "options"> & {
@@ -11,7 +12,7 @@ type Props = Omit<SelectProps, "options"> & {
 
 export default function StaffSelect({ filter, ...props }: Props) {
   const query = useQuery({
-    queryFn: () => getJson<UserT[]>("users"),
+    queryFn: () => getJson("users", zArray(userZ)),
     queryKey: ["users"],
   });
 

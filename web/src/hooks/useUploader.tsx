@@ -3,6 +3,7 @@ import { createContext, use, useCallback, useMemo, useState } from "react";
 import { omit } from "remeda";
 import type { WorkDocType } from "schema/enums";
 import { type UploadParsedT, uploadFullZ } from "schema/uploads";
+import { jsonResponse } from "schema/utils";
 import { uuidv7 } from "uuidv7";
 import { apiUrl, postFn, showAppError } from "#/api/helpers";
 
@@ -98,8 +99,7 @@ export function useUploaderImpl(): Uploader {
         return stop(true);
       }
       try {
-        const json = JSON.parse(xhr.responseText);
-        const data = uploadFullZ.safeParse(json).data ?? json;
+        const data = jsonResponse(xhr.responseText, uploadFullZ);
         args?.onParse?.(data?.parsed || null);
       } catch (_) {
         args?.onParse?.(null);

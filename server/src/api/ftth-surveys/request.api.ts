@@ -43,8 +43,7 @@ async function fhsRequest(body: FhsRequestT) {
             role: StaffRole.PLANNING_MANAGER,
           }),
         }),
-        contactName: body.contactName,
-        contactPhone: body.contactPhone,
+        contact: body.contact,
       },
       select: ftthSurveyS,
     });
