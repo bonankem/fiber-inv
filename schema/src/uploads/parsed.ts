@@ -1,4 +1,4 @@
-import { WorkDocType, z, zObject } from "../common";
+import { WorkDocType, z, zObject } from "../base";
 import { coordsZ } from "../geo";
 import { linearRingZ } from "../geo/polygon";
 

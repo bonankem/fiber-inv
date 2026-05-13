@@ -1,4 +1,4 @@
-import { type z, zStr } from "../common";
+import { type z, zStr } from "../base";
 import { zFormObject } from "../utils";
 
 export const authChangeReqZ = zFormObject("AuthChangeReqT", {

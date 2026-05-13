@@ -1,4 +1,5 @@
-import { type Prisma, type Same, type z, zObject, zStr } from "../common";
+import type z from "zod";
+import { type Prisma, type Same, zObject, zStr } from "../base";
 
 export const idNameS = {
   id: true,

@@ -1,4 +1,4 @@
-import { MfaMode, z, zObject, zStr } from "../common";
+import { MfaMode, z, zObject, zStr } from "../base";
 
 const { NONE, UNDECIDED, ...modes } = MfaMode;
 

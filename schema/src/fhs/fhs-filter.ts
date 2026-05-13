@@ -1,4 +1,4 @@
-import { WorkStatus, z, zEnumUpper } from "../common";
+import { WorkStatus, z, zEnumUpper } from "../base";
 import { zFormObject } from "../utils";
 
 export const fhsFilterZ = zFormObject("FhsFilterT", {

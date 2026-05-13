@@ -1,4 +1,4 @@
-import { z } from "../common";
+import { z } from "../base";
 import { authNeedsChangeZ } from "./auth-needs-change";
 import { authNeedsInstallZ } from "./auth-needs-install";
 import { authNeedsMfaModeZ } from "./auth-needs-mfa-mode";

@@ -1,4 +1,4 @@
-import { z } from "../common";
+import { z } from "../base";
 import { coordsZ } from "../geo";
 import { zFormObject } from "../utils";
 

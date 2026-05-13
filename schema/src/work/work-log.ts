@@ -6,8 +6,8 @@ import {
   z,
   zObject,
   zStr,
-} from "../common";
-import { idNameP, idNameZ } from "../common/id-name";
+} from "../base";
+import { idNameP, idNameZ } from "../common";
 
 export const workLogS = {
   id: true,

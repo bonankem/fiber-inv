@@ -1,4 +1,4 @@
-import { MfaMode, z, zStr } from "../common";
+import { MfaMode, z, zStr } from "../base";
 import { zFormObject } from "../utils";
 
 const { NONE, UNDECIDED, ...modes } = MfaMode;

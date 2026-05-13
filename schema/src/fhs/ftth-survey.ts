@@ -5,7 +5,7 @@ import {
   zObject,
   zStr,
   zStrNul,
-} from "../common";
+} from "../base";
 import { workP, workZ } from "../work/work";
 
 export const ftthSurveyS = {

@@ -1,10 +1,30 @@
+import type { ReactNode } from "react";
+import { Fragment } from "react/jsx-runtime";
+import type { Maybe } from "schema/utils";
 import { twJoin } from "tailwind-merge";
 
 type Props = {
-  title: string;
-  caption?: string;
+  title: ReactNode;
+  caption?: ReactNode | Maybe<string>[];
   smallCaption?: boolean;
 };
+
+function captionNode(props: Props) {
+  if (!Array.isArray(props.caption)) {
+    return props.caption;
+  }
+  const slash = (i: number) => (
+    <span key={i} className="text-gray-400">
+      {" / "}
+    </span>
+  );
+  const nodes = props.caption
+    .filter(Boolean)
+    .flatMap((s, i) => (i === 0 ? [s] : [slash(i), s]));
+
+  if (!nodes.length) return undefined;
+  return <Fragment>{nodes}</Fragment>;
+}
 
 export default function WithCaption(props: Props) {
   return (
@@ -17,7 +37,7 @@ export default function WithCaption(props: Props) {
             props.smallCaption && "text-sm",
           )}
         >
-          {props.caption}
+          {captionNode(props)}
         </div>
       )}
     </div>

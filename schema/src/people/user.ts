@@ -6,7 +6,7 @@ import {
   zObject,
   zStr,
   zStrNul,
-} from "../common";
+} from "../base";
 import { vendorP, vendorZ } from "./vendor";
 
 export const userS = {

@@ -1,4 +1,4 @@
-import { z, zObject, zStr } from "../common";
+import { z, zObject, zStr } from "../base";
 import { userFullZ } from "../people";
 import { AuthStatus } from "./auth-status";
 
