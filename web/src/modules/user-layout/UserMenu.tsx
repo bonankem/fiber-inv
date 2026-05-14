@@ -24,6 +24,7 @@ const menuTheme: ThemeConfig = {
       darkItemSelectedColor: "black",
       itemPaddingInline: 0,
       itemBg: "transparent",
+      fontSize: 13,
     },
   },
 };

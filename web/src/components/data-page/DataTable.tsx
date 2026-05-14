@@ -18,7 +18,7 @@ export default function DataTable<T extends { id: string }>(
       columns={columns}
       pagination={false}
       classNames={{
-        body: { cell: "text-xs one-line" },
+        body: { cell: "text-sm one-line" },
         header: { cell: "text-sm", wrapper: "sticky top-0 z-100" },
       }}
       styles={{ content: { maxHeight, overflowY: "auto" } }}

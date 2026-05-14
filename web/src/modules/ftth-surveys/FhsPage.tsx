@@ -1,14 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
 import { Subset } from "schema/common";
 import { StaffRole } from "schema/enums";
-import { type FtthSurveyT, ftthSurveyZ } from "schema/fhs";
+import { type FtthSurveyT, fhsFilterZ, ftthSurveyZ } from "schema/fhs";
 import { zArray } from "schema/utils";
-import { getJson } from "#/api/helpers";
 import DataPage from "#/components/data-page/DataPage";
 import type { DtColumn } from "#/components/data-page/types";
 import { subsetsDefault } from "#/components/data-page/utils";
+import StatusView from "#/components/StatusView";
 import WithCaption from "#/components/WithCaption";
+import { useApiQuery } from "#/hooks/useApiQuery";
 
 type Item = FtthSurveyT;
 type Column = DtColumn<Item>;
@@ -39,7 +38,7 @@ const columns: Column[] = [
   {
     key: "name",
     title: "Nom",
-    width: 200,
+    width: 250,
     render: (p) => (
       <WithCaption
         title={p.work.name}
@@ -58,19 +57,37 @@ const columns: Column[] = [
       />
     ),
   },
+  {
+    title: "Statut",
+    key: "status",
+    width: 150,
+    render: (t) => (
+      <StatusView
+        work={t.work}
+        pending={{
+          REQUESTED: "PLANNING_MANAGER",
+          ASSIGNED: "PLANNING_ENGINEER",
+          ONGOING: "VENDOR",
+          REVIEW: "PLANNING_ENGINEER",
+          REVIEW_FAILED: "VENDOR",
+        }}
+      />
+    ),
+  },
 ];
 
 export default function FhsPage() {
-  const [subset, setSubset] = useState(Subset.TOTAL);
-  const query = useQuery({
-    queryFn: () => getJson("/fhs", schema),
-    queryKey: ["fhs", "list"],
+  const api = useApiQuery({
+    url: "/fhs",
+    input: fhsFilterZ,
+    output: zArray(ftthSurveyZ),
+    defaults: { subset: Subset.TOTAL },
   });
 
   return (
     <DataPage
-      subsets={subsetsDefault(subset, setSubset)}
-      table={{ data: query.data, columns }}
+      table={{ data: api.query.data, columns }}
+      subsets={subsetsDefault(api.dto.subset, api.setter("subset"))}
     />
   );
 }

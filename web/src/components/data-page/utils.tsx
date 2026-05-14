@@ -3,6 +3,7 @@ import { Button, Grid, type TableColumnType } from "antd";
 import { useMemo } from "react";
 import { sumBy } from "remeda";
 import { Subset } from "schema/common";
+import type { Maybe } from "schema/utils";
 import type { DataTableProps } from "./types";
 
 export function useResolvedColumns<T>(props: DataTableProps<T>) {
@@ -66,8 +67,12 @@ const defaultSubsets = [
 ];
 
 export function subsetsDefault(
-  selected: Subset,
+  selected: Maybe<Subset>,
   onSelect: (s: Subset) => void,
 ) {
-  return { items: defaultSubsets, selected, onSelect };
+  return {
+    items: defaultSubsets,
+    selected: selected || Subset.TOTAL,
+    onSelect,
+  };
 }
