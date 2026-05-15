@@ -1,17 +1,23 @@
 import { appPlugin } from "#/utils";
-import assignEngineerApi from "./engineer.api";
-import getApi from "./get.api";
-import listApi from "./list.api";
-import logsApi from "./logs.api";
-import requestApi from "./request.api";
-import assignVendorApi from "./vendor.api";
+import fhsAssignApi from "./fhs-assign.api";
+import fhsCommentApi from "./fhs-comment.api";
+import fhsGetApi from "./fhs-get.api";
+import fhsInitiateApi from "./fhs-initiate.api";
+import fhsListApi from "./fhs-list.api";
+import fhsLogsApi from "./fhs-logs.api";
+import fhsRequestApi from "./fhs-request.api";
+import fhsReviewApi from "./fhs-review.api";
+import fhsSubmitApi from "./fhs-submit.api";
 
 export default appPlugin(async (app) => {
-  app.register(listApi);
-  app.register(getApi);
-  app.register(logsApi);
+  app.register(fhsListApi);
+  app.register(fhsGetApi);
+  app.register(fhsLogsApi);
 
-  app.register(requestApi);
-  app.register(assignEngineerApi);
-  app.register(assignVendorApi);
+  app.register(fhsRequestApi);
+  app.register(fhsAssignApi);
+  app.register(fhsInitiateApi);
+  app.register(fhsSubmitApi);
+  app.register(fhsReviewApi);
+  app.register(fhsCommentApi);
 });

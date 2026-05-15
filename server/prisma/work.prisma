@@ -8,6 +8,20 @@ enum WorkStatus {
     CLOSED
 }
 
+enum WorkAction {
+    REQUEST
+    REJECT_REQUEST
+    ASSIGN
+    INITIATE
+    SUBMIT_PLAN
+    UPDATE_ODN
+    RESEND_REPORT
+    SUBMIT_REPORT
+    FAIL_REVIEW
+    PASS_REVIEW
+    COMMENT
+}
+
 model Work {
     id String @id @default(uuid(7)) @db.Uuid
 
@@ -20,7 +34,13 @@ model Work {
 
     status WorkStatus
 
+    statusSince DateTime @default(now())
+
     requestDate String
+
+    startDate String?
+
+    dueDate String?
 
     closeDate String?
 
@@ -61,18 +81,6 @@ model Worker {
     role StaffRole
 
     @@unique([workId, role], name: "uniq")
-}
-
-enum WorkAction {
-    REQUEST
-    REJECT_REQUEST
-    ASSIGN_ENGINEER
-    ASSIGN_VENDOR
-    UPDATE_ODN
-    SUBMIT_REPORT
-    FAIL_REVIEW
-    PASS_REVIEW
-    ADD_COMMENT
 }
 
 model WorkLog {

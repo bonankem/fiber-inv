@@ -1,5 +1,5 @@
-import { type z, zStr } from "../base";
-import { zFormObject } from "../utils";
+import type { z } from "../utils";
+import { zFormObject, zStr } from "../utils";
 
 export const vendorCreateZ = zFormObject("VendorCreateT", {
   name: zStr("The name of the vendor to create"),

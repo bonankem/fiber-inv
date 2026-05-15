@@ -1,6 +1,6 @@
-import { WorkStatus, z, zEnumUpper } from "../base";
 import { Subset } from "../common";
-import { zFormObject } from "../utils";
+import { WorkStatus } from "../prisma";
+import { z, zEnumUpper, zFormObject } from "../utils";
 
 export const fhsFilterZ = zFormObject("FhsFilterT", {
   sid: z.string().optional(),

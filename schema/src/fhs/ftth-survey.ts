@@ -1,11 +1,5 @@
-import {
-  type Prisma,
-  type Same,
-  type z,
-  zObject,
-  zStr,
-  zStrNul,
-} from "../base";
+import type { Prisma } from "../prisma";
+import { type Same, type z, zObject, zStr, zStrNul } from "../utils";
 import { workP, workZ } from "../work/work";
 
 export const ftthSurveyS = {

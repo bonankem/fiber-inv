@@ -1,13 +1,6 @@
-import {
-  type Prisma,
-  type Same,
-  WorkAction,
-  WorkStatus,
-  z,
-  zObject,
-  zStr,
-} from "../base";
 import { idNameP, idNameZ } from "../common";
+import { type Prisma, WorkAction, WorkStatus } from "../prisma";
+import { type Same, z, zObject, zStr } from "../utils";
 
 export const workLogS = {
   id: true,

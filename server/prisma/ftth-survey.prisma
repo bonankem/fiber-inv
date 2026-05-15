@@ -10,6 +10,10 @@ model FtthSurvey {
 
     contact String?
 
+    proposedHp Int?
+
+    actualHp Int?
+
     report FhsReport?
 
     boxes FhsBox[]
@@ -25,6 +29,8 @@ model FhsReport {
 
     survey   FtthSurvey @relation(fields: [surveyId], references: [id])
     surveyId String     @unique @db.Uuid
+
+    submitDate String
 
     hpPavillon Int
     hpImmeuble Int

@@ -1,5 +1,5 @@
 import z from "zod";
-import { WorkDocType } from "../base";
+import { WorkDocType } from "../prisma";
 import { zFormObject } from "../utils";
 
 export const uploadOptionsZ = zFormObject("UploadQueryT", {

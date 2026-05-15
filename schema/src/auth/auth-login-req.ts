@@ -1,5 +1,5 @@
-import { type z, zStr } from "../base";
-import { zFormObject } from "../utils";
+import type { z } from "../utils";
+import { zFormObject, zStr } from "../utils";
 
 export const authLoginReqZ = zFormObject("AuthLoginReqT", {
   email: zStr("Email address"),

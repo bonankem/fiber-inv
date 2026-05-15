@@ -137,3 +137,7 @@ export function maybeConnect(i: Maybe<HasId>) {
 export function currentTime() {
   return dayjs().tz("Africa/Abidjan");
 }
+
+export function currentDate() {
+  return currentTime().format("YYYY-MM-DD");
+}

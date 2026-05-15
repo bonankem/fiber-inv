@@ -1,4 +1,6 @@
-import { type Prisma, type Same, type z, zObject, zStr } from "../base";
+import type { Prisma } from "../prisma";
+import type { z } from "../utils";
+import { type Same, zObject, zStr } from "../utils";
 import { localityP, localityZ } from "./locality";
 
 export const districtNestedS = {

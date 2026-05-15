@@ -1,12 +1,5 @@
-import {
-  type Prisma,
-  type Same,
-  StaffRole,
-  z,
-  zObject,
-  zStr,
-  zStrNul,
-} from "../base";
+import { type Prisma, StaffRole } from "../prisma";
+import { type Same, z, zObject, zStr, zStrNul } from "../utils";
 import { vendorP, vendorZ } from "./vendor";
 
 export const userS = {

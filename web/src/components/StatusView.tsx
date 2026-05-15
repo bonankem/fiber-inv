@@ -9,13 +9,13 @@ type PendingMap = {
 
 type Props = {
   work: WorkT;
-  pending: PendingMap;
+  pendingOn: PendingMap;
 };
 
 export default function StatusView(props: Props) {
   const work = props.work;
   const status = work.status;
-  const pendingKey = props.pending[status];
+  const pendingKey = props.pendingOn[status];
   const pendingOn =
     pendingKey === "VENDOR"
       ? work.vendor?.name

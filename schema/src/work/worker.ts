@@ -1,5 +1,6 @@
-import { type Prisma, type Same, StaffRole, z, zObject } from "../base";
 import { idNameP, idNameZ } from "../common";
+import { type Prisma, StaffRole } from "../prisma";
+import { type Same, z, zObject } from "../utils";
 
 export const workerS = {
   user: idNameP,

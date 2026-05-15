@@ -1,8 +1,9 @@
 import z from "zod";
-import { type Prisma, type Same, WorkStatus, zObject, zStr } from "../base";
 import { coordsP, coordsZ } from "../geo/coords";
 import { localityNestedP, localityNestedZ } from "../geo/locality-nested";
 import { vendorP, vendorZ } from "../people";
+import { type Prisma, WorkStatus } from "../prisma";
+import { type Same, zObject, zStr } from "../utils";
 import { workerP, workerZ } from "./worker";
 
 export const workS = {

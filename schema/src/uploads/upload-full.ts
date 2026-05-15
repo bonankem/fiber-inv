@@ -1,12 +1,5 @@
-import {
-  type Prisma,
-  type PrismaToZod,
-  type Same,
-  z,
-  zDate,
-  zObject,
-  zStr,
-} from "../base";
+import type { Prisma } from "../prisma";
+import { type PrismaToZod, type Same, z, zDate, zObject, zStr } from "../utils";
 import { type UploadParsedT, uploadParsedZ } from "./parsed";
 
 declare global {

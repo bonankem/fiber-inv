@@ -3,7 +3,9 @@
   "type": "module",
   "exports": {
     "./*": "./dist/*/index.js",
-    "./enums": "./dist/generated/enums.js"
+    "./enums": "./dist/generated/enums.js",
+    "./prisma": "./dist/generated/browser.js",
+    "./utils": "./dist/utils.js"
   },
   "scripts": {
     "dev": "nodemon",

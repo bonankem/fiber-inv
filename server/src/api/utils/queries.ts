@@ -1,5 +1,7 @@
+import type { WorkUpdateT } from "schema/work";
 import type { Prisma, WorkAction, WorkDocType, WorkStatus } from "#/prisma";
 import type { StringFilter } from "#/prisma/generated/commonInputTypes";
+import type { WorkUpdateInput } from "#/prisma/generated/models";
 import { currentTime, type Falsey, type Maybe, maybeConnect } from "#/utils";
 
 export async function nextId(tx: Prisma.TransactionClient, pre: string) {
@@ -40,20 +42,21 @@ export function addUploads(ids: Maybe<string[]>) {
   return { connect: ids.map((id) => ({ id })) };
 }
 
-type BasicPost = {
-  comment?: string;
-  uploads?: string[];
-};
-
 export function create<T>(data: T) {
   return { create: data };
 }
 
+export function update<T>(data: T) {
+  return { update: data };
+}
+
+export type HasName = string | { name: string };
+
 export function addLog(
-  body: BasicPost,
+  body: Omit<WorkUpdateT, "id">,
   action: WorkAction,
-  status: Maybe<WorkStatus>,
-  to: Falsey<string | { name: string }>[] = [],
+  status: Maybe<WorkStatus> = undefined,
+  to: Falsey<HasName>[] = [],
 ): Prisma.WorkLogCreateNestedManyWithoutWorkInput {
   const toNames = filterTruthy(to).map((t) => {
     return typeof t === "string" ? t : t.name;
@@ -77,6 +80,29 @@ export function setDocsFrom<T extends WorkDocType>(
     if (upload) inputs.push({ type, upload });
   }
   return inputs.length ? { create: inputs } : undefined;
+}
+
+export function updateDocs<T extends WorkDocType>(
+  workId: string,
+  docs: Record<T, Maybe<string | { key: string; uploadId: string }>>,
+) {
+  const keys = Object.keys(docs) as T[];
+  const toDelete = keys.filter((k) => docs[k] === "remove");
+  const toUpdate = keys.filter((k) => docs[k] && docs[k] !== "remove");
+  return {
+    deleteMany: { workId, type: { in: toDelete } },
+    upsert: toUpdate.map((type) => {
+      // biome-ignore lint/style/noNonNullAssertion: already confirmed to be non-null
+      const value = docs[type]!;
+      const uploadId = typeof value === "string" ? value : value.uploadId;
+      const key = typeof value === "string" ? "" : value.key;
+      return {
+        where: { uniq: { workId, type, key } },
+        create: { uploadId, type },
+        update: { uploadId },
+      };
+    }),
+  } satisfies WorkUpdateInput["docs"];
 }
 
 export function qStartsWith(s: Maybe<string>) {

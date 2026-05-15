@@ -1,4 +1,5 @@
-import { type Prisma, type Same, type z, zObject, zStr } from "../base";
+import type { Prisma } from "../prisma";
+import { type Same, type z, zObject, zStr } from "../utils";
 
 export const localityS = {
   id: true,

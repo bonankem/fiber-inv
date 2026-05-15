@@ -47,24 +47,13 @@ const columns: Column[] = [
     ),
   },
   {
-    title: "Assigné à",
-    key: "assigned",
-    width: 150,
-    render: (t) => (
-      <WithCaption
-        title={worker(t)?.name || "—"}
-        caption={t.work.vendor?.name}
-      />
-    ),
-  },
-  {
     title: "Statut",
     key: "status",
     width: 150,
     render: (t) => (
       <StatusView
         work={t.work}
-        pending={{
+        pendingOn={{
           REQUESTED: "PLANNING_MANAGER",
           ASSIGNED: "PLANNING_ENGINEER",
           ONGOING: "VENDOR",
@@ -72,6 +61,14 @@ const columns: Column[] = [
           REVIEW_FAILED: "VENDOR",
         }}
       />
+    ),
+  },
+  {
+    title: "Assigné à",
+    key: "assigned",
+    width: 150,
+    render: (t) => (
+      <WithCaption title={worker(t)?.name} caption={t.work.vendor?.name} />
     ),
   },
 ];

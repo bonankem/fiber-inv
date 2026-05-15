@@ -1,6 +1,7 @@
-import { WorkDocType, z, zObject } from "../base";
 import { coordsZ } from "../geo";
 import { linearRingZ } from "../geo/polygon";
+import { WorkDocType } from "../prisma";
+import { z, zObject } from "../utils";
 
 export const upPlaqueKmzZ = zObject("UpPlaqueKmzT", {
   type: z.literal(WorkDocType.PLAQUE_KMZ),

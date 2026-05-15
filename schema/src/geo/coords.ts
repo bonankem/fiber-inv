@@ -1,4 +1,5 @@
-import { type Prisma, type Same, z, zObject } from "../base";
+import type { Prisma } from "../prisma";
+import { type Same, z, zObject } from "../utils";
 
 export const latZ = z.number().min(-90).max(90).describe("Latitude");
 export const lngZ = z.number().min(-180).max(180).describe("Latitude");

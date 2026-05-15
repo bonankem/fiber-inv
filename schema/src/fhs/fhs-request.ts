@@ -1,6 +1,5 @@
-import { z } from "../base";
 import { coordsZ } from "../geo";
-import { zFormObject } from "../utils";
+import { z, zFormObject } from "../utils";
 
 export const fhsRequestZ = zFormObject("FhsRequestT", {
   PLAQUE_KMZ: z.uuid(),

@@ -1,4 +1,4 @@
-import { z, zObject, zStr } from "../base";
+import { z, zObject, zStr } from "../utils";
 import { AuthStatus } from "./auth-status";
 
 export const authNeedsInstallZ = zObject("AuthNeedsInstallT", {

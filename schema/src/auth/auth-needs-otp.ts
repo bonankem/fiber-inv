@@ -1,4 +1,5 @@
-import { MfaMode, z, zObject, zStr } from "../base";
+import { MfaMode } from "../prisma";
+import { z, zObject, zStr } from "../utils";
 import { AuthStatus } from "./auth-status";
 
 const { NONE, UNDECIDED, ...modes } = MfaMode;

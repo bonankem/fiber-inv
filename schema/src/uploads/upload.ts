@@ -1,4 +1,5 @@
-import { type Prisma, type Same, z, zObject, zStr } from "../base";
+import type { Prisma } from "../prisma";
+import { type Same, z, zObject, zStr } from "../utils";
 
 export const uploadS = {
   id: true,
