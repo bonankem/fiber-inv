@@ -1,3 +1,4 @@
+import type { CoordsT } from "schema/geo";
 import type { WorkUpdateT } from "schema/work";
 import type { Prisma, WorkAction, WorkDocType, WorkStatus } from "#/prisma";
 import type { StringFilter } from "#/prisma/generated/commonInputTypes";
@@ -19,6 +20,17 @@ export async function nextId(tx: Prisma.TransactionClient, pre: string) {
   const next = (prev + 1).toString().padStart(4, "0");
   const sid = `${prefix}${next}`;
   return { sid, requestDate };
+}
+
+export function maybeCoords(
+  latitude: unknown,
+  longitude: unknown,
+): CoordsT | null {
+  const lat = Number(latitude);
+  const lng = Number(longitude);
+  if (Number.isNaN(lat)) return null;
+  if (Number.isNaN(lng)) return null;
+  return { lat, lng };
 }
 
 export function coordsId(lat: number, lng: number) {

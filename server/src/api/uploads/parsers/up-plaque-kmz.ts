@@ -10,7 +10,7 @@ const lineStringRe = /<linestring.+?<\/linestring>/i;
 const coordsRe = /<coordinates.*?<\/coordinates>/i;
 const lngLatRe = /(?<!,\d)(-?\d+\.?\d*),(-?\d+\.?\d*)/g;
 
-export async function parsePlaqueKmz({
+export async function parseUpPlaqueKmz({
   data,
 }: ParserInput): Promise<UpPlaqueKmzT | null> {
   const raw = await maybeUnzip(data);
