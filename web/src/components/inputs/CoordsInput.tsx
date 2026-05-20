@@ -9,7 +9,7 @@ import type { Maybe } from "schema/utils";
 
 type CoordsInputValue = {
   lat: number | null;
-  lng: number | null;
+  lon: number | null;
 };
 
 type Props = {
@@ -33,9 +33,9 @@ function parseCoords(text: string): CoordsT | null {
   const dd = DD.exec(text);
   if (dd) {
     const lat = Number(dd[1]);
-    const lng = Number(dd[2]);
-    if (Math.abs(lat) <= 90 && Math.abs(lng) <= 180) {
-      return { lat: to5dp(lat), lng: to5dp(lng) };
+    const lon = Number(dd[2]);
+    if (Math.abs(lat) <= 90 && Math.abs(lon) <= 180) {
+      return { lat: to5dp(lat), lon: to5dp(lon) };
     }
   }
 
@@ -52,9 +52,9 @@ function parseCoords(text: string): CoordsT | null {
     const ew = dms[8] === "E" ? 1 : -1;
 
     const lat = (d1 + m1 / 60 + s1 / 3600) * ns;
-    const lng = (d2 + m2 / 60 + s2 / 3600) * ew;
-    if (Math.abs(lat) <= 90 && Math.abs(lng) <= 180) {
-      return { lat: to5dp(lat), lng: to5dp(lng) };
+    const lon = (d2 + m2 / 60 + s2 / 3600) * ew;
+    if (Math.abs(lat) <= 90 && Math.abs(lon) <= 180) {
+      return { lat: to5dp(lat), lon: to5dp(lon) };
     }
   }
 
@@ -63,15 +63,15 @@ function parseCoords(text: string): CoordsT | null {
 
 export default function CoordsInput(props: Props) {
   const lat = props.value?.lat || null;
-  const lng = props.value?.lng || null;
+  const lon = props.value?.lon || null;
 
-  const set = (lat: number | null, lng: number | null) => {
-    props.onChange?.(lat || lng ? { lat, lng } : undefined);
+  const set = (lat: number | null, lon: number | null) => {
+    props.onChange?.(lat || lon ? { lat, lon: lon } : undefined);
   };
 
   const hasLat = typeof lat === "number";
-  const hasLng = typeof lng === "number";
-  const incomplete = hasLat !== hasLng;
+  const hasLon = typeof lon === "number";
+  const incomplete = hasLat !== hasLon;
   const inputProps = (title: string, max: number) =>
     ({
       precision: 5,
@@ -97,12 +97,12 @@ export default function CoordsInput(props: Props) {
     <Space.Compact block>
       <InputNumber
         value={lat}
-        onChange={(lat) => set(lat, lng)}
+        onChange={(lat) => set(lat, lon)}
         {...inputProps("Latitude", 90)}
       />
       <InputNumber
-        value={lng}
-        onChange={(lng) => set(lat, lng)}
+        value={lon}
+        onChange={(lon) => set(lat, lon)}
         {...inputProps("Longitude", 180)}
       />
     </Space.Compact>

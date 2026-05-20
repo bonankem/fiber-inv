@@ -1,6 +1,8 @@
 import { appPlugin } from "#/utils";
-import districtsApi from "./districts.api";
+import geoDistrictsApi from "./geo-districts.api";
+import geoInitializeApi from "./geo-initialize.api";
 
 export default appPlugin(async (app) => {
-  app.register(districtsApi);
+  app.register(geoDistrictsApi);
+  app.register(geoInitializeApi);
 });

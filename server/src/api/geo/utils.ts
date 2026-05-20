@@ -1,4 +1,5 @@
 import type { CoordsT, MultiPolygonT, PolygonT } from "schema/geo";
+import { bad } from "#/utils";
 
 export type Bbox = {
   w: number;
@@ -11,12 +12,14 @@ export function getBoundingBox(mp: MultiPolygonT): Bbox {
   const p0 = mp[0][0][0];
   let n = p0.lat;
   let s = p0.lat;
-  let e = p0.lng;
-  let w = p0.lng;
+  let e = p0.lon;
+  let w = p0.lon;
+  if (!n) bad(`No coords in ${JSON.stringify([mp[0][0][0], mp[0][0], mp[0]])}`);
   for (const poly of mp) {
-    for (const { lng, lat } of poly[0]) {
-      if (lng > e) e = lng;
-      if (lng < w) w = lng;
+    for (const { lon, lat } of poly[0]) {
+      if (!lon) bad(`No coords in ${JSON.stringify(poly)}`);
+      if (lon > e) e = lon;
+      if (lon < w) w = lon;
       if (lat > n) n = lat;
       if (lat < s) s = lat;
     }
@@ -26,12 +29,12 @@ export function getBoundingBox(mp: MultiPolygonT): Bbox {
 
 /** Checks if a ray extending eastward from p crosses the edge between vertices v1 and v2. */
 export function doesEdgeCrossRay(v1: CoordsT, v2: CoordsT, p: CoordsT) {
-  const { lng: lng1, lat: lat1 } = v1;
-  const { lng: lng2, lat: lat2 } = v2;
-  const { lng, lat } = p;
+  const { lon: lon1, lat: lat1 } = v1;
+  const { lon: lon2, lat: lat2 } = v2;
+  const { lon, lat } = p;
 
   // edges that are fully to the west of the ray do not cross it
-  if (lng1 < lng && lng2 < lng) return false;
+  if (lon1 < lon && lon2 < lon) return false;
 
   // edges parallel to the ray do not cross it
   if (lat1 === lat2) return false;
@@ -42,7 +45,7 @@ export function doesEdgeCrossRay(v1: CoordsT, v2: CoordsT, p: CoordsT) {
 
 export function sqDist(a: CoordsT, b: CoordsT) {
   const dx = b.lat - a.lat;
-  const dy = b.lng - a.lng;
+  const dy = b.lon - a.lon;
   return dx * dx + dy * dy;
 }
 
@@ -68,9 +71,9 @@ export function trueCentreOfPolygon(poly: PolygonT): CoordsT {
   if (ring.length < 2) return ring[0];
 
   const n = ring.length - 1;
-  const lng = ring.reduce((a, b) => a + b.lng, 0) / n;
+  const lon = ring.reduce((a, b) => a + b.lon, 0) / n;
   const lat = ring.reduce((a, b) => a + b.lat, 0) / n;
-  return { lng, lat };
+  return { lon, lat };
 }
 
 export function visualCentreOfPolygon(p: PolygonT): CoordsT {
@@ -102,7 +105,7 @@ export function isInsideMp(c: CoordsT, mp: MultiPolygonT) {
 }
 
 export function isInsideBox(c: CoordsT, box: Bbox) {
-  const { lng, lat } = c;
+  const { lon, lat } = c;
   const { w, s, e, n } = box;
-  return w <= lng && lng <= e && s <= lat && lat <= n;
+  return w <= lon && lon <= e && s <= lat && lat <= n;
 }

@@ -103,3 +103,18 @@ export function jsonResponse<T>(res: unknown, shape: ZodType<T>) {
   const json = typeof res === "string" ? JSON.parse(res) : res;
   return shape.safeParse(json).data ?? (res as T);
 }
+
+export function assoc<T, K extends string | number, V>(
+  list: T[],
+  getKey: (t: T) => K,
+  getValue: (t: T) => V,
+  keepFirst: boolean = false,
+) {
+  const record = {} as { [key in K]?: V };
+  for (const i of list) {
+    const key = getKey(i);
+    if (keepFirst && key in record) continue;
+    else record[key] = getValue(i);
+  }
+  return record;
+}

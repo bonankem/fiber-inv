@@ -1,7 +1,7 @@
 model Coords {
     id  BigInt @id
     lat Float
-    lng Float
+    lon Float
 
     works Work[]
 
@@ -14,15 +14,18 @@ model Boundary {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    geometry Unsupported("geometry(Point, 4326)")?
+    /// [MultiPolygonJson]
+    multiPolygon Json
 
-    geoJson Json?
-
-    district District?
+    // bounding box
+    boxN Float
+    boxE Float
+    boxW Float
+    boxS Float
 
     locality Locality?
 
-    ftthSurvey FtthSurvey?
+    fhs FtthSurvey?
 
     plaque Plaque?
 
@@ -40,9 +43,6 @@ model District {
     key String @unique
 
     localities Locality[]
-
-    boundary   Boundary? @relation(fields: [boundaryId], references: [id])
-    boundaryId String?   @unique @db.Uuid
 }
 
 model Locality {

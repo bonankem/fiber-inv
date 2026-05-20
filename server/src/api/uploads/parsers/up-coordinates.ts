@@ -33,11 +33,11 @@ export async function parseUpCoordinates({
   }
   const nameKey = findKey(/boitier/i, /label/i);
   const latKey = findKey(/latitude/i);
-  const lngKey = findKey(/longitude/i);
+  const lonKey = findKey(/longitude/i);
   const items = rows.map((r) => {
     const name = r[nameKey];
     if (!name || typeof name !== "string") return undefined;
-    return { name, coords: maybeCoords(r[latKey], r[lngKey]) };
+    return { name, coords: maybeCoords(r[latKey], r[lonKey]) };
   });
 
   return {

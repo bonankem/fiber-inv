@@ -3,8 +3,8 @@ import { zFormObject } from "schema/utils";
 import z from "zod";
 import { MfaMode, type Prisma, prisma, StaffRole } from "#/prisma";
 import { postRoute } from "#/utils";
+import { geoInitialize } from "../geo/geo-initialize.api";
 import { create, makeKey } from "../utils/queries";
-import { setupLocalities } from "./localities.api";
 
 export default postRoute(
   "/setup/seed",
@@ -64,5 +64,10 @@ async function seed(req: SeedReq) {
     });
   });
 
-  return prisma.$transaction([seedVendors, ...setupLocalities(), ...seedUsers]);
+  const sampleGeo = await geoInitialize();
+  const [{ count: newVendors }, ...users] = await prisma.$transaction([
+    seedVendors,
+    ...seedUsers,
+  ]);
+  return { newVendors, users, sampleGeo };
 }

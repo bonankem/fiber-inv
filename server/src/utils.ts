@@ -51,7 +51,7 @@ export function appRoute<S extends FS>(r: () => AppRoute<S>) {
 }
 
 export function postRoute<B extends FS["body"], T>(
-  url: string,
+  url: `/${string}`,
   body: (() => B) | null,
   f: AppRouteFunc<{ body: B }, T>,
 ) {
