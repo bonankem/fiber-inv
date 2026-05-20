@@ -1,6 +1,7 @@
 import type { StaffRole, WorkStatus } from "schema/enums";
 import type { Maybe } from "schema/utils";
 import type { WorkT } from "schema/work";
+import { shortName } from "#/utils/names";
 import WithCaption from "./WithCaption";
 
 type PendingMap = {
@@ -37,10 +38,3 @@ const statusNames: Record<WorkStatus, string> = {
   CANCELLED: "Annulé",
   CLOSED: "Terminé",
 };
-
-function shortName(who: Maybe<string | { name: string }>) {
-  const name = typeof who === "string" ? who : who?.name;
-  if (!name) return undefined;
-  if (name.length < 20) return name;
-  return name.replace(/^(\S+).*?(\p{L})\S*$/u, "$1 $2.");
-}

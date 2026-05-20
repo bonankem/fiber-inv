@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Select, type SelectProps } from "antd";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { StaffRole } from "schema/enums";
 import { userZ } from "schema/people";
 import { zArray } from "schema/utils";
@@ -30,9 +30,17 @@ export default function StaffSelect({ filter, ...props }: Props) {
   const { allowClear, value, onChange } = props;
   const mustSelect = !allowClear && !value;
   const singleValue = options.length === 1 ? options[0].value : null;
+  const [triedAutoPick, setTriedAutoPick] = useState(false);
+
   useEffect(() => {
-    if (mustSelect && singleValue) onChange?.(singleValue);
-  }, [singleValue, onChange, mustSelect]);
+    if (mustSelect && singleValue) {
+      if (triedAutoPick) return;
+      onChange?.(singleValue);
+      setTriedAutoPick(true);
+    } else if (triedAutoPick) {
+      setTriedAutoPick(false);
+    }
+  }, [singleValue, onChange, mustSelect, triedAutoPick]);
 
   return (
     <Select

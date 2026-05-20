@@ -1,0 +1,75 @@
+import type { UserOutlined } from "@ant-design/icons";
+import { useMemo } from "react";
+import { filter, map, pipe } from "remeda";
+import type { Maybe } from "schema/utils";
+import type { ModalItemFC } from "#/hooks/useModalViewer";
+
+type Icon = typeof UserOutlined;
+type Func<I, O> = (t: I) => O;
+type MaybeFunc<I, O> = O | ((t: I) => O);
+
+function callFunc<I, O>(f: MaybeFunc<I, O> | undefined, i: I) {
+  return typeof f === "function" ? (f as Func<I, O>)(i) : (f ?? undefined);
+}
+
+export type DataAction<T, When, Who> = {
+  name: string;
+  key?: string;
+  form?: ModalItemFC<T>;
+  icon?: Icon;
+  who?: Who[];
+  when?: When[];
+  notWhen?: When[];
+  onlyIf?: Func<T, boolean>;
+  notIf?: Func<T, boolean>;
+  main?: MaybeFunc<T, boolean>;
+  red?: MaybeFunc<T, boolean>;
+};
+
+type Matcher<T, W> = (t: T, w: W) => boolean;
+
+export type Actions<T, When, Who> = {
+  actions: DataAction<T, When, Who>[];
+  isWhen?: Matcher<T, When>;
+  isWho?: Matcher<T, Who>;
+};
+
+// biome-ignore lint/suspicious/noExplicitAny: only need the first param
+export type AnyActions<T> = Actions<T, any, any>;
+
+export function buildActions<T, When, Who>(
+  isWhen: Matcher<T, When>,
+  isWho: Matcher<T, Who>,
+  actions: DataAction<T, When, Who>[],
+): Actions<T, When, Who> {
+  return { actions, isWhen, isWho };
+}
+
+function some<T, W>(a: Maybe<W[]>, t: T, f: Maybe<(t: T, w: W) => boolean>) {
+  return a?.length && f ? a.some((w) => f(t, w)) : null;
+}
+
+function resolve<T, When, Who>(acts: Actions<T, When, Who>, item: T) {
+  return pipe(
+    acts.actions,
+    filter((a) => {
+      if (some(a.when, item, acts.isWhen) === false) return false;
+      if (some(a.notWhen, item, acts.isWhen) === true) return false;
+      if (a.onlyIf?.(item) === false) return false;
+      if (a.notIf?.(item) === true) return false;
+      return true;
+    }),
+    map((a) => ({
+      key: a.key,
+      name: a.name,
+      form: a.form,
+      icon: a.icon,
+      main: callFunc(a.main, item) || false,
+      red: callFunc(a.red, item) || false,
+    })),
+  );
+}
+
+export function useActions<T>(acts: AnyActions<T>, item: T) {
+  return useMemo(() => resolve(acts, item), [acts, item]);
+}

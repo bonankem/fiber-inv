@@ -1,9 +1,9 @@
-import { EllipsisOutlined } from "@ant-design/icons";
-import { Button, Grid, type TableColumnType } from "antd";
+import { Grid, type TableColumnType } from "antd";
 import { useMemo } from "react";
 import { sumBy } from "remeda";
 import { Subset } from "schema/common";
 import type { Maybe } from "schema/utils";
+import ActionsButton from "../actions/ActionsButton";
 import type { DataTableProps } from "./types";
 
 export function useResolvedColumns<T>(props: DataTableProps<T>) {
@@ -18,17 +18,15 @@ export function useResolvedColumns<T>(props: DataTableProps<T>) {
     const cols = mobile && onMobile ? [onMobile] : (props.columns ?? []);
     if (!cols.length) return [];
 
-    const action: Col = {
+    const actions = props.actions;
+
+    const actionCol: Col | undefined = actions && {
       key: "action",
       width: mobile ? 40 : 60,
       title: mobile ? "" : "Action",
       fixed: "right",
       align: "center",
-      render: () => (
-        <Button size="small" type="text">
-          <EllipsisOutlined className="text-2xl" />
-        </Button>
-      ),
+      render: (t) => <ActionsButton actions={actions} item={t} />,
     };
 
     return [
@@ -39,9 +37,9 @@ export function useResolvedColumns<T>(props: DataTableProps<T>) {
         className: col.className,
         render: (_, t) => col.render(t),
       })),
-      action,
+      ...(actionCol ? [actionCol] : []),
     ];
-  }, [props.columns, props.onMobile, screen]);
+  }, [props.columns, props.onMobile, screen, props.actions]);
 
   const scrollX = useMemo(() => {
     const fallback = 150;

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { Maybe } from "schema/utils";
+import type { Actions } from "../actions/types";
 
 export type DtFilter = {
   col: string;
@@ -29,7 +30,8 @@ export type DataTableProps<T> = {
   data?: Maybe<T[]>;
   columns?: DtColumn<T>[];
   filters?: DtFilter[];
-  actions?: unknown;
+  // biome-ignore lint/suspicious/noExplicitAny: only first type param is relevant
+  actions?: Actions<T, any, any>;
   loading?: boolean;
   onMobile?: DtColumn<T>;
   onExport?: () => void;

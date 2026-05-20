@@ -16,11 +16,11 @@ const { PLAQUE_KMZ } = WorkDocType;
 
 export default function FhsRequestForm(props: ModalStateProps) {
   const [form] = Form.useForm<FhsRequestT>();
-  const qc = useQueryClient();
   const uploader = useUploader();
   const isUploading = uploader.isUploading(PLAQUE_KMZ);
   const placeholder = isUploading ? "Lecture du fichier..." : undefined;
 
+  const qc = useQueryClient();
   const submitM = useMutation({
     mutationFn: postFn<FhsRequestT, FtthSurveyT>("/fhs"),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["fhs"] }),

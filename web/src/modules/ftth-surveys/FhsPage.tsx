@@ -8,10 +8,11 @@ import { subsetsDefault } from "#/components/data-page/utils";
 import StatusView from "#/components/StatusView";
 import WithCaption from "#/components/WithCaption";
 import { useApiQuery } from "#/hooks/useApiQuery";
+import { shortName } from "#/utils/names";
+import { fhsActions } from "./fhs-actions";
 
 type Item = FtthSurveyT;
 type Column = DtColumn<Item>;
-const schema = zArray(ftthSurveyZ);
 
 const asigneeRole = StaffRole.PLANNING_ENGINEER;
 function worker(i: Item, role: StaffRole = asigneeRole) {
@@ -68,7 +69,10 @@ const columns: Column[] = [
     key: "assigned",
     width: 150,
     render: (t) => (
-      <WithCaption title={worker(t)?.name} caption={t.work.vendor?.name} />
+      <WithCaption
+        title={shortName(worker(t)?.name)}
+        caption={t.work.vendor?.name}
+      />
     ),
   },
 ];
@@ -83,7 +87,7 @@ export default function FhsPage() {
 
   return (
     <DataPage
-      table={{ data: api.query.data, columns }}
+      table={{ data: api.query.data, columns, actions: fhsActions }}
       subsets={subsetsDefault(api.dto.subset, api.setter("subset"))}
     />
   );

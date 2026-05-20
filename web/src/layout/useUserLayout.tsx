@@ -1,7 +1,7 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { type DrawerProps, Grid, type MenuProps, type SiderProps } from "antd";
 import { useMemo, useState } from "react";
-import { navigationData } from "#/data/navigation";
+import { navigationData } from "#/layout/navigation.data";
 import { useAppTheme } from "#/theme";
 
 export type UserLayoutProps = ReturnType<typeof useUserLayout>;

@@ -2,6 +2,7 @@ import {
   Button,
   Checkbox,
   ConfigProvider,
+  Divider,
   Drawer,
   Form,
   type FormInstance,
@@ -60,11 +61,16 @@ export default function FormModal<T>(props: FormModalProps<T>) {
       title={
         <header>
           <h2>{props.title}</h2>
-          {props.subtitle && <p>{props.subtitle}</p>}
+          {props.subtitle && (
+            <p className="font-normal text-base text-yellow-600">
+              {props.subtitle}
+            </p>
+          )}
+          <Divider className="my-3!" />
         </header>
       }
       style={{ top: 20 }}
-      width={props.width || 320}
+      width={props.width || 360}
       mask={{ blur: true, closable: props.maskCloseable ?? empty }}
       open={isOpen}
       onClose={close}
