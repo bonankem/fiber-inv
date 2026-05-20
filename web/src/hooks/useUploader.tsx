@@ -12,6 +12,7 @@ export type UploadRecord = {
   name: string;
   size: number;
   done: boolean;
+  type?: WorkDocType;
   percent: number;
   formId?: string;
 };
@@ -27,6 +28,7 @@ export type Uploader = {
   send(file: File, args?: SendArgs): UploadRecord;
   cancel(ids: string[]): void;
   finish(formId: string): void;
+  isUploading(type?: WorkDocType): boolean;
 };
 
 export const UploaderContext = createContext<Uploader>({
@@ -36,6 +38,7 @@ export const UploaderContext = createContext<Uploader>({
   find: () => undefined,
   cancel: () => undefined,
   finish: () => {},
+  isUploading: () => false,
 });
 
 export function useUploader() {
@@ -56,6 +59,7 @@ export function useUploaderImpl(): Uploader {
       id: uuidv7(),
       name: file.name,
       size: file.size,
+      type: args?.type,
       done: false,
       percent: 0,
       formId: args?.formId ?? "",
@@ -143,6 +147,12 @@ export function useUploaderImpl(): Uploader {
       cancel(ids);
     };
 
-    return { find, send, cancel, finish };
+    const isUploading = (type?: WorkDocType) => {
+      const rs = Object.values(records);
+      if (!type) return rs.some((r) => !r.done);
+      return rs.some((r) => r.type === type && !r.done);
+    };
+
+    return { find, send, cancel, finish, isUploading };
   }, [pending, records, cleanup.mutate, send]);
 }

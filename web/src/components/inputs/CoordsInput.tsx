@@ -19,6 +19,7 @@ type Props = {
   size?: InputProps["size"];
   className?: string;
   allowClear?: boolean;
+  placeholder?: string | false;
 };
 
 const DMS =
@@ -72,13 +73,17 @@ export default function CoordsInput(props: Props) {
   const hasLat = typeof lat === "number";
   const hasLon = typeof lon === "number";
   const incomplete = hasLat !== hasLon;
-  const inputProps = (title: string, max: number) =>
+  const inputProps = (
+    title: string,
+    max: number,
+    placeholder?: string | false,
+  ) =>
     ({
       precision: 5,
       min: -max,
       max,
       title,
-      placeholder: title,
+      placeholder: placeholder || title,
       controls: false,
       size: props.size,
       required: props.required || incomplete,
@@ -98,7 +103,7 @@ export default function CoordsInput(props: Props) {
       <InputNumber
         value={lat}
         onChange={(lat) => set(lat, lon)}
-        {...inputProps("Latitude", 90)}
+        {...inputProps("Latitude", 90, props.placeholder)}
       />
       <InputNumber
         value={lon}

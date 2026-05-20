@@ -26,7 +26,7 @@ export async function parseUpPlaqueKmz({
   // not something generic like "plaque" or the name of the file
   let name = cluster.match(placeNameRe)?.[1];
   const notRealName = /plaque|boundary|polygon|limit|km[lz]/i;
-  if (name && !notRealName.test(name)) name = undefined;
+  if (name && notRealName.test(name)) name = undefined;
 
   const ring = cluster.match(linearRingRe) || cluster.match(lineStringRe);
   const ringCoords = ring?.[0].match(coordsRe);

@@ -10,10 +10,16 @@ import FileUpload from "#/components/inputs/FileUpload";
 import LocalitySelect from "#/components/inputs/LocalitySelect";
 import StaffSelect from "#/components/inputs/StaffSelect";
 import type { ModalStateProps } from "#/hooks/useModalViewer";
+import { useUploader } from "#/hooks/useUploader";
+
+const { PLAQUE_KMZ } = WorkDocType;
 
 export default function FhsRequestForm(props: ModalStateProps) {
   const [form] = Form.useForm<FhsRequestT>();
   const qc = useQueryClient();
+  const uploader = useUploader();
+  const isUploading = uploader.isUploading(PLAQUE_KMZ);
+  const placeholder = isUploading ? "Lecture du fichier..." : undefined;
 
   const submitM = useMutation({
     mutationFn: postFn<FhsRequestT, FtthSurveyT>("/fhs"),
@@ -47,28 +53,24 @@ export default function FhsRequestForm(props: ModalStateProps) {
       submitting={submitM.isPending}
       maskCloseable
     >
-      <Form.Item
-        name={WorkDocType.PLAQUE_KMZ}
-        label="Fichier KMZ de la plaque"
-        required
-      >
+      <Form.Item name={PLAQUE_KMZ} label="Fichier KMZ de la plaque" required>
         <FileUpload
-          type={WorkDocType.PLAQUE_KMZ}
+          type={PLAQUE_KMZ}
           onParsed={onParse}
           placeholder="Choisir un fichier KMZ ou KML"
         />
       </Form.Item>
 
       <Form.Item name="coords" label="Coordonnées" required>
-        <CoordsInput />
+        <CoordsInput placeholder={placeholder} />
       </Form.Item>
 
       <Form.Item name="localityId" label="Localité" required>
-        <LocalitySelect />
+        <LocalitySelect placeholder={placeholder || "Département ou ville"} />
       </Form.Item>
 
       <Form.Item name="name" label="Nom de lieu" required>
-        <Input required id="fhs-name" />
+        <Input required id="fhs-name" placeholder={placeholder} />
       </Form.Item>
 
       <Form.Item name="contact" label="Contact local" required>
