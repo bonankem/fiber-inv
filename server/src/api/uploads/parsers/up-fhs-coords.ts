@@ -1,12 +1,12 @@
-import type { UpCoordinatesT } from "schema/uploads";
+import type { UpFhsCoordsT } from "schema/uploads";
 import { read, utils } from "xlsx";
 import { filterTruthy, maybeCoords } from "#/api/utils/queries";
 import { WorkDocType } from "#/prisma";
 import type { ParserInput } from "./utils";
 
-export async function parseUpCoordinates({
+export async function parseUpFhsCoords({
   data,
-}: ParserInput): Promise<UpCoordinatesT | null> {
+}: ParserInput): Promise<UpFhsCoordsT | null> {
   const book = read(data, { dense: true, sheetRows: 5000 });
   const sheet = book.Sheets[book.SheetNames[0]];
   const array = utils.sheet_to_json<Record<string, unknown>>(sheet, {

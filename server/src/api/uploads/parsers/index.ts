@@ -1,5 +1,5 @@
 import type { WorkDocType } from "#/prisma";
-import { parseUpCoordinates } from "./up-coordinates";
+import { parseUpFhsCoords } from "./up-fhs-coords";
 import { parseUpPlaqueKmz } from "./up-plaque-kmz";
 import type { ParserFunc, ParserInput } from "./utils";
 
@@ -7,7 +7,7 @@ type Parsers = { [t in WorkDocType]?: ParserFunc };
 
 const parsers: Parsers = {
   PLAQUE_KMZ: parseUpPlaqueKmz,
-  COORDINATES: parseUpCoordinates,
+  COORDINATES: parseUpFhsCoords,
 };
 
 export async function maybeParse(input: ParserInput, key?: WorkDocType | null) {

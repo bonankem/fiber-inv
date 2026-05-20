@@ -19,7 +19,27 @@ declare global {
   }
 }
 
-export function multiPolygonFromGeoJson(poly: number[][][]): MultiPolygonT {
-  // turn polygons to multipolygons by wrapping them in another array
-  return [poly.map((l) => l.map(fromLonLat))];
+type TuplePoint = number[];
+type TupleRing = TuplePoint[];
+type TuplePoly = TupleRing[];
+type TupleMPol = TuplePoly[];
+
+type TupleGeom = TupleRing | TuplePoly | TupleMPol;
+
+function isTuplePoint(p: unknown): p is TuplePoint {
+  return Array.isArray(p) && typeof p[0] === "number";
+}
+
+function isTupleRing(p: unknown[]): p is TupleRing {
+  return isTuplePoint(p[0]);
+}
+
+function isTuplePoly(p: unknown[][]): p is TuplePoly {
+  return isTupleRing(p[0]);
+}
+
+export function multiPolygonFromGeoJson(g: TupleGeom): MultiPolygonT {
+  if (isTupleRing(g)) return [[g.map(fromLonLat)]];
+  if (isTuplePoly(g)) return [g.map((l) => l.map(fromLonLat))];
+  return g.map((p) => p.map((l) => l.map(fromLonLat)));
 }

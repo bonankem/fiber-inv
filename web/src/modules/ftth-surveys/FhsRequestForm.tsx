@@ -25,7 +25,11 @@ export default function FhsRequestForm(props: ModalStateProps) {
     form.setFieldsValue({
       coords: data.coords,
       localityId: data.localityId,
+      name: data.name,
+      contact: undefined,
     });
+    const toFocus = data.name ? "fhs-contact" : "fhs-name";
+    document.getElementById(toFocus)?.focus();
   };
 
   const onSubmit = apiCall(async (data: FhsRequestT) => {
@@ -63,12 +67,12 @@ export default function FhsRequestForm(props: ModalStateProps) {
         <LocalitySelect />
       </Form.Item>
 
-      <Form.Item name="name" label="Nom de la plaque" required>
-        <Input required />
+      <Form.Item name="name" label="Nom de lieu" required>
+        <Input required id="fhs-name" />
       </Form.Item>
 
       <Form.Item name="contact" label="Contact local" required>
-        <Input required placeholder="Nom et téléphone" />
+        <Input required id="fhs-contact" placeholder="Nom et téléphone" />
       </Form.Item>
 
       <Form.Item name="managerId" label="Envoyer à responsable" required>
