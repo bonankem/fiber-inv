@@ -1,6 +1,7 @@
 import {
   CalendarOutlined,
   MessageOutlined,
+  SendOutlined,
   StopOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -42,6 +43,7 @@ export const fhsActions = buildActions(isWhen, isWho, [
   },
   {
     name: "Submit",
+    icon: SendOutlined,
     when: [When.ONGOING],
     main: true,
   },

@@ -1,4 +1,4 @@
-import { type FhsInitiateT, fhsInitiateZ } from "schema/fhs";
+import { type FhsInitiateT, fhsInitiateZ, ftthSurveyS } from "schema/fhs";
 import { prisma, WorkAction, WorkStatus } from "#/prisma";
 import { bad, postRoute } from "#/utils";
 import { updateWork } from "../utils/work";
@@ -20,11 +20,14 @@ async function fhsInitiate(dto: FhsInitiateT) {
     statusError: "Job is already initiated",
   });
   const toVendor = v || s.work.vendor;
+  console.log({ v: v?.name, v2: s.work?.vendor?.name, vid: vendorId });
   if (!toVendor) bad("Vendor is required");
 
   return prisma.ftthSurvey.update({
     where: { id: workId },
     data: {
+      oltCode: dto.oltCode,
+      proposedHp: dto.proposedHp,
       work: updateWork({
         dto,
         old: s.work,
@@ -32,7 +35,12 @@ async function fhsInitiate(dto: FhsInitiateT) {
         action: WorkAction.INITIATE,
         status: WorkStatus.ONGOING,
         logTo: v,
+        also: {
+          startDate: dto.startDate,
+          dueDate: dto.dueDate,
+        },
       }),
     },
+    select: ftthSurveyS,
   });
 }

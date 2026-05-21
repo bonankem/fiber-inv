@@ -36,16 +36,15 @@ export default function ActionsButton<T>(props: Props<T>) {
       type: "item" as const,
       key: a.key || a.name,
       label: a.name,
-      icon: a.icon ? <a.icon /> : undefined,
+      icon: a.icon ? <a.icon className="text-sm!" /> : undefined,
       onClick: () => {
         const form = a.form;
         if (form) modals.openWith(form, item);
       },
       className: twJoin(
         "text-sm!",
-        a.main && "font-medium!",
         a.main && !a.red && "text-green-600!",
-        a.red && "text-red-600!",
+        a.red && "text-red-400!",
       ),
     });
     const items = [

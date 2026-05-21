@@ -1,5 +1,6 @@
 enum WorkStatus {
     REQUESTED
+    DECLINED
     ASSIGNED
     ONGOING
     REVIEW

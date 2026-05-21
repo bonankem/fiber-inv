@@ -10,7 +10,7 @@ import {
   type ThemeConfig,
   theme,
 } from "antd";
-import { type ReactNode, useState } from "react";
+import type { ReactNode } from "react";
 import type { ModalState } from "#/hooks/useModalViewer";
 
 export type FormModalProps<T> = {
@@ -49,7 +49,6 @@ function checkboxText(value: boolean | string | undefined) {
 }
 
 export default function FormModal<T>(props: FormModalProps<T>) {
-  const [empty, setEmpty] = useState(true);
   const { isOpen, close } = props.state;
   const { token } = theme.useToken();
 
@@ -71,7 +70,7 @@ export default function FormModal<T>(props: FormModalProps<T>) {
       }
       style={{ top: 20 }}
       width={props.width || 360}
-      mask={{ blur: true, closable: props.maskCloseable ?? empty }}
+      mask={{ blur: true, closable: props.maskCloseable ?? true }}
       open={isOpen}
       onClose={close}
       onCancel={close}
@@ -86,7 +85,6 @@ export default function FormModal<T>(props: FormModalProps<T>) {
           layout="vertical"
           className="flex flex-col gap-4"
           onFinish={props.onSubmit}
-          onFieldsChange={() => setEmpty(false)}
         >
           <fieldset className={props.className || "flex flex-col gap-2"}>
             {props.children}

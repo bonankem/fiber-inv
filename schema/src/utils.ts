@@ -3,6 +3,9 @@ import z from "zod";
 
 export { z } from "zod";
 
+const nilId = "00000000-0000-0000-0000-000000000000";
+export const whereNone = { id: nilId };
+
 export function zArray<T>(zt: ZodType<T>) {
   return z.array(zt);
 }

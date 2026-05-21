@@ -1,7 +1,7 @@
 import { Grid, type TableColumnType } from "antd";
 import { useMemo } from "react";
 import { sumBy } from "remeda";
-import { Subset } from "schema/common";
+import { Subset, type SubsetCounts } from "schema/common";
 import type { Maybe } from "schema/utils";
 import ActionsButton from "../actions/ActionsButton";
 import type { DataTableProps } from "./types";
@@ -67,10 +67,12 @@ const defaultSubsets = [
 export function subsetsDefault(
   selected: Maybe<Subset>,
   onSelect: (s: Subset) => void,
+  counts?: SubsetCounts,
 ) {
   return {
     items: defaultSubsets,
     selected: selected || Subset.TOTAL,
     onSelect,
+    counts,
   };
 }

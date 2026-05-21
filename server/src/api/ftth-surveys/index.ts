@@ -1,6 +1,7 @@
 import { appPlugin } from "#/utils";
 import fhsAssignApi from "./fhs-assign.api";
 import fhsCommentApi from "./fhs-comment.api";
+import fhsCountApi from "./fhs-count.api";
 import fhsGetApi from "./fhs-get.api";
 import fhsInitiateApi from "./fhs-initiate.api";
 import fhsListApi from "./fhs-list.api";
@@ -13,6 +14,7 @@ export default appPlugin(async (app) => {
   app.register(fhsListApi);
   app.register(fhsGetApi);
   app.register(fhsLogsApi);
+  app.register(fhsCountApi);
 
   app.register(fhsRequestApi);
   app.register(fhsAssignApi);

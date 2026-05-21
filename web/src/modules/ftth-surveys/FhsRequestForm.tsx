@@ -27,7 +27,6 @@ export default function FhsRequestForm(props: ModalStateProps) {
   });
 
   const onParse = (data: UpPlaqueKmzT) => {
-    console.log("Set", data);
     form.setFieldsValue({
       coords: data.coords,
       localityId: data.localityId,
@@ -69,7 +68,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
         <LocalitySelect placeholder={placeholder || "Département ou ville"} />
       </Form.Item>
 
-      <Form.Item name="name" label="Nom de lieu" required>
+      <Form.Item name="name" label="Nom du lieu" required>
         <Input required id="fhs-name" placeholder={placeholder} />
       </Form.Item>
 

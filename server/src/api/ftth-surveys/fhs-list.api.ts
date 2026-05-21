@@ -1,7 +1,7 @@
 import { type FhsFilterT, fhsFilterZ, ftthSurveyS } from "schema/fhs";
 import { prisma } from "#/prisma";
 import { getRoute } from "#/utils";
-import { fhsFilter } from "./filter";
+import { fhsWorkWhere } from "./filter";
 
 export default getRoute(
   "/fhs",
@@ -11,7 +11,7 @@ export default getRoute(
 
 async function fhsList(input: FhsFilterT) {
   return prisma.ftthSurvey.findMany({
-    where: fhsFilter(input),
+    where: { work: fhsWorkWhere(input) },
     select: ftthSurveyS,
     orderBy: [{ createdAt: "desc" }],
     take: input.count || 100,

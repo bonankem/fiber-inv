@@ -6,6 +6,7 @@ export const fhsInitiateZ = workUpdateDto("FhsInitiateT", {
   proposedHp: z.int().describe("Estimate of total HP for the area"),
   startDate: zDateOnly("The date on which work is scheduled to start"),
   dueDate: zDateOnly("The due date for completion of work"),
+  oltCode: zStrOpt("The five letter OLT code for this location"),
 });
 
 export type FhsInitiateT = z.infer<typeof fhsInitiateZ>;
