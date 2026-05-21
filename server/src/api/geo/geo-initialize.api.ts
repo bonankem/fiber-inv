@@ -4,7 +4,7 @@ import { assoc } from "schema/utils";
 import { prisma } from "#/prisma";
 import { bad, postRoute } from "#/utils";
 import { makeKey } from "../utils/queries";
-import polygons from "./geo.json";
+import polygons from "./geo.json" with { type: "json" };
 import { geoNames } from "./geo.names";
 import { getBoundingBox } from "./utils";
 

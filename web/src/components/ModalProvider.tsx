@@ -29,12 +29,14 @@ export function ModalProvider(props: PropsWithChildren) {
 
   const doClose = useCallback(() => {
     setIsOpen(false);
-    setItem(undefined);
     setClosing((c) => {
       clearTimeout(c);
       // delay removing the modal component,
       // so that the closing animation plays out
-      return setTimeout(() => setModalFC(undefined), 500);
+      return setTimeout(() => {
+        setModalFC(undefined);
+        setItem(undefined);
+      }, 500);
     });
   }, []);
 
