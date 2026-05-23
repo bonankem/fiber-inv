@@ -6,9 +6,9 @@ import { apiCall, postFn } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import StaffSelect from "#/components/inputs/StaffSelect";
 import VendorSelect from "#/components/inputs/VendorSelect";
-import type { ModalItemProps } from "#/hooks/useModalViewer";
+import type { FhsFormProps } from "./fhs-types";
 
-export default function FhsAssignForm(props: ModalItemProps<FtthSurveyT>) {
+export default function FhsAssignForm(props: FhsFormProps) {
   const qc = useQueryClient();
   const submitM = useMutation({
     mutationFn: postFn<FhsAssignT, FtthSurveyT>("/fhs/assign"),
@@ -25,6 +25,7 @@ export default function FhsAssignForm(props: ModalItemProps<FtthSurveyT>) {
   return (
     <FormModal
       title="Assign FTTH survey"
+      subtitle={props.item.work.name}
       state={props.state}
       onSubmit={onSubmit}
     >

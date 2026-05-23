@@ -8,10 +8,6 @@ type InputBase = {
   count?: number;
 };
 
-function initialInput<I extends InputBase>() {
-  return { page: 1, count: 100 } as I;
-}
-
 function defaultKey(url: string) {
   return url.replace(/^\//, "").split("/");
 }

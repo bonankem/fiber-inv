@@ -5,15 +5,15 @@ import { apiCall, postFn } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import DateInput from "#/components/inputs/DateInput";
 import VendorSelect from "#/components/inputs/VendorSelect";
-import type { ModalItemProps } from "#/hooks/useModalViewer";
 import { req } from "#/utils/form";
+import type { FhsFormProps } from "./fhs-types";
 
 async function validateDates(start: unknown, due: unknown) {
   if (!start || !due || start <= due) return;
   throw new Error("Date de début > Date d'échéance");
 }
 
-export default function FhsInitiateForm(props: ModalItemProps<FtthSurveyT>) {
+export default function FhsInitiateForm(props: FhsFormProps) {
   const qc = useQueryClient();
   const submitM = useMutation({
     mutationFn: postFn<FhsInitiateT, FtthSurveyT>("/fhs/initiate"),

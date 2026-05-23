@@ -1,8 +1,9 @@
-import { PaperClipOutlined } from "@ant-design/icons";
-import { Button, Input, Upload, type UploadProps } from "antd";
+import { LoadingOutlined, PaperClipOutlined } from "@ant-design/icons";
+import { Button, Input, Space, Upload, type UploadProps } from "antd";
 import { useEffect } from "react";
 import type { WorkDocType } from "schema/enums";
 import type { UploadParsedT } from "schema/uploads";
+import { twJoin } from "tailwind-merge";
 import { useUploader } from "#/hooks/useUploader";
 
 type Parsed<T> = UploadParsedT & { type: T };
@@ -10,6 +11,8 @@ type Parsed<T> = UploadParsedT & { type: T };
 type Props<T> = {
   type: T;
   value?: string;
+  required?: boolean;
+  inputClassName?: string;
   onChange?: (id: string | undefined) => void;
   onParsed?: (p: Parsed<T>) => void;
   accept?: UploadProps["accept"];
@@ -24,16 +27,17 @@ const defaultAccept: { [key in WorkDocType]?: string } = {
 export default function FileUpload<T extends WorkDocType>({
   type,
   value,
+  required,
   onChange,
   onParsed,
   placeholder,
+  inputClassName,
   formId = "",
   accept = defaultAccept[type],
 }: Props<T>) {
   const uploader = useUploader();
   const record = uploader.find(value || "");
   const sending = record?.done === false;
-  const percent = record?.percent || 0;
 
   const onUpload = (file: File) => {
     const record = uploader.send(file, {
@@ -55,34 +59,37 @@ export default function FileUpload<T extends WorkDocType>({
       accept={accept}
       fileList={[]}
       beforeUpload={onUpload}
-      classNames={{ root: "block", trigger: "w-full" }}
+      classNames={{ root: "block", trigger: "w-full relative" }}
     >
-      <div className="flex gap-1 ">
-        <div className="grow relative overflow-hidden">
+      <Space.Compact className="w-full">
+        <Input
+          readOnly
+          size="small"
+          value={record?.name}
+          tabIndex={-1} // tab goes straight to the button
+          className={twJoin("cursor-pointer w-full", inputClassName)}
+          onKeyUp={(e) => e.key === " " && (e.target as HTMLElement)?.click?.()}
+          placeholder={placeholder}
+        />
+        {required && !record && (
           <Input
-            readOnly
-            size="small"
-            value={record?.name}
-            className="cursor-pointer w-full"
-            placeholder={placeholder}
+            className="absolute! w-0! h-0! min-w-0! border-0! p-0! opacity-0 bottom-0 left-0"
+            tabIndex={-1}
+            required
+            value=""
+            title="Fichier requis"
+            onFocus={(e) =>
+              (e.target.previousSibling as HTMLElement)?.focus?.()
+            }
           />
-
-          <div className="absolute min-w-0! h-1 left-1 right-1 bottom-0.5">
-            <div
-              className="transition-w duration-500 bg-green-600 h-1 rounded-sm"
-              style={{
-                transition:
-                  percent < 20
-                    ? "none"
-                    : "width 400ms ease, opacity 200ms ease 200ms",
-                opacity: sending ? 100 : 0,
-                width: `${percent}%`,
-              }}
-            />
-          </div>
-        </div>
-        <Button size="small" className="w-10!" icon={<PaperClipOutlined />} />
-      </div>
+        )}
+        <Button
+          size="small"
+          className="w-10!"
+          type="default"
+          icon={sending ? <LoadingOutlined spin /> : <PaperClipOutlined />}
+        />
+      </Space.Compact>
     </Upload>
   );
 }

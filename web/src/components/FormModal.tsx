@@ -3,9 +3,9 @@ import {
   Checkbox,
   ConfigProvider,
   Divider,
-  Drawer,
   Form,
   type FormInstance,
+  type FormProps,
   Modal,
   type ThemeConfig,
   theme,
@@ -25,6 +25,7 @@ export type FormModalProps<T> = {
   className?: string;
   checkbox?: boolean | string;
   maskCloseable?: boolean;
+  layout?: FormProps["layout"];
 };
 
 const fz = 13;
@@ -52,11 +53,8 @@ export default function FormModal<T>(props: FormModalProps<T>) {
   const { isOpen, close } = props.state;
   const { token } = theme.useToken();
 
-  const useModal = true;
-  const Root = useModal ? Modal : Drawer;
-
   return (
-    <Root
+    <Modal
       title={
         <header>
           <h2>{props.title}</h2>
@@ -72,7 +70,6 @@ export default function FormModal<T>(props: FormModalProps<T>) {
       width={props.width || 360}
       mask={{ blur: true, closable: props.maskCloseable ?? true }}
       open={isOpen}
-      onClose={close}
       onCancel={close}
       closable={false}
       className="text-sm pb-8!"
@@ -82,7 +79,7 @@ export default function FormModal<T>(props: FormModalProps<T>) {
         <Form
           form={props.form}
           size="small"
-          layout="vertical"
+          layout={props.layout ?? "vertical"}
           className="flex flex-col gap-4"
           onFinish={props.onSubmit}
         >
@@ -106,6 +103,6 @@ export default function FormModal<T>(props: FormModalProps<T>) {
           </div>
         </Form>
       </ConfigProvider>
-    </Root>
+    </Modal>
   );
 }

@@ -4,10 +4,10 @@ import { workUpdateDto } from "../work/work-update";
 
 export const fhsSubmitZ = workUpdateDto("FhsSubmitT", {
   existingOltId: zStrNul("ID of the existing OLT, if any").optional(),
-  hpPavillon: z.int('Number of "pavillon" HPs/ELs'),
-  hpImmeuble: z.int('Number of "immeuble" HPs/ELs'),
+  hp: z.int("Number of HPs/ELs"),
   newOlts: z.int("Number of new olts"),
   oltCards: z.int("Number of olt cards"),
+  xBoxes: z.int("Number of X boxes"),
   hubBoxes: z.int("Number of hub boxes"),
   subBoxes: z.int("Number of sub boxes"),
   endBoxes: z.int("Number of end boxes"),
@@ -23,6 +23,8 @@ export const fhsSubmitZ = workUpdateDto("FhsSubmitT", {
   [Doc.PLAN_DIAGRAM]: zStr("plan diagram upload ID"),
   [Doc.SYNOPTIC_TABLE]: zStr("synoptic table upload ID"),
   [Doc.SYNOPTIC_DIAGRAM]: zStr("synoptic diagram upload ID "),
+  [Doc.COORDINATES]: zStr("Box/Pole coordinates"),
+  [Doc.HP_SUMMARY]: zStr("Summary of HP distribution"),
 });
 
 export type FhsSubmitT = z.infer<typeof fhsSubmitZ>;

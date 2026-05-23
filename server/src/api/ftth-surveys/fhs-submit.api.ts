@@ -39,7 +39,7 @@ async function fhsSubmit(dto: FhsSubmitT) {
   return prisma.ftthSurvey.update({
     where: { id },
     data: {
-      actualHp: report.hpImmeuble + report.hpPavillon,
+      actualHp: report.hp,
       report: { upsert: { create: report, update: report } },
       work: updateWork({
         dto,

@@ -10,6 +10,7 @@ import type { FtthSurveyT as What } from "schema/fhs";
 import { buildActions } from "#/components/actions/types";
 import FhsAssignForm from "./FhsAssignForm";
 import FhsInitiateForm from "./FhsInitiateForm";
+import FhsSubmitForm from "./FhsSubmitForm";
 
 function isWhen(what: What, when: When) {
   return what.work.status === when;
@@ -45,6 +46,7 @@ export const fhsActions = buildActions(isWhen, isWho, [
     name: "Submit",
     icon: SendOutlined,
     when: [When.ONGOING],
+    form: FhsSubmitForm,
     main: true,
   },
   {

@@ -34,8 +34,7 @@ model FhsReport {
 
     submitDate String
 
-    hpPavillon Int
-    hpImmeuble Int
+    hp Int
 
     existingOlt   Olt?    @relation(fields: [existingOltId], references: [id])
     existingOltId String? @db.Uuid
@@ -43,6 +42,8 @@ model FhsReport {
     newOlts Int
 
     oltCards Int
+
+    xBoxes Int
 
     hubBoxes Int
 
