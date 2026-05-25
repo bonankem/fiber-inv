@@ -29,7 +29,7 @@ model Boundary {
 
     plaque Plaque?
 
-    hub Hub?
+    box Box?
 }
 
 model District {

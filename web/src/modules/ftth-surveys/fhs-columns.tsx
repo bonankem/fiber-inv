@@ -31,7 +31,7 @@ export const fhsColumns: FhsColumn[] = [
   {
     key: "name",
     title: "Nom du lieu",
-    width: 250,
+    width: 200,
     render: (p) => (
       <WithCaption
         title={p.work.name}

@@ -105,7 +105,8 @@ export function useUploaderImpl(): Uploader {
       try {
         const data = jsonResponse(xhr.responseText, uploadFullZ);
         args?.onParse?.(data?.parsed || null);
-      } catch (_) {
+      } catch (e) {
+        console.error(e);
         args?.onParse?.(null);
       }
       return finish();

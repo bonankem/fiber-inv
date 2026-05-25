@@ -67,11 +67,10 @@ export default function FormModal<T>(props: FormModalProps<T>) {
         </header>
       }
       style={{ top: 20 }}
-      width={props.width || 360}
-      mask={{ blur: true, closable: props.maskCloseable ?? true }}
+      width={props.width || 320}
+      mask={{ blur: true, closable: props.maskCloseable ?? false }}
       open={isOpen}
       onCancel={close}
-      closable={false}
       className="text-sm pb-8!"
       footer={null}
     >

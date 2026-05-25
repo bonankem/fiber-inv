@@ -3,7 +3,7 @@
     "prefix": "zsc",
     "include": ["**/*.ts"],
     "body": [
-      "import { z, zObject } from \"../base\";",
+      "import { z, zObject } from \"../utils\";",
       "",
       "export const ${1:${TM_FILENAME_BASE/-([a-z])/${1:/upcase}/g}}Z = zObject(\"${1/^(.)/${1:/upcase}/}T\", {",
       "  $0",
@@ -16,7 +16,8 @@
     "prefix": "zpsc",
     "include": ["**/*.ts"],
     "body": [
-      "import { z, zStr, zObject, Prisma } from \"../base\";",
+      "import type { Prisma } from \"../prisma\";",
+      "import { z, zObject, zStr } from \"../utils\";",
       "",
       "export const ${1:${TM_FILENAME_BASE/-([a-z])/${1:/upcase}/g}}S = {",
       "  $4",

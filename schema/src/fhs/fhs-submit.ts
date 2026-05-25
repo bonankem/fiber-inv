@@ -1,11 +1,9 @@
 import { WorkDocType as Doc } from "../prisma";
-import { z, zStr, zStrNul } from "../utils";
+import { z, zStr } from "../utils";
 import { workUpdateDto } from "../work/work-update";
 
 export const fhsSubmitZ = workUpdateDto("FhsSubmitT", {
-  existingOltId: zStrNul("ID of the existing OLT, if any").optional(),
   hp: z.int("Number of HPs/ELs"),
-  newOlts: z.int("Number of new olts"),
   oltCards: z.int("Number of olt cards"),
   xBoxes: z.int("Number of X boxes"),
   hubBoxes: z.int("Number of hub boxes"),
@@ -23,7 +21,8 @@ export const fhsSubmitZ = workUpdateDto("FhsSubmitT", {
   [Doc.PLAN_DIAGRAM]: zStr("plan diagram upload ID"),
   [Doc.SYNOPTIC_TABLE]: zStr("synoptic table upload ID"),
   [Doc.SYNOPTIC_DIAGRAM]: zStr("synoptic diagram upload ID "),
-  [Doc.COORDINATES]: zStr("Box/Pole coordinates"),
+  [Doc.COORDINATES]: zStr("Box coordinates upload ID"),
+  [Doc.CABLE_LENGTHS]: zStr("Cable lengths upload ID"),
   [Doc.HP_SUMMARY]: zStr("Summary of HP distribution"),
 });
 

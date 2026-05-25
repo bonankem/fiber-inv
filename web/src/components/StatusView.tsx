@@ -1,11 +1,8 @@
-import { Badge } from "antd";
-import type { PresetStatusColorType } from "antd/es/_util/colors";
-import { type PresetColorKey, PresetColors } from "antd/es/theme/internal";
+import { Tag, type TagProps } from "antd";
 import type { StaffRole, WorkStatus } from "schema/enums";
 import type { Maybe } from "schema/utils";
 import type { WorkT } from "schema/work";
 import { shortName } from "#/utils/names";
-import WithCaption from "./WithCaption";
 
 type PendingMap = {
   [Key in WorkStatus]?: StaffRole | "VENDOR";
@@ -20,22 +17,17 @@ export default function StatusView(props: Props) {
   const work = props.work;
   const status = work.status;
   const pendingKey = props.pendingOn[status];
-  const pendingOn =
-    pendingKey === "VENDOR"
-      ? work.vendor?.name
-      : shortName(worker(work, pendingKey));
-
-  const color = statusColors[status];
-  const badge = PresetColors.includes(color as PresetColorKey) ? (
-    <Badge color={color} />
-  ) : (
-    <Badge status={color as PresetStatusColorType} />
+  const pendingOn = shortName(
+    pendingKey === "VENDOR" ? work.vendor?.name : worker(work, pendingKey),
+    15,
   );
 
   return (
     <div className="flex gap-2 items-start">
-      {badge}
-      <WithCaption title={statusNames[status]} caption={pendingOn} />
+      <Tag variant="outlined" color={colors[status] || "blue"}>
+        {statusNames[status]}
+      </Tag>
+      {pendingOn && <Tag variant="outlined">{pendingOn}</Tag>}
     </div>
   );
 }
@@ -44,25 +36,22 @@ function worker(work: WorkT, role: Maybe<StaffRole>) {
   return work.workers.find((w) => w.role === role)?.user;
 }
 
+const colors: Partial<Record<WorkStatus, TagProps["color"]>> = {
+  CLOSED: "green",
+  REVIEW: "purple",
+  REVIEW_FAILED: "volcano",
+  DECLINED: "red",
+  CANCELLED: "red",
+  REQUESTED: "purple",
+};
+
 const statusNames: Record<WorkStatus, string> = {
   REQUESTED: "Demandée",
   DECLINED: "Refusée",
   ASSIGNED: "Assigné",
   ONGOING: "En cours",
-  REVIEW: "À vérifier",
-  REVIEW_FAILED: "Échoué",
+  REVIEW: "Révision",
+  REVIEW_FAILED: "Révision rejetée",
   CANCELLED: "Annulé",
   CLOSED: "Terminé",
 };
-
-const statusColors: Record<WorkStatus, PresetColorKey | PresetStatusColorType> =
-  {
-    REQUESTED: "geekblue",
-    DECLINED: "red",
-    ASSIGNED: "blue",
-    ONGOING: "blue",
-    REVIEW: "blue",
-    REVIEW_FAILED: "red",
-    CANCELLED: "red",
-    CLOSED: "green",
-  };

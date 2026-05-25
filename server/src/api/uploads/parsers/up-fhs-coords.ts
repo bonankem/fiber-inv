@@ -1,8 +1,16 @@
 import type { UpFhsCoordsT } from "schema/uploads";
 import { read, utils } from "xlsx";
 import { filterTruthy, maybeCoords } from "#/api/utils/queries";
-import { WorkDocType } from "#/prisma";
+import { BoxType, WorkDocType } from "#/prisma";
 import type { ParserInput } from "./utils";
+
+function boxType(name: string) {
+  const re = /^(.+_X\d+)(?:(_H\d+)(_([SE])\d+)?)?/.exec(name);
+  if (!re) return null;
+  if (!re[2]) return BoxType.X_BOX;
+  if (!re[3]) return BoxType.HUB_BOX;
+  return re[4] === "S" ? BoxType.SUB_BOX : BoxType.END_BOX;
+}
 
 export async function parseUpFhsCoords({
   data,
@@ -31,18 +39,27 @@ export async function parseUpFhsCoords({
     }
     return "";
   }
-  const nameKey = findKey(/boitier/i, /label/i);
+  const nameKey = findKey(/boitier/i);
   const latKey = findKey(/latitude/i);
   const lonKey = findKey(/longitude/i);
+  const hpKey = findKey(/hp/i);
+
   const items = rows.map((r) => {
-    const name = r[nameKey];
-    if (!name || typeof name !== "string") return undefined;
-    return { name, coords: maybeCoords(r[latKey], r[lonKey]) };
+    const n = r[nameKey];
+    const name = typeof n === "string" ? n.toUpperCase().trim() : null;
+    if (!name) return undefined;
+
+    const type = boxType(name);
+    if (!type) return undefined;
+
+    const h = Number(r[hpKey]);
+    const hp = Number.isFinite(h) && h >= 0 ? h : null;
+    const coords = maybeCoords(r[latKey], r[lonKey]);
+    return { name, type, coords, hp };
   });
 
   return {
     type: WorkDocType.COORDINATES,
-    madeAt: book.Props?.CreatedDate || null,
-    items: filterTruthy(items),
+    boxes: filterTruthy(items),
   };
 }

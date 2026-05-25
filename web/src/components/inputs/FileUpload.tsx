@@ -6,7 +6,7 @@ import type { UploadParsedT } from "schema/uploads";
 import { twJoin } from "tailwind-merge";
 import { useUploader } from "#/hooks/useUploader";
 
-type Parsed<T> = UploadParsedT & { type: T };
+export type Parsed<T> = UploadParsedT & { type: T };
 
 type Props<T> = {
   type: T;
@@ -22,6 +22,16 @@ type Props<T> = {
 
 const defaultAccept: { [key in WorkDocType]?: string } = {
   PLAQUE_KMZ: ".kml,.kmz",
+  PLAN_KMZ: ".kml,.kmz",
+  PLAN_BOQ: ".xlsx,.xls",
+  PLAN_DIAGRAM: ".dwg",
+  SYNOPTIC_DIAGRAM: ".dwg",
+  SYNOPTIC_TABLE: ".xlsx,.xls",
+  COORDINATES: ".xlsx,.xls",
+  CABLE_LENGTHS: ".xlsx,.xls",
+  HP_SUMMARY: ".xlsx,.xls",
+  AS_BUILT_KMZ: ".kml,.kmz",
+  AS_BUILT_BOQ: ".xlsx,.xls",
 };
 
 export default function FileUpload<T extends WorkDocType>({
@@ -67,7 +77,7 @@ export default function FileUpload<T extends WorkDocType>({
           size="small"
           value={record?.name}
           tabIndex={-1} // tab goes straight to the button
-          className={twJoin("cursor-pointer w-full", inputClassName)}
+          className={twJoin("cursor-pointer w-full text-sm!", inputClassName)}
           onKeyUp={(e) => e.key === " " && (e.target as HTMLElement)?.click?.()}
           placeholder={placeholder}
         />

@@ -34,11 +34,18 @@ async function createUpload(
   if (typeof parsed === "string") return parsed;
 
   const id = query.id || (query.noSave ? "" : uuidv7());
-  const madeAt = parsed && "madeAt" in parsed ? parsed.madeAt : null;
   const sentAt = new Date();
 
   if (query.noSave) {
-    return { id, name, size, type, parsed, madeAt, sentAt };
+    return {
+      id,
+      name,
+      size,
+      type,
+      parsed,
+      sentAt,
+      madeAt: null,
+    };
   }
 
   return prisma.upload.create({

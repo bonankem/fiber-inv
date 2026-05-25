@@ -29,7 +29,7 @@ export const zDate = (desc: string) =>
   z.preprocess(tryDate, z.date().describe(desc));
 
 export const zDateNul = (desc: string) =>
-  z.preprocess(tryDate, z.date().describe(desc));
+  z.preprocess(tryDate, z.date().nullable().describe(desc));
 
 export const zDateOnly = (desc: string) => z.iso.date().describe(desc);
 
@@ -102,9 +102,14 @@ export function zFormObject<T extends ZodRawShape>(id: string, shape: T) {
 
 export type Maybe<T> = T | null | undefined;
 
-export function jsonResponse<T>(res: unknown, shape: ZodType<T>) {
-  const json = typeof res === "string" ? JSON.parse(res) : res;
-  return shape.safeParse(json).data ?? (res as T);
+export function jsonResponse<T>(text: unknown, shape: ZodType<T>) {
+  const json = typeof text === "string" ? JSON.parse(text) : text;
+
+  const valid = shape.safeParse(json);
+  if (valid.data) return valid.data;
+
+  console.error(valid.error);
+  return json as T;
 }
 
 export function assoc<T, K extends string | number, V>(

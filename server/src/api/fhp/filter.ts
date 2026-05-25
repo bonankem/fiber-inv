@@ -1,5 +1,5 @@
 import { Subset } from "schema/common";
-import type { FhsFilterT } from "schema/fhs";
+import type { FhpFilterT } from "schema/fhp";
 import type { UserT } from "schema/people";
 import { whereNone } from "schema/utils";
 import { type Prisma, StaffRole, WorkStatus } from "#/prisma";
@@ -8,11 +8,13 @@ import { filterTruthy, qOr, qSidIs, qWorkerIs } from "../utils/queries";
 import { type WorkWhere, workIsOnUser, workIsOnVendor } from "../utils/work";
 
 type Who = Pick<UserT, "id" | "vendor">;
-type Where = Prisma.FtthSurveyWhereInput;
+type Where = Prisma.FtthProjectWhereInput;
 type WhereWork = Where["work"];
 
 const R = StaffRole;
 const S = WorkStatus;
+const MANAGER = R.PROJECT_MANAGER;
+const ENGINEER = R.PROJECT_ENGINEER;
 export const workStopped: WorkStatus[] = [S.CANCELLED, S.DECLINED];
 export const workNotOpen: WorkStatus[] = [S.CLOSED, ...workStopped];
 
@@ -22,12 +24,13 @@ export function fhsWherePendingOn(who: Maybe<Who | string>) {
   const vendorId = typeof who === "string" ? who : who.vendor?.id;
   return qOr<WorkWhere>([
     workIsOnVendor(vendorId, S.ONGOING, S.REVIEW_FAILED),
-    workIsOnUser(S.REQUESTED, R.PLANNING_MANAGER, userId),
-    workIsOnUser(S.ASSIGNED, R.PLANNING_ENGINEER, userId),
+    workIsOnUser(S.REQUESTED, MANAGER, userId),
+    workIsOnUser(S.ASSIGNED, ENGINEER, userId),
+    workIsOnUser(S.REVIEW, ENGINEER, userId),
   ]);
 }
 
-export function fhsWhereSubset(s: Maybe<Subset>): WhereWork {
+export function fhpWhereSubset(s: Maybe<Subset>): WhereWork {
   if (s === Subset.TOTAL || !s) return undefined;
   if (s === Subset.CLOSED) return { status: S.CLOSED };
   if (s === Subset.STOPPED) return { status: { in: workStopped } };
@@ -35,7 +38,7 @@ export function fhsWhereSubset(s: Maybe<Subset>): WhereWork {
   return whereNone;
 }
 
-export function fhsWorkWhere(input: FhsFilterT): WhereWork {
+export function workWhere(input: FhpFilterT): WhereWork {
   return {
     sid: qSidIs(input.sid),
     status: input.status,
@@ -44,7 +47,7 @@ export function fhsWorkWhere(input: FhsFilterT): WhereWork {
     workers: qWorkerIs(input.worker),
     AND: filterTruthy([
       fhsWherePendingOn(input.pending),
-      fhsWhereSubset(input.subset),
+      fhpWhereSubset(input.subset),
     ]),
   };
 }

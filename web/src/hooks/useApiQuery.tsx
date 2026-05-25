@@ -29,7 +29,7 @@ export function useApiQuery<I extends InputBase, O>(args: {
   const query = useQuery({
     queryFn: () => getJson(args.url, args.output, dto),
     queryKey: [...(args.key || defaultKey(args.url)), dto],
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60,
   });
 
   const update = (up: Partial<I>) => {

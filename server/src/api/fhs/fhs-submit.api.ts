@@ -1,6 +1,6 @@
-import { type FhsSubmitT, fhsSubmitZ } from "schema/fhs";
+import { type FhsSubmitT, fhsSubmitZ, ftthSurveyS } from "schema/fhs";
 import { type Prisma, prisma, WorkAction, WorkStatus } from "#/prisma";
-import { currentDate, maybeConnect, postRoute } from "#/utils";
+import { currentDate, postRoute } from "#/utils";
 import { updateWork } from "../utils/work";
 import { fhsCheck, fhsWorker } from "./utils";
 
@@ -20,7 +20,9 @@ async function fhsSubmit(dto: FhsSubmitT) {
     PLAN_DIAGRAM,
     SYNOPTIC_TABLE,
     SYNOPTIC_DIAGRAM,
-    existingOltId,
+    COORDINATES,
+    CABLE_LENGTHS,
+    HP_SUMMARY,
     ...fields
   } = dto;
   const { s } = await fhsCheck({
@@ -31,12 +33,12 @@ async function fhsSubmit(dto: FhsSubmitT) {
   const report = {
     ...fields,
     submitDate: currentDate(),
-    existingOlt: maybeConnect(existingOltId),
   } satisfies Prisma.FhsReportUpdateInput;
   const resent = s.work.status !== WorkStatus.ONGOING;
   const action = resent ? WorkAction.RESEND_REPORT : WorkAction.SUBMIT_REPORT;
 
   return prisma.ftthSurvey.update({
+    select: ftthSurveyS,
     where: { id },
     data: {
       actualHp: report.hp,
@@ -53,6 +55,9 @@ async function fhsSubmit(dto: FhsSubmitT) {
           PLAN_DIAGRAM,
           SYNOPTIC_TABLE,
           SYNOPTIC_DIAGRAM,
+          COORDINATES,
+          CABLE_LENGTHS,
+          HP_SUMMARY,
         },
       }),
     },

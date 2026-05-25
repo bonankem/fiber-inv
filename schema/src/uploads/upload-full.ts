@@ -1,5 +1,13 @@
 import type { Prisma } from "../prisma";
-import { type PrismaToZod, type Same, z, zDate, zObject, zStr } from "../utils";
+import {
+  type PrismaToZod,
+  type Same,
+  z,
+  zDate,
+  zDateNul,
+  zObject,
+  zStr,
+} from "../utils";
 import { type UploadParsedT, uploadParsedZ } from "./parsed";
 
 declare global {
@@ -23,7 +31,7 @@ export const uploadFullZ = zObject("UploadT", {
   name: zStr("The file name"),
   type: zStr("The MIME type"),
   size: z.int().describe("The size in bytes"),
-  madeAt: zDate("File creation date/time").nullable(),
+  madeAt: zDateNul("File creation date/time"),
   sentAt: zDate("File upload date/time"),
   parsed: uploadParsedZ.nullable(),
 } satisfies PrismaToZod<typeof uploadFullS>);

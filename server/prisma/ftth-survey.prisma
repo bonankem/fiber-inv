@@ -36,11 +36,6 @@ model FhsReport {
 
     hp Int
 
-    existingOlt   Olt?    @relation(fields: [existingOltId], references: [id])
-    existingOltId String? @db.Uuid
-
-    newOlts Int
-
     oltCards Int
 
     xBoxes Int

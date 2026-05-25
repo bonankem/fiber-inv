@@ -50,7 +50,6 @@ export default function FhsRequestForm(props: ModalStateProps) {
       state={props.state}
       onSubmit={onSubmit}
       submitting={submitM.isPending}
-      maskCloseable
     >
       <Form.Item name={PLAQUE_KMZ} label="Fichier KMZ de la plaque" required>
         <FileUpload

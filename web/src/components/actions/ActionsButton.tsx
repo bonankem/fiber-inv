@@ -36,7 +36,7 @@ export default function ActionsButton<T>(props: Props<T>) {
       type: "item" as const,
       key: a.key || a.name,
       label: a.name,
-      icon: a.icon ? <a.icon className="text-sm!" /> : undefined,
+      icon: a.icon ? <a.icon className="text-sm!" size={12} /> : undefined,
       onClick: () => {
         const form = a.form;
         if (form) modals.openWith(form, item);

@@ -1,15 +1,19 @@
 import {
   CalendarOutlined,
+  CloseOutlined,
   MessageOutlined,
   SendOutlined,
   StopOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import { ThumbsUp } from "lucide-react";
 import { WorkStatus as When } from "schema/enums";
 import type { FtthSurveyT as What } from "schema/fhs";
 import { buildActions } from "#/components/actions/types";
+import FhsAcceptForm from "./FhsAcceptForm";
 import FhsAssignForm from "./FhsAssignForm";
 import FhsInitiateForm from "./FhsInitiateForm";
+import FhsRejectForm from "./FhsRejectForm";
 import FhsSubmitForm from "./FhsSubmitForm";
 
 function isWhen(what: What, when: When) {
@@ -29,7 +33,7 @@ export const fhsActions = buildActions(isWhen, isWho, [
     main: true,
   },
   {
-    name: "Reject",
+    name: "Decline",
     icon: StopOutlined,
     when: [When.REQUESTED],
     main: true,
@@ -50,13 +54,17 @@ export const fhsActions = buildActions(isWhen, isWho, [
     main: true,
   },
   {
-    name: "Pass",
+    name: "Accepter",
+    icon: ThumbsUp,
     when: [When.REVIEW],
+    form: FhsAcceptForm,
     main: true,
   },
   {
-    name: "Fail",
+    name: "Rejeter",
+    icon: CloseOutlined,
     when: [When.REVIEW],
+    form: FhsRejectForm,
     main: true,
     red: true,
   },

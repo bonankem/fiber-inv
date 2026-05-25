@@ -5,13 +5,17 @@ model FtthProject {
 
     createdAt DateTime @default(now())
 
+    contact String?
+
+    hp Int
+
     survey   FtthSurvey? @relation(fields: [surveyId], references: [id])
     surveyId String?     @db.Uuid
 
-    plan FhpPlan?
+    report FhpReport?
 }
 
-model FhpPlan {
+model FhpReport {
     id String @id @default(uuid(7)) @db.Uuid
 
     createdAt DateTime @default(now())
@@ -20,18 +24,7 @@ model FhpPlan {
     project   FtthProject @relation(fields: [projectId], references: [id])
     projectId String      @unique @db.Uuid
 
-    startDate String
-    dueDate   String
-
-    hpPavillon Int
-    hpImmeuble Int
-
-    existingOlt   Olt?    @relation(fields: [existingOltId], references: [id])
-    existingOltId String? @db.Uuid
-
-    newOlts Int
-
-    oltCards Int
+    xBoxes Int
 
     hubBoxes Int
 

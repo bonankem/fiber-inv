@@ -1,10 +1,11 @@
 import type { UserOutlined } from "@ant-design/icons";
+import type { ThumbsUp } from "lucide-react";
 import { useMemo } from "react";
 import { filter, map, pipe } from "remeda";
 import type { Maybe } from "schema/utils";
 import type { ModalItemFC } from "#/hooks/useModalViewer";
 
-type Icon = typeof UserOutlined;
+type Icon = typeof UserOutlined | typeof ThumbsUp;
 type Func<I, O> = (t: I) => O;
 type MaybeFunc<I, O> = O | ((t: I) => O);
 

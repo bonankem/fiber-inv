@@ -17,7 +17,8 @@
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true,
     "noUncheckedSideEffectImports": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": { "#/*": ["./src/*"] }
   },
   "tsc-alias": {
     "resolveFullPaths": true

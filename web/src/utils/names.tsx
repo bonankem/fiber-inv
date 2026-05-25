@@ -1,15 +1,14 @@
 import type { Maybe } from "schema/utils";
 
-const shortNameLimit = 20;
-export function shortName(who: Maybe<string | { name: string }>) {
+export function shortName(who: Maybe<string | { name: string }>, limit = 20) {
   const name = typeof who === "string" ? who : who?.name;
   if (!name) return undefined;
-  if (name.length <= shortNameLimit) return name;
+  if (name.length <= limit) return name;
 
   // initialize all but the first and last name
   const shorter = name.replace(/ \S*?(\p{L})\S* /gu, " $1. ");
-  if (shorter.length <= shortNameLimit) return shorter;
+  if (shorter.length <= limit) return shorter;
 
-  // initialize all but the first name
+  // just the first name and the last initial
   return name.replace(/^(\S+).*?(\p{L})\S*$/u, "$1 $2.");
 }

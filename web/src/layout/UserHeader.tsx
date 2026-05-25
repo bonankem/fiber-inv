@@ -4,16 +4,27 @@ import {
   PlusOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
+import { useLocation } from "@tanstack/react-router";
 import { Button, Layout, theme } from "antd";
 import { twJoin } from "tailwind-merge";
-import { useModalViewer } from "#/hooks/useModalViewer";
+import { type ModalFC, useModalViewer } from "#/hooks/useModalViewer";
+import FhpRequestForm from "#/modules/ftth-projects/FhpRequestForm";
 import FhsRequestForm from "#/modules/ftth-surveys/FhsRequestForm";
 import NotificationBell from "./NotificationBell";
 import type { UserLayoutProps } from "./useUserLayout";
 
+const newForms: Record<string, ModalFC> = {
+  "ftth-surveys": FhsRequestForm,
+  "ftth-projects": FhpRequestForm,
+};
+
 export default function UserHeader(props: UserLayoutProps) {
   const { token } = theme.useToken();
   const modal = useModalViewer();
+
+  const { pathname } = useLocation();
+  const pathKey = pathname.split("/")[1].toLowerCase();
+  const newForm = newForms[pathKey];
 
   return (
     <Layout.Header
@@ -60,13 +71,15 @@ export default function UserHeader(props: UserLayoutProps) {
             Rapport
           </Button>
 
-          <Button
-            size="small"
-            type="primary"
-            onClick={() => modal.open(FhsRequestForm)}
-          >
-            Nouvelle demande
-          </Button>
+          {newForm && (
+            <Button
+              size="small"
+              type="primary"
+              onClick={() => modal.open(newForm)}
+            >
+              Nouvelle demande
+            </Button>
+          )}
         </section>
 
         <section id="header-actions-mobile" className="mr-2 block lg:hidden">

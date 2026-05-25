@@ -15,7 +15,7 @@ model FtthConnection {
     olt   Olt?    @relation(fields: [oltId], references: [id])
     oltId String? @db.Uuid
 
-    fat   Fat?    @relation(fields: [fatId], references: [id])
+    fat   Box?    @relation(fields: [fatId], references: [id])
     fatId String? @db.Uuid
 
     ont   Ont?    @relation(fields: [ontId], references: [id])

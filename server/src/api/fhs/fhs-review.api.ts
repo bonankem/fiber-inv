@@ -1,5 +1,5 @@
 import { WorkAction, WorkStatus } from "schema/enums";
-import { type FhsReviewT, fhsReviewZ } from "schema/fhs";
+import { type FhsReviewT, fhsReviewZ, ftthSurveyS } from "schema/fhs";
 import { prisma } from "#/prisma";
 import { bad, currentDate, postRoute } from "#/utils";
 import { updateWork } from "../utils/work";
@@ -22,6 +22,7 @@ async function fhsReview(dto: FhsReviewT) {
     bad("Comment is required");
   }
   return prisma.ftthSurvey.update({
+    select: ftthSurveyS,
     where: { id: dto.id },
     data: {
       work: updateWork({

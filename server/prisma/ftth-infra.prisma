@@ -12,7 +12,7 @@ model Plaque {
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
     boundaryId String?   @unique @db.Uuid
 
-    hubs Hub[]
+    hubs Box[]
 
     connections FtthConnection[]
 }
@@ -27,7 +27,7 @@ model Oem {
 
     olts Olt[]
 
-    hubs Hub[]
+    hubs Box[]
     onts Ont[]
 }
 
@@ -44,11 +44,7 @@ model Olt {
     oem   Oem    @relation(fields: [oemId], references: [id])
     oemId String @db.Uuid
 
-    hubs Hub[]
-
-    fhsReports FhsReport[]
-
-    fhpPlans FhpPlan[]
+    boxes Box[]
 
     fhc FtthConnection[]
 }
@@ -60,7 +56,7 @@ enum BoxType {
     END_BOX
 }
 
-model Hub {
+model Box {
     id String @id @default(uuid(7)) @db.Uuid
 
     createdAt DateTime @default(now())
@@ -68,45 +64,19 @@ model Hub {
 
     name String @unique
 
+    serial String? @unique
+
     oem   Oem    @relation(fields: [oemId], references: [id])
     oemId String @db.Uuid
 
-    olt   Olt    @relation(fields: [oltId], references: [id])
-    oltId String @db.Uuid
+    olt   Olt?    @relation(fields: [oltId], references: [id])
+    oltId String? @db.Uuid
 
-    plaque   Plaque @relation(fields: [plaqueId], references: [id])
-    plaqueId String @db.Uuid
+    plaque   Plaque? @relation(fields: [plaqueId], references: [id])
+    plaqueId String? @db.Uuid
 
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
     boundaryId String?   @unique @db.Uuid
-
-    fats Fat[]
-}
-
-enum FatType {
-    SUB_BOX
-    END_BOX
-}
-
-model Fat {
-    id String @id @default(uuid(7)) @db.Uuid
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    name String
-
-    serial String? @unique
-
-    type FatType
-
-    hub   Hub    @relation(fields: [hubId], references: [id])
-    hubId String @db.Uuid
-
-    prev   Fat?    @relation(fields: [prevId], references: [id], name: "prev")
-    prevId String? @db.Uuid
-
-    next Fat[] @relation("prev")
 
     fhc FtthConnection[]
 }

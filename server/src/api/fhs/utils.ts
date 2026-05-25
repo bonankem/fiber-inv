@@ -1,5 +1,6 @@
 import { StaffRole, type WorkStatus } from "schema/enums";
-import { type FtthSurveyT, ftthSurveyS } from "schema/fhs";
+import { ftthSurveyS } from "schema/fhs";
+import type { WorkT } from "schema/work";
 import { prisma } from "#/prisma";
 import { bad, type Maybe, notFound } from "#/utils";
 
@@ -38,6 +39,9 @@ export async function fhsCheck(ids: {
   return { s, u, v };
 }
 
-export function fhsWorker(s: FtthSurveyT, role = StaffRole.PLANNING_ENGINEER) {
+export function fhsWorker(
+  s: { work: WorkT },
+  role = StaffRole.PLANNING_ENGINEER,
+) {
   return s.work.workers.find((w) => w.role === role)?.user;
 }

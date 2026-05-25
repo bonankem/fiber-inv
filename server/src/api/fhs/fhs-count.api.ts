@@ -15,7 +15,7 @@ export default getRoute(
 async function fhsCount(input: FhsFilterT): Promise<SubsetCounts> {
   delete input.subset;
   const byStatus = await prisma.work.groupBy({
-    where: fhsWorkWhere(input),
+    where: { fhs: { isNot: null }, ...fhsWorkWhere(input) },
     by: ["status"],
     _count: true,
   });

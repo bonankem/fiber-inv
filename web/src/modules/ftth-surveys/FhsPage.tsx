@@ -26,6 +26,7 @@ export default function FhsPage() {
   const counts = useQuery({
     queryFn: () => getJson("/fhs/count", subsetCountsZ, countDto),
     queryKey: ["fhs", "count", countDto],
+    staleTime: 1000 * 60,
   });
 
   return (
