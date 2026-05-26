@@ -24,6 +24,8 @@ model FhpReport {
     project   FtthProject @relation(fields: [projectId], references: [id])
     projectId String      @unique @db.Uuid
 
+    submitDate String
+
     xBoxes Int
 
     hubBoxes Int

@@ -1,6 +1,7 @@
 import type { WorkStatus } from "schema/enums";
 import { ftthProjectS } from "schema/fhp";
-import { prisma } from "#/prisma";
+import type { WorkT } from "schema/work";
+import { prisma, StaffRole } from "#/prisma";
 import { bad, type Maybe, notFound } from "#/utils";
 
 type Findable<T> = {
@@ -9,6 +10,13 @@ type Findable<T> = {
 
 function maybeFind<T>(db: Findable<T>, id: Maybe<string>) {
   return id ? db.findUnique({ where: { id } }) : null;
+}
+
+export function fhpWorker(
+  s: { work: WorkT },
+  role = StaffRole.PROJECT_ENGINEER,
+) {
+  return s.work.workers.find((w) => w.role === role)?.user;
 }
 
 export async function fhpCheck(ids: {

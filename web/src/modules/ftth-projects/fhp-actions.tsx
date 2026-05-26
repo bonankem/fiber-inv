@@ -10,8 +10,10 @@ import { ThumbsUp } from "lucide-react";
 import { WorkStatus as When } from "schema/enums";
 import type { FtthProjectT as What } from "schema/fhp";
 import { buildActions } from "#/components/actions/types";
+import FhpAcceptForm from "./FhpAcceptForm";
 import FhpAssignForm from "./FhpAssignForm";
 import FhpInitiateForm from "./FhpInitiateForm";
+import FhpRejectForm from "./FhpRejectForm";
 import FhpSubmitForm from "./FhpSubmitForm";
 
 function isWhen(what: What, when: When) {
@@ -55,12 +57,14 @@ export const fhpActions = buildActions(isWhen, isWho, [
     name: "Accepter",
     icon: ThumbsUp,
     when: [When.REVIEW],
+    form: FhpAcceptForm,
     main: true,
   },
   {
     name: "Rejeter",
     icon: CloseOutlined,
     when: [When.REVIEW],
+    form: FhpRejectForm,
     main: true,
     red: true,
   },

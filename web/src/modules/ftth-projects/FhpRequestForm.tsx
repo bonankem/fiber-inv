@@ -25,8 +25,9 @@ export default function FhpRequestForm(props: ModalStateProps) {
 
     form.setFieldsValue({
       name: s.name,
-      localityId: s.localityId || undefined,
       coords: s.coords || undefined,
+      contact: s.contact || undefined,
+      localityId: s.localityId || undefined,
     });
   };
 

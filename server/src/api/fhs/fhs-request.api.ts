@@ -34,6 +34,7 @@ async function fhsRequest(body: FhsRequestT) {
           sid,
           requestDate,
           name: body.name,
+          contact: body.contact,
           locality: connectId(body.localityId),
           coords: setCoords(body.coords),
           docs: setDocsFrom(body, WorkDocType.PLAQUE_KMZ),
@@ -43,7 +44,6 @@ async function fhsRequest(body: FhsRequestT) {
             role: StaffRole.PLANNING_MANAGER,
           }),
         }),
-        contact: body.contact,
       },
       select: ftthSurveyS,
     });
