@@ -34,6 +34,7 @@ export default function FhsInitiateForm(props: FhsFormProps) {
       state={props.state}
       onSubmit={onSubmit}
       className="grid sm:grid-cols-2 gap-2"
+      initialValues={{ vendorId: props.item.work.vendor?.id }}
     >
       <Form.Item
         name="vendorId"

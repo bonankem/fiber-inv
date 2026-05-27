@@ -1,3 +1,4 @@
+import { mean, unique } from "remeda";
 import type {
   BoundingBoxT,
   CoordsT,
@@ -6,23 +7,38 @@ import type {
 } from "schema/geo";
 import { bad } from "#/utils";
 
+export function getLineBoundingBox(l: CoordsT[]) {
+  const p0 = l[0];
+  let north = p0.lat;
+  let south = p0.lat;
+  let east = p0.lon;
+  let west = p0.lon;
+  for (const { lon, lat } of l) {
+    if (lon > east) east = lon;
+    if (lon < west) west = lon;
+    if (lat > north) north = lat;
+    if (lat < south) south = lat;
+  }
+  return { north, south, east, west };
+}
+
 export function getBoundingBox(mp: MultiPolygonT): BoundingBoxT {
   const p0 = mp[0][0][0];
-  let n = p0.lat;
-  let s = p0.lat;
-  let e = p0.lon;
-  let w = p0.lon;
-  if (!n) bad(`No coords in ${JSON.stringify([mp[0][0][0], mp[0][0], mp[0]])}`);
+  let north = p0.lat;
+  let south = p0.lat;
+  let east = p0.lon;
+  let west = p0.lon;
+
   for (const poly of mp) {
     for (const { lon, lat } of poly[0]) {
       if (!lon) bad(`No coords in ${JSON.stringify(poly)}`);
-      if (lon > e) e = lon;
-      if (lon < w) w = lon;
-      if (lat > n) n = lat;
-      if (lat < s) s = lat;
+      if (lon > east) east = lon;
+      if (lon < west) west = lon;
+      if (lat > north) north = lat;
+      if (lat < south) south = lat;
     }
   }
-  return { west: w, south: s, east: e, north: n };
+  return { north, south, east, west };
 }
 
 /** Checks if a ray extending eastward from p crosses the edge between vertices v1 and v2. */
@@ -62,21 +78,28 @@ export function closestVertex(c: CoordsT, p: PolygonT) {
   return closest;
 }
 
-export function trueCentreOfPolygon(poly: PolygonT): CoordsT {
-  // get the average latitude and longitude of the outer ring
-  // excluding the last point, which is the same as the first
-  const ring = poly[0];
-  if (ring.length < 2) return ring[0];
+export function centreOfBoundingBox(poly: PolygonT): CoordsT {
+  const box = getLineBoundingBox(poly[0]);
+  const lat = (box.north + box.south) / 2;
+  const lon = (box.east + box.west) / 2;
+  return { lat, lon };
+}
 
-  const n = ring.length - 1;
-  const lon = ring.reduce((a, b) => a + b.lon, 0) / n;
-  const lat = ring.reduce((a, b) => a + b.lat, 0) / n;
-  return { lon, lat };
+export function meanPoint(poly: PolygonT): CoordsT {
+  const ring = poly[0];
+  const lat = mean(unique(ring.map((r) => r.lat)));
+  const lon = mean(unique(ring.map((r) => r.lon)));
+  return lat && lon ? { lat, lon } : ring[0];
 }
 
 export function visualCentreOfPolygon(p: PolygonT): CoordsT {
-  const c = trueCentreOfPolygon(p);
-  return isInsidePolygon(c, p) ? c : closestVertex(c, p);
+  const cb = centreOfBoundingBox(p);
+  if (isInsidePolygon(cb, p)) return cb;
+
+  const mp = meanPoint(p);
+  if (isInsidePolygon(mp, p)) return mp;
+
+  return closestVertex(mp, p);
 }
 
 /**  Checks if the point falls within the area of the polygon. */

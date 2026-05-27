@@ -26,6 +26,7 @@ export type FormModalProps<T> = {
   checkbox?: boolean | string;
   maskCloseable?: boolean;
   layout?: FormProps["layout"];
+  initialValues?: Partial<T>;
 };
 
 const fz = 13;
@@ -67,7 +68,7 @@ export default function FormModal<T>(props: FormModalProps<T>) {
         </header>
       }
       style={{ top: 20 }}
-      width={props.width || 320}
+      width={props.width || 360}
       mask={{ blur: true, closable: props.maskCloseable ?? false }}
       open={isOpen}
       onCancel={close}
@@ -81,13 +82,16 @@ export default function FormModal<T>(props: FormModalProps<T>) {
           layout={props.layout ?? "vertical"}
           className="flex flex-col gap-4"
           onFinish={props.onSubmit}
+          initialValues={props.initialValues}
         >
           <fieldset className={props.className || "flex flex-col gap-2"}>
             {props.children}
           </fieldset>
 
           {props.checkbox !== false && (
-            <Checkbox required>{checkboxText(props.checkbox)}</Checkbox>
+            <section>
+              <Checkbox required>{checkboxText(props.checkbox)}</Checkbox>
+            </section>
           )}
 
           <div

@@ -21,7 +21,7 @@ model FhpReport {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    project   FtthProject @relation(fields: [projectId], references: [id])
+    project   FtthProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
     projectId String      @unique @db.Uuid
 
     submitDate String

@@ -18,10 +18,10 @@ model Boundary {
     multiPolygon Json
 
     // bounding box
-    boxN Float
-    boxE Float
-    boxW Float
-    boxS Float
+    north Float
+    south Float
+    east  Float
+    west  Float
 
     locality Locality?
 

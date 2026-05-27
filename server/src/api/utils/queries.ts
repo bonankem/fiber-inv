@@ -33,18 +33,36 @@ export function maybeCoords(
   return { lat, lon };
 }
 
+const TEN_5 = 100000;
+
+function to5dp(n: number) {
+  return Math.round(n * TEN_5) / TEN_5;
+}
+
+function intString(n: number, width: number) {
+  const i = Math.abs(Math.round(n * TEN_5));
+  return i.toString().padStart(width, "0");
+}
+
+/**
+ * Creates an integer ID that fits within Number.MAX_SAFE_INTEGER
+ * but still visually resembles the coordinates it represents e.g.
+ * `coordsId(6.15472, -5.96691) === 4061547200596691`.
+ */
 export function coordsId(lat: number, lon: number) {
-  const latI = Math.round(lat * 100000) + 90;
-  const lonI = Math.round(lon * 100000) + 180;
-  return lonI * 1000_00000 + latI;
+  const latI = intString(lat, 7);
+  const lonI = intString(lon, 8);
+  const sign = (lat >= 0 ? 0 : 1) + (lon >= 0 ? 1 : 3);
+  // 1:+lat,+lon 2:-lat,+lon 3:+lat,-lon; 4:-lat,-lon
+  return Number(`${sign}${latI}${lonI}`);
 }
 
 export function setCoords(
   src: Maybe<{ lat: Maybe<number>; lon: Maybe<number> }>,
 ): Prisma.CoordsCreateNestedOneWithoutWorksInput | undefined {
   if (!src?.lat || !src?.lon) return undefined;
-  const lat = Math.round(src.lat * 100000) / 100000;
-  const lon = Math.round(src.lon * 100000) / 100000;
+  const lat = to5dp(src.lat);
+  const lon = to5dp(src.lon);
   const id = coordsId(src.lat, src.lon);
   return { connectOrCreate: { where: { id }, create: { id, lat, lon } } };
 }
