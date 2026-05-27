@@ -1,3 +1,4 @@
+import { APIProvider } from "@vis.gl/react-google-maps";
 import { Layout } from "antd";
 import { ModalProvider } from "#/components/ModalProvider";
 import UploaderProvider from "#/components/UploaderProvider";
@@ -9,13 +10,15 @@ export default function UserLayout() {
   const props = useUserLayout();
 
   return (
-    <UploaderProvider>
-      <ModalProvider>
-        <Layout className="w-dvw h-dvh overflow-hidden">
-          <UserMenu {...props} />
-          <UserContent {...props} />
-        </Layout>
-      </ModalProvider>
-    </UploaderProvider>
+    <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_KEY}>
+      <UploaderProvider>
+        <ModalProvider>
+          <Layout className="w-dvw h-dvh overflow-hidden">
+            <UserMenu {...props} />
+            <UserContent {...props} />
+          </Layout>
+        </ModalProvider>
+      </UploaderProvider>
+    </APIProvider>
   );
 }

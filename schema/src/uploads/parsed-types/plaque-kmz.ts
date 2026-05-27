@@ -1,5 +1,5 @@
 import z from "zod";
-import { coordsZ, linearRingZ } from "#/geo";
+import { boundingBoxZ, coordsZ, linearRingZ } from "#/geo";
 import { WorkDocType } from "#/prisma";
 import { zObject } from "#/utils";
 
@@ -9,6 +9,7 @@ export const upPlaqueKmzZ = zObject("UpPlaqueKmzT", {
   name: z.string().optional(),
   coords: coordsZ,
   boundary: linearRingZ,
+  bbox: boundingBoxZ,
 });
 
 export type UpPlaqueKmzT = z.infer<typeof upPlaqueKmzZ>;

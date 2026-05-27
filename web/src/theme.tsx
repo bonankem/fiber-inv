@@ -79,6 +79,14 @@ export default function ThemeProvider(props: PropsWithChildren) {
   const isDark = value === "dark" || (value === "system" && systemDark);
   const algorithm = isDark ? theme.darkAlgorithm : theme.defaultAlgorithm;
 
+  useEffect(() => {
+    if (isDark) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+  }, [isDark]);
+
   return (
     <AppThemeContext value={{ isDark, value, setValue }}>
       <ConfigProvider theme={{ ...baseTheme, algorithm }}>

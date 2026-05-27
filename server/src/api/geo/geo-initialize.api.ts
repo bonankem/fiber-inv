@@ -17,7 +17,13 @@ export async function geoInitialize() {
     (f) => {
       const p = multiPolygonFromGeoJson(f.geometry.coordinates);
       const b = getBoundingBox(p);
-      return { multiPolygon: p, boxN: b.n, boxE: b.e, boxW: b.w, boxS: b.s };
+      return {
+        multiPolygon: p,
+        boxN: b.north,
+        boxE: b.east,
+        boxW: b.west,
+        boxS: b.south,
+      };
     },
   );
 

@@ -2,7 +2,11 @@ import { idNameP } from "schema/common";
 import { WorkDocType } from "schema/enums";
 import type { LinearRingT } from "schema/geo";
 import type { UpPlaqueKmzT } from "schema/uploads";
-import { isInsideMp, visualCentreOfPolygon } from "#/api/geo/utils";
+import {
+  getBoundingBox,
+  isInsideMp,
+  visualCentreOfPolygon,
+} from "#/api/geo/utils";
 import { prisma } from "#/prisma";
 import { maybeUnzip, type ParserInput } from "./utils";
 
@@ -38,6 +42,8 @@ export async function parseUpPlaqueKmz({
   });
 
   const coords = visualCentreOfPolygon([boundary]);
+  const bbox = getBoundingBox([[boundary]]);
+
   const boundaries = await prisma.boundary.findMany({
     where: {
       locality: {},
@@ -53,6 +59,7 @@ export async function parseUpPlaqueKmz({
   return {
     type: WorkDocType.PLAQUE_KMZ,
     name,
+    bbox,
     coords,
     boundary,
     localityId: match?.locality?.id,

@@ -1,14 +1,12 @@
-import type { CoordsT, MultiPolygonT, PolygonT } from "schema/geo";
+import type {
+  BoundingBoxT,
+  CoordsT,
+  MultiPolygonT,
+  PolygonT,
+} from "schema/geo";
 import { bad } from "#/utils";
 
-export type Bbox = {
-  w: number;
-  s: number;
-  e: number;
-  n: number;
-};
-
-export function getBoundingBox(mp: MultiPolygonT): Bbox {
+export function getBoundingBox(mp: MultiPolygonT): BoundingBoxT {
   const p0 = mp[0][0][0];
   let n = p0.lat;
   let s = p0.lat;
@@ -24,7 +22,7 @@ export function getBoundingBox(mp: MultiPolygonT): Bbox {
       if (lat < s) s = lat;
     }
   }
-  return { w, s, e, n };
+  return { west: w, south: s, east: e, north: n };
 }
 
 /** Checks if a ray extending eastward from p crosses the edge between vertices v1 and v2. */
@@ -104,8 +102,8 @@ export function isInsideMp(c: CoordsT, mp: MultiPolygonT) {
   return mp.some((poly) => isInsidePolygon(c, poly));
 }
 
-export function isInsideBox(c: CoordsT, box: Bbox) {
+export function isInsideBox(c: CoordsT, box: BoundingBoxT) {
   const { lon, lat } = c;
-  const { w, s, e, n } = box;
+  const { west: w, south: s, east: e, north: n } = box;
   return w <= lon && lon <= e && s <= lat && lat <= n;
 }

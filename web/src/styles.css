@@ -1,7 +1,10 @@
 /** biome-ignore-all lint/complexity/noImportantStyles: !important is needed for Antd style overrides */
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 * {
+  @apply border-gray-300 dark:border-gray-600;
   box-sizing: border-box;
 }
 
