@@ -4,7 +4,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 * {
-  @apply border-gray-300 dark:border-gray-600;
+  @apply border-gray-300 dark:border-gray-700;
   box-sizing: border-box;
 }
 

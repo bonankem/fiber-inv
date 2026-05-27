@@ -3,6 +3,7 @@ import * as p from "./parsed-types";
 
 export const uploadParsedZ = z.discriminatedUnion("type", [
   p.upPlaqueKmzZ,
+  p.upPlanKmzZ,
   p.upFhsCoordsZ,
 ]);
 

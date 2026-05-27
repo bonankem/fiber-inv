@@ -1,12 +1,11 @@
 import { idKeyNameS } from "schema/common";
-import { multiPolygonFromGeoJson } from "schema/geo";
 import { assoc } from "schema/utils";
 import { prisma } from "#/prisma";
 import { bad, postRoute } from "#/utils";
 import { makeKey } from "../utils/queries";
 import polygons from "./geo.json" with { type: "json" };
 import { geoNames } from "./geo.names";
-import { getBoundingBox } from "./utils";
+import { ringWithBbox } from "./utils";
 
 export default postRoute("/geo/initialize", null, () => geoInitialize());
 
@@ -15,8 +14,8 @@ export async function geoInitialize() {
     polygons.features,
     (f) => makeKey(f.properties.name),
     (f) => {
-      const p = multiPolygonFromGeoJson(f.geometry.coordinates);
-      return { multiPolygon: p, ...getBoundingBox(p) };
+      const ring = f.geometry.coordinates[0];
+      return ringWithBbox(ring.map(([lon, lat]) => ({ lat, lon })));
     },
   );
 

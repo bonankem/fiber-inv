@@ -76,7 +76,7 @@ export default function FhpRequestForm(props: ModalStateProps) {
         <Input required id="fhs-contact" />
       </Form.Item>
 
-      <Form.Item name="managerId" label="Envoyer à responsable" {...req}>
+      <Form.Item name="managerId" label="Responsable" {...req}>
         <StaffSelect filter="PROJECT_MANAGER" />
       </Form.Item>
 

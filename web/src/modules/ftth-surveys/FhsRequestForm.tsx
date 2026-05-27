@@ -101,14 +101,14 @@ export default function FhsRequestForm(props: ModalStateProps) {
         </Form.Item>
 
         <Form.Item name="localityId" label="Localité" required>
-          <LocalitySelect placeholder={placeholder || "Département ou ville"} />
+          <LocalitySelect placeholder={placeholder} />
         </Form.Item>
 
         <Form.Item name="contact" label="Contact client" required>
           <Input required id="fhs-contact" placeholder="Nom et téléphone" />
         </Form.Item>
 
-        <Form.Item name="managerId" label="Envoyer à responsable" required>
+        <Form.Item name="managerId" label="Responsable" required>
           <StaffSelect filter="PLANNING_MANAGER" />
         </Form.Item>
 

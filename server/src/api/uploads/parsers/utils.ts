@@ -1,4 +1,5 @@
 import { text } from "node:stream/consumers";
+import { XMLParser } from "fast-xml-parser";
 import type { UploadParsedT } from "schema/uploads";
 import { fromBuffer } from "yauzl-promise";
 
@@ -25,4 +26,14 @@ export async function maybeUnzip(data: Buffer) {
     return kml && text(await zip.openReadStream(kml));
   }
   return data.toString("utf-8");
+}
+
+const xmlParser = new XMLParser({});
+
+export async function parseKmz(data: Buffer) {
+  const text = await maybeUnzip(data);
+  if (!text) return null;
+
+  const xml = xmlParser.parse(text);
+  return xml;
 }

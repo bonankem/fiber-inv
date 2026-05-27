@@ -14,8 +14,8 @@ model Boundary {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    /// [MultiPolygonJson]
-    multiPolygon Json
+    /// [LinearRingJson]
+    ring Json
 
     // bounding box
     north Float

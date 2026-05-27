@@ -9,7 +9,7 @@ import {
   WorkStatus,
 } from "#/prisma";
 import { connectId, postRoute } from "#/utils";
-import { getBoundingBox } from "../geo/utils";
+import { ringWithBbox } from "../geo/utils";
 import {
   addLog,
   create,
@@ -26,23 +26,23 @@ export default postRoute(
 
 const action = WorkAction.REQUEST;
 const status = WorkStatus.REQUESTED;
+const { PLAQUE_KMZ } = WorkDocType;
 
-type BoundaryCreate = Prisma.FtthSurveyCreateInput["boundary"];
-
-async function makeBoundary(id: string): Promise<BoundaryCreate> {
+async function boundaryCreate(
+  id: string,
+): Promise<Prisma.FtthSurveyCreateInput["boundary"]> {
   const up = await prisma.upload.findUnique({ where: { id } });
-  if (up?.parsed?.type !== WorkDocType.PLAQUE_KMZ) return undefined;
-  const multiPolygon = [[up.parsed.boundary]];
-  const bbox = getBoundingBox(multiPolygon);
-  return { create: { multiPolygon, ...bbox } };
+  if (up?.parsed?.type !== PLAQUE_KMZ) return undefined;
+  return { create: ringWithBbox(up.parsed.boundary) };
 }
 
 async function fhsRequest(body: FhsRequestT) {
-  const boundary = await makeBoundary(body.PLAQUE_KMZ);
+  const boundary = await boundaryCreate(body.PLAQUE_KMZ);
 
   return prisma.$transaction(async (tx) => {
     const { sid, requestDate } = await nextId(tx, "FHS");
     return tx.ftthSurvey.create({
+      select: ftthSurveyS,
       data: {
         work: create({
           status,
@@ -52,7 +52,7 @@ async function fhsRequest(body: FhsRequestT) {
           contact: body.contact,
           locality: connectId(body.localityId),
           coords: setCoords(body.coords),
-          docs: setDocsFrom(body, WorkDocType.PLAQUE_KMZ),
+          docs: setDocsFrom(body, PLAQUE_KMZ),
           logs: addLog(body, action, status),
           workers: create({
             userId: body.managerId,
@@ -61,7 +61,6 @@ async function fhsRequest(body: FhsRequestT) {
         }),
         boundary,
       },
-      select: ftthSurveyS,
     });
   });
 }

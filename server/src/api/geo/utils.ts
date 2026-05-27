@@ -1,13 +1,7 @@
 import { mean, unique } from "remeda";
-import type {
-  BoundingBoxT,
-  CoordsT,
-  MultiPolygonT,
-  PolygonT,
-} from "schema/geo";
-import { bad } from "#/utils";
+import type { CoordsT, LinearRingT } from "schema/geo";
 
-export function getLineBoundingBox(l: CoordsT[]) {
+export function getBoundingBox(l: LinearRingT) {
   const p0 = l[0];
   let north = p0.lat;
   let south = p0.lat;
@@ -22,27 +16,16 @@ export function getLineBoundingBox(l: CoordsT[]) {
   return { north, south, east, west };
 }
 
-export function getBoundingBox(mp: MultiPolygonT): BoundingBoxT {
-  const p0 = mp[0][0][0];
-  let north = p0.lat;
-  let south = p0.lat;
-  let east = p0.lon;
-  let west = p0.lon;
-
-  for (const poly of mp) {
-    for (const { lon, lat } of poly[0]) {
-      if (!lon) bad(`No coords in ${JSON.stringify(poly)}`);
-      if (lon > east) east = lon;
-      if (lon < west) west = lon;
-      if (lat > north) north = lat;
-      if (lat < south) south = lat;
-    }
-  }
-  return { north, south, east, west };
+export function ringWithBbox(ring: LinearRingT) {
+  return { ring, ...getBoundingBox(ring) };
 }
 
 /** Checks if a ray extending eastward from p crosses the edge between vertices v1 and v2. */
-export function doesEdgeCrossRay(v1: CoordsT, v2: CoordsT, p: CoordsT) {
+export function doesEdgeCrossRay(
+  v1: CoordsT,
+  v2: CoordsT,
+  p: CoordsT,
+): boolean {
   const { lon: lon1, lat: lat1 } = v1;
   const { lon: lon2, lat: lat2 } = v2;
   const { lon, lat } = p;
@@ -57,76 +40,49 @@ export function doesEdgeCrossRay(v1: CoordsT, v2: CoordsT, p: CoordsT) {
   return (lat1 >= lat && lat >= lat2) || (lat2 >= lat && lat >= lat1);
 }
 
-export function sqDist(a: CoordsT, b: CoordsT) {
-  const dx = b.lat - a.lat;
-  const dy = b.lon - a.lon;
-  return dx * dx + dy * dy;
-}
-
-export function closestVertex(c: CoordsT, p: PolygonT) {
+export function nearestVertex(c: CoordsT, ring: LinearRingT) {
   let minDist = Infinity;
-  let closest = p[0][0];
-  for (const ring of p) {
-    for (const point of ring) {
-      const dist = sqDist(c, point);
-      if (dist < minDist) {
-        minDist = dist;
-        closest = point;
-      }
+  let closest = ring[0];
+  for (const p of ring) {
+    const dx = p.lat - c.lat;
+    const dy = p.lon - c.lon;
+    const dist = dx * dx + dy * dy;
+    if (dist < minDist) {
+      minDist = dist;
+      closest = p;
     }
   }
   return closest;
 }
 
-export function centreOfBoundingBox(poly: PolygonT): CoordsT {
-  const box = getLineBoundingBox(poly[0]);
+function bboxCentre(ring: LinearRingT): CoordsT {
+  const box = getBoundingBox(ring);
   const lat = (box.north + box.south) / 2;
   const lon = (box.east + box.west) / 2;
   return { lat, lon };
 }
 
-export function meanPoint(poly: PolygonT): CoordsT {
-  const ring = poly[0];
+function ringMeanPoint(ring: LinearRingT): CoordsT {
   const lat = mean(unique(ring.map((r) => r.lat)));
   const lon = mean(unique(ring.map((r) => r.lon)));
   return lat && lon ? { lat, lon } : ring[0];
 }
 
-export function visualCentreOfPolygon(p: PolygonT): CoordsT {
-  const cb = centreOfBoundingBox(p);
-  if (isInsidePolygon(cb, p)) return cb;
+export function ringCentre(l: LinearRingT): CoordsT {
+  const cb = bboxCentre(l);
+  if (isInsideRing(cb, l)) return cb;
 
-  const mp = meanPoint(p);
-  if (isInsidePolygon(mp, p)) return mp;
+  const mp = ringMeanPoint(l);
+  if (isInsideRing(mp, l)) return mp;
 
-  return closestVertex(mp, p);
+  return nearestVertex(mp, l);
 }
 
-/**  Checks if the point falls within the area of the polygon. */
-export function isInsidePolygon(c: CoordsT, p: PolygonT) {
+export function isInsideRing(c: CoordsT, ring: LinearRingT): boolean {
+  // odd number of edge crosses = inside, even = outside
   let inside = false;
-  for (const ring of p) {
-    for (let i = 1; i < ring.length; i++) {
-      // odd number of edge crosses = inside, even = outside
-      if (doesEdgeCrossRay(ring[i - 1], ring[i], c)) inside = !inside;
-    }
+  for (let i = 1; i < ring.length; i++) {
+    if (doesEdgeCrossRay(ring[i - 1], ring[i], c)) inside = !inside;
   }
   return inside;
-  // NOTE: with the way it is implemented, the first point on
-  // any ring of the polygon is considered to be outside the polygon.
-  // This isn't correct, but it doesn't break any functionality,
-  // so we'll leave it as-is for simplicity's sake.
-  // This whole thing is just for the Local Government Area detection,
-  // it's not meant to be a perfectly robust GeoJSON implementation.
-}
-
-/**  Checks if the point falls within any of the polygons. */
-export function isInsideMp(c: CoordsT, mp: MultiPolygonT) {
-  return mp.some((poly) => isInsidePolygon(c, poly));
-}
-
-export function isInsideBox(c: CoordsT, box: BoundingBoxT) {
-  const { lon, lat } = c;
-  const { west: w, south: s, east: e, north: n } = box;
-  return w <= lon && lon <= e && s <= lat && lat <= n;
 }
