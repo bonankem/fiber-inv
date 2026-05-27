@@ -10,30 +10,29 @@ type PendingMap = {
 
 type Props = {
   work: WorkT;
-  pendingOn: PendingMap;
+  pendingOn?: PendingMap;
 };
 
 export default function StatusView(props: Props) {
   const work = props.work;
   const status = work.status;
-  const pendingKey = props.pendingOn[status];
-  const pendingOn = shortName(
-    pendingKey === "VENDOR" ? work.vendor?.name : worker(work, pendingKey),
-    15,
-  );
+  const pendingKey = props.pendingOn?.[status];
+  const pendingOn =
+    pendingKey === "VENDOR" ? work.vendor?.name : worker(work, pendingKey);
+  const pendingName = shortName(pendingOn, 15);
 
   return (
     <div className="flex gap-2 items-start">
       <Tag variant="outlined" color={colors[status] || "blue"}>
         {statusNames[status]}
       </Tag>
-      {pendingOn && <Tag variant="outlined">{pendingOn}</Tag>}
+      {pendingName && <Tag variant="outlined">{pendingName}</Tag>}
     </div>
   );
 }
 
 function worker(work: WorkT, role: Maybe<StaffRole>) {
-  return work.workers.find((w) => w.role === role)?.user;
+  return role ? work.workers.find((w) => w.role === role)?.user : undefined;
 }
 
 const colors: Partial<Record<WorkStatus, TagProps["color"]>> = {

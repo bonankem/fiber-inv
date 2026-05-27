@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { Maybe } from "schema/utils";
+import type { ModalItemFC, ModalViewer } from "#/hooks/useModalViewer";
 import type { Actions } from "../actions/types";
 
 export type DtFilter = {
@@ -13,7 +14,7 @@ export type DtColumn<T> = {
   title: ReactNode;
   render: (t: T) => ReactNode;
   width?: string | number;
-  onClick?: (t: T) => void;
+  onClick?: ((t: T, m: ModalViewer) => void) | boolean;
   screen?: "mobile" | "normal" | "large" | "all";
   className?: string;
   filterToggle?: boolean;
@@ -36,4 +37,5 @@ export type DataTableProps<T> = {
   onMobile?: DtColumn<T>;
   onExport?: () => void;
   maxHeight?: string | number;
+  modal?: ModalItemFC<T>;
 };

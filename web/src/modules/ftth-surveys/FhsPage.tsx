@@ -8,6 +8,7 @@ import { getJson } from "#/api/helpers";
 import DataPage from "#/components/data-page/DataPage";
 import { subsetsDefault } from "#/components/data-page/utils";
 import { useApiQuery } from "#/hooks/useApiQuery";
+import FhsDetailsModal from "./FhsDetailsModal";
 import { fhsActions } from "./fhs-actions";
 import { fhsColumns } from "./fhs-columns";
 
@@ -35,6 +36,7 @@ export default function FhsPage() {
         data: api.query.data,
         columns: fhsColumns,
         actions: fhsActions,
+        modal: FhsDetailsModal,
       }}
       subsets={subsetsDefault(
         api.dto.subset,

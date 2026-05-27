@@ -42,7 +42,6 @@ export default function ActionsButton<T>(props: Props<T>) {
         if (form) modals.openWith(form, item);
       },
       className: twJoin(
-        "text-sm!",
         a.main && !a.red && "text-green-600!",
         a.red && "text-red-400!",
       ),

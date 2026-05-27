@@ -16,22 +16,19 @@ export const fhsColumns: FhsColumn[] = [
     key: "id",
     title: "ID",
     width: 100,
-    className: "group cursor-pointer",
+    onClick: true,
     render: (p) => (
       <WithCaption
-        title={<span className="group-hover:underline">{p.work.sid}</span>}
-        caption={
-          <span className="text-blue-400 group-hover:underline">
-            Voir les détails
-          </span>
-        }
+        title={<span>{p.work.sid}</span>}
+        caption={<span className="text-blue-400">Voir les détails</span>}
       />
     ),
   },
   {
     key: "name",
-    title: "Nom du lieu",
+    title: "Nom",
     width: 200,
+    onClick: true,
     render: (p) => (
       <WithCaption
         title={p.work.name}

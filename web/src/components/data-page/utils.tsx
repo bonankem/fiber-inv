@@ -1,14 +1,31 @@
 import { Grid, type TableColumnType } from "antd";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { sumBy } from "remeda";
 import { Subset, type SubsetCounts } from "schema/common";
 import type { Maybe } from "schema/utils";
+import { useModalViewer } from "#/hooks/useModalViewer";
 import ActionsButton from "../actions/ActionsButton";
-import type { DataTableProps } from "./types";
+import type { DataTableProps, DtColumn } from "./types";
 
 export function useResolvedColumns<T>(props: DataTableProps<T>) {
   const bp = Grid.useBreakpoint();
   const screen = bp.xxl ? "large" : bp.md ? "normal" : "mobile";
+  const modals = useModalViewer();
+
+  const onRow = useCallback(
+    (f: DtColumn<T>["onClick"]) => {
+      if (!f) return undefined;
+
+      const className = "cursor-pointer hover:underline decoration-gray-300";
+      if (typeof f === "function") {
+        return (t: T) => ({ onClick: () => f(t, modals), className });
+      }
+      const m = props.modal;
+      if (!m) return undefined;
+      return (t: T) => ({ onClick: () => modals.openWith(m, t), className });
+    },
+    [modals, props.modal],
+  );
 
   type Col = TableColumnType<T>;
   const columns = useMemo((): Col[] => {
@@ -36,10 +53,11 @@ export function useResolvedColumns<T>(props: DataTableProps<T>) {
         title: col.title,
         className: col.className,
         render: (_, t) => col.render(t),
+        onCell: onRow(col.onClick),
       })),
       ...(actionCol ? [actionCol] : []),
     ];
-  }, [props.columns, props.onMobile, screen, props.actions]);
+  }, [props.columns, props.onMobile, screen, props.actions, onRow]);
 
   const scrollX = useMemo(() => {
     const fallback = 150;
