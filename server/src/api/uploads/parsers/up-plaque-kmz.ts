@@ -10,7 +10,7 @@ const folderRe = /<folder> ?<name>[^>]*cluster.*?<\/folder>/i;
 const linearRingRe = /<linearring.+?<\/linearring>/i;
 const lineStringRe = /<linestring.+?<\/linestring>/i;
 const coordsRe = /<coordinates.*?<\/coordinates>/i;
-const lonLatRe = /(?<!,\d)(-?\d+\.?\d*),(-?\d+\.?\d*)/g;
+const lngLatRe = /(?<!,\d)(-?\d+\.?\d*),(-?\d+\.?\d*)/g;
 const placeNameRe = /<placemark>.*?<name>([^<]+)/i;
 
 export async function parseUpPlaqueKmz({
@@ -32,9 +32,9 @@ export async function parseUpPlaqueKmz({
   const ringCoords = ring?.[0].match(coordsRe);
   if (!ringCoords) return null;
 
-  const strings = ringCoords[0].matchAll(lonLatRe);
+  const strings = ringCoords[0].matchAll(lngLatRe);
   const boundary: LinearRingT = Array.from(strings, (r) => {
-    return { lon: Number(r[1]), lat: Number(r[2]) };
+    return { lng: Number(r[1]), lat: Number(r[2]) };
   });
 
   const coords = ringCentre(boundary);
@@ -45,8 +45,8 @@ export async function parseUpPlaqueKmz({
       locality: {},
       north: { gte: coords.lat },
       south: { lte: coords.lat },
-      east: { gte: coords.lon },
-      west: { lte: coords.lon },
+      east: { gte: coords.lng },
+      west: { lte: coords.lng },
     },
     include: { locality: idNameP },
   });

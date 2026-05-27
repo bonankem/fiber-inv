@@ -41,7 +41,7 @@ export async function parseUpFhsCoords({
   }
   const nameKey = findKey(/boitier/i);
   const latKey = findKey(/latitude/i);
-  const lonKey = findKey(/longitude/i);
+  const lngKey = findKey(/longitude/i);
   const hpKey = findKey(/hp/i);
 
   const items = rows.map((r) => {
@@ -54,7 +54,7 @@ export async function parseUpFhsCoords({
 
     const h = Number(r[hpKey]);
     const hp = Number.isFinite(h) && h >= 0 ? h : null;
-    const coords = maybeCoords(r[latKey], r[lonKey]);
+    const coords = maybeCoords(r[latKey], r[lngKey]);
     return { name, type, coords, hp };
   });
 

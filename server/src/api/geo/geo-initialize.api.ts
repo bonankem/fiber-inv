@@ -15,7 +15,7 @@ export async function geoInitialize() {
     (f) => makeKey(f.properties.name),
     (f) => {
       const ring = f.geometry.coordinates[0];
-      return ringWithBbox(ring.map(([lon, lat]) => ({ lat, lon })));
+      return ringWithBbox(ring.map(([lng, lat]) => ({ lat, lng })));
     },
   );
 

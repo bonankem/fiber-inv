@@ -27,10 +27,10 @@ export function maybeCoords(
   longitude: unknown,
 ): CoordsT | null {
   const lat = Number(latitude);
-  const lon = Number(longitude);
+  const lng = Number(longitude);
   if (Number.isNaN(lat)) return null;
-  if (Number.isNaN(lon)) return null;
-  return { lat, lon };
+  if (Number.isNaN(lng)) return null;
+  return { lat, lng };
 }
 
 const TEN_5 = 100000;
@@ -49,22 +49,22 @@ function intString(n: number, width: number) {
  * but still visually resembles the coordinates it represents e.g.
  * `coordsId(6.15472, -5.96691) === 4061547200596691`.
  */
-export function coordsId(lat: number, lon: number) {
+export function coordsId(lat: number, lng: number) {
   const latI = intString(lat, 7);
-  const lonI = intString(lon, 8);
-  const sign = (lat >= 0 ? 0 : 1) + (lon >= 0 ? 1 : 3);
-  // 1:+lat,+lon 2:-lat,+lon 3:+lat,-lon; 4:-lat,-lon
-  return Number(`${sign}${latI}${lonI}`);
+  const lngI = intString(lng, 8);
+  const sign = (lat >= 0 ? 0 : 1) + (lng >= 0 ? 1 : 3);
+  // 1:+lat,+lng 2:-lat,+lng 3:+lat,-lng; 4:-lat,-lng
+  return Number(`${sign}${latI}${lngI}`);
 }
 
 export function setCoords(
-  src: Maybe<{ lat: Maybe<number>; lon: Maybe<number> }>,
+  src: Maybe<{ lat: Maybe<number>; lng: Maybe<number> }>,
 ): Prisma.CoordsCreateNestedOneWithoutWorksInput | undefined {
-  if (!src?.lat || !src?.lon) return undefined;
+  if (!src?.lat || !src?.lng) return undefined;
   const lat = to5dp(src.lat);
-  const lon = to5dp(src.lon);
-  const id = coordsId(src.lat, src.lon);
-  return { connectOrCreate: { where: { id }, create: { id, lat, lon } } };
+  const lng = to5dp(src.lng);
+  const id = coordsId(src.lat, src.lng);
+  return { connectOrCreate: { where: { id }, create: { id, lat, lng } } };
 }
 
 export function addUploads(ids: Maybe<string[]>) {

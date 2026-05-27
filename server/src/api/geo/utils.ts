@@ -5,11 +5,11 @@ export function getBoundingBox(l: LinearRingT) {
   const p0 = l[0];
   let north = p0.lat;
   let south = p0.lat;
-  let east = p0.lon;
-  let west = p0.lon;
-  for (const { lon, lat } of l) {
-    if (lon > east) east = lon;
-    if (lon < west) west = lon;
+  let east = p0.lng;
+  let west = p0.lng;
+  for (const { lng, lat } of l) {
+    if (lng > east) east = lng;
+    if (lng < west) west = lng;
     if (lat > north) north = lat;
     if (lat < south) south = lat;
   }
@@ -26,12 +26,12 @@ export function doesEdgeCrossRay(
   v2: CoordsT,
   p: CoordsT,
 ): boolean {
-  const { lon: lon1, lat: lat1 } = v1;
-  const { lon: lon2, lat: lat2 } = v2;
-  const { lon, lat } = p;
+  const { lng: lng1, lat: lat1 } = v1;
+  const { lng: lng2, lat: lat2 } = v2;
+  const { lng, lat } = p;
 
   // edges that are fully to the west of the ray do not cross it
-  if (lon1 < lon && lon2 < lon) return false;
+  if (lng1 < lng && lng2 < lng) return false;
 
   // edges parallel to the ray do not cross it
   if (lat1 === lat2) return false;
@@ -45,7 +45,7 @@ export function nearestVertex(c: CoordsT, ring: LinearRingT) {
   let closest = ring[0];
   for (const p of ring) {
     const dx = p.lat - c.lat;
-    const dy = p.lon - c.lon;
+    const dy = p.lng - c.lng;
     const dist = dx * dx + dy * dy;
     if (dist < minDist) {
       minDist = dist;
@@ -58,14 +58,14 @@ export function nearestVertex(c: CoordsT, ring: LinearRingT) {
 function bboxCentre(ring: LinearRingT): CoordsT {
   const box = getBoundingBox(ring);
   const lat = (box.north + box.south) / 2;
-  const lon = (box.east + box.west) / 2;
-  return { lat, lon };
+  const lng = (box.east + box.west) / 2;
+  return { lat, lng };
 }
 
 function ringMeanPoint(ring: LinearRingT): CoordsT {
   const lat = mean(unique(ring.map((r) => r.lat)));
-  const lon = mean(unique(ring.map((r) => r.lon)));
-  return lat && lon ? { lat, lon } : ring[0];
+  const lng = mean(unique(ring.map((r) => r.lng)));
+  return lat && lng ? { lat, lng } : ring[0];
 }
 
 export function ringCentre(l: LinearRingT): CoordsT {

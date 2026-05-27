@@ -85,7 +85,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
         >
           {parsed && (
             <Polygon
-              paths={parsed.boundary.map(({ lat, lon }) => ({ lat, lng: lon }))}
+              paths={parsed.boundary}
               strokeColor="#ffcb05"
               fillColor="#ffcb05"
               fillOpacity={0.2}

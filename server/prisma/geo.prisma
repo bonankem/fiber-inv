@@ -1,7 +1,7 @@
 model Coords {
     id  BigInt @id
     lat Float
-    lon Float
+    lng Float
 
     works Work[]
 
