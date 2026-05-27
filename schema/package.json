@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "nodemon",
     "dev:expose": "nodemon",
-    "build": "rm -rf dist && tsc && tsc-alias",
+    "build": "node ../scripts/build.mjs",
     "turbo-build": "pnpm -w build:schema",
     "refresh-dev": "touch ../server/src/main.ts ../web/src/main.tsx"
   },

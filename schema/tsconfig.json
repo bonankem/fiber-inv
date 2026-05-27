@@ -8,7 +8,6 @@
     "types": ["node"],
     "moduleResolution": "bundler",
     "strict": true,
-    "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
     "esModuleInterop": true,
