@@ -3,7 +3,7 @@ import { Form, Input, message } from "antd";
 import type { FhsReviewT, FtthSurveyT } from "schema/fhs";
 import { apiCall, postFn } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
-import type { FhsFormProps } from "./fhs-types";
+import type { FhsFormProps } from "../fhs-types";
 
 export default function FhsAcceptForm(props: FhsFormProps) {
   const qc = useQueryClient();

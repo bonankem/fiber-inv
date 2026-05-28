@@ -126,3 +126,13 @@ export function assoc<T, K extends string | number, V>(
   }
   return record;
 }
+
+export type Falsey<T> = T | null | undefined | "" | false;
+
+export function filterNotNull<T>(list: Maybe<T>[]) {
+  return list.filter((t) => t !== null && t !== undefined) as T[];
+}
+
+export function filterTruthy<T>(list: Falsey<T>[]) {
+  return list.filter((t) => t) as T[];
+}

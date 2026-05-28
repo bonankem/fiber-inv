@@ -3,13 +3,13 @@ import { Form, Grid, message } from "antd";
 import { countBy, filter, pipe, sumBy } from "remeda";
 import { BoxType, type WorkDocType } from "schema/enums";
 import type { FhsSubmitT, FtthSurveyT } from "schema/fhs";
-import type { UpFhsCoordsT } from "schema/uploads";
+import type { UpFhsCoordsT, UpPlanKmzT } from "schema/uploads";
 import { apiCall, postFn } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import FileUpload, { type Parsed } from "#/components/inputs/FileUpload";
 import IntInput from "#/components/inputs/IntInput";
 import { req } from "#/utils/form";
-import type { FhsFormProps } from "./fhs-types";
+import type { FhsFormProps } from "../fhs-types";
 
 const fileInput = <T extends WorkDocType & string>(
   type: T,
@@ -57,6 +57,14 @@ export default function FhsSubmitForm(props: FhsFormProps) {
     props.state.close();
   });
 
+  const onParseKmz = (up: UpPlanKmzT) => {
+    const old = form.getFieldsValue();
+    form.setFieldsValue({
+      metalPoles: up.metalPoles.length || old.metalPoles,
+      concretePoles: up.concretePoles.length || old.concretePoles,
+    });
+  };
+
   const onParseCoords = (up: UpFhsCoordsT) => {
     type MaybeBox = (typeof up)["boxes"][number];
     type Box = MaybeBox & { type: NonNullable<BoxType> };
@@ -92,7 +100,7 @@ export default function FhsSubmitForm(props: FhsFormProps) {
       <div className="flex flex-col gap-2">
         <h2 className="font-medium">Fichiers</h2>
 
-        {fileInput("PLAN_KMZ", "KMZ")}
+        {fileInput("PLAN_KMZ", "KMZ", onParseKmz)}
         {fileInput("PLAN_BOQ", "BOQ")}
         {fileInput("COORDINATES", "Coordonnées", onParseCoords)}
         {fileInput("PLAN_DIAGRAM", "Plan (DWG)")}
@@ -103,7 +111,7 @@ export default function FhsSubmitForm(props: FhsFormProps) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <h2 className="font-medium">Quantités</h2>
+        <h2 className="font-medium">Nouvelles quantités</h2>
 
         {qtyInput("hp", "HP")}
         {qtyInput("oltCards", "Cartes OLT")}
@@ -115,8 +123,8 @@ export default function FhsSubmitForm(props: FhsFormProps) {
         {qtyInput("metalPoles", "Poteaux métall.")}
         {qtyInput("closures", "Closures")}
         {qtyInput("manholes", "Chambres")}
-        {qtyInput("feederLengthM", "Câbles transport", true)}
-        {qtyInput("distLengthM", "Câbles boitiers", true)}
+        {qtyInput("feederLengthM", "Câbles transp.", true)}
+        {qtyInput("distLengthM", "Câbles distrib.", true)}
       </div>
     </FormModal>
   );

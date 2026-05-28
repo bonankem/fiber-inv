@@ -7,7 +7,7 @@ export default idRoute("/fhs/:id/logs", (req) => fhsLogs(req.params.id));
 async function fhsLogs(id: string) {
   return prisma.workLog.findMany({
     where: { work: { fhs: { id } } },
+    orderBy: { createdAt: "desc" },
     select: workLogS,
-    orderBy: { createdAt: "asc" },
   });
 }

@@ -2,7 +2,7 @@ import z from "zod";
 import { coordsP, coordsZ } from "../geo/coords";
 import { localityNestedP, localityNestedZ } from "../geo/locality-nested";
 import { vendorP, vendorZ } from "../people";
-import { type Prisma, WorkStatus } from "../prisma";
+import { type Prisma, type StaffRole, WorkStatus } from "../prisma";
 import { type Same, zObject, zStr, zStrNul } from "../utils";
 import { workerP, workerZ } from "./worker";
 
@@ -36,3 +36,7 @@ type WorkP = Prisma.WorkGetPayload<typeof workP>;
 type WorkZ = z.infer<typeof workZ>;
 
 export type WorkT = Same<WorkP, WorkZ>;
+
+export function workerOf(work: WorkT, role: StaffRole) {
+  return work.workers.find((w) => w.role === role)?.user;
+}

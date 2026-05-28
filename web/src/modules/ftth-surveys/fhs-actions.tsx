@@ -10,11 +10,11 @@ import { ThumbsUp } from "lucide-react";
 import { WorkStatus as When } from "schema/enums";
 import type { FtthSurveyT as What } from "schema/fhs";
 import { buildActions } from "#/components/actions/types";
-import FhsAcceptForm from "./FhsAcceptForm";
-import FhsAssignForm from "./FhsAssignForm";
-import FhsInitiateForm from "./FhsInitiateForm";
-import FhsRejectForm from "./FhsRejectForm";
-import FhsSubmitForm from "./FhsSubmitForm";
+import FhsAcceptForm from "./forms/FhsAcceptForm";
+import FhsAssignForm from "./forms/FhsAssignForm";
+import FhsInitiateForm from "./forms/FhsInitiateForm";
+import FhsRejectForm from "./forms/FhsRejectForm";
+import FhsSubmitForm from "./forms/FhsSubmitForm";
 
 function isWhen(what: What, when: When) {
   return what.work.status === when;

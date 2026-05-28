@@ -7,8 +7,8 @@ import { shortName } from "#/utils/names";
 
 export type FhsColumn = DtColumn<FtthSurveyT>;
 
-const asigneeRole = StaffRole.PLANNING_ENGINEER;
-export function worker(i: FtthSurveyT, role: StaffRole = asigneeRole) {
+const assigneeRole = StaffRole.PLANNING_ENGINEER;
+export function worker(i: FtthSurveyT, role: StaffRole = assigneeRole) {
   return i.work.workers.find((w) => w.role === role)?.user;
 }
 export const fhsColumns: FhsColumn[] = [

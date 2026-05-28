@@ -38,4 +38,5 @@ export type DataTableProps<T> = {
   onExport?: () => void;
   maxHeight?: string | number;
   modal?: ModalItemFC<T>;
+  bordered?: boolean;
 };

@@ -4,7 +4,7 @@ import type { FhsReviewT, FtthSurveyT } from "schema/fhs";
 import { apiCall, postFn } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import { req } from "#/utils/form";
-import type { FhsFormProps } from "./fhs-types";
+import type { FhsFormProps } from "../fhs-types";
 
 export default function FhsRejectForm(props: FhsFormProps) {
   const qc = useQueryClient();

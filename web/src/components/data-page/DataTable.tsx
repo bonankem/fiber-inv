@@ -7,6 +7,7 @@ export default function DataTable<T extends { id: string }>(
   props: DataTableProps<T>,
 ) {
   const { columns, scrollX, maxHeight } = useResolvedColumns(props);
+  const hasFooter = props.onExport;
 
   return (
     <Table
@@ -21,16 +22,21 @@ export default function DataTable<T extends { id: string }>(
         body: { cell: "text-sm one-line" },
         header: { cell: "text-sm", wrapper: "sticky top-0 z-100" },
       }}
+      bordered={props.bordered}
       styles={{ content: { maxHeight, overflowY: "auto" } }}
-      footer={() => (
-        <footer className="flex items-center justify-between">
-          <div>
-            {props.onExport && <ExportButton onClick={props.onExport} />}
-          </div>
+      footer={
+        hasFooter
+          ? () => (
+              <footer className="flex items-center justify-between">
+                <div>
+                  {props.onExport && <ExportButton onClick={props.onExport} />}
+                </div>
 
-          <Pagination size="small" />
-        </footer>
-      )}
+                <Pagination size="small" />
+              </footer>
+            )
+          : undefined
+      }
     />
   );
 }

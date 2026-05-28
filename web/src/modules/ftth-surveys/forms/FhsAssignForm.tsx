@@ -6,7 +6,7 @@ import { apiCall, postFn } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import StaffSelect from "#/components/inputs/StaffSelect";
 import VendorSelect from "#/components/inputs/VendorSelect";
-import type { FhsFormProps } from "./fhs-types";
+import type { FhsFormProps } from "../fhs-types";
 
 export default function FhsAssignForm(props: FhsFormProps) {
   const qc = useQueryClient();

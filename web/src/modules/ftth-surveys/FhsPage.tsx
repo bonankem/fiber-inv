@@ -8,7 +8,7 @@ import { getJson } from "#/api/helpers";
 import DataPage from "#/components/data-page/DataPage";
 import { subsetsDefault } from "#/components/data-page/utils";
 import { useApiQuery } from "#/hooks/useApiQuery";
-import FhsDetailsModal from "./FhsDetailsModal";
+import FhsDetailsModal from "./details/FhsDetailsModal";
 import { fhsActions } from "./fhs-actions";
 import { fhsColumns } from "./fhs-columns";
 

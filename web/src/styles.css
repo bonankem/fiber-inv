@@ -87,3 +87,23 @@ button,
 .ant-input-number {
   width: 100%;
 }
+
+.ant-table-small .ant-table-cell {
+  @apply text-sm;
+}
+
+.ant-descriptions-small * {
+  @apply text-sm! overflow-hidden!;
+}
+
+.ant-descriptions table {
+  table-layout: fixed !important;
+}
+
+.ant-descriptions td {
+  @apply overflow-hidden! min-w-0!;
+}
+
+.ant-descriptions td > * {
+  @apply block! overflow-hidden!;
+}

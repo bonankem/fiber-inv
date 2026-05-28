@@ -2,6 +2,7 @@ import { Tag, type TagProps } from "antd";
 import type { StaffRole, WorkStatus } from "schema/enums";
 import type { Maybe } from "schema/utils";
 import type { WorkT } from "schema/work";
+import { twJoin } from "tailwind-merge";
 import { shortName } from "#/utils/names";
 
 type PendingMap = {
@@ -10,6 +11,7 @@ type PendingMap = {
 
 type Props = {
   work: WorkT;
+  smaller?: boolean;
   pendingOn?: PendingMap;
 };
 
@@ -23,10 +25,21 @@ export default function StatusView(props: Props) {
 
   return (
     <div className="flex gap-2 items-start">
-      <Tag variant="outlined" color={colors[status] || "blue"}>
+      <Tag
+        variant="outlined"
+        color={colors[status] || "blue"}
+        className={twJoin(props.smaller && "leading-tight!")}
+      >
         {statusNames[status]}
       </Tag>
-      {pendingName && <Tag variant="outlined">{pendingName}</Tag>}
+      {pendingName && (
+        <Tag
+          variant="outlined"
+          className={twJoin(props.smaller && "leading-tight!")}
+        >
+          {pendingName}
+        </Tag>
+      )}
     </div>
   );
 }

@@ -6,7 +6,7 @@ import FormModal from "#/components/FormModal";
 import DateInput from "#/components/inputs/DateInput";
 import VendorSelect from "#/components/inputs/VendorSelect";
 import { req } from "#/utils/form";
-import type { FhsFormProps } from "./fhs-types";
+import type { FhsFormProps } from "../fhs-types";
 
 async function validateDates(start: unknown, due: unknown) {
   if (!start || !due || start <= due) return;

@@ -98,7 +98,7 @@ export default function FormModal<T>(props: FormModalProps<T>) {
             className="self-center w-full max-w-md grid grid-cols-2 gap-2"
             style={{ backgroundColor: token.colorBgContainer }}
           >
-            <Button onClick={close}>Annuler</Button>
+            <Button onClick={close}>Retour</Button>
 
             <Button type="primary" htmlType="submit" loading={props.submitting}>
               Envoyer
