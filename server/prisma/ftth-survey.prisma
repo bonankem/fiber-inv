@@ -14,7 +14,7 @@ model FtthSurvey {
 
     proposedHp Int?
 
-    actualHp Int?
+    reportedHp Int?
 
     report FhsReport?
 
@@ -72,8 +72,10 @@ model FhsBox {
 
     name String
 
-    coords   Coords? @relation(fields: [coordsId], references: [id])
-    coordsId BigInt?
+    hp Int?
+
+    coords   Coords @relation(fields: [coordsId], references: [id])
+    coordsId BigInt
 
     @@unique([surveyId, name], name: "uniq")
 }

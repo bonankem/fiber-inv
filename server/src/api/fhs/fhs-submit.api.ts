@@ -1,6 +1,15 @@
+import { uniqueBy } from "remeda";
 import { type FhsSubmitT, fhsSubmitZ, ftthSurveyS } from "schema/fhs";
-import { type Prisma, prisma, WorkAction, WorkStatus } from "#/prisma";
-import { currentDate, postRoute } from "#/utils";
+import { filterTruthy } from "schema/utils";
+import {
+  type Prisma,
+  prisma,
+  WorkAction,
+  WorkDocType,
+  WorkStatus,
+} from "#/prisma";
+import { bad, currentDate, postRoute } from "#/utils";
+import { createManyCoords, getCoordsId } from "../utils/queries";
 import { updateWork } from "../utils/work";
 import { fhsCheck, fhsWorker } from "./utils";
 
@@ -9,6 +18,35 @@ export default postRoute(
   () => fhsSubmitZ,
   (req) => fhsSubmit(req.body),
 );
+
+async function getReportedBoxes(uploadId: string) {
+  const coords = await prisma.upload.findFirst({
+    where: { id: uploadId },
+    select: { parsed: true },
+  });
+  if (coords?.parsed?.type !== WorkDocType.COORDINATES) {
+    bad("Invalid coordinates file, no boxes found");
+  }
+  const now = new Date();
+  const parsedBoxes = uniqueBy(coords.parsed.boxes, (b) => b.name);
+
+  await prisma.coords.createMany({
+    data: createManyCoords(parsedBoxes.map((b) => b.coords)),
+  });
+  const boxes = filterTruthy(
+    parsedBoxes.map((b) => {
+      const { name, type, hp, coords } = b;
+      if (!type || !coords) return null;
+      const coordsId = getCoordsId(coords.lat, coords.lng);
+      return { name, type, hp, coordsId, createdAt: now };
+    }),
+  );
+
+  return {
+    deleteMany: { createdAt: { lt: now } },
+    createMany: { data: boxes },
+  };
+}
 
 async function fhsSubmit(dto: FhsSubmitT) {
   const {
@@ -36,13 +74,20 @@ async function fhsSubmit(dto: FhsSubmitT) {
   } satisfies Prisma.FhsReportUpdateInput;
   const resent = s.work.status !== WorkStatus.ONGOING;
   const action = resent ? WorkAction.RESEND_REPORT : WorkAction.SUBMIT_REPORT;
+  const boxes = await getReportedBoxes(COORDINATES);
 
   return prisma.ftthSurvey.update({
     select: ftthSurveyS,
     where: { id },
     data: {
-      actualHp: report.hp,
-      report: { upsert: { create: report, update: report } },
+      reportedHp: report.hp,
+      boxes,
+      report: {
+        upsert: {
+          create: report,
+          update: report,
+        },
+      },
       work: updateWork({
         dto,
         old: s.work,

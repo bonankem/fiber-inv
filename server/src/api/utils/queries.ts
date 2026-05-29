@@ -49,7 +49,7 @@ function intString(n: number, width: number) {
  * but still visually resembles the coordinates it represents e.g.
  * `coordsId(6.15472, -5.96691) === 4061547200596691`.
  */
-export function coordsId(lat: number, lng: number) {
+export function getCoordsId(lat: number, lng: number) {
   const latI = intString(lat, 7);
   const lngI = intString(lng, 8);
   const sign = (lat >= 0 ? 0 : 1) + (lng >= 0 ? 1 : 3);
@@ -57,14 +57,24 @@ export function coordsId(lat: number, lng: number) {
   return Number(`${sign}${latI}${lngI}`);
 }
 
+export function createCoords(c: CoordsT) {
+  const lat = to5dp(c.lat);
+  const lng = to5dp(c.lng);
+  return { id: getCoordsId(lat, lng), lat, lng };
+}
+
+export function createManyCoords(cs: Maybe<CoordsT>[]) {
+  return filterTruthy(cs).map(createCoords);
+}
+
 export function setCoords(
   src: Maybe<{ lat: Maybe<number>; lng: Maybe<number> }>,
 ): Prisma.CoordsCreateNestedOneWithoutWorksInput | undefined {
   if (!src?.lat || !src?.lng) return undefined;
-  const lat = to5dp(src.lat);
-  const lng = to5dp(src.lng);
-  const id = coordsId(src.lat, src.lng);
-  return { connectOrCreate: { where: { id }, create: { id, lat, lng } } };
+  const { lat, lng } = src;
+  const create = createCoords({ lat, lng });
+  const id = create.id;
+  return { connectOrCreate: { where: { id }, create } };
 }
 
 export function addUploads(ids: Maybe<string[]>) {

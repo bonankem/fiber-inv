@@ -29,6 +29,10 @@ const baseTheme: ThemeConfig = {
     Cascader: {
       dropdownHeight: "fit-content",
     },
+    Tabs: {
+      itemSelectedColor: "#d0a000",
+      inkBarColor: "#d0a000",
+    },
   },
 };
 

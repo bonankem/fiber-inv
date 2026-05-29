@@ -29,12 +29,12 @@ export default function FhsDetailsTab(props: FhsTabProps) {
           { label: "Nom", value: w.name },
           { label: "ID", value: w.sid },
           { label: "Statut", value: <StatusView work={w} smaller /> },
+          { label: "Chargé", value: workerOf(w, ENGINEER)?.name },
+          { label: "Fournisseur", value: w.vendor?.name },
           { label: localName, value: w.locality?.name },
           { label: "District", value: w.locality?.district?.name },
           { label: "Coordonnées", value: <CoordsLink coords={w.coords} /> },
           { label: "Contact", value: w.contact },
-          { label: "Chargé", value: workerOf(w, ENGINEER)?.name },
-          { label: "Fournisseur", value: w.vendor?.name },
         ]}
       />
       <section className="flex flex-col gap-2">
