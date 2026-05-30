@@ -48,12 +48,15 @@ export default function DetailsCard(props: Props) {
         )}
       >
         <div className="shrink-0 text-gray-400">{i.label}</div>
-        <div>{value}</div>
+        <div className={twJoin(!v && "text-end")}>{value}</div>
       </article>
     );
   }
   return (
-    <Card className={props.className} classNames={{ body: "px-6! py-4!" }}>
+    <Card
+      className={props.className}
+      classNames={{ body: "px-6! py-4! overfflow-hidden!" }}
+    >
       {props.title && <h3 className="mb-2 font-medium">{props.title}</h3>}
       <section className="flex flex-col gap-2">
         {filterTruthy(items).map(row)}

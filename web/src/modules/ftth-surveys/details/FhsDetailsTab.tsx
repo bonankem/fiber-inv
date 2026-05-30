@@ -1,8 +1,8 @@
-import { Card } from "antd";
 import { StaffRole } from "schema/enums";
 import { workerOf } from "schema/work";
 import CoordsLink from "#/components/CoordsLink";
 import DetailsCard from "#/components/DetailsCard";
+import DownloadList from "#/components/DownloadList";
 import StatusView from "#/components/StatusView";
 import type { FhsTabProps } from "./types";
 
@@ -28,9 +28,17 @@ export default function FhsDetailsTab(props: FhsTabProps) {
           { label: "Contact", value: w.contact },
         ]}
       />
-      <section className="flex flex-col gap-2">
-        <Card className="grow" />
-      </section>
+      <DetailsCard
+        items={[
+          {
+            label: "Documents",
+            value: (
+              <DownloadList files={props.full?.work?.docs} className="mt-2" />
+            ),
+            vertical: true,
+          },
+        ]}
+      />
     </div>
   );
 }
