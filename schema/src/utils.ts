@@ -108,7 +108,7 @@ export function jsonResponse<T>(text: unknown, shape: ZodType<T>) {
   const valid = shape.safeParse(json);
   if (valid.data) return valid.data;
 
-  console.error(valid.error);
+  // console.error(valid.error);
   return json as T;
 }
 

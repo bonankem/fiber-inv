@@ -7,7 +7,7 @@ import FormModal from "#/components/FormModal";
 import FileUpload, { type Parsed } from "#/components/inputs/FileUpload";
 import IntInput from "#/components/inputs/IntInput";
 import { req } from "#/utils/form";
-import type { FhpFormProps } from "./fhp-types";
+import type { FhpFormProps } from "../fhp-types";
 
 const fileInput = <T extends WorkDocType & string>(
   type: T,

@@ -6,7 +6,7 @@ import FormModal from "#/components/FormModal";
 import StaffSelect from "#/components/inputs/StaffSelect";
 import VendorSelect from "#/components/inputs/VendorSelect";
 import { req } from "#/utils/form";
-import type { FhpFormProps } from "./fhp-types";
+import type { FhpFormProps } from "../fhp-types";
 
 export default function FhpAssignForm(props: FhpFormProps) {
   const qc = useQueryClient();
