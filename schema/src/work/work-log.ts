@@ -27,7 +27,10 @@ export const workLogZ = zObject("WorkLogT", {
   uploads: z.array(idNameZ).describe("Attachments, if any"),
 } satisfies Record<keyof typeof workLogS, object>);
 
-export const workLogP = { select: workLogS };
+export const workLogP = {
+  select: workLogS,
+  orderBy: { createdAt: "asc" },
+} satisfies Prisma.WorkLogFindManyArgs;
 
 type WorkLogP = Prisma.WorkLogGetPayload<typeof workLogP>;
 type WorkLogZ = z.infer<typeof workLogZ>;

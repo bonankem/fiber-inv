@@ -54,7 +54,7 @@ export default function DetailsCard(props: Props) {
   }
   return (
     <Card className={props.className} classNames={{ body: "px-6! py-4!" }}>
-      {props.title && <h3 className="mb-4 font-medium">{props.title}</h3>}
+      {props.title && <h3 className="mb-2 font-medium">{props.title}</h3>}
       <section className="flex flex-col gap-2">
         {filterTruthy(items).map(row)}
       </section>

@@ -1,9 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
 import { Card } from "antd";
 import { StaffRole } from "schema/enums";
-import { zArray } from "schema/utils";
-import { workDocZ, workerOf } from "schema/work";
-import { getJson } from "#/api/helpers";
+import { workerOf } from "schema/work";
 import CoordsLink from "#/components/CoordsLink";
 import DetailsCard from "#/components/DetailsCard";
 import StatusView from "#/components/StatusView";
@@ -11,15 +8,9 @@ import type { FhsTabProps } from "./types";
 
 export default function FhsDetailsTab(props: FhsTabProps) {
   const w = props.item.work;
-  const id = w.id;
   const isAbidjan = w.locality?.district?.name === "Abidjan";
   const localName = isAbidjan ? "Commune" : "Département";
   const ENGINEER = StaffRole.PLANNING_ENGINEER;
-
-  const docsQuery = useQuery({
-    queryFn: () => getJson(`work/${id}/docs`, zArray(workDocZ)),
-    queryKey: ["work", id, "docs"],
-  });
 
   return (
     <div className="grid md:grid-cols-2 gap-4">
