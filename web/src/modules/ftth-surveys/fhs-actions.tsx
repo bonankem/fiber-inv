@@ -10,6 +10,7 @@ import { ThumbsUp } from "lucide-react";
 import { WorkStatus as When } from "schema/enums";
 import type { FtthSurveyT as What } from "schema/fhs";
 import { buildActions } from "#/components/actions/types";
+import CommentForm from "../work/CommentForm";
 import FhsAcceptForm from "./forms/FhsAcceptForm";
 import FhsAssignForm from "./forms/FhsAssignForm";
 import FhsInitiateForm from "./forms/FhsInitiateForm";
@@ -71,5 +72,6 @@ export const fhsActions = buildActions(isWhen, isWho, [
   {
     name: "Comment",
     icon: MessageOutlined,
+    form: CommentForm,
   },
 ]);
