@@ -15,7 +15,12 @@ export default function CoordsLink(props: { coords: Maybe<CoordsT> }) {
 
   return (
     <Tooltip title="View on Google Maps">
-      <a href={link} target="_blank" rel="noopener noreferrer">
+      <a
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-400!"
+      >
         {text}
       </a>
     </Tooltip>

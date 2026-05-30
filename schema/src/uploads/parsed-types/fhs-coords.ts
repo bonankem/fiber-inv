@@ -7,7 +7,7 @@ export const upFhsBoxZ = z.object({
   name: zStr("The name of this element"),
   type: z.enum(BoxType).nullable(),
   coords: coordsZ.nullable().describe("The coordinates of this element"),
-  hp: z.int().nullable().describe("HP of this element"),
+  hp: z.int().optional().nullable().describe("HP of this element"),
 });
 
 export type UpFhsBoxT = z.infer<typeof upFhsBoxZ>;

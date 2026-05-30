@@ -19,7 +19,10 @@
     "enabled": true,
     "rules": {
       "recommended": true,
-      "suspicious": { "useIterableCallbackReturn": "off" }
+      "suspicious": {
+        "useIterableCallbackReturn": "off",
+        "noAssignInExpressions": "off"
+      }
     }
   },
   "assist": {

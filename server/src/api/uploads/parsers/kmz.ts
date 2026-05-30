@@ -1,19 +1,26 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: any is needed for the input types */
 import { XMLParser } from "fast-xml-parser";
 import type { CoordsT } from "schema/geo";
-import { filterTruthy } from "#/api/utils/queries";
+import { filterTruthy, to5dp } from "#/api/utils/queries";
 import { maybeUnzip } from "./utils";
 
-type Placemark = {
+export type KmzPlacemark = {
+  name: string;
+  geom: CoordsT[];
+  oldName?: string;
+};
+
+type MaybePlacemark = {
   name: string | null;
   geom: CoordsT[];
-  path: string[];
+  path?: string[];
+  oldName?: string;
 };
 
 type Folder = {
   name: string | null;
   subfolders: Folder[];
-  placemarks: Placemark[];
+  placemarks: MaybePlacemark[];
 };
 
 const parser = new XMLParser();
@@ -31,21 +38,23 @@ export async function parseSimpleKmz(data: Buffer) {
   return folders.flatMap((f) => flattenFolder(f, []));
 }
 
-function matchAnyRe(regexps: RegExp[], strings: string[]) {
+function matchAnyRe(regexps: RegExp[], strings?: string[]) {
+  if (!strings) return false;
   if (regexps.length === 0) return true;
   return regexps.some((re) => strings.some((s) => re.test(s)));
 }
 
-function matchAllRe(regexps: RegExp[], strings: string[]) {
+function matchAllRe(regexps: RegExp[], strings?: string[]) {
+  if (!strings) return false;
   return regexps.every((re) => strings.some((s) => re.test(s)));
 }
 
 export function filterPlacemarks(
-  ps: Placemark[],
+  ps: MaybePlacemark[],
   point: boolean,
   folder: RegExp[],
   notFolder?: RegExp[],
-) {
+): KmzPlacemark[] {
   ps = ps.filter(point ? (p) => p.geom.length === 1 : (p) => p.geom.length > 1);
   if (folder.length) ps = ps.filter((p) => matchAllRe(folder, p.path));
   if (notFolder?.length) ps = ps.filter((p) => !matchAnyRe(notFolder, p.path));
@@ -85,7 +94,7 @@ function parseFolder(value: any): Folder | null {
   return { name, subfolders, placemarks };
 }
 
-function parsePlacemark(value: any): Placemark | null {
+function parsePlacemark(value: any): MaybePlacemark | null {
   if (!value || typeof value !== "object") return null;
 
   const name: string = value.name || "";
@@ -98,15 +107,15 @@ function parsePlacemark(value: any): Placemark | null {
 
   const re = /(-?\d+\.\d*),(-?\d+\.\d*)(,-?\d+\.\d*)?/g;
   const geom = Array.from(str.matchAll(re), (p) => ({
-    lat: Number(p[2]),
-    lng: Number(p[1]),
+    lat: to5dp(p[2]),
+    lng: to5dp(p[1]),
   }));
   if (!geom.length) return null;
 
   return { name, geom, path: [] };
 }
 
-function flattenFolder(f: Folder, path: string[]): Placemark[] {
+function flattenFolder(f: Folder, path: string[]): MaybePlacemark[] {
   path = f.name ? [...path, f.name] : path;
   return [
     ...f.placemarks.map((p) => ({ ...p, path })),

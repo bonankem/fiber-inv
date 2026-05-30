@@ -3,6 +3,7 @@ import { WorkDocType } from "schema/enums";
 import type { LinearRingT } from "schema/geo";
 import type { UpPlaqueKmzT } from "schema/uploads";
 import { getBoundingBox, isInsideRing, ringCentre } from "#/api/geo/utils";
+import { to5dp } from "#/api/utils/queries";
 import { prisma } from "#/prisma";
 import { maybeUnzip, type ParserInput } from "./utils";
 
@@ -34,7 +35,7 @@ export async function parseUpPlaqueKmz({
 
   const strings = ringCoords[0].matchAll(lngLatRe);
   const boundary: LinearRingT = Array.from(strings, (r) => {
-    return { lng: Number(r[1]), lat: Number(r[2]) };
+    return { lng: to5dp(r[1]), lat: to5dp(r[2]) };
   });
 
   const coords = ringCentre(boundary);

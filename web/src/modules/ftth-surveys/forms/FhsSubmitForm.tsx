@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, Empty, Form, Grid, List, message, Tabs } from "antd";
 import { useState } from "react";
-import { countBy, filter, pipe, sumBy } from "remeda";
+import { countBy, sumBy } from "remeda";
 import { BoxType, type WorkDocType } from "schema/enums";
 import type { FhsSubmitT, FtthSurveyT } from "schema/fhs";
-import type { UpFhsCoordsT, UpPlanKmzT } from "schema/uploads";
-import type { Maybe } from "schema/utils";
+import type { UpFhsBoxT, UpFhsCoordsT, UpPlanKmzT } from "schema/uploads";
+import { filterTruthy, type Maybe } from "schema/utils";
 import { apiCall, postFn } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import FileUpload, { type Parsed } from "#/components/inputs/FileUpload";
@@ -33,8 +33,8 @@ const qtyInput = (name: keyof FhsSubmitT, label: string, length = false) => (
   <Form.Item name={name} noStyle>
     <IntInput
       required
-      className="w-full!"
-      addonBefore={<div className="one-line w-32">{label}</div>}
+      className="w-full! text-sm! h-8!"
+      addonBefore={<div className="one-line w-28 text-sm!">{label}</div>}
       placeholder={length ? "Longueur" : undefined}
       suffix={length ? "m" : undefined}
       controls={false}
@@ -43,9 +43,10 @@ const qtyInput = (name: keyof FhsSubmitT, label: string, length = false) => (
 );
 
 function ItemList(props: {
-  items: Maybe<{ name: string }[]>;
+  items: Maybe<{ name: string; oldName?: string }[]>;
   whenNull: string;
   whenEmpty: string;
+  showOldNames?: boolean;
 }) {
   const shouldHaveData = !!props.items;
   return (
@@ -60,13 +61,20 @@ function ItemList(props: {
           />
         ),
       }}
-      className="max-h-110 overflow-y-auto"
+      className="max-h-118 overflow-y-auto"
       dataSource={props.items ?? undefined}
-      renderItem={(box) => (
-        <List.Item className="text-xs h-fit! min-h-0 py-2!">
-          {box.name}
-        </List.Item>
-      )}
+      renderItem={(item) => {
+        const canShowCaption =
+          item.oldName && props.showOldNames && item.oldName !== item.name;
+        return (
+          <List.Item className="text-xs h-fit! min-h-0 py-2! one-line">
+            {item.name}
+            {canShowCaption && (
+              <span className="text-yellow-600 ml-1"> {item.oldName}</span>
+            )}
+          </List.Item>
+        );
+      }}
     />
   );
 }
@@ -75,6 +83,7 @@ export default function FhsSubmitForm(props: FhsFormProps) {
   const [form] = Form.useForm<FhsSubmitT>();
   const mobile = !Grid.useBreakpoint().md;
   const [coords, setCoords] = useState<UpFhsCoordsT>();
+  const [kmz, setKmz] = useState<UpPlanKmzT>();
 
   const qc = useQueryClient();
   const submitM = useMutation({
@@ -89,33 +98,33 @@ export default function FhsSubmitForm(props: FhsFormProps) {
     props.state.close();
   });
 
-  const onParseKmz = (up: UpPlanKmzT) => {
-    const old = form.getFieldsValue();
-    form.setFieldsValue({
-      metalPoles: up.metalPoles.length || old.metalPoles,
-      concretePoles: up.concretePoles.length || old.concretePoles,
-    });
-  };
-
-  const onParseCoords = (up: UpFhsCoordsT) => {
-    type MaybeBox = (typeof up)["boxes"][number];
-    type Box = MaybeBox & { type: NonNullable<BoxType> };
-
-    const fats: BoxType[] = [BoxType.SUB_BOX, BoxType.END_BOX];
-    const boxes = up.boxes.filter((b) => b.type) as Box[];
-    const count = countBy(boxes, (b) => b.type);
-    const hp = pipe(
-      boxes,
-      filter((b) => fats.includes(b.type)),
-      sumBy((b) => b.hp || 0),
-    );
-    form.setFieldsValue({
-      hp,
-      xBoxes: count.X_BOX,
+  const boxCounts = (boxes: UpFhsBoxT[]) => {
+    const count = countBy(boxes, (b) => b.type ?? "");
+    return {
+      xBoxes: count.X_BOX ?? 0,
       hubBoxes: count.HUB_BOX,
       subBoxes: count.SUB_BOX,
       endBoxes: count.END_BOX,
+    };
+  };
+
+  const onParseKmz = (up: UpPlanKmzT) => {
+    form.setFieldsValue({
+      ...boxCounts(up.boxes),
+      metalPoles: up.metalPoles.length,
+      concretePoles: up.concretePoles.length,
+    });
+    setKmz(up);
+  };
+
+  const onParseCoords = (up: UpFhsCoordsT) => {
+    const fatTypes: Maybe<BoxType>[] = [BoxType.SUB_BOX, BoxType.END_BOX];
+    const fats = up.boxes.filter((b) => fatTypes.includes(b.type));
+    const hp = sumBy(fats, (b) => b.hp || 0);
+    form.setFieldsValue({
+      hp,
       oltCards: Math.ceil(hp / 512),
+      ...boxCounts(up.boxes),
     });
     setCoords(up);
   };
@@ -127,7 +136,7 @@ export default function FhsSubmitForm(props: FhsFormProps) {
       width={mobile ? 480 : 880}
       state={props.state}
       subtitle={props.item.work.name}
-      className="grid gap-4 grid-cols-1 md:grid-cols-[3fr_3fr_4fr]"
+      className="grid gap-4 grid-cols-1 md:grid-cols-[4fr_3fr_4fr]"
       onSubmit={onSubmit}
     >
       <div className="flex flex-col gap-2">
@@ -164,13 +173,28 @@ export default function FhsSubmitForm(props: FhsFormProps) {
         <Tabs
           type="card"
           size="small"
-          items={[
+          classNames={{
+            header: "mb-0! -mt-[1px]! -ml-[1px]!",
+            item: "text-sm!",
+          }}
+          items={filterTruthy([
+            {
+              key: "problems",
+              label: "Problèmes",
+              children: (
+                <ItemList
+                  items={kmz || coords ? [] : undefined}
+                  whenEmpty="Aucun problème"
+                  whenNull="Les problèmes dans les documents apparaîtront ici."
+                />
+              ),
+            },
             {
               key: "boxes",
               label: "Boitiers",
               children: (
                 <ItemList
-                  items={coords?.boxes}
+                  items={coords?.boxes || kmz?.boxes}
                   whenEmpty="Pas de boîtiers"
                   whenNull="Les boitiers sont lues à partir du fichiers KMZ et coordonnées"
                 />
@@ -181,9 +205,10 @@ export default function FhsSubmitForm(props: FhsFormProps) {
               label: "Câbles",
               children: (
                 <ItemList
-                  items={undefined}
+                  items={kmz?.cables}
                   whenEmpty="Pas de câbles"
                   whenNull="Les câbles sont lues à partir des fichiers KMZ et longueurs des câbles"
+                  showOldNames
                 />
               ),
             },
@@ -192,13 +217,16 @@ export default function FhsSubmitForm(props: FhsFormProps) {
               label: "Poteaux",
               children: (
                 <ItemList
-                  items={undefined}
+                  items={
+                    kmz ? [...kmz.metalPoles, ...kmz.concretePoles] : undefined
+                  }
                   whenEmpty="Pas de poteaux"
                   whenNull="Les poteaux sont lues à partir du fichier KMZ"
+                  showOldNames
                 />
               ),
             },
-          ]}
+          ])}
         />
       </Card>
     </FormModal>

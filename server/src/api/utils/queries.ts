@@ -35,8 +35,8 @@ export function maybeCoords(
 
 const TEN_5 = 100000;
 
-function to5dp(n: number) {
-  return Math.round(n * TEN_5) / TEN_5;
+export function to5dp(n: number | string) {
+  return Math.round(Number(n) * TEN_5) / TEN_5;
 }
 
 function intString(n: number, width: number) {
@@ -49,7 +49,7 @@ function intString(n: number, width: number) {
  * but still visually resembles the coordinates it represents e.g.
  * `coordsId(6.15472, -5.96691) === 4061547200596691`.
  */
-export function getCoordsId(lat: number, lng: number) {
+export function getLatLngId(lat: number, lng: number) {
   const latI = intString(lat, 7);
   const lngI = intString(lng, 8);
   const sign = (lat >= 0 ? 0 : 1) + (lng >= 0 ? 1 : 3);
@@ -57,10 +57,14 @@ export function getCoordsId(lat: number, lng: number) {
   return Number(`${sign}${latI}${lngI}`);
 }
 
+export function getCoordsId(c: CoordsT) {
+  return getLatLngId(c.lat, c.lng);
+}
+
 export function createCoords(c: CoordsT) {
   const lat = to5dp(c.lat);
   const lng = to5dp(c.lng);
-  return { id: getCoordsId(lat, lng), lat, lng };
+  return { id: getLatLngId(lat, lng), lat, lng };
 }
 
 export function createManyCoords(cs: Maybe<CoordsT>[]) {

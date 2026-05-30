@@ -95,7 +95,7 @@ export default function FileUpload<T extends WorkDocType>({
         )}
         <Button
           size="small"
-          className="w-10!"
+          className={twJoin("w-10! text-sm!")}
           type="default"
           icon={sending ? <LoadingOutlined spin /> : <PaperClipOutlined />}
         />

@@ -9,7 +9,7 @@ import {
   WorkStatus,
 } from "#/prisma";
 import { bad, currentDate, postRoute } from "#/utils";
-import { createManyCoords, getCoordsId } from "../utils/queries";
+import { createManyCoords, getLatLngId } from "../utils/queries";
 import { updateWork } from "../utils/work";
 import { fhsCheck, fhsWorker } from "./utils";
 
@@ -32,12 +32,13 @@ async function getReportedBoxes(uploadId: string) {
 
   await prisma.coords.createMany({
     data: createManyCoords(parsedBoxes.map((b) => b.coords)),
+    skipDuplicates: true,
   });
   const boxes = filterTruthy(
     parsedBoxes.map((b) => {
       const { name, type, hp, coords } = b;
       if (!type || !coords) return null;
-      const coordsId = getCoordsId(coords.lat, coords.lng);
+      const coordsId = getLatLngId(coords.lat, coords.lng);
       return { name, type, hp, coordsId, createdAt: now };
     }),
   );

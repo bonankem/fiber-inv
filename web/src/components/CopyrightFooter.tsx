@@ -8,9 +8,8 @@ export default function CopyrightFooter() {
         href="https://zoracom.com/services/serviceX"
         target="_blank"
         rel="noopener noreferrer"
-        className="text-blue-400!"
       >
-        Service<span className="text-orange-400">X</span>
+        ServiceX
       </a>{" "}
       &copy; {year} Zoracom
     </p>
