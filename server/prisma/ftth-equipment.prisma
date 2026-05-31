@@ -23,11 +23,14 @@ model Oem {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    name String
+    name String @unique
+
+    key String @unique
 
     olts Olt[]
 
-    hubs Box[]
+    boxes Box[]
+
     onts Ont[]
 }
 
@@ -37,9 +40,13 @@ model Olt {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    name String
+    name String @unique
+
+    key String @unique
 
     ip String? @unique
+
+    mtnSite String?
 
     oem   Oem    @relation(fields: [oemId], references: [id])
     oemId String @db.Uuid
@@ -74,6 +81,9 @@ model Box {
 
     plaque   Plaque? @relation(fields: [plaqueId], references: [id])
     plaqueId String? @db.Uuid
+
+    coords   Coords? @relation(fields: [coordsId], references: [id])
+    coordsId BigInt?
 
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
     boundaryId String?   @unique @db.Uuid

@@ -5,6 +5,8 @@ model Coords {
 
     works Work[]
 
+    boxes Box[]
+
     fhsBoxes FhsBox[]
 }
 
@@ -25,7 +27,7 @@ model Boundary {
 
     locality Locality?
 
-    fhs FtthSurvey?
+    survey FtthSurvey?
 
     plaque Plaque?
 

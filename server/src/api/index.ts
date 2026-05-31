@@ -1,5 +1,6 @@
 import { appPlugin } from "#/utils";
 import auth from "./auth";
+import equipment from "./equipment";
 import fhp from "./fhp";
 import fhs from "./fhs";
 import geo from "./geo";
@@ -18,5 +19,6 @@ export default appPlugin(async (app) => {
   app.register(users);
   app.register(vendors);
   app.register(uploads);
+  app.register(equipment);
   app.register(setup);
 });

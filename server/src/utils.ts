@@ -11,6 +11,9 @@ import z from "zod";
 dayjs.extend(timeZone);
 dayjs.extend(utc);
 
+export const UUID_RE =
+  /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i;
+
 export type Maybe<T> = T | null | undefined;
 
 export type Falsey<T> = T | null | undefined | "" | false;
@@ -132,6 +135,14 @@ export function connectId(i: HasId) {
 
 export function maybeConnect(i: Maybe<HasId>) {
   return i ? connectId(i) : undefined;
+}
+
+export function connectIdOrKey(i: string) {
+  return { connect: UUID_RE.test(i) ? { id: i } : { key: i } };
+}
+
+export function maybeIdOrKey(i: Maybe<string>) {
+  return i ? connectIdOrKey(i) : undefined;
 }
 
 export function currentTime() {

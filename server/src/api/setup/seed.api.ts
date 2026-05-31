@@ -23,6 +23,7 @@ export const seedReq = zFormObject("SeedReqT", {
       vendorName: z.string().optional(),
     }),
   ),
+  oems: z.array(z.string()),
   vendors: z.array(z.string()),
   password: z.string(),
 });
@@ -46,6 +47,11 @@ async function seed(req: SeedReq) {
     mustChange: true,
   });
 
+  const seedOems = prisma.oem.createMany({
+    data: req.oems.map((name) => ({ name, key: makeKey(name) })),
+    skipDuplicates: true,
+  });
+
   const seedVendors = prisma.vendor.createMany({
     data: req.vendors.map((name) => ({ name, key: makeKey(name) })),
     skipDuplicates: true,
@@ -65,9 +71,7 @@ async function seed(req: SeedReq) {
   });
 
   const sampleGeo = await geoInitialize();
-  const [{ count: newVendors }, ...users] = await prisma.$transaction([
-    seedVendors,
-    ...seedUsers,
-  ]);
-  return { newVendors, users, sampleGeo };
+  const [{ count: newVendors }, { count: newOems }, ...users] =
+    await prisma.$transaction([seedVendors, seedOems, ...seedUsers]);
+  return { newVendors, newOems, users, sampleGeo };
 }
