@@ -7,8 +7,9 @@ import {
   SunOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "@tanstack/react-router";
 import { Avatar, Button, Dropdown, Tooltip } from "antd";
+import { useModalViewer } from "#/hooks/useModalViewer";
+import LogoutModal from "#/modules/auth/LogoutModal";
 import { useAppTheme } from "#/theme";
 
 type Props = {
@@ -22,9 +23,13 @@ const themes = [
 ] as const;
 
 export default function UserMenuFooter({ collapsed }: Props) {
-  const navigate = useNavigate();
+  const modal = useModalViewer();
   const theme = useAppTheme();
   const check = <CheckOutlined className="ml-2 text-yellow-600!" />;
+
+  const logout = () => {
+    modal.open(LogoutModal);
+  };
 
   return (
     <Tooltip title="User Options" placement={collapsed ? "right" : "topRight"}>
@@ -63,7 +68,7 @@ export default function UserMenuFooter({ collapsed }: Props) {
               key: "logout",
               label: "Log out",
               icon: <LogoutOutlined />,
-              onClick: () => navigate({ to: "/login" }),
+              onClick: logout,
             },
           ],
         }}

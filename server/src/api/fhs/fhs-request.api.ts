@@ -1,5 +1,5 @@
 import { type FhsRequestT, fhsRequestZ, ftthSurveyS } from "schema/fhs";
-
+import type { UserT } from "schema/people";
 import {
   type Prisma,
   prisma,
@@ -21,7 +21,7 @@ import {
 export default postRoute(
   "/fhs",
   () => fhsRequestZ,
-  (req) => fhsRequest(req.body),
+  (req) => fhsRequest(req.body, req.authUser),
 );
 
 const action = WorkAction.REQUEST;
@@ -36,7 +36,7 @@ async function boundaryCreate(
   return { create: ringWithBbox(up.parsed.boundary) };
 }
 
-async function fhsRequest(body: FhsRequestT) {
+async function fhsRequest(body: FhsRequestT, from: UserT) {
   const boundary = await boundaryCreate(body.PLAQUE_KMZ);
 
   return prisma.$transaction(async (tx) => {
@@ -53,7 +53,7 @@ async function fhsRequest(body: FhsRequestT) {
           locality: connectId(body.localityId),
           coords: setCoords(body.coords),
           docs: setDocsFrom(body, PLAQUE_KMZ),
-          logs: addLog(body, action, status),
+          logs: addLog(body, action, from, status),
           workers: create({
             userId: body.managerId,
             role: StaffRole.PLANNING_MANAGER,

@@ -1,9 +1,8 @@
-import { useMutation } from "@tanstack/react-query";
 import { Button, Form, Input } from "antd";
 import type { OTPRef } from "antd/es/input/OTP";
 import { type RefObject, useRef } from "react";
 import type { AuthNeedsOtpT, AuthResultT, AuthVerifyReqT } from "schema/auth";
-import { apiCall, postFn } from "#/api/helpers";
+import { apiCall, useApiPost } from "#/api/helpers";
 import TextLink from "#/components/TextLink";
 import AuthHeader from "./AuthHeader";
 import type { LoginFormProps } from "./utils";
@@ -44,9 +43,7 @@ export default function AuthOtpForm(props: Props) {
   const [form] = Form.useForm<AuthVerifyReqT>();
   const ref = useRef<OTPRef>(null);
 
-  const verifyQ = useMutation({
-    mutationFn: postFn<AuthVerifyReqT, AuthResultT>("/auth/verify"),
-  });
+  const verifyQ = useApiPost<AuthVerifyReqT, AuthResultT>("/auth/verify");
 
   const reset = () => {
     form.resetFields();

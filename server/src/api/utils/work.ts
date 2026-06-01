@@ -1,3 +1,4 @@
+import type { IdNameT } from "schema/common";
 import type { WorkT, WorkUpdateT } from "schema/work";
 import type {
   Prisma,
@@ -46,10 +47,11 @@ export function setWorkers(
 
 type HasName = string | { name: string };
 
-export function addLog(
+function addLog(
   body: Omit<WorkUpdateT, "id">,
   action: WorkAction,
   status: Maybe<WorkStatus> = undefined,
+  from: Maybe<IdNameT>,
   to: Falsey<HasName>[] = [],
 ): Prisma.WorkLogCreateNestedManyWithoutWorkInput {
   const toNames = filterTruthy(to).map((t) => {
@@ -60,6 +62,7 @@ export function addLog(
     newStatus: status || null,
     comment: body.comment,
     uploads: addUploads(body.uploads),
+    fromUser: maybeConnect(from),
     toNames,
   });
 }
@@ -109,6 +112,7 @@ export function updateDocs<T extends WorkDocType>(
 type WorkUpdateQuery = {
   dto: WorkUpdateT;
   old: WorkT;
+  from?: Maybe<IdNameT>;
   action: WorkAction;
   status?: WorkStatus;
   logTo?: Maybe<HasName> | Maybe<HasName>[];
@@ -130,7 +134,7 @@ export function updateWork(q: WorkUpdateQuery) {
       statusSince: changed ? now : undefined,
       workers: setWorkers(q.dto.id, q.workers),
       vendor: maybeConnect(q.vendor),
-      logs: addLog(q.dto, q.action, q.status, logTo),
+      logs: addLog(q.dto, q.action, q.status, q.from, logTo),
       docs: updateDocs(q.dto.id, q.docs),
     } satisfies Prisma.WorkUpdateInput,
   };

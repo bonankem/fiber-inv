@@ -4,7 +4,7 @@ import fastifyPlugin from "fastify-plugin";
 import { type UserFullT, userFullP } from "schema/people";
 import { prisma } from "#/prisma";
 import { type AppRequest, accessDenied, unauthorized } from "#/utils";
-import { type AuthTokenT, tryAuthToken } from "./utils";
+import { type AuthIdsT, tryAuthToken } from "./utils";
 
 export enum Allow {
   PUBLIC = "PUBLIC",
@@ -16,7 +16,7 @@ export enum Allow {
 declare module "fastify" {
   interface FastifyRequest {
     allow: Allow;
-    authIds: AuthTokenT | null;
+    authIds: AuthIdsT | null;
     maybeUser: UserFullT | null;
     authUser: UserFullT;
   }

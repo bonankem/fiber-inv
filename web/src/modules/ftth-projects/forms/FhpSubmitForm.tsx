@@ -1,8 +1,7 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Form, message } from "antd";
 import type { WorkDocType } from "schema/enums";
 import type { FhpReportT, FtthProjectT } from "schema/fhp";
-import { apiCall, postFn } from "#/api/helpers";
+import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import FileUpload, { type Parsed } from "#/components/inputs/FileUpload";
 import IntInput from "#/components/inputs/IntInput";
@@ -46,11 +45,7 @@ const qtyInput = (name: keyof FhpReportT, label: string, length = false) => (
 export default function FhpSubmitForm(props: FhpFormProps) {
   const [form] = Form.useForm<FhpReportT>();
 
-  const qc = useQueryClient();
-  const submitM = useMutation({
-    mutationFn: postFn<FhpReportT, FtthProjectT>("/fhp/submit"),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["fhp"] }),
-  });
+  const submitM = useApiPost<FhpReportT, FtthProjectT>("/fhp/submit", ["fhp"]);
 
   const onSubmit = apiCall(async (data: FhpReportT) => {
     data.id = props.item.id;

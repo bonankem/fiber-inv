@@ -1,8 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { zArray } from "schema/utils";
 import { type WorkLogT, workLogZ } from "schema/work";
-import { getJson } from "#/api/helpers";
+import { useApiGet } from "#/api/helpers";
 import WithCaption from "#/components/WithCaption";
 import { shortName } from "#/utils/names";
 import DataTable from "./data-page/DataTable";
@@ -31,10 +30,7 @@ function DateTimeView(props: { value: dayjs.ConfigType }) {
 }
 
 export default function WorkLogsTab({ id }: { id: string }) {
-  const query = useQuery({
-    queryFn: () => getJson(`work/${id}/logs`, zArray(workLogZ)),
-    queryKey: ["work", id, "logs"],
-  });
+  const query = useApiGet(["work", id, "logs"], zArray(workLogZ));
 
   return (
     <DataTable

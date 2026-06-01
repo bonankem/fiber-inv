@@ -1,5 +1,6 @@
 import { WorkAction, WorkStatus } from "schema/enums";
 import { type FhsReviewT, fhsReviewZ, ftthSurveyS } from "schema/fhs";
+import type { UserT } from "schema/people";
 import { prisma } from "#/prisma";
 import { bad, currentDate, postRoute } from "#/utils";
 import { updateWork } from "../utils/work";
@@ -8,10 +9,10 @@ import { fhsCheck } from "./utils";
 export default postRoute(
   "/fhs/review",
   () => fhsReviewZ,
-  (req) => fhsReview(req.body),
+  (req) => fhsReview(req.body, req.authUser),
 );
 
-async function fhsReview(dto: FhsReviewT) {
+async function fhsReview(dto: FhsReviewT, from: UserT) {
   const { s } = await fhsCheck({
     workId: dto.id,
     status: WorkStatus.REVIEW,
@@ -32,6 +33,7 @@ async function fhsReview(dto: FhsReviewT) {
         action: ok ? WorkAction.PASS_REVIEW : WorkAction.FAIL_REVIEW,
         also: { closeDate: ok ? currentDate() : undefined },
         logTo: s.work?.vendor,
+        from,
       }),
     },
   });

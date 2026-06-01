@@ -2,6 +2,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { message } from "antd";
 import { useState } from "react";
 import { type AuthResultT, AuthStatus } from "schema/auth";
+import { useAuthToken } from "#/api/auth";
 import AuthChangeForm from "./AuthChangeForm";
 import AuthChooseForm from "./AuthChooseForm";
 import AuthInstallForm from "./AuthInstallForm";
@@ -11,9 +12,11 @@ import AuthOtpForm from "./AuthOtpForm";
 export default function LoginPage() {
   const navigate = useNavigate();
   const [result, setResult] = useState<AuthResultT>();
+  const authToken = useAuthToken();
 
   const onResult = (res: AuthResultT) => {
     if (res.status === AuthStatus.SUCCESS) {
+      authToken.update(res.token);
       message.success(`Bienvenue, ${res.user.name}`);
       navigate({ to: "/ftth-surveys", replace: true });
     } else {

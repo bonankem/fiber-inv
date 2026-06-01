@@ -1,7 +1,10 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import AuthProvider from "#/api/AuthProvider";
 
 export const Route = createFileRoute("/")({
   beforeLoad: () => {
-    throw redirect({ to: "/login", replace: true });
+    const token = AuthProvider.fetchToken();
+    const to = token ? "/ftth-surveys" : "/login";
+    throw redirect({ to, replace: true });
   },
 });

@@ -1,16 +1,19 @@
 import { type FhsInitiateT, fhsInitiateZ, ftthSurveyS } from "schema/fhs";
+import type { UserT } from "schema/people";
 import { prisma, WorkAction, WorkStatus } from "#/prisma";
 import { bad, postRoute } from "#/utils";
+import { Allow } from "../auth/guard";
 import { updateWork } from "../utils/work";
 import { fhsCheck } from "./utils";
 
 export default postRoute(
   "/fhs/initiate",
   () => fhsInitiateZ,
-  (req) => fhsInitiate(req.body),
+  (req) => fhsInitiate(req.body, req.authUser),
+  Allow.STAFF,
 );
 
-async function fhsInitiate(dto: FhsInitiateT) {
+async function fhsInitiate(dto: FhsInitiateT, user: UserT) {
   const { id: workId, vendorId } = dto;
 
   const { s, v } = await fhsCheck({
@@ -34,6 +37,7 @@ async function fhsInitiate(dto: FhsInitiateT) {
         vendor: vendorId,
         action: WorkAction.INITIATE,
         status: WorkStatus.ONGOING,
+        from: user,
         logTo: v,
         also: {
           startDate: dto.startDate,

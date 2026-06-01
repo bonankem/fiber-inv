@@ -43,7 +43,7 @@ export async function parseUpPlaqueKmz({
 
   const boundaries = await prisma.boundary.findMany({
     where: {
-      locality: {},
+      locality: { isNot: null },
       north: { gte: coords.lat },
       south: { lte: coords.lat },
       east: { gte: coords.lng },

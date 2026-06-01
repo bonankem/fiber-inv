@@ -49,7 +49,7 @@ export async function authSuccess(
 ): Promise<AuthSuccessT> {
   const id = existing || newUuid();
   const ids = { userId, sessionId: id };
-  const token = jwt.sign(ids, { expiresIn: "1h" });
+  const token = jwt.sign(ids, { expiresIn: "1d" });
   const refresh = jwt.sign(ids, { expiresIn: "7d" });
   const expiry = new Date(Date.now() + 7 * 86400000);
   const hashed = hashSync(refresh);
@@ -141,17 +141,17 @@ export function verifyTempToken(jwt: JWT, token: string) {
   }
 }
 
-const authTokenZ = z.object({
+const authIdsZ = z.object({
   userId: z.string(),
   sessionId: z.string(),
 });
 
-export type AuthTokenT = z.infer<typeof authTokenZ>;
+export type AuthIdsT = z.infer<typeof authIdsZ>;
 
 export function tryAuthToken(jwt: JWT, token: Maybe<string>) {
   if (!token) return null;
   try {
-    return authTokenZ.parse(jwt.verify(token));
+    return authIdsZ.parse(jwt.verify(token));
   } catch (e) {
     if (isDev) console.error(e);
     return null;

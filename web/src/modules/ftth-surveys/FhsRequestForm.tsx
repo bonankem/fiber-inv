@@ -1,11 +1,10 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Map as GoogleMap, Polygon, useMap } from "@vis.gl/react-google-maps";
 import { Form, Input, message } from "antd";
 import { useState } from "react";
 import { WorkDocType } from "schema/enums";
 import type { FhsRequestT, FtthSurveyT } from "schema/fhs";
 import type { UpPlaqueKmzT } from "schema/uploads";
-import { apiCall, postFn } from "#/api/helpers";
+import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import CoordsInput from "#/components/inputs/CoordsInput";
 import FileUpload from "#/components/inputs/FileUpload";
@@ -26,11 +25,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
   const map = useMap();
   const { isDark } = useAppTheme();
 
-  const qc = useQueryClient();
-  const submitM = useMutation({
-    mutationFn: postFn<FhsRequestT, FtthSurveyT>("/fhs"),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["fhs"] }),
-  });
+  const submitM = useApiPost<FhsRequestT, FtthSurveyT>("/fhs", ["fhs"]);
 
   const onParse = (data: UpPlaqueKmzT) => {
     setParsed(data);

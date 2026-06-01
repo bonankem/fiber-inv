@@ -1,4 +1,3 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, Empty, Form, Grid, List, message, Tabs } from "antd";
 import { useState } from "react";
 import { countBy, sumBy } from "remeda";
@@ -6,7 +5,7 @@ import { BoxType, type WorkDocType } from "schema/enums";
 import type { FhsSubmitT, FtthSurveyT } from "schema/fhs";
 import type { UpFhsBoxT, UpFhsCoordsT, UpPlanKmzT } from "schema/uploads";
 import { filterTruthy, type Maybe } from "schema/utils";
-import { apiCall, postFn } from "#/api/helpers";
+import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import FileUpload, { type Parsed } from "#/components/inputs/FileUpload";
 import IntInput from "#/components/inputs/IntInput";
@@ -85,11 +84,7 @@ export default function FhsSubmitForm(props: FhsFormProps) {
   const [coords, setCoords] = useState<UpFhsCoordsT>();
   const [kmz, setKmz] = useState<UpPlanKmzT>();
 
-  const qc = useQueryClient();
-  const submitM = useMutation({
-    mutationFn: postFn<FhsSubmitT, FtthSurveyT>("/fhs/submit"),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["fhs"] }),
-  });
+  const submitM = useApiPost<FhsSubmitT, FtthSurveyT>("/fhs/submit", ["fhs"]);
 
   const onSubmit = apiCall(async (data: FhsSubmitT) => {
     data.id = props.item.id;
@@ -178,17 +173,17 @@ export default function FhsSubmitForm(props: FhsFormProps) {
             item: "text-sm!",
           }}
           items={filterTruthy([
-            {
-              key: "problems",
-              label: "Problèmes",
-              children: (
-                <ItemList
-                  items={kmz || coords ? [] : undefined}
-                  whenEmpty="Aucun problème"
-                  whenNull="Les problèmes dans les documents apparaîtront ici."
-                />
-              ),
-            },
+            // {
+            //   key: "problems",
+            //   label: "Problèmes",
+            //   children: (
+            //     <ItemList
+            //       items={kmz || coords ? [] : undefined}
+            //       whenEmpty="Aucun problème"
+            //       whenNull="Les problèmes dans les documents apparaîtront ici."
+            //     />
+            //   ),
+            // },
             {
               key: "boxes",
               label: "Boitiers",

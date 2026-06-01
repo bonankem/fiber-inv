@@ -1,15 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
 import { Button, Form, Input } from "antd";
 import type { AuthLoginReqT, AuthResultT } from "schema/auth";
-import { apiCall, postFn } from "#/api/helpers";
+import { apiCall, useApiPost } from "#/api/helpers";
 import TextLink from "#/components/TextLink";
 import AuthHeader from "./AuthHeader";
 import type { LoginFormProps } from "./utils";
 
 export default function AuthLoginForm(props: LoginFormProps) {
-  const loginQ = useMutation({
-    mutationFn: postFn<AuthLoginReqT, AuthResultT>("/auth/login"),
-  });
+  const loginQ = useApiPost<AuthLoginReqT, AuthResultT>("/auth/login");
 
   const onSubmit = apiCall(async (data: AuthLoginReqT) => {
     props.onResult?.(await loginQ.mutateAsync(data));

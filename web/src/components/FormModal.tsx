@@ -12,6 +12,7 @@ import {
 } from "antd";
 import type { ReactNode } from "react";
 import type { ModalState } from "#/hooks/useModalViewer";
+import { useUploader } from "#/hooks/useUploader";
 
 export type FormModalProps<T> = {
   form?: FormInstance<T>;
@@ -53,6 +54,11 @@ function checkboxText(value: boolean | string | undefined) {
 export default function FormModal<T>(props: FormModalProps<T>) {
   const { isOpen, close } = props.state;
   const { token } = theme.useToken();
+  const uploader = useUploader();
+
+  const onClose = () => {
+    uploader.cleanup();
+  };
 
   return (
     <Modal
@@ -71,7 +77,7 @@ export default function FormModal<T>(props: FormModalProps<T>) {
       width={props.width || 360}
       mask={{ blur: true, closable: props.maskCloseable ?? false }}
       open={isOpen}
-      onCancel={close}
+      onCancel={onClose}
       className="text-sm pb-8!"
       footer={null}
     >

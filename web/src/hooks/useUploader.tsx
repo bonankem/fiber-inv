@@ -1,11 +1,11 @@
-import { useMutation } from "@tanstack/react-query";
 import { createContext, use, useCallback, useMemo, useState } from "react";
 import { omit } from "remeda";
 import type { WorkDocType } from "schema/enums";
 import { type UploadParsedT, uploadFullZ } from "schema/uploads";
 import { jsonResponse } from "schema/utils";
 import { uuidv7 } from "uuidv7";
-import { apiUrl, postFn, showAppError } from "#/api/helpers";
+import AuthProvider from "#/api/AuthProvider";
+import { apiUrl, showAppError, useApiPost } from "#/api/helpers";
 
 export type UploadRecord = {
   id: string;
@@ -27,7 +27,7 @@ export type Uploader = {
   find(id: string): UploadRecord | undefined;
   send(file: File, args?: SendArgs): UploadRecord;
   cancel(ids: string[]): void;
-  finish(formId: string): void;
+  cleanup(): void;
   isUploading(type?: WorkDocType): boolean;
 };
 
@@ -37,7 +37,7 @@ export const UploaderContext = createContext<Uploader>({
   },
   find: () => undefined,
   cancel: () => undefined,
-  finish: () => {},
+  cleanup: () => {},
   isUploading: () => false,
 });
 
@@ -49,10 +49,7 @@ export function useUploaderImpl(): Uploader {
   type Dict<T> = Record<string, T>;
   const [records, setRecords] = useState<Dict<UploadRecord>>({});
   const [pending, setPending] = useState<Dict<XMLHttpRequest>>({});
-
-  const cleanup = useMutation({
-    mutationFn: postFn<{ ids: string[] }>("uploads/cleanup"),
-  });
+  const clean = useApiPost<{ ids: string[] }>("uploads/cleanup");
 
   const send = useCallback((file: File, args?: SendArgs) => {
     const record: UploadRecord = {
@@ -125,7 +122,9 @@ export function useUploaderImpl(): Uploader {
     if (args?.type) {
       url.searchParams.set("parser", args?.type);
     }
+    const token = AuthProvider.fetchToken();
     xhr.open("POST", url, true);
+    if (token) xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.send(data);
     return record;
   }, []);
@@ -136,16 +135,17 @@ export function useUploaderImpl(): Uploader {
     const cancel = (id: string | string[]) => {
       const ids = Array.isArray(id) ? id : [id];
       ids.forEach((id) => void pending[id]?.abort);
-      cleanup.mutate({ ids });
+      clean.mutate({ ids });
       setPending((ps) => omit(ps, ids));
       setRecords((rs) => omit(rs, ids));
     };
 
-    const finish = (formId: string) => {
-      const ids = Object.values(records)
-        .filter((r) => r.formId === formId)
-        .map((r) => r.id);
-      cancel(ids);
+    const cleanup = () => {
+      Object.values(pending).forEach((p) => p.abort());
+      const ids = Object.values(records).map((r) => r.id);
+      setPending({});
+      setRecords({});
+      if (ids.length) clean.mutate({ ids });
     };
 
     const isUploading = (type?: WorkDocType) => {
@@ -154,6 +154,6 @@ export function useUploaderImpl(): Uploader {
       return rs.some((r) => r.type === type && !r.done);
     };
 
-    return { find, send, cancel, finish, isUploading };
-  }, [pending, records, cleanup.mutate, send]);
+    return { find, send, cancel, cleanup, isUploading };
+  }, [pending, records, clean.mutate, send]);
 }

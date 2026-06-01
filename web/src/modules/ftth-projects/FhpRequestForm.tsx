@@ -1,9 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Form, Input, message, Select } from "antd";
 import type { FhpRequestT, FtthProjectT } from "schema/fhp";
 import { type Maybe, zArray } from "schema/utils";
 import { workBriefZ } from "schema/work";
-import { apiCall, getJson, postFn } from "#/api/helpers";
+import { apiCall, useApiGet, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import CoordsInput from "#/components/inputs/CoordsInput";
 import LocalitySelect from "#/components/inputs/LocalitySelect";
@@ -14,10 +13,7 @@ import { req } from "#/utils/form";
 export default function FhpRequestForm(props: ModalStateProps) {
   const [form] = Form.useForm<FhpRequestT>();
 
-  const surveysQ = useQuery({
-    queryFn: () => getJson("/fhs/for-project", zArray(workBriefZ)),
-    queryKey: ["fhp", "for-project"],
-  });
+  const surveysQ = useApiGet("/fhs/for-project", zArray(workBriefZ));
 
   const onSelectSurvey = (id: Maybe<string>) => {
     const s = id && surveysQ.data?.find((s) => s.id === id);
@@ -31,11 +27,7 @@ export default function FhpRequestForm(props: ModalStateProps) {
     });
   };
 
-  const qc = useQueryClient();
-  const submitM = useMutation({
-    mutationFn: postFn<FhpRequestT, FtthProjectT>("/fhp"),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["fhp"] }),
-  });
+  const submitM = useApiPost<FhpRequestT, FtthProjectT>("/fhp", ["fhp"]);
 
   const onSubmit = apiCall(async (data: FhpRequestT) => {
     const result = await submitM.mutateAsync(data);

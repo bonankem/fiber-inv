@@ -1,7 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Form, Input, InputNumber, message } from "antd";
 import type { FhsInitiateT, FtthSurveyT } from "schema/fhs";
-import { apiCall, postFn } from "#/api/helpers";
+import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import DateInput from "#/components/inputs/DateInput";
 import VendorSelect from "#/components/inputs/VendorSelect";
@@ -14,11 +13,9 @@ async function validateDates(start: unknown, due: unknown) {
 }
 
 export default function FhsInitiateForm(props: FhsFormProps) {
-  const qc = useQueryClient();
-  const submitM = useMutation({
-    mutationFn: postFn<FhsInitiateT, FtthSurveyT>("/fhs/initiate"),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["fhs"] }),
-  });
+  const submitM = useApiPost<FhsInitiateT, FtthSurveyT>("/fhs/initiate", [
+    "fhs",
+  ]);
 
   const onSubmit = apiCall(async (data: FhsInitiateT) => {
     data.id = props.item.id;

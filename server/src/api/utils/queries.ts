@@ -1,3 +1,4 @@
+import type { IdNameT } from "schema/common";
 import type { CoordsT } from "schema/geo";
 import type { WorkUpdateT } from "schema/work";
 import type { Prisma, WorkAction, WorkDocType, WorkStatus } from "#/prisma";
@@ -99,6 +100,7 @@ export type HasName = string | { name: string };
 export function addLog(
   body: Omit<WorkUpdateT, "id">,
   action: WorkAction,
+  from: Maybe<IdNameT>,
   status: Maybe<WorkStatus> = undefined,
   to: Falsey<HasName>[] = [],
 ): Prisma.WorkLogCreateNestedManyWithoutWorkInput {
@@ -108,6 +110,7 @@ export function addLog(
   return create({
     action,
     newStatus: status || null,
+    fromUser: maybeConnect(from),
     comment: body.comment,
     uploads: addUploads(body.uploads),
     toNames,

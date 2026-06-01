@@ -1,10 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { omit } from "remeda";
 import { Subset, subsetCountsZ } from "schema/common";
 import { fhsFilterZ, ftthSurveyZ } from "schema/fhs";
 import { zArray } from "schema/utils";
-import { getJson } from "#/api/helpers";
+import { useApiGet } from "#/api/helpers";
 import DataPage from "#/components/data-page/DataPage";
 import { subsetsDefault } from "#/components/data-page/utils";
 import { useApiQuery } from "#/hooks/useApiQuery";
@@ -24,11 +23,7 @@ export default function FhsPage() {
     () => omit(api.dto, ["page", "count", "subset"]),
     [api.dto],
   );
-  const counts = useQuery({
-    queryFn: () => getJson("/fhs/count", subsetCountsZ, countDto),
-    queryKey: ["fhs", "count", countDto],
-    staleTime: 1000 * 60,
-  });
+  const counts = useApiGet("/fhs/count", subsetCountsZ, countDto);
 
   return (
     <DataPage

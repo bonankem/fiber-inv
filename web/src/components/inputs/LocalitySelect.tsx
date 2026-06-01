@@ -1,11 +1,10 @@
 /** biome-ignore-all lint/suspicious/noArrayIndexKey: not a problem here */
 
-import { useQuery } from "@tanstack/react-query";
 import { Cascader, type CascaderAutoProps } from "antd";
 import { useMemo, useRef } from "react";
 import { districtNestedZ } from "schema/geo";
 import { zArray } from "schema/utils";
-import { getJson } from "#/api/helpers";
+import { useApiGet } from "#/api/helpers";
 import {
   makeSearchKey,
   makeSearchRexFromKey,
@@ -46,10 +45,7 @@ function renderName(path: string[]) {
 
 export default function LocalitySelect(props: Props) {
   const ref = useRef<HTMLElement>(null);
-  const query = useQuery({
-    queryFn: () => getJson("geo/districts", zArray(districtNestedZ)),
-    queryKey: ["districts"],
-  });
+  const query = useApiGet("geo/districts", zArray(districtNestedZ));
 
   const data = useMemo(() => {
     const list = query.data ?? [];

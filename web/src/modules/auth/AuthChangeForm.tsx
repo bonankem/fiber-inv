@@ -1,5 +1,4 @@
 import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
-import { useMutation } from "@tanstack/react-query";
 import { Button, Form, Input, message } from "antd";
 import { useState } from "react";
 import {
@@ -8,7 +7,7 @@ import {
   type AuthResultT,
   AuthStatus,
 } from "schema/auth";
-import { apiCall, postFn } from "#/api/helpers";
+import { apiCall, useApiPost } from "#/api/helpers";
 import TextLink from "#/components/TextLink";
 import AuthHeader from "./AuthHeader";
 import type { LoginFormProps } from "./utils";
@@ -28,9 +27,7 @@ const reqs = [
 ];
 
 export default function AuthChangeForm(props: Props) {
-  const changeQ = useMutation({
-    mutationFn: postFn<AuthChangeReqT, AuthResultT>("/auth/change"),
-  });
+  const changeQ = useApiPost<AuthChangeReqT, AuthResultT>("/auth/change");
 
   type Input = { password: string; newPassword: string; confirm: string };
   const [form] = Form.useForm<Input>();
@@ -40,9 +37,7 @@ export default function AuthChangeForm(props: Props) {
     onVisibleChange: setShowNew,
   };
 
-  const oldPass = Form.useWatch("password", form) || "";
   const newPass = Form.useWatch("newPassword", form) || "";
-  const confirm = Form.useWatch("confirm", form) || "";
   const checks = reqs.map((r) => ({ label: r.label, ok: r.ok(newPass) }));
 
   const allOk = checks.every((c) => c.ok);

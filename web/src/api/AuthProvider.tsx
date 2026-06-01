@@ -1,4 +1,4 @@
-import { type PropsWithChildren, useState } from "react";
+import { type PropsWithChildren, useEffect, useState } from "react";
 import type { Maybe } from "schema/utils";
 import { AuthContext } from "#/api/auth";
 
@@ -17,5 +17,11 @@ export default function AuthProvider(props: PropsWithChildren) {
     else clearToken();
   };
 
+  useEffect(() => {
+    console.log("token", value);
+  }, [value]);
+
   return <AuthContext value={{ value, update }}>{props.children}</AuthContext>;
 }
+
+AuthProvider.fetchToken = fetchToken;

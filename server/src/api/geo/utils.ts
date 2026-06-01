@@ -79,10 +79,10 @@ export function ringCentre(l: LinearRingT): CoordsT {
 }
 
 export function isInsideRing(c: CoordsT, ring: LinearRingT): boolean {
-  // odd number of edge crosses = inside, even = outside
-  let inside = false;
+  let crosses = 0;
   for (let i = 1; i < ring.length; i++) {
-    if (doesEdgeCrossRay(ring[i - 1], ring[i], c)) inside = !inside;
+    if (doesEdgeCrossRay(ring[i - 1], ring[i], c)) crosses++;
   }
-  return inside;
+  // odd number of edge crosses = inside, even = outside
+  return crosses % 2 === 1;
 }

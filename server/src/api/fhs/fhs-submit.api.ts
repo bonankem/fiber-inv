@@ -1,5 +1,6 @@
 import { uniqueBy } from "remeda";
 import { type FhsSubmitT, fhsSubmitZ, ftthSurveyS } from "schema/fhs";
+import type { UserT } from "schema/people";
 import { filterTruthy } from "schema/utils";
 import {
   type Prisma,
@@ -16,7 +17,7 @@ import { fhsCheck, fhsWorker } from "./utils";
 export default postRoute(
   "/fhs/submit",
   () => fhsSubmitZ,
-  (req) => fhsSubmit(req.body),
+  (req) => fhsSubmit(req.body, req.authUser),
 );
 
 async function getReportedBoxes(uploadId: string) {
@@ -49,7 +50,7 @@ async function getReportedBoxes(uploadId: string) {
   };
 }
 
-async function fhsSubmit(dto: FhsSubmitT) {
+async function fhsSubmit(dto: FhsSubmitT, from: UserT) {
   const {
     id,
     comment,
@@ -92,6 +93,7 @@ async function fhsSubmit(dto: FhsSubmitT) {
       work: updateWork({
         dto,
         old: s.work,
+        from,
         action,
         status: WorkStatus.REVIEW,
         logTo: fhsWorker(s)?.name,

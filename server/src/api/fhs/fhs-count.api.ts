@@ -1,6 +1,7 @@
 import { sumBy } from "remeda";
 import type { SubsetCounts } from "schema/common";
 import { type FhsFilterT, fhsFilterZ } from "schema/fhs";
+import type { UserFullT } from "schema/people";
 import { assoc } from "schema/utils";
 import { prisma, WorkStatus as S } from "#/prisma";
 import { getRoute } from "#/utils";
@@ -9,13 +10,19 @@ import { fhsWorkWhere, workNotOpen, workStopped } from "./filter";
 export default getRoute(
   "/fhs/count",
   () => fhsFilterZ,
-  (req) => fhsCount(req.query),
+  (req) => fhsCount(req.query, req.authUser),
 );
 
-async function fhsCount(input: FhsFilterT): Promise<SubsetCounts> {
+async function fhsCount(
+  input: FhsFilterT,
+  user: UserFullT,
+): Promise<SubsetCounts> {
   delete input.subset;
   const byStatus = await prisma.work.groupBy({
-    where: { fhs: { isNot: null }, ...fhsWorkWhere(input) },
+    where: {
+      fhs: { isNot: null },
+      AND: fhsWorkWhere(input, user),
+    },
     by: ["status"],
     _count: true,
   });

@@ -1,7 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Form, message } from "antd";
 import type { FhpAssignT, FtthProjectT } from "schema/fhp";
-import { apiCall, postFn } from "#/api/helpers";
+import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import StaffSelect from "#/components/inputs/StaffSelect";
 import VendorSelect from "#/components/inputs/VendorSelect";
@@ -9,11 +8,7 @@ import { req } from "#/utils/form";
 import type { FhpFormProps } from "../fhp-types";
 
 export default function FhpAssignForm(props: FhpFormProps) {
-  const qc = useQueryClient();
-  const submitM = useMutation({
-    mutationFn: postFn<FhpAssignT, FtthProjectT>("/fhp/assign"),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["fhp"] }),
-  });
+  const submitM = useApiPost<FhpAssignT, FtthProjectT>("/fhp/assign", ["fhp"]);
 
   const onSubmit = apiCall(async (data: FhpAssignT) => {
     data.id = props.item.id;

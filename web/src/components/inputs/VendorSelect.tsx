@@ -1,20 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
 import { Select, type SelectProps } from "antd";
 import { useMemo } from "react";
 import type { StaffRole } from "schema/enums";
 import { vendorZ } from "schema/people";
 import { zArray } from "schema/utils";
-import { getJson } from "#/api/helpers";
+import { useApiGet } from "#/api/helpers";
 
 type Props = Omit<SelectProps, "options"> & {
   staffRole?: StaffRole | StaffRole[];
 };
 
 export default function VendorSelect({ staffRole, ...props }: Props) {
-  const query = useQuery({
-    queryFn: () => getJson("vendors", zArray(vendorZ)),
-    queryKey: ["vendors"],
-  });
+  const query = useApiGet("vendors", zArray(vendorZ));
 
   const options = useMemo(() => {
     return query.data?.map((v) => ({

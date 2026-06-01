@@ -1,4 +1,3 @@
-import { useMutation } from "@tanstack/react-query";
 import { Button, Form, Radio } from "antd";
 import type {
   AuthChooseReqT,
@@ -6,7 +5,7 @@ import type {
   AuthResultT,
 } from "schema/auth";
 import { MfaMode } from "schema/enums";
-import { apiCall, postFn } from "#/api/helpers";
+import { apiCall, useApiPost } from "#/api/helpers";
 import TextLink from "#/components/TextLink";
 import WithCaption from "#/components/WithCaption";
 import AuthHeader from "./AuthHeader";
@@ -15,9 +14,7 @@ import type { LoginFormProps } from "./utils";
 type Props = LoginFormProps<{ res: AuthNeedsMfaModeT }>;
 
 export default function AuthChooseForm(props: Props) {
-  const chooseQ = useMutation({
-    mutationFn: postFn<AuthChooseReqT, AuthResultT>("/auth/choose"),
-  });
+  const chooseQ = useApiPost<AuthChooseReqT, AuthResultT>("/auth/choose");
 
   const onSubmit = apiCall(async (input: Omit<AuthChooseReqT, "token">) => {
     const data = { ...input, token: props.res.token };

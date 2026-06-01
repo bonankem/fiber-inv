@@ -1,17 +1,12 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Form, Input, message } from "antd";
 import type { FhsReviewT, FtthSurveyT } from "schema/fhs";
-import { apiCall, postFn } from "#/api/helpers";
+import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import { req } from "#/utils/form";
 import type { FhsFormProps } from "../fhs-types";
 
 export default function FhsRejectForm(props: FhsFormProps) {
-  const qc = useQueryClient();
-  const submitM = useMutation({
-    mutationFn: postFn<FhsReviewT, FtthSurveyT>("/fhs/review"),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["fhs"] }),
-  });
+  const submitM = useApiPost<FhsReviewT, FtthSurveyT>("/fhs/review", ["fhs"]);
 
   const onSubmit = apiCall(async (data: FhsReviewT) => {
     data.id = props.item.id;

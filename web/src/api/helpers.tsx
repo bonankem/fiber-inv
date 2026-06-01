@@ -1,5 +1,7 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { message } from "antd";
-import { jsonResponse, type ZodType } from "schema/utils";
+import { jsonResponse, type Maybe, type ZodType } from "schema/utils";
+import { useAuthToken } from "./auth";
 
 const base = (
   (import.meta.env.VITE_API_URL as string) || "http://localhost:3000"
@@ -10,6 +12,43 @@ export function apiUrl(url: string) {
   if (base.endsWith("/")) return `${base}${url.replace(/^\//, "")}`;
   if (url.startsWith("/")) return `${base}${url}`;
   return `${base}/${url}`;
+}
+
+export function useApiGet<O, I extends Query = Query>(
+  path: string | [string, ...string[]],
+  output: ZodType<O>,
+  query?: I,
+) {
+  const url = apiUrl(Array.isArray(path) ? path.join("/") : path);
+  const key = Array.isArray(path) ? path : path.replace(/^\//, "").split("/");
+  const token = useAuthToken();
+
+  return useQuery({
+    queryFn: () => getJson(url, output, query, token.value),
+    queryKey: query ? [...key, query] : key,
+    staleTime: 1000 * 60,
+  });
+}
+
+export function useApiPost<I, O = unknown>(
+  path: string | [string, ...string[]],
+  invalidate?: "all" | string[],
+) {
+  const url = apiUrl(Array.isArray(path) ? path.join("/") : path);
+  const token = useAuthToken();
+  const query = useQueryClient();
+
+  return useMutation({
+    mutationFn: (body: I) => postJson<I, O>(url, body, token.value),
+    onSuccess: async () => {
+      if (invalidate === "all") {
+        query.invalidateQueries();
+      } else if (invalidate?.length) {
+        console.log("Invalidating", invalidate);
+        query.invalidateQueries({ queryKey: invalidate });
+      }
+    },
+  });
 }
 
 type Query = {
@@ -25,10 +64,17 @@ export function postFn<I, O = void>(url: string) {
   return (body: I) => postJson<I, O>(url, body);
 }
 
-export async function postJson<I, O>(url: string, body: I) {
+export async function postJson<I, O>(
+  url: string,
+  body: I,
+  token?: Maybe<string>,
+) {
   const res = await fetch(apiUrl(url), {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token ? `Bearer ${token}` : "",
+    },
     body: JSON.stringify(body),
   });
   const data = await res.json();
@@ -42,6 +88,7 @@ export async function getJson<O, I extends Query = Query>(
   getUrl: string,
   zShape: ZodType<O>,
   query?: I,
+  token?: Maybe<string>,
 ) {
   const url = new URL(apiUrl(getUrl));
   if (query) {
@@ -51,7 +98,9 @@ export async function getJson<O, I extends Query = Query>(
       url.searchParams.append(k, s.toString());
     });
   }
-  const res = await fetch(url);
+  const res = await fetch(url, {
+    headers: { Authorization: token ? `Bearer ${token}` : "" },
+  });
   const data = await res.json();
 
   if (res.ok) return jsonResponse(data, zShape);
