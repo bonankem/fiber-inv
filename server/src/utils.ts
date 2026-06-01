@@ -7,6 +7,7 @@ import type * as F from "fastify";
 import type * as Z from "fastify-zod-openapi";
 import { uuidv7 } from "uuidv7";
 import z from "zod";
+import type { Allow } from "./api/auth/guard";
 
 dayjs.extend(timeZone);
 dayjs.extend(utc);
@@ -53,17 +54,27 @@ export function appRoute<S extends FS>(r: () => AppRoute<S>) {
   return appPlugin(async (app) => void app.route(r()));
 }
 
+function rbac(allow?: Allow) {
+  if (!allow) return undefined;
+  return async (req: AppRequest<FS>) => {
+    console.log("RBAC", allow);
+    if (allow) req.allow = allow;
+  };
+}
+
 export function postRoute<B extends FS["body"], T>(
   url: `/${string}`,
   body: (() => B) | null,
-  f: AppRouteFunc<{ body: B }, T>,
+  func: AppRouteFunc<{ body: B }, T>,
+  allow?: Allow,
 ) {
   return appRoute(() => ({
     url,
     method: "POST",
     schema: body ? { body: body() } : undefined,
+    onRequest: rbac(allow),
     handler(this, req, reply) {
-      return f(req, this, reply);
+      return func(req, this, reply);
     },
   }));
 }
@@ -71,14 +82,16 @@ export function postRoute<B extends FS["body"], T>(
 export function getRoute<Q extends FS["querystring"], T>(
   url: string,
   query: (() => Q) | null,
-  f: AppRouteFunc<{ querystring: Q }, T>,
+  func: AppRouteFunc<{ querystring: Q }, T>,
+  allow?: Allow,
 ) {
   return appRoute(() => ({
     url,
     method: "GET",
     schema: query ? { querystring: query() } : undefined,
+    onRequest: rbac(allow),
     handler(this, req, reply) {
-      return f(req, this, reply);
+      return func(req, this, reply);
     },
   }));
 }
@@ -118,6 +131,14 @@ export function bad(why: ErrorWhy): never {
 
 export function notFound(message = "Not found"): never {
   throw httpErrors.notFound(message);
+}
+
+export function unauthorized(): never {
+  throw httpErrors.unauthorized();
+}
+
+export function accessDenied(): never {
+  throw httpErrors.forbidden();
 }
 
 export function newUuid() {

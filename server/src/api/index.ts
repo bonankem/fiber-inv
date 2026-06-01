@@ -1,5 +1,6 @@
 import { appPlugin } from "#/utils";
 import auth from "./auth";
+import { authGuard } from "./auth/guard";
 import equipment from "./equipment";
 import fhp from "./fhp";
 import fhs from "./fhs";
@@ -11,6 +12,8 @@ import vendors from "./vendors";
 import work from "./work";
 
 export default appPlugin(async (app) => {
+  app.register(authGuard);
+
   app.register(auth);
   app.register(work);
   app.register(fhp);

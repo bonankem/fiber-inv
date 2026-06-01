@@ -1,10 +1,15 @@
 import { appPlugin } from "#/utils";
 import changeApi from "./change.api";
 import chooseApi from "./choose.api";
+import { Allow } from "./guard";
 import loginApi from "./login.api";
 import verifyApi from "./verify.api";
 
 export default appPlugin(async (app) => {
+  app.addHook("onRequest", async (req) => {
+    // all auth endpoints are public
+    req.allow = Allow.PUBLIC;
+  });
   app.register(loginApi);
   app.register(changeApi);
   app.register(chooseApi);

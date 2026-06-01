@@ -140,3 +140,20 @@ export function verifyTempToken(jwt: JWT, token: string) {
     badToken();
   }
 }
+
+const authTokenZ = z.object({
+  userId: z.string(),
+  sessionId: z.string(),
+});
+
+export type AuthTokenT = z.infer<typeof authTokenZ>;
+
+export function tryAuthToken(jwt: JWT, token: Maybe<string>) {
+  if (!token) return null;
+  try {
+    return authTokenZ.parse(jwt.verify(token));
+  } catch (e) {
+    if (isDev) console.error(e);
+    return null;
+  }
+}
