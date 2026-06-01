@@ -1,4 +1,5 @@
 import { type FhpRequestT, fhpRequestZ, ftthProjectS } from "schema/fhp";
+import type { UserFullT } from "schema/people";
 import { prisma, StaffRole, WorkAction, WorkStatus } from "#/prisma";
 import { bad, connectId, maybeConnect, postRoute } from "#/utils";
 import { addLog, create, nextId, setCoords } from "../utils/queries";
@@ -6,7 +7,7 @@ import { addLog, create, nextId, setCoords } from "../utils/queries";
 export default postRoute(
   "/fhp",
   () => fhpRequestZ,
-  (req) => fhpRequest(req.body),
+  (req) => fhpRequest(req.body, req.authUser),
 );
 
 const ID = "FHP";
@@ -14,7 +15,7 @@ const action = WorkAction.REQUEST;
 const status = WorkStatus.REQUESTED;
 const toWhom = StaffRole.PROJECT_MANAGER;
 
-async function fhpRequest(body: FhpRequestT) {
+async function fhpRequest(body: FhpRequestT, from: UserFullT) {
   const s = await prisma.ftthSurvey.findUnique({
     where: { id: body.surveyId },
   });
@@ -32,7 +33,7 @@ async function fhpRequest(body: FhpRequestT) {
           contact: body.contact,
           locality: connectId(body.localityId),
           coords: setCoords(body.coords),
-          logs: addLog(body, action, status),
+          logs: addLog(body, action, from, status),
           workers: create({ userId: body.managerId, role: toWhom }),
         }),
         survey: maybeConnect(body.surveyId),
