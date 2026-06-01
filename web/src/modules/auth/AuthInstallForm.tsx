@@ -1,5 +1,6 @@
 import { Button, Form, Input, QRCode } from "antd";
 import type { OTPRef } from "antd/es/input/OTP";
+import { m } from "i18n/messages";
 import { type RefObject, useRef } from "react";
 import type {
   AuthNeedsInstallT,
@@ -58,8 +59,8 @@ export default function AuthInstallForm(props: Props) {
   return (
     <main>
       <AuthHeader
-        title="Configurer l'appli d'authentification"
-        subtitle="Scannez le code QR, puis saisissez le code OTP."
+        title={m.mfa_app_page_title()}
+        subtitle={m.mfa_app_page_subtitle()}
       />
 
       <Form form={form} layout="vertical" onFinish={onSubmit}>
@@ -71,12 +72,16 @@ export default function AuthInstallForm(props: Props) {
         />
 
         <Form.Item
-          label="Saissez le code OTP"
+          label={m.mfa_enter_otp()}
           name="otp"
           // no asterisk
           required={false}
           rules={[
-            { required: true, message: "Required", validateTrigger: "onBlur" },
+            {
+              required: true,
+              message: m.required(),
+              validateTrigger: "onBlur",
+            },
             { len: 6, validateTrigger: "onBlur" },
           ]}
         >
@@ -89,11 +94,11 @@ export default function AuthInstallForm(props: Props) {
           htmlType="submit"
           loading={verifyQ.isPending}
         >
-          Vérifier le code OTP
+          {m.mfa_verify_otp()}
         </Button>
 
         <section className="mt-4 flex justify-end">
-          <TextLink onClick={() => props.onCancel?.()}>Cancel</TextLink>
+          <TextLink onClick={() => props.onCancel?.()}>{m.back()}</TextLink>
         </section>
       </Form>
     </main>

@@ -1,4 +1,5 @@
 import { Button, Form, Input } from "antd";
+import { m } from "i18n/messages";
 import type { AuthLoginReqT, AuthResultT } from "schema/auth";
 import { apiCall, useApiPost } from "#/api/helpers";
 import TextLink from "#/components/TextLink";
@@ -14,15 +15,15 @@ export default function AuthLoginForm(props: LoginFormProps) {
 
   return (
     <main>
-      <AuthHeader title="Connectez-vous à ServiceX" />
+      <AuthHeader title={m.login_title()} />
 
       <Form layout="vertical" onFinish={onSubmit}>
         <Form.Item name="email">
-          <Input type="email" placeholder="E-mail" required />
+          <Input type="email" placeholder={m.email()} required />
         </Form.Item>
 
         <Form.Item name="password">
-          <Input.Password placeholder="Mot de passe" required />
+          <Input.Password placeholder={m.password()} required />
         </Form.Item>
 
         <Button
@@ -31,11 +32,11 @@ export default function AuthLoginForm(props: LoginFormProps) {
           htmlType="submit"
           loading={loginQ.isPending}
         >
-          Se connecter
+          {m.login()}
         </Button>
 
         <section className="mt-4 flex justify-end">
-          <TextLink to="/reset">Mot de passe oublié?</TextLink>
+          <TextLink to="/reset">{m.forgot_password()}</TextLink>
         </section>
       </Form>
     </main>

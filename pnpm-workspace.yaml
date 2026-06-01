@@ -3,6 +3,7 @@ packages:
   - schema
   - mobile
   - web
+  - i18n
 allowBuilds:
   '@prisma/engines': true
   esbuild: true

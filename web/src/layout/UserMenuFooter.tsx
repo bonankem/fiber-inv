@@ -8,6 +8,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Avatar, Button, Dropdown, Tooltip } from "antd";
+import { getLocale, setLocale } from "i18n/runtime";
 import { useModalViewer } from "#/hooks/useModalViewer";
 import LogoutModal from "#/modules/auth/LogoutModal";
 import { useAppTheme } from "#/theme";
@@ -22,10 +23,20 @@ const themes = [
   { key: "dark", label: "Dark" },
 ] as const;
 
+const languages = [
+  { key: "en", label: "English" },
+  { key: "fr", label: "Français" },
+] as const;
+
 export default function UserMenuFooter({ collapsed }: Props) {
   const modal = useModalViewer();
   const theme = useAppTheme();
-  const check = <CheckOutlined className="ml-2 text-yellow-600!" />;
+  const locale = getLocale();
+
+  const check = (selected: string, item: { key: string }) => {
+    if (selected !== item.key) return undefined;
+    return <CheckOutlined className="ml-2 text-yellow-600!" />;
+  };
 
   const logout = () => {
     modal.open(LogoutModal);
@@ -42,10 +53,12 @@ export default function UserMenuFooter({ collapsed }: Props) {
               key: "language",
               label: "Language",
               icon: <FontColorsOutlined />,
-              children: [
-                { key: "en", label: "English" },
-                { key: "fr", label: "Français" },
-              ],
+              children: languages.map((l) => ({
+                key: l.key,
+                label: l.label,
+                onClick: () => setLocale(l.key),
+                itemIcon: check(locale, l),
+              })),
             },
             {
               key: "theme",
@@ -55,7 +68,7 @@ export default function UserMenuFooter({ collapsed }: Props) {
                 key: t.key,
                 label: t.label,
                 onClick: () => theme.setValue(t.key),
-                itemIcon: t.key === theme.value ? check : undefined,
+                itemIcon: check(theme.value, t),
               })),
             },
             { type: "divider" },

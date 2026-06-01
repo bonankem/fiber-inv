@@ -1,5 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { message } from "antd";
+import * as m from "i18n/messages";
 import { useState } from "react";
 import { type AuthResultT, AuthStatus } from "schema/auth";
 import { useAuthToken } from "#/api/auth";
@@ -17,15 +18,17 @@ export default function LoginPage() {
   const onResult = (res: AuthResultT) => {
     if (res.status === AuthStatus.SUCCESS) {
       authToken.update(res.token);
-      message.success(`Bienvenue, ${res.user.name}`);
+      message.success(m.welcome({ name: res.user.name }));
       navigate({ to: "/ftth-surveys", replace: true });
     } else {
       setResult(res);
+      navigate({ hash: "setup", replace: true });
     }
   };
 
   const onCancel = () => {
     setResult(undefined);
+    navigate({ hash: "", replace: true });
   };
 
   const props = { onResult, onCancel };

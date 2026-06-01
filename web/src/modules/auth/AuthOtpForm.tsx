@@ -1,5 +1,6 @@
 import { Button, Form, Input } from "antd";
 import type { OTPRef } from "antd/es/input/OTP";
+import { m } from "i18n/messages";
 import { type RefObject, useRef } from "react";
 import type { AuthNeedsOtpT, AuthResultT, AuthVerifyReqT } from "schema/auth";
 import { apiCall, useApiPost } from "#/api/helpers";
@@ -10,10 +11,10 @@ import type { LoginFormProps } from "./utils";
 type Props = LoginFormProps<{ res: AuthNeedsOtpT }>;
 
 const prompts = {
-  EMAIL: "Un code OTP vous a été envoyé par e-mail.",
-  SMS: "Un code OTP vous a été envoyé par SMS.",
-  WHATSAPP: "Un code OTP vous a été envoyé par WhatsApp.",
-  AUTHENTICATOR: "Saisissez le code OTP de l'appli d'authentification.",
+  EMAIL: m.mfa_prompt_email(),
+  SMS: m.mfa_prompt_sms(),
+  WHATSAPP: m.mfa_prompt_whatsapp(),
+  AUTHENTICATOR: m.mfa_prompt_app(),
 };
 
 const noop = (_: unknown) => {};
@@ -58,13 +59,17 @@ export default function AuthOtpForm(props: Props) {
 
   return (
     <main>
-      <AuthHeader title="Saisir le code OTP" subtitle={prompts[mode]} />
+      <AuthHeader title={m.mfa_enter_otp()} subtitle={prompts[mode]} />
 
       <Form form={form} layout="vertical" onFinish={onSubmit}>
         <Form.Item
           name="otp"
           rules={[
-            { required: true, message: "Required", validateTrigger: "onBlur" },
+            {
+              required: true,
+              message: m.required(),
+              validateTrigger: "onBlur",
+            },
             { len: 6, validateTrigger: "onBlur" },
           ]}
         >
@@ -77,11 +82,11 @@ export default function AuthOtpForm(props: Props) {
           htmlType="submit"
           loading={verifyQ.isPending}
         >
-          Vérifier le code OTP
+          {m.mfa_verify_otp()}
         </Button>
 
         <section className="mt-4 flex justify-end">
-          <TextLink onClick={() => props.onCancel?.()}>Cancel</TextLink>
+          <TextLink onClick={() => props.onCancel?.()}>{m.back()}</TextLink>
         </section>
       </Form>
     </main>

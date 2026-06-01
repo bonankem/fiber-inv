@@ -1,4 +1,5 @@
 import { Button, Form, Radio } from "antd";
+import { m } from "i18n/messages";
 import type {
   AuthChooseReqT,
   AuthNeedsMfaModeT,
@@ -24,8 +25,8 @@ export default function AuthChooseForm(props: Props) {
   return (
     <main>
       <AuthHeader
-        title="Configuration MFA"
-        subtitle="Choisissez votre mode d'authentification multifacteur"
+        title={m.mfa_config_title()}
+        subtitle={m.mfa_choose_message()}
       />
 
       <Form layout="vertical" onFinish={onSubmit}>
@@ -38,8 +39,8 @@ export default function AuthChooseForm(props: Props) {
                 value: MfaMode.AUTHENTICATOR,
                 label: (
                   <WithCaption
-                    title="Appli d'authentification"
-                    caption="Utiliser une appli comme Google Authenticator"
+                    title={m.mfa_app()}
+                    caption={m.mfa_app_caption()}
                     smallCaption
                   />
                 ),
@@ -48,8 +49,8 @@ export default function AuthChooseForm(props: Props) {
                 value: MfaMode.EMAIL,
                 label: (
                   <WithCaption
-                    title="E-mail"
-                    caption="Recevez le code OTP par e-mail"
+                    title={m.email()}
+                    caption={m.mfa_email_caption()}
                     smallCaption
                   />
                 ),
@@ -64,12 +65,12 @@ export default function AuthChooseForm(props: Props) {
           htmlType="submit"
           loading={chooseQ.isPending}
         >
-          Continuer
+          {m.continue()}
         </Button>
 
         <section className="mt-4 flex justify-end">
           <TextLink disabled={chooseQ.isPending} onClick={props.onCancel}>
-            Cancel
+            {m.back()}
           </TextLink>
         </section>
       </Form>

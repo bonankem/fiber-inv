@@ -1,5 +1,6 @@
 import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
 import { Button, Form, Input, message } from "antd";
+import { m } from "i18n/messages";
 import { useState } from "react";
 import {
   type AuthChangeReqT,
@@ -19,11 +20,11 @@ function req(label: string, ok: (p: string) => boolean) {
 }
 
 const reqs = [
-  req("Au moins 6 caractères", (p) => p.length >= 6),
-  req("Lettre majuscule (A-Z)", (p) => /[A-Z]/.test(p)),
-  req("Lettre miniscule (a-z)", (p) => /[a-z]/.test(p)),
-  req("Chiffre (0-9)", (p) => /[0-9]/.test(p)),
-  req("Symbole", (p) => /[\W_]/.test(p)),
+  req(m.pw_min_length({ min: 6 }), (p) => p.length >= 6),
+  req(m.pw_uppercase(), (p) => /[A-Z]/.test(p)),
+  req(m.pw_lowercase(), (p) => /[a-z]/.test(p)),
+  req(m.pw_number(), (p) => /[0-9]/.test(p)),
+  req(m.pw_symbol(), (p) => /[\W_]/.test(p)),
 ];
 
 export default function AuthChangeForm(props: Props) {
@@ -50,29 +51,29 @@ export default function AuthChangeForm(props: Props) {
       newPassword: input.newPassword,
     });
     if (result.status !== AuthStatus.SUCCESS) {
-      message.success("Password changed successfully");
+      message.success(m.password_changed());
     }
     props.onResult?.(result);
   });
 
   return (
     <main>
-      <AuthHeader title="Changer le mot de passe" />
+      <AuthHeader title={m.change_password()} />
 
       <Form form={form} layout="vertical" onFinish={onSubmit}>
-        <Form.Item name="password" label="Mot de passe actuel">
+        <Form.Item name="password" label={m.current_password()}>
           <Input.Password required />
         </Form.Item>
 
         <Form.Item
           name="newPassword"
-          label="Mot de passe nouveau"
+          label={m.new_password()}
           dependencies={["password"]}
           rules={[
             (form) => ({
               async validator(_, value) {
                 if (value && value === form.getFieldValue("password")) {
-                  throw new Error("N'utilisez pas le même mot de passe");
+                  throw new Error(m.error_same_password());
                 }
               },
             }),
@@ -81,7 +82,7 @@ export default function AuthChangeForm(props: Props) {
           <Input.Password
             required
             visibilityToggle={visibilityToggle}
-            placeholder="Choisissez un nouveau mot de passe"
+            placeholder={m.new_password_hint()}
           />
         </Form.Item>
 
@@ -92,7 +93,7 @@ export default function AuthChangeForm(props: Props) {
             (form) => ({
               async validator(_, value) {
                 if (value && value !== form.getFieldValue("newPassword")) {
-                  throw new Error("Les mots de passe ne correspondent pas");
+                  throw new Error(m.error_password_mismatch());
                 }
               },
             }),
@@ -101,7 +102,7 @@ export default function AuthChangeForm(props: Props) {
           <Input.Password
             required
             visibilityToggle={visibilityToggle}
-            placeholder="Confirmer le nouveau mot de passe"
+            placeholder={m.confirm_new_password()}
           />
         </Form.Item>
 
@@ -132,12 +133,12 @@ export default function AuthChangeForm(props: Props) {
           loading={changeQ.isPending}
           disabled={!allOk}
         >
-          Envoyer
+          {m.send()}
         </Button>
 
         <section className="mt-4 flex justify-end">
           <TextLink disabled={changeQ.isPending} onClick={props.onCancel}>
-            Cancel
+            {m.back()}
           </TextLink>
         </section>
       </Form>

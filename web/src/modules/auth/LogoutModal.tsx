@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Modal } from "antd";
+import { m } from "i18n/messages";
 import { useAuthToken } from "#/api/auth";
 import { useApiPost } from "#/api/helpers";
 import type { ModalStateProps } from "#/hooks/useModalViewer";
@@ -22,10 +23,10 @@ export default function LogoutModal(props: ModalStateProps) {
 
   return (
     <Modal
-      title="Log out of ServiceX"
+      title={m.logout_title()}
       open={props.state.isOpen}
-      okText="Log out"
-      cancelText="Back"
+      okText={m.log_out()}
+      cancelText={m.back()}
       closable={false}
       onOk={doLogout}
       mask={{ blur: true, closable: !pending }}
