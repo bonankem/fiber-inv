@@ -1,17 +1,37 @@
 import { FileOutlined } from "@ant-design/icons";
-import { Tag } from "antd";
+import { Tooltip } from "antd";
 import { useMemo } from "react";
 import { uniqueBy } from "remeda";
+import type { IdNameT } from "schema/common";
 import type { UploadT } from "schema/uploads";
 import type { Maybe } from "schema/utils";
 import type { WorkDocT } from "schema/work";
 import { twJoin } from "tailwind-merge";
+import { apiUrl } from "#/api/helpers";
 import FittedText from "./FittedText";
 
 type Props = {
   files: Maybe<(UploadT | WorkDocT)[]>;
   className?: string;
 };
+
+function uploadLink(up: IdNameT) {
+  const name = encodeURIComponent(up.name);
+  return apiUrl(`download/${up.id}/${name}`);
+}
+
+function withUnit(n: number, unit: string) {
+  const s = n < 10 ? Math.round(n * 10) / 10 : Math.round(n);
+  return `${s} ${unit}`;
+}
+
+const K = 1024;
+const M = 1024 * 1024;
+function sizeText(size: number) {
+  if (size < K) return `${size} b`;
+  if (size < M) return withUnit(size / K, "kB");
+  return withUnit(size / M, "MB");
+}
 
 export default function DownloadList(props: Props) {
   const uploads = useMemo(() => {
@@ -28,21 +48,24 @@ export default function DownloadList(props: Props) {
     >
       {uploads.map((up) => (
         <li key={up.id} className="max-w-full">
-          <a href="/" target="_blank" rel="noopener noreferrer">
-            <Tag
+          <Tooltip title={`${up.name} (${sizeText(up.size)})`} placement="left">
+            <a
+              href={uploadLink(up)}
+              target="_blank"
+              rel="noopener noreferrer"
               className={twJoin(
-                "text-sm! w-fit! max-w-full! flex! flex-row bg-transparent!",
-                "hover:border-yellow-400!",
-                "dark:hover:text-yellow-400! dark:hover:border-yellow-400!",
+                "w-fit max-w-full inline-flex px-3",
+                "border border-blue-500! text-blue-500! rounded-xl",
+                "dark:border-blue-400! dark:text-blue-400!",
+                "hover:border-yellow-600! hover:text-yellow-600!",
+                "dark:hover:border-yellow-500! dark:hover:text-yellow-500!",
+                "transition-colors! duration-100!",
               )}
-              variant="outlined"
             >
-              <div className="flex gap-2 overflow-hidden">
-                <FileOutlined className="text-xs" />
-                <FittedText text={up.name} longTail />
-              </div>
-            </Tag>
-          </a>
+              <FileOutlined className="text-xs mr-1" />
+              <FittedText text={up.name} longTail />
+            </a>
+          </Tooltip>
         </li>
       ))}
     </ul>
