@@ -6,6 +6,7 @@ import {
   StopOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import { m } from "i18n/messages";
 import { ThumbsUp } from "lucide-react";
 import { WorkStatus as When } from "schema/enums";
 import type { FtthProjectT as What } from "schema/fhp";
@@ -27,42 +28,42 @@ function isWho() {
 
 export const fhpActions = buildActions(isWhen, isWho, [
   {
-    name: "Assign",
+    name: m.action_assign(),
     icon: UserOutlined,
     when: [When.REQUESTED],
     form: FhpAssignForm,
     main: true,
   },
   {
-    name: "Decline",
+    name: m.action_decline(),
     icon: StopOutlined,
     when: [When.REQUESTED],
     main: true,
     red: true,
   },
   {
-    name: "Initiate",
+    name: m.action_initiate(),
     icon: CalendarOutlined,
     when: [When.ASSIGNED],
     form: FhpInitiateForm,
     main: true,
   },
   {
-    name: "Submit",
+    name: m.action_submit(),
     icon: SendOutlined,
     when: [When.ONGOING],
     form: FhpSubmitForm,
     main: true,
   },
   {
-    name: "Accepter",
+    name: m.action_accept(),
     icon: ThumbsUp,
     when: [When.REVIEW],
     form: FhpAcceptForm,
     main: true,
   },
   {
-    name: "Rejeter",
+    name: m.action_reject(),
     icon: CloseOutlined,
     when: [When.REVIEW],
     form: FhpRejectForm,
@@ -70,7 +71,7 @@ export const fhpActions = buildActions(isWhen, isWho, [
     red: true,
   },
   {
-    name: "Comment",
+    name: m.action_comment(),
     icon: MessageOutlined,
     form: CommentForm,
   },

@@ -1,4 +1,5 @@
 import { Card, Empty, Form, Grid, List, message, Tabs } from "antd";
+import { m } from "i18n/messages";
 import { useState } from "react";
 import { countBy, sumBy } from "remeda";
 import { BoxType, type WorkDocType } from "schema/enums";
@@ -34,7 +35,7 @@ const qtyInput = (name: keyof FhsSubmitT, label: string, length = false) => (
       required
       className="w-full! text-sm! h-8!"
       addonBefore={<div className="one-line w-28 text-sm!">{label}</div>}
-      placeholder={length ? "Longueur" : undefined}
+      placeholder={length ? m.length() : undefined}
       suffix={length ? "m" : undefined}
       controls={false}
     />
@@ -127,7 +128,7 @@ export default function FhsSubmitForm(props: FhsFormProps) {
   return (
     <FormModal
       form={form}
-      title="Submit Survey Report"
+      title={m.fhs_form_submit()}
       width={mobile ? 480 : 880}
       state={props.state}
       subtitle={props.item.work.name}
@@ -139,29 +140,29 @@ export default function FhsSubmitForm(props: FhsFormProps) {
 
         {fileInput("PLAN_KMZ", "KMZ", onParseKmz)}
         {fileInput("PLAN_BOQ", "BOQ")}
-        {fileInput("COORDINATES", "Coordonnées", onParseCoords)}
-        {fileInput("PLAN_DIAGRAM", "Plan (DWG)")}
-        {fileInput("SYNOPTIC_DIAGRAM", "Synoptique (DWG)")}
-        {fileInput("SYNOPTIC_TABLE", "Tableau Synoptique")}
-        {fileInput("CABLE_LENGTHS", "Longueurs des câbles")}
-        {fileInput("HP_SUMMARY", "Récapitulatif des ELs")}
+        {fileInput("COORDINATES", m.field_coords(), onParseCoords)}
+        {fileInput("PLAN_DIAGRAM", m.field_plan_diag())}
+        {fileInput("SYNOPTIC_DIAGRAM", m.field_synoptic_diag())}
+        {fileInput("SYNOPTIC_TABLE", m.field_synoptic_table())}
+        {fileInput("CABLE_LENGTHS", m.field_cable_lengths())}
+        {fileInput("HP_SUMMARY", m.field_hp_summary())}
       </div>
 
       <div className="flex flex-col gap-2">
         <h2 className="font-medium">Nouvelles quantités</h2>
 
-        {qtyInput("hp", "HP")}
-        {qtyInput("oltCards", "Cartes OLT")}
-        {qtyInput("xBoxes", "X Box")}
-        {qtyInput("hubBoxes", "Hub Box")}
-        {qtyInput("subBoxes", "Sub Box")}
-        {qtyInput("endBoxes", "End Box")}
-        {qtyInput("concretePoles", "Poteaux bétons")}
-        {qtyInput("metalPoles", "Poteaux métall.")}
-        {qtyInput("closures", "Closures")}
-        {qtyInput("manholes", "Chambres")}
-        {qtyInput("feederLengthM", "Câbles transp.", true)}
-        {qtyInput("distLengthM", "Câbles distrib.", true)}
+        {qtyInput("hp", m.field_hp())}
+        {qtyInput("oltCards", m.field_olt_cards())}
+        {qtyInput("xBoxes", m.field_x_boxes())}
+        {qtyInput("hubBoxes", m.field_hub_boxes())}
+        {qtyInput("subBoxes", m.field_sub_boxes())}
+        {qtyInput("endBoxes", m.field_end_boxes())}
+        {qtyInput("concretePoles", m.field_concrete_poles())}
+        {qtyInput("metalPoles", m.field_metal_poles())}
+        {qtyInput("closures", m.field_closures())}
+        {qtyInput("manholes", m.field_manholes())}
+        {qtyInput("feederLengthM", m.field_tran_cables(), true)}
+        {qtyInput("distLengthM", m.field_dist_cables(), true)}
       </div>
 
       <Card classNames={{ body: "p-0!" }}>
@@ -186,37 +187,37 @@ export default function FhsSubmitForm(props: FhsFormProps) {
             // },
             {
               key: "boxes",
-              label: "Boitiers",
+              label: m.boxes(),
               children: (
                 <ItemList
                   items={coords?.boxes || kmz?.boxes}
-                  whenEmpty="Pas de boîtiers"
-                  whenNull="Les boitiers sont lues à partir du fichiers KMZ et coordonnées"
+                  whenEmpty={m.no_boxes()}
+                  whenNull={m.report_boxes_hint()}
                 />
               ),
             },
             {
               key: "cables",
-              label: "Câbles",
+              label: m.cables(),
               children: (
                 <ItemList
                   items={kmz?.cables}
-                  whenEmpty="Pas de câbles"
-                  whenNull="Les câbles sont lues à partir des fichiers KMZ et longueurs des câbles"
+                  whenEmpty={m.no_cables()}
+                  whenNull={m.report_cables_hint()}
                   showOldNames
                 />
               ),
             },
             {
               key: "poles",
-              label: "Poteaux",
+              label: m.poles(),
               children: (
                 <ItemList
                   items={
                     kmz ? [...kmz.metalPoles, ...kmz.concretePoles] : undefined
                   }
-                  whenEmpty="Pas de poteaux"
-                  whenNull="Les poteaux sont lues à partir du fichier KMZ"
+                  whenEmpty={m.no_poles()}
+                  whenNull={m.report_poles_hint()}
                   showOldNames
                 />
               ),

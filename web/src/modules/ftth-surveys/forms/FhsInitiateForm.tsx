@@ -1,4 +1,5 @@
 import { Form, Input, InputNumber, message } from "antd";
+import { m } from "i18n/messages";
 import type { FhsInitiateT, FtthSurveyT } from "schema/fhs";
 import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
@@ -9,7 +10,7 @@ import type { FhsFormProps } from "../fhs-types";
 
 async function validateDates(start: unknown, due: unknown) {
   if (!start || !due || start <= due) return;
-  throw new Error("Date de début > Date d'échéance");
+  throw new Error(`${m.field_start_date()} > ${m.field_due_date()}`);
 }
 
 export default function FhsInitiateForm(props: FhsFormProps) {
@@ -26,7 +27,7 @@ export default function FhsInitiateForm(props: FhsFormProps) {
 
   return (
     <FormModal
-      title="Initiate FTTH survey"
+      title={m.fhs_form_initiate()}
       subtitle={props.item.work.name}
       state={props.state}
       onSubmit={onSubmit}
@@ -35,7 +36,7 @@ export default function FhsInitiateForm(props: FhsFormProps) {
     >
       <Form.Item
         name="vendorId"
-        label="Vendor"
+        label={m.field_vendor()}
         className="col-span-full"
         {...req}
       >
@@ -55,17 +56,17 @@ export default function FhsInitiateForm(props: FhsFormProps) {
         ]}
       >
         <div className="grid! sm:grid-cols-2 gap-2">
-          <Form.Item name="startDate" label="Date de début" {...req}>
+          <Form.Item name="startDate" label={m.field_start_date()} {...req}>
             <DateInput />
           </Form.Item>
 
-          <Form.Item name="dueDate" label="Date d'échéance" {...req}>
+          <Form.Item name="dueDate" label={m.field_due_date()} {...req}>
             <DateInput />
           </Form.Item>
         </div>
       </Form.Item>
 
-      <Form.Item name="oltCode" label="Code OLT" {...req}>
+      <Form.Item name="oltCode" label={m.field_olt_code()} {...req}>
         <Input
           required
           minLength={5}
@@ -74,11 +75,15 @@ export default function FhsInitiateForm(props: FhsFormProps) {
         />
       </Form.Item>
 
-      <Form.Item name="proposedHp" label="EL proposé" {...req}>
+      <Form.Item name="proposedHp" label={m.field_proposed_hp()} {...req}>
         <InputNumber className="w-full!" min={0} required />
       </Form.Item>
 
-      <Form.Item name="comment" label="Commentaire" className="col-span-full">
+      <Form.Item
+        name="comment"
+        label={m.field_comment()}
+        className="col-span-full"
+      >
         <Input.TextArea rows={3} className="resize-none!" />
       </Form.Item>
     </FormModal>

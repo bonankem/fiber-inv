@@ -1,4 +1,5 @@
 import { Form, Input, message } from "antd";
+import { m } from "i18n/messages";
 import type { FhsReviewT, FtthSurveyT } from "schema/fhs";
 import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
@@ -17,16 +18,16 @@ export default function FhsAcceptForm(props: FhsFormProps) {
 
   return (
     <FormModal
-      title="Accepter le rapport"
+      title={m.fhs_form_accept()}
       subtitle={props.item.work.name}
       state={props.state}
       onSubmit={onSubmit}
     >
-      <Form.Item name="comment" label="Commentaire">
+      <Form.Item name="comment" label={m.field_comment()}>
         <Input.TextArea
           rows={3}
           className="resize-none!"
-          placeholder="Facultatif"
+          placeholder={m.optional()}
         />
       </Form.Item>
     </FormModal>

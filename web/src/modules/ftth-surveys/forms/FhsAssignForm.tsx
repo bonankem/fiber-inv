@@ -1,10 +1,11 @@
 import { Form, message } from "antd";
-import { StaffRole } from "schema/enums";
+import { m } from "i18n/messages";
 import type { FhsAssignT, FtthSurveyT } from "schema/fhs";
 import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import StaffSelect from "#/components/inputs/StaffSelect";
 import VendorSelect from "#/components/inputs/VendorSelect";
+import { req } from "#/utils/form";
 import type { FhsFormProps } from "../fhs-types";
 
 export default function FhsAssignForm(props: FhsFormProps) {
@@ -19,22 +20,17 @@ export default function FhsAssignForm(props: FhsFormProps) {
 
   return (
     <FormModal
-      title="Assign FTTH survey"
+      title={m.fhs_form_assign()}
       subtitle={props.item.work.name}
       state={props.state}
       onSubmit={onSubmit}
     >
-      <Form.Item
-        name="userId"
-        label="Engineer"
-        required
-        rules={[{ required: true }]}
-      >
-        <StaffSelect filter={StaffRole.PLANNING_ENGINEER} />
+      <Form.Item name="userId" label={m.field_assignee()} {...req}>
+        <StaffSelect filter="PLANNING_ENGINEER" />
       </Form.Item>
 
-      <Form.Item name="vendorId" label="Vendor">
-        <VendorSelect placeholder="Optional" />
+      <Form.Item name="vendorId" label={m.field_vendor()}>
+        <VendorSelect placeholder={m.optional()} />
       </Form.Item>
     </FormModal>
   );

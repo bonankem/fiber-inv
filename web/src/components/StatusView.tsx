@@ -1,4 +1,5 @@
 import { Tag, type TagProps } from "antd";
+import { m } from "i18n/messages";
 import type { StaffRole, WorkStatus } from "schema/enums";
 import type { Maybe } from "schema/utils";
 import type { WorkT } from "schema/work";
@@ -50,20 +51,20 @@ function worker(work: WorkT, role: Maybe<StaffRole>) {
 
 const colors: Partial<Record<WorkStatus, TagProps["color"]>> = {
   CLOSED: "green",
-  REVIEW: "purple",
+  REVIEW: "gold",
   REVIEW_FAILED: "volcano",
   DECLINED: "red",
   CANCELLED: "red",
-  REQUESTED: "purple",
+  REQUESTED: "gold",
 };
 
 const statusNames: Record<WorkStatus, string> = {
-  REQUESTED: "Demandée",
-  DECLINED: "Refusée",
-  ASSIGNED: "Assigné",
-  ONGOING: "En cours",
-  REVIEW: "Révision",
-  REVIEW_FAILED: "Révision rejetée",
-  CANCELLED: "Annulé",
-  CLOSED: "Terminé",
+  REQUESTED: m.requested(),
+  DECLINED: m.declined(),
+  ASSIGNED: m.assigned(),
+  ONGOING: m.ongoing(),
+  REVIEW: m.review(),
+  REVIEW_FAILED: m.rejected(),
+  CANCELLED: m.cancelled(),
+  CLOSED: m.closed(),
 };

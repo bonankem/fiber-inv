@@ -1,3 +1,4 @@
+import { m } from "i18n/messages";
 import { StaffRole } from "schema/enums";
 import type { FtthProjectT } from "schema/fhp";
 import type { DtColumn } from "#/components/data-page/types";
@@ -15,7 +16,7 @@ export function worker(i: FtthProjectT, role: StaffRole = assigneeRole) {
 export const fhpColumns: FhpColumn[] = [
   {
     key: "id",
-    title: "ID",
+    title: m.id(),
     width: 100,
     onClick: true,
     render: (p) => (
@@ -27,7 +28,7 @@ export const fhpColumns: FhpColumn[] = [
   },
   {
     key: "name",
-    title: "Nom du lieu",
+    title: m.name(),
     width: 200,
     onClick: true,
     render: (p) => (
@@ -38,8 +39,8 @@ export const fhpColumns: FhpColumn[] = [
     ),
   },
   {
-    title: "Statut / En attente de",
     key: "status",
+    title: m.status_pending_on(),
     width: 150,
     render: (t) => (
       <StatusView
@@ -55,8 +56,8 @@ export const fhpColumns: FhpColumn[] = [
     ),
   },
   {
-    title: "Assigné à",
     key: "assigned",
+    title: m.assigned_to(),
     width: 150,
     render: (t) => (
       <WithCaption

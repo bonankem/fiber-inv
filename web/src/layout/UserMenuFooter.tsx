@@ -8,6 +8,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Avatar, Button, Dropdown, Tooltip } from "antd";
+import { m } from "i18n/messages";
 import { getLocale, setLocale } from "i18n/runtime";
 import { useModalViewer } from "#/hooks/useModalViewer";
 import LogoutModal from "#/modules/auth/LogoutModal";
@@ -18,9 +19,9 @@ type Props = {
 };
 
 const themes = [
-  { key: "system", label: "System" },
-  { key: "light", label: "Light" },
-  { key: "dark", label: "Dark" },
+  { key: "system", label: m.system() },
+  { key: "light", label: m.light() },
+  { key: "dark", label: m.dark() },
 ] as const;
 
 const languages = [
@@ -51,7 +52,7 @@ export default function UserMenuFooter({ collapsed }: Props) {
           items: [
             {
               key: "language",
-              label: "Language",
+              label: m.language(),
               icon: <FontColorsOutlined />,
               children: languages.map((l) => ({
                 key: l.key,
@@ -62,7 +63,7 @@ export default function UserMenuFooter({ collapsed }: Props) {
             },
             {
               key: "theme",
-              label: "Theme",
+              label: m.theme(),
               icon: <SunOutlined />,
               children: themes.map((t) => ({
                 key: t.key,
@@ -74,12 +75,12 @@ export default function UserMenuFooter({ collapsed }: Props) {
             { type: "divider" },
             {
               key: "password",
-              label: "Change Password",
+              label: m.change_password(),
               icon: <LockOutlined />,
             },
             {
               key: "logout",
-              label: "Log out",
+              label: m.log_out(),
               icon: <LogoutOutlined />,
               onClick: logout,
             },

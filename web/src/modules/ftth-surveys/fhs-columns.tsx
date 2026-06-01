@@ -1,3 +1,4 @@
+import { m } from "i18n/messages";
 import { StaffRole } from "schema/enums";
 import type { FtthSurveyT } from "schema/fhs";
 import type { DtColumn } from "#/components/data-page/types";
@@ -14,7 +15,7 @@ export function worker(i: FtthSurveyT, role: StaffRole = assigneeRole) {
 export const fhsColumns: FhsColumn[] = [
   {
     key: "id",
-    title: "ID",
+    title: m.id(),
     width: 100,
     onClick: true,
     render: (p) => (
@@ -26,7 +27,7 @@ export const fhsColumns: FhsColumn[] = [
   },
   {
     key: "name",
-    title: "Nom",
+    title: m.name(),
     width: 200,
     onClick: true,
     render: (p) => (
@@ -37,7 +38,7 @@ export const fhsColumns: FhsColumn[] = [
     ),
   },
   {
-    title: "Statut / En attente de",
+    title: m.status_pending_on(),
     key: "status",
     width: 150,
     render: (t) => (
@@ -54,7 +55,7 @@ export const fhsColumns: FhsColumn[] = [
     ),
   },
   {
-    title: "Assigné à",
+    title: m.assigned_to(),
     key: "assigned",
     width: 150,
     render: (t) => (

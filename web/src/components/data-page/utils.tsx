@@ -1,4 +1,5 @@
 import { Grid, type TableColumnType } from "antd";
+import { m } from "i18n/messages";
 import { useCallback, useMemo } from "react";
 import { sumBy } from "remeda";
 import { Subset, type SubsetCounts } from "schema/common";
@@ -40,7 +41,7 @@ export function useResolvedColumns<T>(props: DataTableProps<T>) {
     const actionCol: Col | undefined = actions && {
       key: "action",
       width: mobile ? 40 : 60,
-      title: mobile ? "" : "Action",
+      title: mobile ? "" : m.action(),
       fixed: "right",
       align: "center",
       render: (t) => <ActionsButton actions={actions} item={t} />,
@@ -75,11 +76,11 @@ export function useResolvedColumns<T>(props: DataTableProps<T>) {
 }
 
 const defaultSubsets = [
-  { key: Subset.TOTAL, label: "Toutes" },
-  { key: Subset.MY_PENDING, label: "Mes tâches" },
-  { key: Subset.OPEN, label: "Ouvertes" },
-  { key: Subset.STOPPED, label: "Écartées" },
-  { key: Subset.CLOSED, label: "Terminées" },
+  { key: Subset.TOTAL, label: m.subset_total() },
+  { key: Subset.MY_PENDING, label: m.subset_mine() },
+  { key: Subset.OPEN, label: m.subset_open() },
+  { key: Subset.STOPPED, label: m.subset_stopped() },
+  { key: Subset.CLOSED, label: m.subset_closed() },
 ];
 
 export function subsetsDefault(

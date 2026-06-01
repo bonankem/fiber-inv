@@ -1,3 +1,4 @@
+import { m } from "i18n/messages";
 import {
   BriefcaseBusiness,
   Handshake,
@@ -24,32 +25,32 @@ export const navigationData: NavGroup[] = [
     name: "FTTH",
     list: [
       {
-        name: "Etudes FTTH",
+        name: m.ftth_surveys(),
         path: "/ftth-surveys",
         icon: PencilRuler,
       },
       {
-        name: "Projets FTTH",
+        name: m.ftth_projects(),
         path: "/ftth-projects",
         icon: BriefcaseBusiness,
       },
       {
-        name: "Connexions FTTH",
+        name: m.ftth_connections(),
         path: "/ftth-connections",
         icon: HousePlug,
       },
     ],
   },
   {
-    name: "Gestion",
+    name: m.management(),
     list: [
       {
-        name: "Personnel de MTN",
+        name: m.mtn_staff(),
         path: "/staff",
         icon: User,
       },
       {
-        name: "Fournisseurs",
+        name: m.vendors(),
         path: "/vendors",
         icon: Handshake,
       },

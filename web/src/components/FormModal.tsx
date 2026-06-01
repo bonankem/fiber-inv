@@ -10,6 +10,7 @@ import {
   type ThemeConfig,
   theme,
 } from "antd";
+import { m } from "i18n/messages";
 import type { ReactNode } from "react";
 import type { ModalState } from "#/hooks/useModalViewer";
 import { useUploader } from "#/hooks/useUploader";
@@ -47,8 +48,8 @@ const themeConfig: ThemeConfig = {
 };
 
 function checkboxText(value: boolean | string | undefined) {
-  if (typeof value === "string" && value) return value;
-  return "Je valide cette action";
+  if (value && typeof value === "string") return value;
+  return m.check_confirm();
 }
 
 export default function FormModal<T>(props: FormModalProps<T>) {
@@ -104,10 +105,10 @@ export default function FormModal<T>(props: FormModalProps<T>) {
             className="self-center w-full max-w-md grid grid-cols-2 gap-2"
             style={{ backgroundColor: token.colorBgContainer }}
           >
-            <Button onClick={close}>Retour</Button>
+            <Button onClick={close}>{m.back()}</Button>
 
             <Button type="primary" htmlType="submit" loading={props.submitting}>
-              Envoyer
+              {m.send()}
             </Button>
           </div>
         </Form>

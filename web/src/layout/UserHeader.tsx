@@ -6,6 +6,7 @@ import {
 } from "@ant-design/icons";
 import { useLocation } from "@tanstack/react-router";
 import { Button, Layout, theme } from "antd";
+import { m } from "i18n/messages";
 import { twJoin } from "tailwind-merge";
 import { type ModalFC, useModalViewer } from "#/hooks/useModalViewer";
 import FhpRequestForm from "#/modules/ftth-projects/FhpRequestForm";
@@ -61,14 +62,14 @@ export default function UserHeader(props: UserLayoutProps) {
             size="small"
             icon={<ReloadOutlined className="text-[0.8em]" />}
           >
-            Actualiser
+            {m.refresh()}
           </Button>
 
           <Button
             size="small"
             icon={<FileExcelOutlined className="text-[0.8em]" />}
           >
-            Rapport
+            {m.reports()}
           </Button>
 
           {newForm && (
@@ -77,7 +78,7 @@ export default function UserHeader(props: UserLayoutProps) {
               type="primary"
               onClick={() => modal.open(newForm)}
             >
-              Nouvelle demande
+              {m.new_request()}
             </Button>
           )}
         </section>
