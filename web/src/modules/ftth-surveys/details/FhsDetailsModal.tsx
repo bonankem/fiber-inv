@@ -1,4 +1,5 @@
 import { Modal, Tabs } from "antd";
+import { m } from "i18n/messages";
 import { ftthSurveyFullZ } from "schema/fhs";
 import { filterTruthy } from "schema/utils";
 import { useApiGet } from "#/api/helpers";
@@ -31,17 +32,17 @@ export default function FhsDetailsModal(props: FhsFormProps) {
         items={filterTruthy([
           {
             key: "details",
-            label: "Détails",
+            label: m.details(),
             children: <FhsDetailsTab {...tabProps} />,
           },
           fullQuery.data?.report && {
             key: "report",
-            label: "Rapport",
+            label: m.report(),
             children: <FhsReportTab {...tabProps} />,
           },
           {
             key: "logs",
-            label: "Journaux",
+            label: m.logs(),
             children: <WorkLogsTab id={props.item.id} />,
           },
         ])}

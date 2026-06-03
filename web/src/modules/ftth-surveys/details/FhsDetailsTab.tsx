@@ -1,3 +1,4 @@
+import { m } from "i18n/messages";
 import { StaffRole } from "schema/enums";
 import { workerOf } from "schema/work";
 import CoordsLink from "#/components/CoordsLink";
@@ -9,7 +10,7 @@ import type { FhsTabProps } from "./types";
 export default function FhsDetailsTab(props: FhsTabProps) {
   const w = props.item.work;
   const isAbidjan = w.locality?.district?.name === "Abidjan";
-  const localName = isAbidjan ? "Commune" : "Département";
+  const localName = isAbidjan ? "Commune" : m.department();
   const ENGINEER = StaffRole.PLANNING_ENGINEER;
 
   return (
@@ -17,14 +18,14 @@ export default function FhsDetailsTab(props: FhsTabProps) {
       <DetailsCard
         missing="dash"
         items={[
-          { label: "Nom", value: w.name },
-          { label: "ID", value: w.sid },
-          { label: "Statut", value: <StatusView work={w} smaller /> },
-          { label: "Chargé", value: workerOf(w, ENGINEER)?.name },
-          { label: "Fournisseur", value: w.vendor?.name },
+          { label: m.name(), value: w.name },
+          { label: m.id(), value: w.sid },
+          { label: m.status(), value: <StatusView work={w} smaller /> },
+          { label: m.field_assignee(), value: workerOf(w, ENGINEER)?.name },
+          { label: m.field_vendor(), value: w.vendor?.name },
           { label: localName, value: w.locality?.name },
           { label: "District", value: w.locality?.district?.name },
-          { label: "Coordonnées", value: <CoordsLink coords={w.coords} /> },
+          { label: m.field_coords(), value: <CoordsLink coords={w.coords} /> },
           { label: "Contact", value: w.contact },
         ]}
       />

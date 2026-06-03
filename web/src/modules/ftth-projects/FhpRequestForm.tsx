@@ -1,4 +1,5 @@
 import { Form, Input, message, Select } from "antd";
+import { m } from "i18n/messages";
 import type { FhpRequestT, FtthProjectT } from "schema/fhp";
 import { type Maybe, zArray } from "schema/utils";
 import { workBriefZ } from "schema/work";
@@ -52,7 +53,7 @@ export default function FhpRequestForm(props: ModalStateProps) {
         />
       </Form.Item>
 
-      <Form.Item name="coords" label="Coordonnées" {...req}>
+      <Form.Item name="coords" label={m.field_coords()} {...req}>
         <CoordsInput />
       </Form.Item>
 

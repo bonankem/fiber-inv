@@ -3,12 +3,14 @@ import { zFormObject } from "schema/utils";
 import z from "zod";
 import { prisma } from "#/prisma";
 import { postRoute } from "#/utils";
+import { Allow } from "../auth/guard";
 import { filterTruthy } from "../utils/queries";
 
 export default postRoute(
   "/setup/wipe",
   () => queryZ,
   (req) => wipeDb(req.body),
+  Allow.PUBLIC,
 );
 
 const queryZ = zFormObject("ResetT", {

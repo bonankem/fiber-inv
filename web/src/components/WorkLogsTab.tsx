@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { m } from "i18n/messages";
 import { zArray } from "schema/utils";
 import { type WorkLogT, workLogZ } from "schema/work";
 import { useApiGet } from "#/api/helpers";
@@ -48,13 +49,13 @@ export default function WorkLogsTab({ id }: { id: string }) {
         },
         {
           key: "time",
-          title: "Date/heure",
+          title: m.date_time(),
           width: 120,
           render: (l) => <DateTimeView value={l.createdAt} />,
         },
         {
           key: "comment",
-          title: "Commentaires/fichiers joints",
+          title: m.comments_attachments(),
           width: 320,
           render: (l) => l.comment,
         },

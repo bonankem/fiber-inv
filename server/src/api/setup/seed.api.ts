@@ -3,6 +3,7 @@ import { zFormObject } from "schema/utils";
 import z from "zod";
 import { MfaMode, type Prisma, prisma, StaffRole } from "#/prisma";
 import { postRoute } from "#/utils";
+import { Allow } from "../auth/guard";
 import { geoInitialize } from "../geo/geo-initialize.api";
 import { create, makeKey } from "../utils/queries";
 
@@ -10,6 +11,7 @@ export default postRoute(
   "/setup/seed",
   () => seedReq,
   (req) => seed(req.body),
+  Allow.PUBLIC,
 );
 
 export const seedReq = zFormObject("SeedReqT", {
