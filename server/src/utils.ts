@@ -7,7 +7,7 @@ import type * as F from "fastify";
 import type * as Z from "fastify-zod-openapi";
 import { uuidv7 } from "uuidv7";
 import z from "zod";
-import type { Allow } from "./api/auth/guard";
+import type { Allow } from "./auth/guard";
 
 dayjs.extend(timeZone);
 dayjs.extend(utc);
@@ -46,7 +46,7 @@ export type AppRouteFunc<S extends FS, T> = (
   req: AppRequest<S>,
   app: App,
   rep: AppReply<S>,
-) => Promise<T>;
+) => T | Promise<T>;
 
 export const appPlugin = (p: AppPlugin) => p;
 

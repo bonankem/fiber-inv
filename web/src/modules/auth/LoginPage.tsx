@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { message } from "antd";
 import * as m from "i18n/messages";
@@ -14,12 +15,14 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const [result, setResult] = useState<AuthResultT>();
   const authToken = useAuthToken();
+  const queries = useQueryClient();
 
-  const onResult = (res: AuthResultT) => {
+  const onResult = async (res: AuthResultT) => {
     if (res.status === AuthStatus.SUCCESS) {
       authToken.update(res.token);
-      message.success(m.welcome({ name: res.user.name }));
+      await queries.invalidateQueries();
       navigate({ to: "/ftth-surveys", replace: true });
+      message.success(m.welcome({ name: res.user.name }));
     } else {
       setResult(res);
       navigate({ hash: "setup", replace: true });

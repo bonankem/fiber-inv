@@ -1,7 +1,7 @@
 import type { UpFhsCoordsT } from "schema/uploads";
 import { read, utils } from "xlsx";
-import { filterTruthy, maybeCoords } from "#/api/utils/queries";
 import { BoxType, WorkDocType } from "#/prisma";
+import { filterTruthy, maybeCoords } from "#/utils/queries";
 import type { ParserInput } from "./utils";
 
 function boxType(name: string) {

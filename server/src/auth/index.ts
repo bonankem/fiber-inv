@@ -1,4 +1,5 @@
 import { appPlugin } from "#/utils";
+import authUserApi from "./auth-user.api";
 import changeApi from "./change.api";
 import chooseApi from "./choose.api";
 import { Allow } from "./guard";
@@ -8,7 +9,7 @@ import verifyApi from "./verify.api";
 
 export default appPlugin(async (app) => {
   app.addHook("onRequest", async (req) => {
-    // all auth endpoints are public
+    // all auth endpoints are public by default
     req.allow = Allow.PUBLIC;
   });
   app.register(loginApi);
@@ -16,4 +17,5 @@ export default appPlugin(async (app) => {
   app.register(chooseApi);
   app.register(verifyApi);
   app.register(logoutApi);
+  app.register(authUserApi);
 });

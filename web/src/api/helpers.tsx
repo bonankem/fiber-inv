@@ -26,7 +26,6 @@ export function useApiGet<O, I extends Query = Query>(
   return useQuery({
     queryFn: () => getJson(url, output, query, token.value),
     queryKey: query ? [...key, query] : key,
-    staleTime: 1000 * 60,
   });
 }
 
@@ -84,6 +83,21 @@ export async function postJson<I, O>(
   throw new Error(message);
 }
 
+export class ApiError extends Error {
+  constructor(
+    public status: number,
+    message?: string,
+  ) {
+    super(message || "An error occured");
+    this.name = "ApiError";
+    Object.setPrototypeOf(this, ApiError.prototype);
+  }
+}
+
+export function isApiError(e: unknown, status?: number): e is ApiError {
+  return e instanceof ApiError && (status ? e.status === status : true);
+}
+
 export async function getJson<O, I extends Query = Query>(
   getUrl: string,
   zShape: ZodType<O>,
@@ -104,8 +118,7 @@ export async function getJson<O, I extends Query = Query>(
   const data = await res.json();
 
   if (res.ok) return jsonResponse(data, zShape);
-  const message = data.message || "API error";
-  throw new Error(message);
+  throw new ApiError(res.status, data.message);
 }
 
 function errorMessage(e: unknown) {

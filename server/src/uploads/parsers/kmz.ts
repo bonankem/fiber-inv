@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: any is needed for the input types */
 import { XMLParser } from "fast-xml-parser";
 import type { CoordsT } from "schema/geo";
-import { filterTruthy, to5dp } from "#/api/utils/queries";
+import { filterTruthy, to5dp } from "#/utils/queries";
 import { maybeUnzip } from "./utils";
 
 export type KmzPlacemark = {

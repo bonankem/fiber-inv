@@ -14,5 +14,3 @@ export const AuthContext = createContext<AuthTokenHook>({
 export function useAuthToken() {
   return use(AuthContext);
 }
-
-export function useAuthUser() {}
