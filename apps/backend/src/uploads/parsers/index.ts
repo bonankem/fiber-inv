@@ -1,4 +1,4 @@
-import type { WorkDocType } from "#/prisma";
+import type { WorkDocType } from "#/db";
 import { parseUpFhsCoords } from "./up-fhs-coords";
 import { parseUpPlanKmz } from "./up-plan-kmz";
 import { parseUpPlaqueKmz } from "./up-plaque-kmz";

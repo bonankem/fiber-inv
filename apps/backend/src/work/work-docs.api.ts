@@ -1,5 +1,5 @@
 import { workDocP } from "schema/work";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { idRoute } from "#/utils";
 
 export default idRoute("/work/:id/docs", (req) => workDocs(req.params.id));

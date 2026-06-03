@@ -1,9 +1,7 @@
 import type { IdNameT } from "schema/common";
 import type { CoordsT } from "schema/geo";
 import type { WorkUpdateT } from "schema/work";
-import type { Prisma, WorkAction, WorkDocType, WorkStatus } from "#/prisma";
-import type { StringFilter } from "#/prisma/generated/commonInputTypes";
-import type { WorkUpdateInput } from "#/prisma/generated/models";
+import type { Prisma, WorkAction, WorkDocType, WorkStatus } from "#/db";
 import { currentTime, type Falsey, type Maybe, maybeConnect } from "#/utils";
 
 export async function nextId(tx: Prisma.TransactionClient, pre: string) {
@@ -149,17 +147,17 @@ export function updateDocs<T extends WorkDocType>(
         update: { uploadId },
       };
     }),
-  } satisfies WorkUpdateInput["docs"];
+  } satisfies Prisma.WorkUpdateInput["docs"];
 }
 
 export function qStartsWith(s: Maybe<string>) {
   if (!s) return undefined;
-  return { startsWith: s, mode: "insensitive" } satisfies StringFilter;
+  return { startsWith: s, mode: "insensitive" } satisfies Prisma.StringFilter;
 }
 
 export function qContains(s: Maybe<string>) {
   if (!s) return undefined;
-  return { contains: s, mode: "insensitive" } satisfies StringFilter;
+  return { contains: s, mode: "insensitive" } satisfies Prisma.StringFilter;
 }
 
 export function qWorkerIs(userId: Maybe<string>) {

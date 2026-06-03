@@ -2,7 +2,7 @@ import { httpErrors } from "@fastify/sensible";
 import type { FastifySchema } from "fastify";
 import fastifyPlugin from "fastify-plugin";
 import { type UserFullT, userFullP } from "schema/people";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { type AppRequest, accessDenied, unauthorized } from "#/utils";
 import { type AuthIdsT, tryAuthToken } from "./utils";
 

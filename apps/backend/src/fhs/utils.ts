@@ -1,7 +1,7 @@
 import { StaffRole, type WorkStatus } from "schema/enums";
 import { ftthSurveyS } from "schema/fhs";
 import type { WorkT } from "schema/work";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { bad, type Maybe, notFound } from "#/utils";
 
 type Findable<T> = {

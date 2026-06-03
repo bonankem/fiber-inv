@@ -1,7 +1,7 @@
 import type { PrismaPromise } from "@prisma/client/runtime/client";
 import { zFormObject } from "schema/utils";
 import z from "zod";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { postRoute } from "#/utils";
 import { Allow } from "../auth/guard";
 import { filterTruthy } from "../utils/queries";

@@ -1,5 +1,5 @@
 import z from "zod";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { appRoute, notFound } from "#/utils";
 import { Allow } from "../auth/guard";
 

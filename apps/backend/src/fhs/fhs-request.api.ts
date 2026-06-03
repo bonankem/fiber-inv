@@ -7,7 +7,7 @@ import {
   WorkAction,
   WorkDocType,
   WorkStatus,
-} from "#/prisma";
+} from "#/db";
 import { connectId, postRoute } from "#/utils";
 import { ringWithBbox } from "../geo/utils";
 import {

@@ -1,6 +1,6 @@
 import type { JWT } from "@fastify/jwt";
 import { type AuthChooseReqT, authChooseReqZ } from "schema/auth";
-import { MfaMode, prisma } from "#/prisma";
+import { MfaMode, prisma } from "#/db";
 import { bad, postRoute } from "#/utils";
 import { authResult, badToken, getLoginUser, verifyTempToken } from "./utils";
 

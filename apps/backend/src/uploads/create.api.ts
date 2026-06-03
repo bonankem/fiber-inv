@@ -6,7 +6,7 @@ import {
   uploadOptionsZ,
 } from "schema/uploads";
 import { uuidv7 } from "uuidv7";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { appRoute, bad, type Maybe } from "#/utils";
 import { maybeParse } from "./parsers";
 

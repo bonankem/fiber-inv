@@ -1,6 +1,6 @@
 import type { UserFullT } from "schema/people";
 import { workLogS } from "schema/work";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { idRoute } from "#/utils";
 import { workAccess } from "../work/filter";
 

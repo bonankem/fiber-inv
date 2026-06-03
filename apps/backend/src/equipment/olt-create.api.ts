@@ -5,7 +5,7 @@ import {
   oltCreateManyZ,
   oltS,
 } from "schema/equipment";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { bad, connectIdOrKey, postRoute } from "#/utils";
 import { makeKey } from "../utils/queries";
 

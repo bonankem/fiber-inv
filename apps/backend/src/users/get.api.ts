@@ -1,5 +1,5 @@
 import { userS } from "schema/people";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { idRoute } from "#/utils";
 
 export default idRoute("/users/:id", (req) => getUser(req.params.id));

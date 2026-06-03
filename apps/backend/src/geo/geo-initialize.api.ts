@@ -1,6 +1,6 @@
 import { idKeyNameS } from "schema/common";
 import { assoc } from "schema/utils";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { bad, postRoute } from "#/utils";
 import { makeKey } from "../utils/queries";
 import polygons from "./geo.json" with { type: "json" };

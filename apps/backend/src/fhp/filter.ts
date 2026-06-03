@@ -2,7 +2,7 @@ import { Subset } from "schema/common";
 import type { FhpFilterT } from "schema/fhp";
 import type { UserT } from "schema/people";
 import { whereNone } from "schema/utils";
-import { type Prisma, StaffRole, WorkStatus } from "#/prisma";
+import { type Prisma, StaffRole, WorkStatus } from "#/db";
 import type { Maybe } from "#/utils";
 import { filterTruthy, qOr, qSidIs, qWorkerIs } from "../utils/queries";
 import { type WorkWhere, workIsOnUser, workIsOnVendor } from "../utils/work";

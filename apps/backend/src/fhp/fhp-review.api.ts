@@ -1,6 +1,6 @@
 import { WorkAction, WorkStatus } from "schema/enums";
 import { type FhpReviewT, fhpReviewZ, ftthProjectS } from "schema/fhp";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { bad, currentDate, postRoute } from "#/utils";
 import { updateWork } from "../utils/work";
 import { fhpCheck } from "./utils";

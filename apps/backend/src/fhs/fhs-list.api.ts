@@ -1,6 +1,6 @@
 import { type FhsFilterT, fhsFilterZ, ftthSurveyS } from "schema/fhs";
 import type { UserFullT } from "schema/people";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { getRoute } from "#/utils";
 import { fhsWorkWhere } from "./filter";
 

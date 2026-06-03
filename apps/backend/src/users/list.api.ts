@@ -1,5 +1,5 @@
 import { userS } from "schema/people";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { getRoute } from "#/utils";
 
 export default getRoute(

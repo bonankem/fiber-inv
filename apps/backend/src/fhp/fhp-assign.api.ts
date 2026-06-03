@@ -1,5 +1,5 @@
 import { type FhpAssignT, fhpAssignZ, ftthProjectS } from "schema/fhp";
-import { prisma, StaffRole, WorkAction, WorkStatus } from "#/prisma";
+import { prisma, StaffRole, WorkAction, WorkStatus } from "#/db";
 import { postRoute } from "#/utils";
 import { updateWork } from "../utils/work";
 import { fhpCheck } from "./utils";

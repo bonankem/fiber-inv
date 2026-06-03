@@ -1,4 +1,4 @@
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { postRoute } from "#/utils";
 
 export default postRoute("/equipment/olt/clear", null, () =>

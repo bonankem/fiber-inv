@@ -1,5 +1,5 @@
 import { type FhpFilterT, fhpFilterZ, ftthProjectS } from "schema/fhp";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { getRoute } from "#/utils";
 import { workWhere } from "./filter";
 

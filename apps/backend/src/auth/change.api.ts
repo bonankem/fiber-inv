@@ -1,7 +1,7 @@
 import type { JWT } from "@fastify/jwt";
 import { compareSync, hashSync } from "bcryptjs";
 import { type AuthChangeReqT, authChangeReqZ } from "schema/auth";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { bad, postRoute } from "#/utils";
 import { ADMIN_PASS_LENGTH, PASS_HISTORY, USER_PASS_LENGTH } from "./config";
 import { authResult, badToken, getLoginUser, verifyTempToken } from "./utils";

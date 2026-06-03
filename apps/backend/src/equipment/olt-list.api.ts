@@ -1,5 +1,5 @@
 import { oltP } from "schema/equipment";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { getRoute } from "#/utils";
 
 export default getRoute("/equipment/olt", null, oltList);

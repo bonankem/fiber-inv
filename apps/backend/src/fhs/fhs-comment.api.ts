@@ -1,6 +1,6 @@
 import type { UserT } from "schema/people";
 import { type WorkUpdateT, workUpdateZ } from "schema/work";
-import { prisma, WorkAction } from "#/prisma";
+import { prisma, WorkAction } from "#/db";
 import { bad, postRoute } from "#/utils";
 import { addLog, update } from "../utils/queries";
 

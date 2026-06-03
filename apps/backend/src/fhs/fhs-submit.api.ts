@@ -2,13 +2,7 @@ import { uniqueBy } from "remeda";
 import { type FhsSubmitT, fhsSubmitZ, ftthSurveyS } from "schema/fhs";
 import type { UserT } from "schema/people";
 import { filterTruthy } from "schema/utils";
-import {
-  type Prisma,
-  prisma,
-  WorkAction,
-  WorkDocType,
-  WorkStatus,
-} from "#/prisma";
+import { type Prisma, prisma, WorkAction, WorkDocType, WorkStatus } from "#/db";
 import { bad, currentDate, postRoute } from "#/utils";
 import { createManyCoords, getLatLngId } from "../utils/queries";
 import { updateWork } from "../utils/work";

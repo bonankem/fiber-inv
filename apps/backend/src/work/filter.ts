@@ -1,6 +1,6 @@
 import type { UserFullT } from "schema/people";
-import type { Prisma } from "schema/prisma";
 import { type Maybe, whereNone } from "schema/utils";
+import type { Prisma } from "#/db";
 
 type Where = Prisma.WorkWhereInput | undefined;
 

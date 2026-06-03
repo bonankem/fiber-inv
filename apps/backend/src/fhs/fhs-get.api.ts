@@ -1,6 +1,6 @@
 import { ftthSurveyFullS } from "schema/fhs";
 import type { UserFullT } from "schema/people";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { idRoute, notFound } from "#/utils";
 import { workAccess } from "../work/filter";
 

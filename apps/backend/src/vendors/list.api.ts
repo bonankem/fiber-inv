@@ -1,5 +1,5 @@
 import { vendorS } from "schema/people";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { getRoute } from "#/utils";
 
 export default getRoute("/vendors", null, () => listVendors());

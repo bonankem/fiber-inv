@@ -6,7 +6,7 @@ import type {
   WorkAction,
   WorkDocType,
   WorkStatus,
-} from "#/prisma";
+} from "#/db";
 import { type Falsey, type Maybe, maybeConnect } from "#/utils";
 import { addUploads, create, filterTruthy } from "./queries";
 

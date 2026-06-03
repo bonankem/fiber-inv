@@ -1,12 +1,6 @@
-generator client {
-  provider        = "prisma-client"
-  output          = "../src/prisma/generated"
-  previewFeatures = ["postgresqlExtensions"]
-}
-
 generator schema {
   provider        = "prisma-client"
-  output          = "../../../packages/schema/src/generated"
+  output          = "../../../packages/schema/src/prisma/generated"
   previewFeatures = ["postgresqlExtensions"]
 }
 

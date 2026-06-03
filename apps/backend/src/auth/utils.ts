@@ -5,9 +5,8 @@ import { generateSecret, generateURI } from "otplib";
 import { type AuthResultT, AuthStatus, type AuthSuccessT } from "schema/auth";
 import { userFullP } from "schema/people";
 import z from "zod";
+import { MfaMode, type Prisma, prisma } from "#/db";
 import { appEnv } from "#/env";
-import { MfaMode, type Prisma, prisma } from "#/prisma";
-import type { UserSelect } from "#/prisma/generated/models";
 import { bad, type Maybe, newUuid } from "#/utils";
 import { decrypt, encrypt } from "../utils/encryption";
 
@@ -27,7 +26,7 @@ export const loginUserS = {
   isAdmin: true,
   password: true,
   authenticator: true,
-} satisfies UserSelect;
+} satisfies Prisma.UserSelect;
 
 type LoginUserT = Prisma.UserGetPayload<{ select: typeof loginUserS }>;
 
@@ -82,7 +81,11 @@ async function getAuthenticator(userId: string) {
 }
 
 async function authInstall(u: LoginUserT, secret: string) {
-  const otpUri = generateURI({ issuer: "ServiceX", label: u.email, secret });
+  const otpUri = generateURI({
+    issuer: "ServiceX",
+    label: u.email,
+    secret,
+  });
   return { secret, otpUri };
 }
 
@@ -106,14 +109,18 @@ export async function authResult(
     return incomplete(S.NEEDS_CHANGE, {});
   }
 
-  if (mode === M.UNDECIDED || !mode) {
+  if (!mode || mode === M.UNDECIDED || !pass.mfaVerified) {
+    // no MFA mode has been verified yet, so pick one
     return incomplete(S.NEEDS_MFA_MODE, {});
   }
 
   if (mode === M.AUTHENTICATOR) {
     const { secret, installed } = await getAuthenticator(user.id);
+
+    // authenticator is installed, request an OTP
     if (installed) return incomplete(S.NEEDS_OTP, { mode });
 
+    // authenticator is not installed, send the QR code URI
     const data = await authInstall(user, secret);
     return incomplete(S.NEEDS_INSTALL, data);
   }
@@ -127,6 +134,7 @@ export async function authResult(
     return incomplete(S.NEEDS_OTP, { mode });
   }
 
+  // authentication complete
   return authSuccess(jwt, user.id);
 }
 

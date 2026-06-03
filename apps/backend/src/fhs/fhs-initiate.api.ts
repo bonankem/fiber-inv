@@ -1,6 +1,6 @@
 import { type FhsInitiateT, fhsInitiateZ, ftthSurveyS } from "schema/fhs";
 import type { UserT } from "schema/people";
-import { prisma, WorkAction, WorkStatus } from "#/prisma";
+import { prisma, WorkAction, WorkStatus } from "#/db";
 import { bad, postRoute } from "#/utils";
 import { Allow } from "../auth/guard";
 import { updateWork } from "../utils/work";

@@ -2,7 +2,7 @@ import { sumBy } from "remeda";
 import type { SubsetCounts } from "schema/common";
 import { type FhpFilterT, fhpFilterZ } from "schema/fhp";
 import { assoc } from "schema/utils";
-import { prisma, WorkStatus as S } from "#/prisma";
+import { prisma, WorkStatus as S } from "#/db";
 import { getRoute } from "#/utils";
 import { workNotOpen, workStopped, workWhere } from "./filter";
 

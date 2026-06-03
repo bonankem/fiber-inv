@@ -1,7 +1,7 @@
 import type { IncomingHttpHeaders } from "node:http";
 import type { JWT } from "@fastify/jwt";
 import { type AuthLoginReqT, authLoginReqZ } from "schema/auth";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { bad, postRoute } from "#/utils";
 import { authResult, badLogin, checkHash, getLoginUser } from "./utils";
 

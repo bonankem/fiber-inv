@@ -1,5 +1,5 @@
 import { type VendorCreateT, vendorCreateZ, vendorS } from "schema/people";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { bad, postRoute } from "#/utils";
 import { makeKey } from "../utils/queries";
 

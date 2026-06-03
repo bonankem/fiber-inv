@@ -1,6 +1,6 @@
 import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "schema/prisma";
 import { appEnv } from "#/env";
-import { PrismaClient } from "./generated/client";
 
 function envUrl() {
   const url = appEnv.DATABASE_URL;
@@ -16,4 +16,4 @@ export const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: envUrl() }),
 });
 
-export * from "./generated/client";
+export * from "schema/prisma";

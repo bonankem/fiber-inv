@@ -1,6 +1,6 @@
 import { type FhpRequestT, fhpRequestZ, ftthProjectS } from "schema/fhp";
 import type { UserFullT } from "schema/people";
-import { prisma, StaffRole, WorkAction, WorkStatus } from "#/prisma";
+import { prisma, StaffRole, WorkAction, WorkStatus } from "#/db";
 import { bad, connectId, maybeConnect, postRoute } from "#/utils";
 import { addLog, create, nextId, setCoords } from "../utils/queries";
 

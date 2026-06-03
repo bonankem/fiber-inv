@@ -1,4 +1,4 @@
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { postRoute, unauthorized } from "#/utils";
 import type { AuthIdsT } from "./utils";
 

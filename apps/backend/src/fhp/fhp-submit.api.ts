@@ -1,5 +1,5 @@
 import { type FhpReportT, fhpReportZ, ftthProjectS } from "schema/fhp";
-import { type Prisma, prisma, WorkAction, WorkStatus } from "#/prisma";
+import { type Prisma, prisma, WorkAction, WorkStatus } from "#/db";
 import { currentDate, postRoute } from "#/utils";
 import { updateWork } from "../utils/work";
 import { fhpCheck, fhpWorker } from "./utils";

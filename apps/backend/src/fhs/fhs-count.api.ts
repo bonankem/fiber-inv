@@ -3,7 +3,7 @@ import type { SubsetCounts } from "schema/common";
 import { type FhsFilterT, fhsFilterZ } from "schema/fhs";
 import type { UserFullT } from "schema/people";
 import { assoc } from "schema/utils";
-import { prisma, WorkStatus as S } from "#/prisma";
+import { prisma, WorkStatus as S } from "#/db";
 import { getRoute } from "#/utils";
 import { fhsWorkWhere, workNotOpen, workStopped } from "./filter";
 

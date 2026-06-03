@@ -1,5 +1,5 @@
 import z from "zod";
-import { prisma } from "#/prisma";
+import { prisma } from "#/db";
 import { type AppReply, appRoute, notFound } from "#/utils";
 
 const paramsZ = z.strictObject({

@@ -2,7 +2,7 @@ import type { JWT } from "@fastify/jwt";
 import type { PrismaPromise } from "@prisma/client/runtime/client";
 import { verifySync } from "otplib";
 import { type AuthVerifyReqT, authVerifyReqZ } from "schema/auth";
-import { MfaMode, prisma } from "#/prisma";
+import { MfaMode, prisma } from "#/db";
 import { bad, postRoute } from "#/utils";
 import { decrypt } from "../utils/encryption";
 import { authSuccess, badToken, getLoginUser, verifyTempToken } from "./utils";
