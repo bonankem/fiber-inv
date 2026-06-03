@@ -1,5 +1,5 @@
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "schema/prisma";
+import { PrismaClient } from "schema/prisma.client";
 import { appEnv } from "#/env";
 
 function envUrl() {
