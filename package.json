@@ -18,11 +18,11 @@
   "scripts": {
     "build": "turbo build",
     "clean": "rm -rf */dist",
-    "prisma": "pnpm -F server exec prisma",
+    "prisma": "pnpm -F backend exec prisma",
     "prisma:sync": "pnpm prisma generate && pnpm prisma db push && pnpm build:schema",
     "build:schema": "turbo --filter schema build",
     "dev": "pnpm build:schema && turbo dev --ui tui",
     "dev:expose": "pnpm build:schema && turbo dev:expose --ui tui",
-    "heroku-postbuild": "pnpm prisma:sync && turbo --filter server build"
+    "heroku-postbuild": "pnpm prisma:sync && turbo --filter backend build"
   }
 }

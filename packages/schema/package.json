@@ -10,9 +10,9 @@
   "scripts": {
     "dev": "nodemon",
     "dev:expose": "nodemon",
-    "build": "node ../scripts/build.mjs",
+    "build": "node ../../scripts/build.mjs",
     "turbo-build": "pnpm -w build:schema",
-    "refresh-dev": "touch ../server/src/main.ts ../web/src/main.tsx"
+    "refresh-dev": "cd ../../apps && touch backend/src/main.ts web/src/main.tsx"
   },
   "dependencies": {
     "@prisma/client": "^7.8.0",

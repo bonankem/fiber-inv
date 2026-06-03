@@ -1,1 +1,1 @@
-web: pnpm -F server start --host
+web: pnpm -F backend start --host
