@@ -1,6 +1,10 @@
 import { execSync, spawnSync } from "node:child_process";
 import { glob } from "node:fs/promises";
 
+// This script builds a package, runs tsc-alias to fix imports for ESM,
+// and removes dangling files from previous builds i.e. files in dist/
+// for which the original file no longer exists in src/
+
 execSync("tsc && tsc-alias", {
   env: process.env,
   stdio: "inherit",
