@@ -5,12 +5,16 @@ model FtthConnection {
 
     createdAt DateTime @default(now())
 
-    contactEmail String?
+    fn String
 
-    contactPhone String?
+    address String
 
-    plaque   Plaque @relation(fields: [plaqueId], references: [id])
-    plaqueId String @db.Uuid
+    email String?
+
+    phone String?
+
+    plaque   Plaque? @relation(fields: [plaqueId], references: [id])
+    plaqueId String? @db.Uuid
 
     olt   Olt?    @relation(fields: [oltId], references: [id])
     oltId String? @db.Uuid
