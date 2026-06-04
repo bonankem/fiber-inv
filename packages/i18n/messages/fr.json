@@ -111,11 +111,12 @@
   "fhs_form_accept": "Accepter le rapport",
 
   "fhp_form_request": "Demande de projet FTTH",
-  "fhp_form_assign": "Assigner le projet FTTH",
-  "fhp_form_initiate": "Initier le projet FTTH",
+  "fhp_form_assign": "Assigner le projet",
+  "fhp_form_initiate": "Initier le projet",
   "fhp_form_submit": "Soumettre le rapport",
   "fhp_form_accept": "Accepter le rapport",
   "fhp_form_images": "Envoyer des images du projet",
+  "fhp_form_finish": "Finir le project",
 
   "fhc_form_request": "Demande de connexion",
 
@@ -177,5 +178,8 @@
   "required": "Obligatoire",
   "optional": "Facultatif",
 
-  "logout_title": "Déconnexion de ServiceX"
+  "logout_title": "Déconnexion de ServiceX",
+
+  "quantities": "Quantités",
+  "files": "Fichiers"
 }

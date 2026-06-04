@@ -1,4 +1,5 @@
 import { Form, message } from "antd";
+import { m } from "i18n/messages";
 import type { WorkDocType } from "schema/enums";
 import type { FhpReportT, FtthProjectT } from "schema/fhp";
 import { apiCall, useApiPost } from "#/api/helpers";
@@ -57,7 +58,7 @@ export default function FhpSubmitForm(props: FhpFormProps) {
   return (
     <FormModal
       form={form}
-      title="Finish Project"
+      title={m.fhp_form_finish()}
       width={360}
       state={props.state}
       subtitle={props.item.work.name}
@@ -66,7 +67,7 @@ export default function FhpSubmitForm(props: FhpFormProps) {
       submitting={send.isPending}
     >
       <div className="flex flex-col gap-2">
-        <h2 className="font-medium">Quantités</h2>
+        <h2 className="font-medium">{m.quantities()}</h2>
         {qtyInput("xBoxes", "X Box")}
         {qtyInput("hubBoxes", "Hub Box")}
         {qtyInput("subBoxes", "Sub Box")}
@@ -78,7 +79,7 @@ export default function FhpSubmitForm(props: FhpFormProps) {
         {qtyInput("feederLengthM", "Câbles transport", true)}
         {qtyInput("distLengthM", "Câbles distribution", true)}
 
-        <h2 className="font-medium">Fichiers</h2>
+        <h2 className="font-medium">{m.files()}</h2>
         {fileInput("AS_BUILT_KMZ", "As-Built KMZ")}
         {fileInput("AS_BUILT_BOQ", "As-Built  BOQ")}
       </div>

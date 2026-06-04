@@ -1,4 +1,5 @@
 import { Form, Input, message } from "antd";
+import { m } from "i18n/messages";
 import type { FhpReviewT, FtthProjectT } from "schema/fhp";
 import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
@@ -24,7 +25,7 @@ export default function FhpRejectForm(props: FhpFormProps) {
       onSubmit={onSubmit}
       submitting={send.isPending}
     >
-      <Form.Item name="comment" label="Motif" {...req}>
+      <Form.Item name="comment" label={m.field_comment()} {...req}>
         <Input.TextArea
           rows={3}
           required
