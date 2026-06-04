@@ -1,4 +1,4 @@
-import { type FhcUpdateT, fhcUpdateZ } from "schema/fhc";
+import { type FhcUpdateT, fhcUpdateZ, ftthConnectionS } from "schema/fhc";
 import type { UserFullT } from "schema/people";
 import { workFullP } from "schema/work";
 import { type Prisma, prisma, WorkAction, WorkStatus } from "#/db";
@@ -29,7 +29,9 @@ async function fhcUpdate(dto: FhcUpdateT, from: UserFullT) {
     if (!dto.oltId && !fhc.oltId) bad("OLT is required");
   }
 
-  prisma.ftthConnection.update({
+  const { ONGOING, REVIEW } = WorkStatus;
+  return prisma.ftthConnection.update({
+    select: ftthConnectionS,
     where: { id: dto.id },
     data: {
       olt: maybeConnect(dto.oltId),
@@ -39,7 +41,7 @@ async function fhcUpdate(dto: FhcUpdateT, from: UserFullT) {
       fatPort: dto.fatPort || undefined,
       cableLength: dto.cableLength || undefined,
       work: updateWork({
-        status: dto.finish ? WorkStatus.REVIEW : undefined,
+        status: dto.finish ? REVIEW : ONGOING,
         action: WorkAction.UPDATE,
         old: fhc.work,
         dto,

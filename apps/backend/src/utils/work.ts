@@ -130,7 +130,7 @@ export function updateWork(q: WorkUpdateQuery) {
   return {
     update: {
       ...q.also,
-      status: q.status || undefined,
+      status: (changed && q.status) || undefined,
       statusSince: changed ? now : undefined,
       workers: setWorkers(q.dto.id, q.workers),
       vendor: maybeConnect(q.vendor),

@@ -1,25 +1,13 @@
 import { Modal, Tabs } from "antd";
 import { m } from "i18n/messages";
-import { WorkStatus } from "schema/enums";
-import type { FtthConnectionT } from "schema/fhc";
 import { filterTruthy } from "schema/utils";
-import type { ModalItemProps } from "#/hooks/useModalViewer";
 import WorkLogsTab from "../../../components/WorkLogsTab";
+import type { FhcFormProps } from "../fhc-types";
 import FhcDetailsTab from "./FhcDetailsTab";
 import type { FhcTabProps } from "./types";
 
-const hasImages: WorkStatus[] = [
-  WorkStatus.ONGOING,
-  WorkStatus.REVIEW,
-  WorkStatus.REVIEW_FAILED,
-  WorkStatus.CLOSED,
-];
-
-export default function fhcDetailsModal(
-  props: ModalItemProps<FtthConnectionT>,
-) {
+export default function fhcDetailsModal(props: FhcFormProps) {
   const tabProps: FhcTabProps = { item: props.item };
-  const status = props.item.work.status;
 
   return (
     <Modal
