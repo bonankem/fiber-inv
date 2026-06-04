@@ -2,6 +2,7 @@ import { appPlugin } from "#/utils";
 import auth from "./auth";
 import { authGuard } from "./auth/guard";
 import equipment from "./equipment";
+import fhc from "./fhc";
 import fhp from "./fhp";
 import fhs from "./fhs";
 import geo from "./geo";
@@ -18,6 +19,7 @@ export default appPlugin(async (app) => {
   app.register(work);
   app.register(fhp);
   app.register(fhs);
+  app.register(fhc);
   app.register(geo);
   app.register(users);
   app.register(vendors);

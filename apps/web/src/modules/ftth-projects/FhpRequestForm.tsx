@@ -28,10 +28,10 @@ export default function FhpRequestForm(props: ModalStateProps) {
     });
   };
 
-  const submitM = useApiPost<FhpRequestT, FtthProjectT>("/fhp", ["fhp"]);
+  const send = useApiPost<FhpRequestT, FtthProjectT>("/fhp", ["fhp"]);
 
   const onSubmit = apiCall(async (data: FhpRequestT) => {
-    const result = await submitM.mutateAsync(data);
+    const result = await send.mutateAsync(data);
     message.success(`${result.work.sid} requested`);
     props.state.close();
   });
@@ -42,7 +42,7 @@ export default function FhpRequestForm(props: ModalStateProps) {
       title={m.fhp_form_request()}
       state={props.state}
       onSubmit={onSubmit}
-      submitting={submitM.isPending}
+      submitting={send.isPending}
     >
       <Form.Item name="surveyId" label={m.survey()} {...req}>
         <Select

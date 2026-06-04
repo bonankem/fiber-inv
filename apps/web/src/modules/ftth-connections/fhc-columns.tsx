@@ -1,0 +1,46 @@
+import { m } from "i18n/messages";
+import type { FtthConnectionT } from "schema/fhc";
+import type { DtColumn } from "#/components/data-page/types";
+import StatusView from "#/components/StatusView";
+import WithCaption from "#/components/WithCaption";
+
+export type fhcColumn = DtColumn<FtthConnectionT>;
+
+export const fhcColumns: fhcColumn[] = [
+  {
+    key: "fn",
+    title: "FN",
+    width: 100,
+    onClick: true,
+    render: (p) => (
+      <WithCaption
+        title={<span>{p.fn}</span>}
+        caption={<span className="text-blue-400">Voir les détails</span>}
+      />
+    ),
+  },
+  {
+    key: "name",
+    title: m.name(),
+    width: 200,
+    onClick: true,
+    render: (p) => (
+      <WithCaption
+        title={p.work.name}
+        caption={[p.work.locality?.district?.name, p.work.locality?.name]}
+      />
+    ),
+  },
+  {
+    key: "status",
+    title: m.status(),
+    width: 150,
+    render: (t) => <StatusView work={t.work} />,
+  },
+  {
+    key: "vendor",
+    title: m.field_vendor(),
+    width: 150,
+    render: (t) => t.work.vendor?.name,
+  },
+];

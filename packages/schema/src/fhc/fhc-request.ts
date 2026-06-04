@@ -10,7 +10,7 @@ export const fhcRequestZ = zObject("FhcRequestT", {
   coords: coordsZ.describe("Location coordinates"),
   localityId: zStr("Locality ID"),
   vendorId: zStr("Vendor ID"),
-  startDate: zStr("Scheduled date"),
+  startDate: zStrOpt("Scheduled date"),
   comment: zStrOpt("Added comment"),
   uploads: z.array(z.string()).optional(),
 });

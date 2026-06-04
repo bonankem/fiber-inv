@@ -1,8 +1,7 @@
 import { useMemo } from "react";
 import { omit } from "remeda";
 import { Subset, subsetCountsZ } from "schema/common";
-import { fhpFilterZ } from "schema/fhp";
-import { ftthSurveyZ } from "schema/fhs";
+import { fhpFilterZ, ftthProjectZ } from "schema/fhp";
 import { zArray } from "schema/utils";
 import { useApiGet } from "#/api/helpers";
 import DataPage from "#/components/data-page/DataPage";
@@ -16,7 +15,7 @@ export default function FhpPage() {
   const api = useApiQuery({
     url: "/fhp",
     input: fhpFilterZ,
-    output: zArray(ftthSurveyZ),
+    output: zArray(ftthProjectZ),
     defaults: { subset: Subset.TOTAL },
   });
 

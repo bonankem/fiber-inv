@@ -9,6 +9,7 @@ import { Button, Layout, theme } from "antd";
 import { m } from "i18n/messages";
 import { twJoin } from "tailwind-merge";
 import { type ModalFC, useModalViewer } from "#/hooks/useModalViewer";
+import FhcRequestForm from "#/modules/ftth-connections/FhcRequestForm";
 import FhpRequestForm from "#/modules/ftth-projects/FhpRequestForm";
 import FhsRequestForm from "#/modules/ftth-surveys/FhsRequestForm";
 import NotificationBell from "./NotificationBell";
@@ -17,6 +18,7 @@ import type { UserLayoutProps } from "./useUserLayout";
 const newForms: Record<string, ModalFC> = {
   "ftth-surveys": FhsRequestForm,
   "ftth-projects": FhpRequestForm,
+  "ftth-connections": FhcRequestForm,
 };
 
 export default function UserHeader(props: UserLayoutProps) {

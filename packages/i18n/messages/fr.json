@@ -41,6 +41,9 @@
   "action": "Action",
   "view_details": "Voir les détails",
 
+  "address": "Adresse",
+  "phone": "Téléphone",
+
   "locality": "Localité",
   "manager": "Responsable",
   "survey": "Etude",
@@ -108,11 +111,13 @@
   "fhs_form_accept": "Accepter le rapport",
 
   "fhp_form_request": "Demande de projet FTTH",
-  "fhp_form_assign": "Assigner le project FTTH",
-  "fhp_form_initiate": "Initier le project FTTH",
+  "fhp_form_assign": "Assigner le projet FTTH",
+  "fhp_form_initiate": "Initier le projet FTTH",
   "fhp_form_submit": "Soumettre le rapport",
   "fhp_form_accept": "Accepter le rapport",
   "fhp_form_images": "Envoyer des images du projet",
+
+  "fhc_form_request": "Demande de connexion",
 
   "hint_choose_kmz": "Choisir un fichier KMZ ou KML",
   "hint_reading_file": "Lecture du fichier...",

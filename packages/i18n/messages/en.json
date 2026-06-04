@@ -41,6 +41,9 @@
   "action": "Action",
   "view_details": "View Details",
 
+  "address": "Address",
+  "phone": "Phone",
+
   "locality": "Locality",
   "manager": "Manager",
   "survey": "Survey",
@@ -121,6 +124,8 @@
   "fhp_form_submit": "Submit Project Report",
   "fhp_form_accept": "Accept Project Report",
   "fhp_form_images": "Send Project Images",
+
+  "fhc_form_request": "Home Connection Request",
 
   "hint_choose_kmz": "Select a KMZ or KML file",
   "hint_reading_file": "Reading file...",
