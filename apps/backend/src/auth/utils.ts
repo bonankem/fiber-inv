@@ -109,7 +109,7 @@ export async function authResult(
     return incomplete(S.NEEDS_CHANGE, {});
   }
 
-  if (!mode || mode === M.UNDECIDED || !pass.mfaVerified) {
+  if (!mode || mode === M.UNDECIDED) {
     // no MFA mode has been verified yet, so pick one
     return incomplete(S.NEEDS_MFA_MODE, {});
   }
