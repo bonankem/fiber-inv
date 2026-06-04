@@ -59,6 +59,7 @@ export default function FormModal<T>(props: FormModalProps<T>) {
 
   const onClose = () => {
     uploader.cleanup();
+    props.state.close();
   };
 
   return (

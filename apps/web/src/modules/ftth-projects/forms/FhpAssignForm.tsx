@@ -1,4 +1,5 @@
 import { Form, message } from "antd";
+import { m } from "i18n/messages";
 import type { FhpAssignT, FtthProjectT } from "schema/fhp";
 import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
@@ -19,17 +20,17 @@ export default function FhpAssignForm(props: FhpFormProps) {
 
   return (
     <FormModal
-      title="Assign FTTH Project"
+      title={m.fhp_form_assign()}
       subtitle={props.item.work.name}
       state={props.state}
       onSubmit={onSubmit}
     >
-      <Form.Item name="userId" label="Engineer" {...req}>
+      <Form.Item name="userId" label={m.field_assignee()} {...req}>
         <StaffSelect filter="PROJECT_ENGINEER" />
       </Form.Item>
 
-      <Form.Item name="vendorId" label="Vendor">
-        <VendorSelect placeholder="Facultatif" allowClear />
+      <Form.Item name="vendorId" label={m.field_vendor()}>
+        <VendorSelect placeholder={m.optional()} allowClear />
       </Form.Item>
     </FormModal>
   );

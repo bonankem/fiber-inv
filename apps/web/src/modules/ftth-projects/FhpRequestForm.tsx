@@ -39,12 +39,12 @@ export default function FhpRequestForm(props: ModalStateProps) {
   return (
     <FormModal
       form={form}
-      title="Demande de projet FTTH"
+      title={m.fhp_form_request()}
       state={props.state}
       onSubmit={onSubmit}
       submitting={submitM.isPending}
     >
-      <Form.Item name="surveyId" label="Etude" {...req}>
+      <Form.Item name="surveyId" label={m.survey()} {...req}>
         <Select
           loading={surveysQ.isLoading}
           options={surveysQ.data?.map((s) => ({ value: s.id, label: s.name }))}
@@ -57,23 +57,23 @@ export default function FhpRequestForm(props: ModalStateProps) {
         <CoordsInput />
       </Form.Item>
 
-      <Form.Item name="localityId" label="Localité" {...req}>
+      <Form.Item name="localityId" label={m.locality()} {...req}>
         <LocalitySelect />
       </Form.Item>
 
-      <Form.Item name="name" label="Nom" required>
+      <Form.Item name="name" label={m.name()} required>
         <Input required id="fhs-name" />
       </Form.Item>
 
-      <Form.Item name="contact" label="Contact local" required>
+      <Form.Item name="contact" label={m.client_contact()} required>
         <Input required id="fhs-contact" />
       </Form.Item>
 
-      <Form.Item name="managerId" label="Responsable" {...req}>
+      <Form.Item name="managerId" label={m.manager()} {...req}>
         <StaffSelect filter="PROJECT_MANAGER" />
       </Form.Item>
 
-      <Form.Item name="comment" label="Commentaire">
+      <Form.Item name="comment" label={m.field_comment()}>
         <Input.TextArea rows={3} className="resize-none!" />
       </Form.Item>
     </FormModal>

@@ -1,5 +1,6 @@
 import { Map as GoogleMap, Polygon, useMap } from "@vis.gl/react-google-maps";
 import { Form, Input, message } from "antd";
+import { m } from "i18n/messages";
 import { useState } from "react";
 import { WorkDocType } from "schema/enums";
 import type { FhsRequestT, FtthSurveyT } from "schema/fhs";
@@ -20,7 +21,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
   const [form] = Form.useForm<FhsRequestT>();
   const uploader = useUploader();
   const isUploading = uploader.isUploading(PLAQUE_KMZ);
-  const placeholder = isUploading ? "Lecture du fichier..." : undefined;
+  const placeholder = isUploading ? m.hint_reading_file() : undefined;
   const [parsed, setParsed] = useState<UpPlaqueKmzT>();
   const map = useMap();
   const { isDark } = useAppTheme();
@@ -51,7 +52,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
     <FormModal
       form={form}
       width={720}
-      title="Demande d'etude FTTH"
+      title={m.fhs_form_request()}
       state={props.state}
       onSubmit={onSubmit}
       submitting={submitM.isPending}
@@ -62,11 +63,11 @@ export default function FhsRequestForm(props: ModalStateProps) {
           <FileUpload
             type={PLAQUE_KMZ}
             onParsed={onParse}
-            placeholder="Choisir un fichier KMZ ou KML"
+            placeholder={m.hint_choose_kmz()}
           />
         </Form.Item>
 
-        <Form.Item name="coords" label="Coordonnées" required>
+        <Form.Item name="coords" label={m.field_coords()} required>
           <CoordsInput placeholder={placeholder} />
         </Form.Item>
 
@@ -91,23 +92,27 @@ export default function FhsRequestForm(props: ModalStateProps) {
       </section>
 
       <section>
-        <Form.Item name="name" label="Nom" required>
+        <Form.Item name="name" label={m.name()} required>
           <Input required id="fhs-name" placeholder={placeholder} />
         </Form.Item>
 
-        <Form.Item name="localityId" label="Localité" required>
+        <Form.Item name="localityId" label={m.locality()} required>
           <LocalitySelect placeholder={placeholder} />
         </Form.Item>
 
-        <Form.Item name="contact" label="Contact client" required>
-          <Input required id="fhs-contact" placeholder="Nom et téléphone" />
+        <Form.Item name="contact" label={m.client_contact()} required>
+          <Input
+            required
+            id="fhs-contact"
+            placeholder={m.hint_name_and_phone()}
+          />
         </Form.Item>
 
-        <Form.Item name="managerId" label="Responsable" required>
+        <Form.Item name="managerId" label={m.manager()} required>
           <StaffSelect filter="PLANNING_MANAGER" />
         </Form.Item>
 
-        <Form.Item name="comment" label="Commentaire">
+        <Form.Item name="comment" label={m.field_comment()}>
           <Input.TextArea rows={4} className="resize-none!" />
         </Form.Item>
       </section>

@@ -41,6 +41,11 @@
   "action": "Action",
   "view_details": "Voir les détails",
 
+  "locality": "Localité",
+  "manager": "Responsable",
+  "survey": "Etude",
+  "client_contact": "Contact client",
+
   "requested": "Demandée",
   "declined": "Refusée",
   "assigned": "Assignée",
@@ -94,10 +99,21 @@
 
   "check_confirm": "Je valide cette action",
 
+  "fhs_form_request": "Demande d'etude FTTH",
   "fhs_form_assign": "Assigner l'étude FTTH",
   "fhs_form_initiate": "Initier l'étude FTTH",
   "fhs_form_submit": "Soumettre le rapport",
   "fhs_form_accept": "Accepter le rapport",
+
+  "fhp_form_request": "Demande de projet FTTH",
+  "fhp_form_assign": "Assigner le project FTTH",
+  "fhp_form_initiate": "Initier le project FTTH",
+  "fhp_form_submit": "Soumettre le rapport",
+  "fhp_form_accept": "Accepter le rapport",
+
+  "hint_choose_kmz": "Choisir un fichier KMZ ou KML",
+  "hint_reading_file": "Lecture du fichier...",
+  "hint_name_and_phone": "Nom et téléphone",
 
   "no_cables": "Pas de câbles",
   "no_boxes": "Pas de boitiers",

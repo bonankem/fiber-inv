@@ -41,6 +41,11 @@
   "action": "Action",
   "view_details": "View Details",
 
+  "locality": "Locality",
+  "manager": "Manager",
+  "survey": "Survey",
+  "client_contact": "Client contact",
+
   "requested": "Requested",
   "declined": "Declined",
   "assigned": "Assigned",
@@ -102,10 +107,21 @@
 
   "check_confirm": "Confirm this action",
 
+  "fhs_form_request": "FTTH Survey Request",
   "fhs_form_assign": "Assign FTTH Survey",
   "fhs_form_initiate": "Initiate FTTH Survey",
   "fhs_form_submit": "Submit Survey Report",
   "fhs_form_accept": "Accept Survey Report",
+
+  "fhp_form_request": "FTTH Project Request",
+  "fhp_form_assign": "Assign FTTH Project",
+  "fhp_form_initiate": "Initiate FTTH Project",
+  "fhp_form_submit": "Submit Project Report",
+  "fhp_form_accept": "Accept Project Report",
+
+  "hint_choose_kmz": "Select a KMZ or KML file",
+  "hint_reading_file": "Reading file...",
+  "hint_name_and_phone": "Name and phone",
 
   "details": "Details",
   "report": "Report",

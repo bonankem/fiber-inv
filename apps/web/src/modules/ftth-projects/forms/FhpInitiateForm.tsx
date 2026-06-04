@@ -1,4 +1,5 @@
 import { Form, Input, message } from "antd";
+import { m } from "i18n/messages";
 import type { FhpInitiateT, FtthProjectT } from "schema/fhp";
 import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
@@ -26,15 +27,16 @@ export default function FhpInitiateForm(props: FhpFormProps) {
 
   return (
     <FormModal
-      title="Initiate FTTH project"
+      title={m.fhp_form_initiate()}
       subtitle={props.item.work.name}
       state={props.state}
       onSubmit={onSubmit}
       className="grid sm:grid-cols-2 gap-2"
+      initialValues={{ vendorId: props.item.work.vendor?.id }}
     >
       <Form.Item
         name="vendorId"
-        label="Vendor"
+        label={m.field_vendor()}
         className="col-span-full"
         {...req}
       >
@@ -54,17 +56,21 @@ export default function FhpInitiateForm(props: FhpFormProps) {
         ]}
       >
         <div className="grid! sm:grid-cols-2 gap-2">
-          <Form.Item name="startDate" label="Date de début" {...req}>
+          <Form.Item name="startDate" label={m.field_start_date()} {...req}>
             <DateInput />
           </Form.Item>
 
-          <Form.Item name="dueDate" label="Date d'échéance" {...req}>
+          <Form.Item name="dueDate" label={m.field_due_date()} {...req}>
             <DateInput />
           </Form.Item>
         </div>
       </Form.Item>
 
-      <Form.Item name="comment" label="Commentaire" className="col-span-full">
+      <Form.Item
+        name="comment"
+        label={m.field_comment()}
+        className="col-span-full"
+      >
         <Input.TextArea rows={3} className="resize-none!" />
       </Form.Item>
     </FormModal>
