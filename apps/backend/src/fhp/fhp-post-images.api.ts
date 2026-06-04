@@ -25,7 +25,7 @@ async function fhpPostImages(dto: FhpPostImagesT, from: UserFullT) {
   const docIdsToRemove = imagesToRemove.map((i) => i.docId);
   const docsToRemove = { id: { in: docIdsToRemove } };
 
-  await prisma.ftthProject.update({
+  return prisma.ftthProject.update({
     select: ftthProjectS,
     where: { id: dto.id },
     data: {

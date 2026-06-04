@@ -1,4 +1,4 @@
-import { workDocP, workDocZ } from "#/work";
+import { workDocS, workDocZ } from "#/work";
 import type { Prisma } from "../prisma";
 import {
   type Same,
@@ -17,7 +17,7 @@ export const fhpImageS = {
   takenAt: true,
   name: true,
   type: true,
-  doc: workDocP,
+  doc: { select: workDocS },
 } satisfies Prisma.FhpImageSelect;
 
 export const fhpImageZ = zObject("FhpImageT", {
