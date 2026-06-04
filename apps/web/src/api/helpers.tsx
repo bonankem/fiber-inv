@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { message } from "antd";
+import type { IdNameT } from "schema/common";
 import { jsonResponse, type Maybe, type ZodType } from "schema/utils";
 import { useAuthToken } from "./auth";
 
@@ -14,16 +15,23 @@ export function apiUrl(url: string) {
   return `${base}/${url}`;
 }
 
+export function downloadUrl(up: IdNameT) {
+  const name = encodeURIComponent(up.name);
+  return apiUrl(`download/${up.id}/${name}`);
+}
+
 export function useApiGet<O, I extends Query = Query>(
   path: string | [string, ...string[]],
   output: ZodType<O>,
   query?: I,
+  options?: Omit<Parameters<typeof useQuery<O>>[0], "queryFn" | "queryKey">,
 ) {
   const url = apiUrl(Array.isArray(path) ? path.join("/") : path);
   const key = Array.isArray(path) ? path : path.replace(/^\//, "").split("/");
   const token = useAuthToken();
 
   return useQuery({
+    ...options,
     queryFn: () => getJson(url, output, query, token.value),
     queryKey: query ? [...key, query] : key,
   });

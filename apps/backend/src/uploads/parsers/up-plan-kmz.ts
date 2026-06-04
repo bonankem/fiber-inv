@@ -1,4 +1,4 @@
-import { pipe, sortBy } from "remeda";
+import { indexBy, pipe, sortBy } from "remeda";
 import type { CoordsT } from "schema/geo";
 import type { UpPlanKmzT } from "schema/uploads";
 import { filterTruthy } from "schema/utils";
@@ -93,6 +93,7 @@ export async function parseUpPlanKmz({
 
   const allPoles = [...metalPoles, ...concretePoles];
   const poleIds = new Set(allPoles.map((p) => getPoleId(p.geom[0])));
+  const poleToBox = indexBy(boxes, (b) => getPoleId(b.geom[0]));
 
   type PoleToCable = { cable: KmzPlacemark; count: number };
   const poleToCable: Record<string, PoleToCable> = {};
@@ -122,6 +123,12 @@ export async function parseUpPlanKmz({
 
   for (const p of allPoles) {
     const id = getPoleId(p.geom[0]);
+    const box = poleToBox[id];
+    if (box) {
+      p.oldName = p.name;
+      p.name = `${box.name}-P`;
+      continue;
+    }
     const entry = poleToCable[id];
     if (entry) {
       p.oldName = p.name;

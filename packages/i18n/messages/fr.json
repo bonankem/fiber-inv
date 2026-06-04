@@ -59,9 +59,11 @@
   "action_decline": "Refuser",
   "action_initiate": "Initier",
   "action_submit": "Soumettre",
+  "action_finish": "Finir",
   "action_accept": "Accepter",
   "action_reject": "Rejeter",
   "action_comment": "Commenter",
+  "action_images": "Envoyer des Images",
 
   "field_comment": "Commentaire",
   "field_vendor": "Fournisseur",
@@ -110,6 +112,7 @@
   "fhp_form_initiate": "Initier le project FTTH",
   "fhp_form_submit": "Soumettre le rapport",
   "fhp_form_accept": "Accepter le rapport",
+  "fhp_form_images": "Envoyer des images du projet",
 
   "hint_choose_kmz": "Choisir un fichier KMZ ou KML",
   "hint_reading_file": "Lecture du fichier...",

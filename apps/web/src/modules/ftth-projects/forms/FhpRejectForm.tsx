@@ -6,12 +6,12 @@ import { req } from "#/utils/form";
 import type { FhpFormProps } from "../fhp-types";
 
 export default function FhpRejectForm(props: FhpFormProps) {
-  const submitM = useApiPost<FhpReviewT, FtthProjectT>("/fhp/review", ["fhp"]);
+  const send = useApiPost<FhpReviewT, FtthProjectT>("/fhp/review", ["fhp"]);
 
   const onSubmit = apiCall(async (data: FhpReviewT) => {
     data.id = props.item.id;
     data.passed = false;
-    const result = await submitM.mutateAsync(data);
+    const result = await send.mutateAsync(data);
     message.success(`${result.work.sid} rejetée`);
     props.state.close();
   });
@@ -22,6 +22,7 @@ export default function FhpRejectForm(props: FhpFormProps) {
       subtitle={props.item.work.name}
       state={props.state}
       onSubmit={onSubmit}
+      submitting={send.isPending}
     >
       <Form.Item name="comment" label="Motif" {...req}>
         <Input.TextArea

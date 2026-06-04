@@ -9,11 +9,11 @@ import { req } from "#/utils/form";
 import type { FhpFormProps } from "../fhp-types";
 
 export default function FhpAssignForm(props: FhpFormProps) {
-  const submitM = useApiPost<FhpAssignT, FtthProjectT>("/fhp/assign", ["fhp"]);
+  const send = useApiPost<FhpAssignT, FtthProjectT>("/fhp/assign", ["fhp"]);
 
   const onSubmit = apiCall(async (data: FhpAssignT) => {
     data.id = props.item.id;
-    const result = await submitM.mutateAsync(data);
+    const result = await send.mutateAsync(data);
     message.success(`Assigned ${result.work.sid}`);
     props.state.close();
   });
@@ -24,6 +24,7 @@ export default function FhpAssignForm(props: FhpFormProps) {
       subtitle={props.item.work.name}
       state={props.state}
       onSubmit={onSubmit}
+      submitting={send.isPending}
     >
       <Form.Item name="userId" label={m.field_assignee()} {...req}>
         <StaffSelect filter="PROJECT_ENGINEER" />

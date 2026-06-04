@@ -14,13 +14,11 @@ async function validateDates(start: unknown, due: unknown) {
 }
 
 export default function FhpInitiateForm(props: FhpFormProps) {
-  const submitM = useApiPost<FhpInitiateT, FtthProjectT>("/fhp/initiate", [
-    "fhp",
-  ]);
+  const send = useApiPost<FhpInitiateT, FtthProjectT>("/fhp/initiate", ["fhp"]);
 
   const onSubmit = apiCall(async (data: FhpInitiateT) => {
     data.id = props.item.id;
-    const result = await submitM.mutateAsync(data);
+    const result = await send.mutateAsync(data);
     message.success(`Initiated ${result.work.sid}`);
     props.state.close();
   });
@@ -31,6 +29,7 @@ export default function FhpInitiateForm(props: FhpFormProps) {
       subtitle={props.item.work.name}
       state={props.state}
       onSubmit={onSubmit}
+      submitting={send.isPending}
       className="grid sm:grid-cols-2 gap-2"
       initialValues={{ vendorId: props.item.work.vendor?.id }}
     >

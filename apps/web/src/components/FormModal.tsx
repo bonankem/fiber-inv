@@ -59,7 +59,7 @@ export default function FormModal<T>(props: FormModalProps<T>) {
 
   const onClose = () => {
     uploader.cleanup();
-    props.state.close();
+    close();
   };
 
   return (
@@ -82,6 +82,7 @@ export default function FormModal<T>(props: FormModalProps<T>) {
       onCancel={onClose}
       className="text-sm pb-8!"
       footer={null}
+      classNames={{ body: "overflow-x-hidden! *" }}
     >
       <ConfigProvider theme={themeConfig}>
         <Form
@@ -92,7 +93,11 @@ export default function FormModal<T>(props: FormModalProps<T>) {
           onFinish={props.onSubmit}
           initialValues={props.initialValues}
         >
-          <fieldset className={props.className || "flex flex-col gap-2"}>
+          <fieldset
+            className={
+              props.className || "flex flex-col gap-2 min-w-0 max-w-full"
+            }
+          >
             {props.children}
           </fieldset>
 

@@ -14,7 +14,7 @@ enum WorkAction {
     DECLINE
     ASSIGN
     INITIATE
-    UPDATE_ODN
+    UPLOAD_IMAGES
     SUBMIT_REPORT
     RESEND_REPORT
     FAIL_REVIEW
@@ -120,7 +120,8 @@ enum WorkDocType {
     HP_SUMMARY
     AS_BUILT_KMZ
     AS_BUILT_BOQ
-    HC_IMAGE
+    FHP_IMAGE
+    FHC_IMAGE
 }
 
 model WorkDoc {
@@ -138,6 +139,11 @@ model WorkDoc {
     uploadId String @db.Uuid
 
     key String @default("")
+
+    coords   Coords? @relation(fields: [coordsId], references: [id])
+    coordsId BigInt?
+
+    fhpImages FhpImage[]
 
     @@unique([workId, type, key], name: "uniq")
 }

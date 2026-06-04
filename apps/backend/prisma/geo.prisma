@@ -8,6 +8,8 @@ model Coords {
     boxes Box[]
 
     fhsBoxes FhsBox[]
+
+    workDocs WorkDoc[]
 }
 
 model Boundary {
@@ -16,7 +18,7 @@ model Boundary {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    /// [LinearRingJson]
+    /// [CoordsArray]
     ring Json
 
     // bounding box

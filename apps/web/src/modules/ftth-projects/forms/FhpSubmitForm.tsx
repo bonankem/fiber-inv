@@ -45,11 +45,11 @@ const qtyInput = (name: keyof FhpReportT, label: string, length = false) => (
 export default function FhpSubmitForm(props: FhpFormProps) {
   const [form] = Form.useForm<FhpReportT>();
 
-  const submitM = useApiPost<FhpReportT, FtthProjectT>("/fhp/submit", ["fhp"]);
+  const send = useApiPost<FhpReportT, FtthProjectT>("/fhp/submit", ["fhp"]);
 
   const onSubmit = apiCall(async (data: FhpReportT) => {
     data.id = props.item.id;
-    const result = await submitM.mutateAsync(data);
+    const result = await send.mutateAsync(data);
     message.success(`Submitted ${result.work.sid}`);
     props.state.close();
   });
@@ -63,6 +63,7 @@ export default function FhpSubmitForm(props: FhpFormProps) {
       subtitle={props.item.work.name}
       className="grid gap-4 grid-cols-1"
       onSubmit={onSubmit}
+      submitting={send.isPending}
     >
       <div className="flex flex-col gap-2">
         <h2 className="font-medium">Quantités</h2>

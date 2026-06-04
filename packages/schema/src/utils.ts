@@ -103,6 +103,8 @@ export function zFormObject<T extends ZodRawShape>(id: string, shape: T) {
 export type Maybe<T> = T | null | undefined;
 
 export function jsonResponse<T>(text: unknown, shape: ZodType<T>) {
+  if (!text) return undefined as T;
+
   const json = typeof text === "string" ? JSON.parse(text) : text;
 
   const valid = shape.safeParse(json);

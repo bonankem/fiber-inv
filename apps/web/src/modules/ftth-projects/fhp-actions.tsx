@@ -1,8 +1,9 @@
 import {
   CalendarOutlined,
+  CheckSquareOutlined,
   CloseOutlined,
+  FileImageOutlined,
   MessageOutlined,
-  SendOutlined,
   StopOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -17,6 +18,7 @@ import FhpAssignForm from "./forms/FhpAssignForm";
 import FhpInitiateForm from "./forms/FhpInitiateForm";
 import FhpRejectForm from "./forms/FhpRejectForm";
 import FhpSubmitForm from "./forms/FhpSubmitForm";
+import FhpImagesForm from "./images/FhpImagesForm";
 
 function isWhen(what: What, when: When) {
   return what.work.status === when;
@@ -49,8 +51,15 @@ export const fhpActions = buildActions(isWhen, isWho, [
     main: true,
   },
   {
-    name: m.action_submit(),
-    icon: SendOutlined,
+    name: m.action_images(),
+    icon: FileImageOutlined,
+    when: [When.ONGOING],
+    form: FhpImagesForm,
+    main: true,
+  },
+  {
+    name: m.action_finish(),
+    icon: CheckSquareOutlined,
     when: [When.ONGOING],
     form: FhpSubmitForm,
     main: true,

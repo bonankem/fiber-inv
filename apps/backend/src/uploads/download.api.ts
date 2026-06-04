@@ -22,7 +22,7 @@ export default appRoute(() => ({
     });
     if (!up?.inDb) notFound("File not found");
 
-    const inline = /^image\/|\/pdf$/.test(up.name);
+    const inline = /^image\/|\/pdf$/.test(up.type);
     const disp = inline ? "inline" : "attachment";
     reply.header("content-disposition", `${disp}; filename=${up.name}`);
     return reply.type(up.type).send(up.inDb.data);

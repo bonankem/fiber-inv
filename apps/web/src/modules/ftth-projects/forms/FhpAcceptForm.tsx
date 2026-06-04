@@ -5,12 +5,12 @@ import FormModal from "#/components/FormModal";
 import type { FhpFormProps } from "../fhp-types";
 
 export default function FhpAcceptForm(props: FhpFormProps) {
-  const submitM = useApiPost<FhpReviewT, FtthProjectT>("/fhp/review", ["fhp"]);
+  const send = useApiPost<FhpReviewT, FtthProjectT>("/fhp/review", ["fhp"]);
 
   const onSubmit = apiCall(async (data: FhpReviewT) => {
     data.id = props.item.id;
     data.passed = true;
-    const result = await submitM.mutateAsync(data);
+    const result = await send.mutateAsync(data);
     message.success(`${result.work.sid} closed`);
     props.state.close();
   });
@@ -21,6 +21,7 @@ export default function FhpAcceptForm(props: FhpFormProps) {
       subtitle={props.item.work.name}
       state={props.state}
       onSubmit={onSubmit}
+      submitting={send.isPending}
     >
       <Form.Item name="comment" label="Commentaire">
         <Input.TextArea

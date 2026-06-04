@@ -2,23 +2,17 @@ import { FileOutlined } from "@ant-design/icons";
 import { Tooltip } from "antd";
 import { useMemo } from "react";
 import { uniqueBy } from "remeda";
-import type { IdNameT } from "schema/common";
 import type { UploadT } from "schema/uploads";
 import type { Maybe } from "schema/utils";
 import type { WorkDocT } from "schema/work";
 import { twJoin } from "tailwind-merge";
-import { apiUrl } from "#/api/helpers";
+import { downloadUrl } from "#/api/helpers";
 import FittedText from "./FittedText";
 
 type Props = {
   files: Maybe<(UploadT | WorkDocT)[]>;
   className?: string;
 };
-
-function uploadLink(up: IdNameT) {
-  const name = encodeURIComponent(up.name);
-  return apiUrl(`download/${up.id}/${name}`);
-}
 
 function withUnit(n: number, unit: string) {
   const s = n < 10 ? Math.round(n * 10) / 10 : Math.round(n);
@@ -50,7 +44,7 @@ export default function DownloadList(props: Props) {
         <li key={up.id} className="max-w-full">
           <Tooltip title={`${up.name} (${sizeText(up.size)})`} placement="left">
             <a
-              href={uploadLink(up)}
+              href={downloadUrl(up)}
               target="_blank"
               rel="noopener noreferrer"
               className={twJoin(

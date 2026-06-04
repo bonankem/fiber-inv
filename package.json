@@ -19,7 +19,7 @@
     "build": "turbo build",
     "clean": "rm -rf */dist",
     "prisma": "pnpm -F backend exec prisma",
-    "prisma:sync": "pnpm prisma generate && pnpm prisma db push && pnpm build:schema",
+    "prisma:sync": "pnpm prisma generate && pnpm prisma db push && pnpm -F schema build",
     "build:schema": "turbo --filter schema build",
     "dev": "pnpm build:schema && turbo dev --ui tui",
     "dev:expose": "pnpm build:schema && turbo dev:expose --ui tui",

@@ -25,7 +25,6 @@ export type BoundingBoxT = z.infer<typeof boundingBoxZ>;
 declare global {
   namespace PrismaJson {
     type PolygonJson = PolygonT;
-    type LinearRingJson = LinearRingT;
-    type LineStringJson = LineStringT;
+    type CoordsArray = LineStringT;
   }
 }

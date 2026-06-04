@@ -47,7 +47,7 @@ export function setWorkers(
 
 type HasName = string | { name: string };
 
-function addLog(
+export function addLog(
   body: Omit<WorkUpdateT, "id">,
   action: WorkAction,
   status: Maybe<WorkStatus> = undefined,
@@ -135,7 +135,7 @@ export function updateWork(q: WorkUpdateQuery) {
       workers: setWorkers(q.dto.id, q.workers),
       vendor: maybeConnect(q.vendor),
       logs: addLog(q.dto, q.action, q.status, q.from, logTo),
-      docs: updateDocs(q.dto.id, q.docs),
+      docs: updateDocs(q.dto.id, q.docs) ?? q.also?.docs,
     } satisfies Prisma.WorkUpdateInput,
   };
 }

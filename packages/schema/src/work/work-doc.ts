@@ -1,3 +1,4 @@
+import { coordsP, coordsZ } from "#/geo";
 import { uploadFullP, uploadFullZ } from "#/uploads";
 import { type Prisma, WorkDocType } from "../prisma";
 import { type Same, z, zObject, zStr } from "../utils";
@@ -7,6 +8,7 @@ export const workDocS = {
   type: true,
   key: true,
   upload: uploadFullP,
+  coords: coordsP,
 } satisfies Prisma.WorkDocSelect;
 
 export const workDocZ = zObject("WorkDocT", {
@@ -14,6 +16,7 @@ export const workDocZ = zObject("WorkDocT", {
   type: z.enum(WorkDocType).describe("The type of document"),
   key: zStr("The key for distinguishing multiple uploads of the same type"),
   upload: uploadFullZ.describe("The uploaded file"),
+  coords: coordsZ.nullable().describe("The GPS location"),
 } satisfies Record<keyof typeof workDocS, object>);
 
 export const workDocP = {
