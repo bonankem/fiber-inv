@@ -14,9 +14,9 @@ export const oltS = {
 export const oltZ = zObject("OltT", {
   id: zStr("The ID of this entry"),
   key: zStr("The unique searchable key"),
-  name: zStr("The equipment name"),
-  site: zStrNul("The MTN Site ID"),
-  oem: idKeyNameZ.describe("The equipment OEM"),
+  name: zStr("The OLT name"),
+  site: zStrNul("The site ID"),
+  oem: idKeyNameZ.describe("The OLT OEM"),
   ip: zStrNul("The OLT IP address, if known"),
 } satisfies Record<keyof typeof oltS, object>);
 

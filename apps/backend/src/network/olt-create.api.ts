@@ -4,13 +4,13 @@ import {
   type OltCreateT,
   oltCreateManyZ,
   oltS,
-} from "schema/equipment";
+} from "schema/network";
 import { prisma } from "#/db";
 import { bad, connectIdOrKey, postRoute } from "#/utils";
 import { makeKey } from "../utils/queries";
 
 export default postRoute(
-  "/equipment/olt",
+  "/network/olt",
   () => oltCreateManyZ,
   (req) => oltCreate(req.body),
 );

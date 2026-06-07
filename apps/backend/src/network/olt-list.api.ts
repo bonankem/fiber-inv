@@ -1,8 +1,8 @@
-import { oltP } from "schema/equipment";
+import { oltP } from "schema/network";
 import { prisma } from "#/db";
 import { getRoute } from "#/utils";
 
-export default getRoute("/equipment/olt", null, oltList);
+export default getRoute("/network/olt", null, oltList);
 
 async function oltList() {
   return prisma.olt.findMany(oltP);
