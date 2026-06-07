@@ -26,8 +26,8 @@ export default function FhsReportTab(props: FhsTabProps) {
           { label: "Chambres", value: rep.manholes },
           { label: "Poteaux bétons", value: rep.metalPoles },
           { label: "Poteaux metalliques", value: rep.concretePoles },
-          { label: "Câbles transport", value: `${rep.feederLengthM} m` },
-          { label: "Câbles distribution", value: `${rep.distLengthM} m` },
+          { label: "Câbles transport", value: `${rep.transportMetres} m` },
+          { label: "Câbles distribution", value: `${rep.distMetres} m` },
         ]}
       />
       <section className="flex flex-col gap-2">

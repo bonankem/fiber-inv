@@ -1,10 +1,13 @@
-import { FhpImageType } from "#/prisma";
+import { WorkDocType } from "#/prisma";
 import { workUpdateDto } from "#/work";
-import { z, zStr } from "../utils";
+import { enumWithPrefix, z, zStr } from "../utils";
+
+export const fhpImageTypes = enumWithPrefix(WorkDocType, "FHP_");
+export type FhpImageType = (typeof fhpImageTypes)[number];
 
 export const fhpPostImageZ = z.object({
   uploadId: zStr("The upload ID"),
-  type: z.enum(FhpImageType),
+  type: z.enum(fhpImageTypes),
   name: zStr("The name of the pictured element"),
 });
 

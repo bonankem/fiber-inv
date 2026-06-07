@@ -5,9 +5,7 @@ model Coords {
 
     works Work[]
 
-    boxes Box[]
-
-    fhsBoxes FhsBox[]
+    boxes FtthBox[]
 
     workDocs WorkDoc[]
 }
@@ -31,9 +29,9 @@ model Boundary {
 
     survey FtthSurvey?
 
-    plaque Plaque?
+    area FtthArea?
 
-    box Box?
+    box FtthBox?
 }
 
 model District {
@@ -66,6 +64,4 @@ model Locality {
     boundaryId String?   @unique @db.Uuid
 
     works Work[]
-
-    plaques Plaque[]
 }

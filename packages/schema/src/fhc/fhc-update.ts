@@ -14,7 +14,7 @@ export const fhcUpdateZ = workUpdateDto("FhcUpdateT", {
   ontOem: z.string().optional(),
   oltId: z.string().optional(),
   fatId: z.string().optional(),
-  oltPort: z.string().optional(),
+  oltPort: z.int().optional(),
   fatPort: z.int().optional(),
   cableLength: z.int().optional(),
 });

@@ -2,7 +2,6 @@ import {
   CalendarOutlined,
   CheckSquareOutlined,
   CloseOutlined,
-  FileImageOutlined,
   MessageOutlined,
   StopOutlined,
   UserOutlined,
@@ -18,7 +17,6 @@ import FhpAssignForm from "./forms/FhpAssignForm";
 import FhpInitiateForm from "./forms/FhpInitiateForm";
 import FhpRejectForm from "./forms/FhpRejectForm";
 import FhpSubmitForm from "./forms/FhpSubmitForm";
-import FhpImagesForm from "./images/FhpImagesForm";
 
 function isWhen(what: What, when: When) {
   return what.work.status === when;
@@ -48,13 +46,6 @@ export const fhpActions = buildActions(isWhen, isWho, [
     icon: CalendarOutlined,
     when: [When.ASSIGNED],
     form: FhpInitiateForm,
-    main: true,
-  },
-  {
-    name: m.action_images(),
-    icon: FileImageOutlined,
-    when: [When.ONGOING],
-    form: FhpImagesForm,
     main: true,
   },
   {

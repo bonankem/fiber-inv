@@ -45,8 +45,6 @@ model Work {
 
     closeDate String?
 
-    contact String?
-
     vendor   Vendor? @relation(fields: [vendorId], references: [id])
     vendorId String? @db.Uuid
 
@@ -119,17 +117,24 @@ enum WorkDocType {
     COORDINATES
     CABLE_LENGTHS
     HP_SUMMARY
+
     AS_BUILT_KMZ
     AS_BUILT_BOQ
 
-    FHP_IMAGE
+    FHP_ODF
+    FHP_TRENCHING
+    FHP_BACKFILLING
+    FHP_CLOSURE
+    FHP_MANHOLE
+    FHP_POLE
+    FHP_BOX
 
     FHC_FAT
-    FHC_DROP_CABLE_LABEL
+    FHC_DROP_CABLE
     FHC_FAT_POWER_TEST
     FHC_ATB_POWER_TEST
-    FHC_ONT_NAMEPLATE
     FHC_ONT_INDICATORS
+    FHC_ONT_NAMEPLATE
     FHC_SPEED_TEST
 }
 
@@ -151,8 +156,6 @@ model WorkDoc {
 
     coords   Coords? @relation(fields: [coordsId], references: [id])
     coordsId BigInt?
-
-    fhpImages FhpImage[]
 
     @@unique([workId, type, key], name: "uniq")
 }

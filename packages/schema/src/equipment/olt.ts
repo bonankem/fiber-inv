@@ -6,7 +6,7 @@ export const oltS = {
   id: true,
   key: true,
   name: true,
-  mtnSite: true,
+  site: true,
   ip: true,
   oem: idKeyNameP,
 } satisfies Prisma.OltSelect;
@@ -15,7 +15,7 @@ export const oltZ = zObject("OltT", {
   id: zStr("The ID of this entry"),
   key: zStr("The unique searchable key"),
   name: zStr("The equipment name"),
-  mtnSite: zStrNul("The MTN Site ID"),
+  site: zStrNul("The MTN Site ID"),
   oem: idKeyNameZ.describe("The equipment OEM"),
   ip: zStrNul("The OLT IP address, if known"),
 } satisfies Record<keyof typeof oltS, object>);

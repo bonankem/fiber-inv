@@ -8,17 +8,18 @@ model FtthSurvey {
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
     boundaryId String?   @unique @db.Uuid
 
+    area   FtthArea? @relation(fields: [areaId], references: [id])
+    areaId String?   @db.Uuid
+
     contact String?
 
-    oltCode String?
+    ftthCode String?
 
     proposedHp Int?
 
     reportedHp Int?
 
     report FhsReport?
-
-    boxes FhsBox[]
 
     projects FtthProject[]
 }
@@ -46,36 +47,19 @@ model FhsReport {
 
     endBoxes Int
 
-    manholes Int
-
     closures Int
+
+    manholes Int
 
     metalPoles Int
 
     concretePoles Int
 
-    feederLengthM Int
+    oldManholes Int
 
-    distLengthM Int
-}
+    oldPoles Int
 
-model FhsBox {
-    id String @id @default(uuid(7)) @db.Uuid
+    transportMetres Int
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    survey   FtthSurvey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
-    surveyId String     @db.Uuid
-
-    type BoxType
-
-    name String
-
-    hp Int?
-
-    coords   Coords @relation(fields: [coordsId], references: [id])
-    coordsId BigInt
-
-    @@unique([surveyId, name], name: "uniq")
+    distMetres Int
 }

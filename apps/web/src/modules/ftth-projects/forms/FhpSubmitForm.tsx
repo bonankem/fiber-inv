@@ -76,8 +76,8 @@ export default function FhpSubmitForm(props: FhpFormProps) {
         {qtyInput("metalPoles", "Poteaux métalliques")}
         {qtyInput("closures", "Closures")}
         {qtyInput("manholes", "Chambres")}
-        {qtyInput("feederLengthM", "Câbles transport", true)}
-        {qtyInput("distLengthM", "Câbles distribution", true)}
+        {qtyInput("transportMetres", "Câbles transport", true)}
+        {qtyInput("distMetres", "Câbles distribution", true)}
 
         <h2 className="font-medium">{m.files()}</h2>
         {fileInput("AS_BUILT_KMZ", "As-Built KMZ")}

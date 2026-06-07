@@ -9,7 +9,6 @@ export const workBriefS = {
   name: true,
   status: true,
   coords: coordsP,
-  contact: true,
   vendorId: true,
   localityId: true,
 } satisfies Prisma.WorkSelect;
@@ -20,7 +19,6 @@ export const workBriefZ = zObject("WorkT", {
   name: zStr("The name of this work entry"),
   status: z.enum(WorkStatus).describe("Current status"),
   coords: coordsZ.nullable().describe("The location coordinates"),
-  contact: zStrNul("The local contact info for this work entry"),
   vendorId: zStrNul("The ID of the survey vendor"),
   localityId: zStrNul("The ID of the locality"),
 } satisfies Record<keyof typeof workBriefS, object>);

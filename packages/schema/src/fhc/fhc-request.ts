@@ -2,7 +2,7 @@ import { coordsZ } from "#/geo";
 import { z, zObject, zStr, zStrOpt } from "../utils";
 
 export const fhcRequestZ = zObject("FhcRequestT", {
-  fn: zStr("Fibre number"),
+  tn: zStr("Customer TN"),
   name: zStr("Customer name"),
   email: zStrOpt("Customer email address"),
   phone: zStrOpt("Customer phone number"),

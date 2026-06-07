@@ -7,9 +7,9 @@ import type { ParserInput } from "./utils";
 function boxType(name: string) {
   const re = /^(.+_X\d+)(?:(_H\d+)(_([SE])\d+)?)?/.exec(name);
   if (!re) return null;
-  if (!re[2]) return BoxType.X_BOX;
-  if (!re[3]) return BoxType.HUB_BOX;
-  return re[4] === "S" ? BoxType.SUB_BOX : BoxType.END_BOX;
+  if (!re[2]) return BoxType.X;
+  if (!re[3]) return BoxType.HUB;
+  return re[4] === "S" ? BoxType.SUB : BoxType.END;
 }
 
 export async function parseUpFhsCoords({

@@ -161,8 +161,8 @@ export default function FhsSubmitForm(props: FhsFormProps) {
         {qtyInput("metalPoles", m.field_metal_poles())}
         {qtyInput("closures", m.field_closures())}
         {qtyInput("manholes", m.field_manholes())}
-        {qtyInput("feederLengthM", m.field_tran_cables(), true)}
-        {qtyInput("distLengthM", m.field_dist_cables(), true)}
+        {qtyInput("transportMetres", m.field_tran_cables(), true)}
+        {qtyInput("distMetres", m.field_dist_cables(), true)}
       </div>
 
       <Card classNames={{ body: "p-0!" }}>

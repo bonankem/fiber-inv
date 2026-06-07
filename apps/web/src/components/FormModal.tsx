@@ -7,6 +7,7 @@ import {
   type FormInstance,
   type FormProps,
   Modal,
+  Spin,
   type ThemeConfig,
   theme,
 } from "antd";
@@ -84,41 +85,47 @@ export default function FormModal<T>(props: FormModalProps<T>) {
       footer={null}
       classNames={{ body: "overflow-x-hidden! *" }}
     >
-      <ConfigProvider theme={themeConfig}>
-        <Form
-          form={props.form}
-          size="small"
-          layout={props.layout ?? "vertical"}
-          className="flex flex-col gap-4"
-          onFinish={props.onSubmit}
-          initialValues={props.initialValues}
-        >
-          <fieldset
-            className={
-              props.className || "flex flex-col gap-2 min-w-0 max-w-full"
-            }
+      <Spin spinning={props.submitting || false}>
+        <ConfigProvider theme={themeConfig}>
+          <Form
+            form={props.form}
+            size="small"
+            layout={props.layout ?? "vertical"}
+            className="flex flex-col gap-4"
+            onFinish={props.onSubmit}
+            initialValues={props.initialValues}
           >
-            {props.children}
-          </fieldset>
+            <fieldset
+              className={
+                props.className || "flex flex-col gap-2 min-w-0 max-w-full"
+              }
+            >
+              {props.children}
+            </fieldset>
 
-          {props.checkbox !== false && (
-            <section>
-              <Checkbox required>{checkboxText(props.checkbox)}</Checkbox>
-            </section>
-          )}
+            {props.checkbox !== false && (
+              <section>
+                <Checkbox required>{checkboxText(props.checkbox)}</Checkbox>
+              </section>
+            )}
 
-          <div
-            className="self-center w-full max-w-md grid grid-cols-2 gap-2"
-            style={{ backgroundColor: token.colorBgContainer }}
-          >
-            <Button onClick={close}>{m.back()}</Button>
+            <div
+              className="self-center w-full max-w-md grid grid-cols-2 gap-2"
+              style={{ backgroundColor: token.colorBgContainer }}
+            >
+              <Button onClick={close}>{m.back()}</Button>
 
-            <Button type="primary" htmlType="submit" loading={props.submitting}>
-              {m.send()}
-            </Button>
-          </div>
-        </Form>
-      </ConfigProvider>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={props.submitting}
+              >
+                {m.send()}
+              </Button>
+            </div>
+          </Form>
+        </ConfigProvider>
+      </Spin>
     </Modal>
   );
 }

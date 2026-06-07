@@ -11,8 +11,8 @@ export const fhpReportZ = workUpdateDto("FhpReportT", {
   closures: z.int("Number of closures"),
   metalPoles: z.int("Number of metal poles"),
   concretePoles: z.int("Number of concrete poles"),
-  feederLengthM: z.int("Total feeder cable length in metres"),
-  distLengthM: z.int("Total distribution cable length in metres"),
+  transportMetres: z.int("Total transport cable length in metres"),
+  distMetres: z.int("Total distribution cable length in metres"),
 
   [Doc.AS_BUILT_KMZ]: zStr("KMZ upload ID"),
   [Doc.AS_BUILT_BOQ]: zStr("BOQ upload ID"),

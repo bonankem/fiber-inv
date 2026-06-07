@@ -19,7 +19,7 @@ async function fhcRequest(dto: FhcRequestT, from: UserFullT) {
     return tx.ftthConnection.create({
       select: ftthConnectionS,
       data: {
-        fn: dto.fn,
+        tn: dto.tn,
         address: dto.address,
         email: dto.email,
         phone: dto.phone,

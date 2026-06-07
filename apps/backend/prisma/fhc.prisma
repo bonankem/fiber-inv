@@ -5,7 +5,7 @@ model FtthConnection {
 
     createdAt DateTime @default(now())
 
-    fn String
+    tn String
 
     address String
 
@@ -13,21 +13,25 @@ model FtthConnection {
 
     phone String?
 
-    plaque   Plaque? @relation(fields: [plaqueId], references: [id])
-    plaqueId String? @db.Uuid
+    area   FtthArea? @relation(fields: [areaId], references: [id])
+    areaId String?   @db.Uuid
 
     olt   Olt?    @relation(fields: [oltId], references: [id])
     oltId String? @db.Uuid
 
-    fat   Box?    @relation(fields: [fatId], references: [id])
-    fatId String? @db.Uuid
+    fat   FtthBox? @relation(fields: [fatId], references: [id])
+    fatId String?  @db.Uuid
 
     ont   Ont?    @relation(fields: [ontId], references: [id])
     ontId String? @unique @db.Uuid
 
-    oltPort String?
+    oltSlot Int?
+
+    oltPort Int?
 
     fatPort Int?
 
     cableLength Int?
+
+    @@unique([fatId, fatPort], name: "fatUniq")
 }

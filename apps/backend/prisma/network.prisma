@@ -1,18 +1,21 @@
-model Plaque {
+model FtthArea {
     id String @id @default(uuid(7)) @db.Uuid
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    name String
+    name String @unique
 
-    locality   Locality? @relation(fields: [localityId], references: [id])
-    localityId String?   @db.Uuid
+    key String @unique
+
+    code String @unique
 
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
     boundaryId String?   @unique @db.Uuid
 
-    hubs Box[]
+    surveys FtthSurvey[]
+
+    olts Olt[]
 
     connections FtthConnection[]
 }
@@ -29,7 +32,7 @@ model Oem {
 
     olts Olt[]
 
-    boxes Box[]
+    boxes FtthBox[]
 
     onts Ont[]
 }
@@ -46,28 +49,32 @@ model Olt {
 
     ip String? @unique
 
-    mtnSite String?
+    site String?
 
     oem   Oem    @relation(fields: [oemId], references: [id])
     oemId String @db.Uuid
 
-    boxes Box[]
+    areas FtthArea[]
 
-    fhc FtthConnection[]
+    boxes FtthBox[]
+
+    homes FtthConnection[]
 }
 
 enum BoxType {
-    X_BOX
-    HUB_BOX
-    SUB_BOX
-    END_BOX
+    X
+    HUB
+    SUB
+    END
 }
 
-model Box {
+model FtthBox {
     id String @id @default(uuid(7)) @db.Uuid
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    type BoxType
 
     name String @unique
 
@@ -76,11 +83,8 @@ model Box {
     oem   Oem    @relation(fields: [oemId], references: [id])
     oemId String @db.Uuid
 
-    olt   Olt?    @relation(fields: [oltId], references: [id])
-    oltId String? @db.Uuid
-
-    plaque   Plaque? @relation(fields: [plaqueId], references: [id])
-    plaqueId String? @db.Uuid
+    olt   Olt    @relation(fields: [oltId], references: [id])
+    oltId String @db.Uuid
 
     coords   Coords? @relation(fields: [coordsId], references: [id])
     coordsId BigInt?
@@ -88,7 +92,31 @@ model Box {
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
     boundaryId String?   @unique @db.Uuid
 
-    fhc FtthConnection[]
+    inCable Cable? @relation("in")
+
+    outCables Cable[] @relation("out")
+
+    connections FtthConnection[]
+}
+
+model Cable {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name String? @unique
+
+    /// [CoordsArray]
+    line Json?
+
+    length Int?
+
+    toBox   FtthBox @relation(fields: [toBoxId], references: [id], name: "in")
+    toBoxId String  @unique @db.Uuid
+
+    fromBox   FtthBox? @relation(fields: [fromBoxId], references: [id], name: "out")
+    fromBoxId String?  @db.Uuid
 }
 
 model Ont {

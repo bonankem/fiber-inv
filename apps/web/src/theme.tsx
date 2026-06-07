@@ -1,4 +1,10 @@
 import { ConfigProvider, type ThemeConfig, theme } from "antd";
+import antdEn from "antd/es/locale/en_GB";
+import antdFr from "antd/es/locale/fr_FR";
+import dayjs from "dayjs";
+import "dayjs/locale/en";
+import "dayjs/locale/fr";
+import { getLocale } from "i18n/runtime";
 import {
   createContext,
   type PropsWithChildren,
@@ -6,6 +12,12 @@ import {
   useEffect,
   useState,
 } from "react";
+
+const locale = getLocale();
+const antLocale = locale === "fr" ? antdFr : antdEn;
+
+dayjs.locale(locale);
+document.documentElement.setAttribute("lang", locale);
 
 const baseTheme: ThemeConfig = {
   token: {
@@ -37,7 +49,6 @@ const baseTheme: ThemeConfig = {
 };
 
 export const appColors = ["system", "light", "dark"] as const;
-
 export type AppColor = (typeof appColors)[number];
 
 export type AppTheme = {
@@ -93,7 +104,7 @@ export default function ThemeProvider(props: PropsWithChildren) {
 
   return (
     <AppThemeContext value={{ isDark, value, setValue }}>
-      <ConfigProvider theme={{ ...baseTheme, algorithm }}>
+      <ConfigProvider theme={{ ...baseTheme, algorithm }} locale={antLocale}>
         {props.children}
       </ConfigProvider>
     </AppThemeContext>

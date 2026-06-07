@@ -1,12 +1,11 @@
-import { Form, Input, InputNumber, message } from "antd";
+import { Form, Input, InputNumber } from "antd";
 import { m } from "i18n/messages";
-import type { FhsInitiateT, FtthSurveyT } from "schema/fhs";
-import { apiCall, useApiPost } from "#/api/helpers";
+import type { FhsInitiateT } from "schema/fhs";
 import FormModal from "#/components/FormModal";
 import DateInput from "#/components/inputs/DateInput";
 import VendorSelect from "#/components/inputs/VendorSelect";
 import { req } from "#/utils/form";
-import type { FhsFormProps } from "../fhs-types";
+import { type FhsFormProps, useFhsUpdate } from "../fhs-types";
 
 async function validateDates(start: unknown, due: unknown) {
   if (!start || !due || start <= due) return;
@@ -14,25 +13,21 @@ async function validateDates(start: unknown, due: unknown) {
 }
 
 export default function FhsInitiateForm(props: FhsFormProps) {
-  const submitM = useApiPost<FhsInitiateT, FtthSurveyT>("/fhs/initiate", [
-    "fhs",
-  ]);
+  const up = useFhsUpdate<FhsInitiateT>(
+    "/fhs/initiate",
+    props,
+    m.toast_initiated,
+  );
 
-  const onSubmit = apiCall(async (data: FhsInitiateT) => {
-    data.id = props.item.id;
-    const result = await submitM.mutateAsync(data);
-    message.success(`Initiated ${result.work.sid}`);
-    props.state.close();
-  });
+  const vendorId = props.item.work.vendor?.id;
+  const today = new Date().toISOString().slice(0, 10);
 
   return (
     <FormModal
+      {...up}
       title={m.fhs_form_initiate()}
-      subtitle={props.item.work.name}
-      state={props.state}
-      onSubmit={onSubmit}
       className="grid sm:grid-cols-2 gap-2"
-      initialValues={{ vendorId: props.item.work.vendor?.id }}
+      initialValues={{ vendorId, startDate: today }}
     >
       <Form.Item
         name="vendorId"
@@ -44,29 +39,25 @@ export default function FhsInitiateForm(props: FhsFormProps) {
       </Form.Item>
 
       <Form.Item
-        className="col-span-2"
-        validateTrigger="onBlur"
-        dependencies={["startDate"]}
-        name="dueDate"
-        rules={[
-          (form) => ({
-            validator: (_, value) =>
-              validateDates(form.getFieldValue("startDate"), value),
-          }),
-        ]}
+        name="startDate"
+        label={m.field_start_date()}
+        className="col-span-full"
+        {...req}
       >
-        <div className="grid! sm:grid-cols-2 gap-2">
-          <Form.Item name="startDate" label={m.field_start_date()} {...req}>
-            <DateInput />
-          </Form.Item>
-
-          <Form.Item name="dueDate" label={m.field_due_date()} {...req}>
-            <DateInput />
-          </Form.Item>
-        </div>
+        <DateInput />
       </Form.Item>
 
-      <Form.Item name="oltCode" label={m.field_olt_code()} {...req}>
+      <Form.Item
+        name="dueDate"
+        label={m.field_due_date()}
+        className="col-span-full"
+        required
+        rules={[{ required: true }]}
+      >
+        <DateInput />
+      </Form.Item>
+
+      <Form.Item name="ftthCode" label={m.field_olt_code()} {...req}>
         <Input
           required
           minLength={5}

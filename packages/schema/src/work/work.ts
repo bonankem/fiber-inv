@@ -3,7 +3,7 @@ import { coordsP, coordsZ } from "../geo/coords";
 import { localityNestedP, localityNestedZ } from "../geo/locality-nested";
 import { vendorP, vendorZ } from "../people";
 import { type Prisma, type StaffRole, WorkStatus } from "../prisma";
-import { type Same, zObject, zStr, zStrNul } from "../utils";
+import { type Same, zObject, zStr } from "../utils";
 import { workerP, workerZ } from "./worker";
 
 export const workS = {
@@ -11,7 +11,6 @@ export const workS = {
   sid: true,
   name: true,
   status: true,
-  contact: true,
   coords: coordsP,
   vendor: vendorP,
   workers: workerP,
@@ -27,7 +26,6 @@ export const workZ = zObject("WorkT", {
   vendor: vendorZ.nullable().describe("Vendor assigned to this work"),
   workers: z.array(workerZ).describe("Workers on this job"),
   locality: localityNestedZ.nullable(),
-  contact: zStrNul("The customer contact info"),
 } satisfies Record<keyof typeof workS, object>);
 
 export const workP = { select: workS };

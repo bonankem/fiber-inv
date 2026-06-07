@@ -29,7 +29,7 @@ async function fhsInitiate(dto: FhsInitiateT, user: UserT) {
   return prisma.ftthSurvey.update({
     where: { id: workId },
     data: {
-      oltCode: dto.oltCode,
+      ftthCode: dto.ftthCode,
       proposedHp: dto.proposedHp,
       work: updateWork({
         dto,

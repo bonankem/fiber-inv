@@ -14,6 +14,7 @@ import StaffSelect from "#/components/inputs/StaffSelect";
 import type { ModalStateProps } from "#/hooks/useModalViewer";
 import { useUploader } from "#/hooks/useUploader";
 import { useAppTheme } from "#/theme";
+import { req } from "#/utils/form";
 
 const { PLAQUE_KMZ } = WorkDocType;
 
@@ -59,8 +60,9 @@ export default function FhsRequestForm(props: ModalStateProps) {
       className="grid sm:grid-cols-2 gap-2 sm:gap-6 *:flex *:flex-col *:gap-2"
     >
       <section>
-        <Form.Item name={PLAQUE_KMZ} label="Fichier KMZ de la plaque" required>
+        <Form.Item name={PLAQUE_KMZ} label={m.field_plaque_kmz()} required>
           <FileUpload
+            required
             type={PLAQUE_KMZ}
             onParsed={onParse}
             placeholder={m.hint_choose_kmz()}
@@ -68,7 +70,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
         </Form.Item>
 
         <Form.Item name="coords" label={m.field_coords()} required>
-          <CoordsInput placeholder={placeholder} />
+          <CoordsInput placeholder={placeholder} required />
         </Form.Item>
 
         <GoogleMap
@@ -96,7 +98,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
           <Input required id="fhs-name" placeholder={placeholder} />
         </Form.Item>
 
-        <Form.Item name="localityId" label={m.locality()} required>
+        <Form.Item name="localityId" label={m.locality()} {...req}>
           <LocalitySelect placeholder={placeholder} />
         </Form.Item>
 

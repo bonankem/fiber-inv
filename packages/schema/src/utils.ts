@@ -138,3 +138,12 @@ export function filterNotNull<T>(list: Maybe<T>[]) {
 export function filterTruthy<T>(list: Falsey<T>[]) {
   return list.filter((t) => t) as T[];
 }
+
+export function enumWithPrefix<E extends string, P extends string>(
+  enumType: Record<string, E>,
+  prefix: P,
+) {
+  const values = Object.values(enumType);
+  const filtered = values.filter((e) => e.startsWith(prefix));
+  return filtered as readonly (E & `${P}${string}`)[];
+}

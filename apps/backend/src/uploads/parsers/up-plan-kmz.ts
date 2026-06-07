@@ -153,11 +153,11 @@ export async function parseUpPlanKmz({
 }
 
 function getBoxType(b: KmzPlacemark) {
-  if (/-E\d+$/.test(b.name)) return BoxType.END_BOX;
-  if (/-S\d+$/.test(b.name)) return BoxType.SUB_BOX;
-  if (/-H\d+$/.test(b.name)) return BoxType.HUB_BOX;
-  if (/-X\d+$/.test(b.name)) return BoxType.X_BOX;
-  return BoxType.END_BOX;
+  if (/-E\d+$/.test(b.name)) return BoxType.END;
+  if (/-S\d+$/.test(b.name)) return BoxType.SUB;
+  if (/-H\d+$/.test(b.name)) return BoxType.HUB;
+  if (/-X\d+$/.test(b.name)) return BoxType.X;
+  return BoxType.END;
 }
 
 function getPoleId(c: CoordsT) {

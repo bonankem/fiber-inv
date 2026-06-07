@@ -5,7 +5,7 @@ import { type Same, type z, zObject, zStr, zStrNul } from "../utils";
 export const ftthConnectionS = {
   id: true,
   work: workP,
-  fn: true,
+  tn: true,
   phone: true,
   email: true,
   address: true,
@@ -13,7 +13,7 @@ export const ftthConnectionS = {
 
 export const ftthConnectionZ = zObject("FtthConnectionT", {
   id: zStr("The entry ID"),
-  fn: zStr("The customer's fibre number"),
+  tn: zStr("The customer's TN"),
   work: workZ.describe("The work instance"),
   phone: zStrNul("The customer's phone number"),
   email: zStrNul("The customer's email address"),

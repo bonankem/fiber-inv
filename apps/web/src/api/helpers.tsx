@@ -37,8 +37,10 @@ export function useApiGet<O, I extends Query = Query>(
   });
 }
 
+export type ApiPath = string | [string, ...string[]];
+
 export function useApiPost<I, O = unknown>(
-  path: string | [string, ...string[]],
+  path: ApiPath,
   invalidate?: "all" | string[],
 ) {
   const url = apiUrl(Array.isArray(path) ? path.join("/") : path);
