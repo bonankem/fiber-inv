@@ -23,6 +23,6 @@
     "build:schema": "turbo --filter schema build",
     "dev": "pnpm build:schema && turbo dev --ui tui",
     "dev:expose": "pnpm build:schema && turbo dev:expose --ui tui",
-    "heroku-postbuild": "pnpm prisma:sync && turbo --filter backend build"
+    "heroku-postbuild": "pnpm prisma db push && turbo --filter backend build"
   }
 }

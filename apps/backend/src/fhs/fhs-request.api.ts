@@ -26,40 +26,42 @@ export default postRoute(
 
 const action = WorkAction.REQUEST;
 const status = WorkStatus.REQUESTED;
+const recipient = StaffRole.PLANNING_MANAGER;
 const { PLAQUE_KMZ } = WorkDocType;
 
-async function boundaryCreate(
-  id: string,
-): Promise<Prisma.FtthSurveyCreateInput["boundary"]> {
+type FhsInput = Prisma.FtthSurveyCreateInput;
+
+async function boundaryCreate(id: string): Promise<FhsInput["boundary"]> {
   const up = await prisma.upload.findUnique({ where: { id } });
   if (up?.parsed?.type !== PLAQUE_KMZ) return undefined;
   return { create: ringWithBbox(up.parsed.boundary) };
 }
 
-async function fhsRequest(body: FhsRequestT, from: UserT) {
-  const boundary = await boundaryCreate(body.PLAQUE_KMZ);
+async function fhsRequest(dto: FhsRequestT, from: UserT) {
+  const boundary = await boundaryCreate(dto.PLAQUE_KMZ);
+  const { name, contact } = dto;
 
   return prisma.$transaction(async (tx) => {
     const { sid, requestDate } = await nextId(tx, "FHS");
     return tx.ftthSurvey.create({
       select: ftthSurveyS,
       data: {
+        boundary,
+        contact,
         work: create({
-          status,
           sid,
+          name,
+          status,
           requestDate,
-          name: body.name,
-          contact: body.contact,
-          locality: connectId(body.localityId),
-          coords: setCoords(body.coords),
-          docs: setDocsFrom(body, PLAQUE_KMZ),
-          logs: addLog(body, action, from, status),
+          locality: connectId(dto.localityId),
+          coords: setCoords(dto.coords),
+          docs: setDocsFrom(dto, PLAQUE_KMZ),
+          logs: addLog(dto, action, from, status),
           workers: create({
-            userId: body.managerId,
-            role: StaffRole.PLANNING_MANAGER,
+            userId: dto.managerId,
+            role: recipient,
           }),
         }),
-        boundary,
       },
     });
   });

@@ -1,24 +1,24 @@
 import { z, zFormObject, zStr, zStrOpt } from "../utils";
 
 export const oltCreateZ = zFormObject("OltCreateT", {
-  name: zStr("The name of the OLT"),
-  oem: zStrOpt("The ID (or key) of the OEM"),
-  ip: zStrOpt("The IP address of the OLT"),
-  mtnSite: zStrOpt("The MTN site ID"),
+  name: zStr("The OLT name"),
+  oem: zStr("The OEM ID or key"),
+  site: zStrOpt("The site ID"),
+  ip: zStrOpt("The OLT IP address"),
 });
 
-export const oltCreateManyZ = z.object({
-  items: z
-    .array(oltCreateZ)
-    .optional()
-    .describe("An entry for each OLT to create"),
-  names: z
-    .array(z.string())
-    .optional()
-    .describe("An additional list, for use when only names are being given"),
-  oem: zStrOpt("The fallback OEM ID/key for items where it is not specified"),
+const oltCreateItemsZ = z.object({
+  items: z.array(oltCreateZ).describe("OLTs to create"),
   ignoreExisting: z.boolean().optional(),
 });
+
+const oltCreateNamesZ = z.object({
+  names: z.array(z.string()).describe("Names of OLTs to create"),
+  oem: zStr("The OEM ID or key"),
+  ignoreExisting: z.boolean().optional(),
+});
+
+export const oltCreateManyZ = z.union([oltCreateItemsZ, oltCreateNamesZ]);
 
 export type OltCreateT = z.infer<typeof oltCreateZ>;
 export type OltCreateManyT = z.infer<typeof oltCreateManyZ>;

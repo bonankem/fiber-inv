@@ -1,5 +1,5 @@
+import { ftthSurveyBriefS } from "schema/fhs";
 import type { UserFullT } from "schema/people";
-import { workBriefS } from "schema/work";
 import { prisma, WorkStatus } from "#/db";
 import { getRoute } from "#/utils";
 import { workAccess } from "../work/filter";
@@ -9,13 +9,14 @@ export default getRoute("/fhs/for-project", null, (req) =>
 );
 
 async function fhsForProject(user: UserFullT) {
-  return prisma.work.findMany({
+  return prisma.ftthSurvey.findMany({
     where: {
-      status: WorkStatus.CLOSED,
-      fhs: { isNot: null },
-      AND: workAccess(user),
+      work: {
+        ...workAccess(user),
+        status: WorkStatus.CLOSED,
+      },
     },
-    select: workBriefS,
+    select: ftthSurveyBriefS,
     orderBy: [{ createdAt: "desc" }],
   });
 }

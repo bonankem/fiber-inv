@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "nodemon",
     "dev:expose": "nodemon",
+    "prebuild": "pnpm -w prisma generate",
     "build": "node ../../scripts/build.mjs",
     "turbo-build": "pnpm -w build:schema",
     "refresh-dev": "cd ../../apps && touch backend/src/main.ts web/src/main.tsx"

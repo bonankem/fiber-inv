@@ -15,9 +15,9 @@ const action = WorkAction.REQUEST;
 const status = WorkStatus.REQUESTED;
 const toWhom = StaffRole.PROJECT_MANAGER;
 
-async function fhpRequest(body: FhpRequestT, from: UserFullT) {
+async function fhpRequest(dto: FhpRequestT, from: UserFullT) {
   const s = await prisma.ftthSurvey.findUnique({
-    where: { id: body.surveyId },
+    where: { id: dto.surveyId },
   });
   if (!s) bad("Survey not found");
 
@@ -25,19 +25,19 @@ async function fhpRequest(body: FhpRequestT, from: UserFullT) {
     const { sid, requestDate } = await nextId(tx, ID);
     return tx.ftthProject.create({
       data: {
+        contact: dto.contact,
         work: create({
           status,
           sid,
           requestDate,
-          name: body.name,
-          contact: body.contact,
-          locality: connectId(body.localityId),
-          coords: setCoords(body.coords),
-          logs: addLog(body, action, from, status),
-          workers: create({ userId: body.managerId, role: toWhom }),
+          name: dto.name,
+          locality: connectId(dto.localityId),
+          coords: setCoords(dto.coords),
+          logs: addLog(dto, action, from, status),
+          workers: create({ userId: dto.managerId, role: toWhom }),
         }),
-        survey: maybeConnect(body.surveyId),
-        hp: body.hp || s.reportedHp || s.proposedHp || 0,
+        survey: maybeConnect(dto.surveyId),
+        hp: dto.hp || s.reportedHp || s.proposedHp || 0,
       },
       select: ftthProjectS,
     });

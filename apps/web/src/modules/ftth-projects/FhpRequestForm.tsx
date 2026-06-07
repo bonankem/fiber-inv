@@ -1,8 +1,8 @@
 import { Form, Input, message, Select } from "antd";
 import { m } from "i18n/messages";
 import type { FhpRequestT, FtthProjectT } from "schema/fhp";
+import { ftthSurveyBriefZ } from "schema/fhs";
 import { type Maybe, zArray } from "schema/utils";
-import { workBriefZ } from "schema/work";
 import { apiCall, useApiGet, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import CoordsInput from "#/components/inputs/CoordsInput";
@@ -14,17 +14,17 @@ import { req } from "#/utils/form";
 export default function FhpRequestForm(props: ModalStateProps) {
   const [form] = Form.useForm<FhpRequestT>();
 
-  const surveysQ = useApiGet("/fhs/for-project", zArray(workBriefZ));
+  const surveysQ = useApiGet("/fhs/for-project", zArray(ftthSurveyBriefZ));
 
   const onSelectSurvey = (id: Maybe<string>) => {
     const s = id && surveysQ.data?.find((s) => s.id === id);
     if (!s) return;
 
     form.setFieldsValue({
-      name: s.name,
-      coords: s.coords || undefined,
+      name: s.work.name,
+      coords: s.work.coords || undefined,
       contact: s.contact || undefined,
-      localityId: s.localityId || undefined,
+      localityId: s.work.localityId || undefined,
     });
   };
 
@@ -47,7 +47,10 @@ export default function FhpRequestForm(props: ModalStateProps) {
       <Form.Item name="surveyId" label={m.survey()} {...req}>
         <Select
           loading={surveysQ.isLoading}
-          options={surveysQ.data?.map((s) => ({ value: s.id, label: s.name }))}
+          options={surveysQ.data?.map((s) => ({
+            value: s.id,
+            label: s.work.name,
+          }))}
           showSearch={{ optionFilterProp: "label" }}
           onSelect={onSelectSurvey}
         />
