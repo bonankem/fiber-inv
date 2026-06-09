@@ -14,6 +14,7 @@ import { buildActions } from "#/components/actions/types";
 import CommentForm from "../work/CommentForm";
 import FhsAcceptForm from "./forms/FhsAcceptForm";
 import FhsAssignForm from "./forms/FhsAssignForm";
+import FhsDeclineForm from "./forms/FhsDeclineForm";
 import FhsInitiateForm from "./forms/FhsInitiateForm";
 import FhsRejectForm from "./forms/FhsRejectForm";
 import FhsSubmitForm from "./forms/FhsSubmitForm";
@@ -38,6 +39,7 @@ export const fhsActions = buildActions(isWhen, isWho, [
     name: m.action_decline(),
     icon: StopOutlined,
     when: [When.REQUESTED],
+    form: FhsDeclineForm,
     main: true,
     red: true,
   },

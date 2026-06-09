@@ -1,6 +1,5 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
-
   "action_accept": "Accept",
   "action_assign": "Assign",
   "action_comment": "Comment",
@@ -47,6 +46,7 @@
   "fhp_form_submit": "Submit Project Report",
   "fhs_form_accept": "Accept Survey Report",
   "fhs_form_assign": "Assign FTTH Survey",
+  "fhs_form_decline": "Decline FTTH Survey",
   "fhs_form_initiate": "Initiate FTTH Survey",
   "fhs_form_request": "FTTH Survey Request",
   "fhs_form_submit": "Submit Survey Report",
@@ -163,5 +163,13 @@
   "theme": "Theme",
   "vendors": "Vendors",
   "view_details": "View Details",
-  "welcome": "Welcome, {name}!"
+  "welcome": "Welcome, {name}!",
+  "plaque_name": "Plaque name",
+  "plaque_code": "Plaque code",
+  "area_type": "Type of Area",
+  "type": "Type",
+  "code": "Code",
+  "new_area": "New Area",
+  "extension": "Extension",
+  "decline_reason": "Reason for declining request"
 }

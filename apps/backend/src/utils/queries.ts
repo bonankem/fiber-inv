@@ -4,7 +4,10 @@ import type { WorkUpdateT } from "schema/work";
 import type { Prisma, WorkAction, WorkDocType, WorkStatus } from "#/db";
 import { currentTime, type Falsey, type Maybe, maybeConnect } from "#/utils";
 
-export async function nextId(tx: Prisma.TransactionClient, pre: string) {
+export async function nextId(
+  tx: Prisma.TransactionClient,
+  pre: "FHS" | "FHP" | "FHC",
+) {
   const now = currentTime();
   const prefix = `${pre}-${now.format("YYYYMMDD")}-`;
   const requestDate = now.format("YYYY-MM-DD");

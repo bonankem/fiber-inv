@@ -16,13 +16,13 @@ type Props = {
 
 function withUnit(n: number, unit: string) {
   const s = n < 10 ? Math.round(n * 10) / 10 : Math.round(n);
-  return `${s} ${unit}`;
+  return `${s}\u00a0${unit}`;
 }
 
 const K = 1024;
 const M = 1024 * 1024;
 function sizeText(size: number) {
-  if (size < K) return `${size} b`;
+  if (size < K) return withUnit(size, "bytes");
   if (size < M) return withUnit(size / K, "kB");
   return withUnit(size / M, "MB");
 }

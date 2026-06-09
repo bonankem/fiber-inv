@@ -1,10 +1,10 @@
 import { appPlugin } from "#/utils";
-import authUserApi from "./auth-user.api";
 import changeApi from "./change.api";
 import chooseApi from "./choose.api";
 import { Allow } from "./guard";
 import loginApi from "./login.api";
 import logoutApi from "./logout.api";
+import authUserApi from "./user.api";
 import verifyApi from "./verify.api";
 
 export default appPlugin(async (app) => {

@@ -1,6 +1,5 @@
 {
-  "$schema": "https://inlang.com/schema/inlang-message-format",
-
+  "$schema": "https://inlang.com/schema/inlang-message-form",
   "action_accept": "Accepter",
   "action_assign": "Assigner",
   "action_comment": "Commenter",
@@ -47,6 +46,7 @@
   "fhp_form_submit": "Soumettre le rapport",
   "fhs_form_accept": "Accepter le rapport",
   "fhs_form_assign": "Assigner l'étude FTTH",
+  "fhs_form_decline": "Refuser l'étude FTTH",
   "fhs_form_initiate": "Initier l'étude FTTH",
   "fhs_form_request": "Demande d'etude FTTH",
   "fhs_form_submit": "Soumettre le rapport",
@@ -163,5 +163,12 @@
   "toast_sent": "Envoyé",
   "vendors": "Fournisseurs",
   "view_details": "Voir les détails",
-  "welcome": "Bienvenue, {name}!"
+  "welcome": "Bienvenue, {name}!",
+  "area_type": "Type de la plaque",
+  "type": "Type",
+  "code": "Code",
+  "area": "Plaque",
+  "new_area": "Nouvelle plaque",
+  "extension": "Extension",
+  "decline_reason": "Motif du refus de la demande"
 }

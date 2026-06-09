@@ -11,9 +11,9 @@ model FtthSurvey {
     area   FtthArea? @relation(fields: [areaId], references: [id])
     areaId String?   @db.Uuid
 
-    contact String?
+    newArea Boolean?
 
-    ftthCode String?
+    contact String?
 
     proposedHp Int?
 

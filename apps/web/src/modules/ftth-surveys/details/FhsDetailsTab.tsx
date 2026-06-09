@@ -26,7 +26,7 @@ export default function FhsDetailsTab(props: FhsTabProps) {
           { label: localName, value: w.locality?.name },
           { label: "District", value: w.locality?.district?.name },
           { label: m.field_coords(), value: <CoordsLink coords={w.coords} /> },
-          { label: "Contact", value: w.contact },
+          { label: "Contact", value: props.item.contact },
         ]}
       />
       <DetailsCard

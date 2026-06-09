@@ -8,13 +8,7 @@ import {
   zObject,
   zStr,
 } from "../utils";
-import { type UploadParsedT, uploadParsedZ } from "./parsed";
-
-declare global {
-  namespace PrismaJson {
-    type UploadParsedJson = UploadParsedT;
-  }
-}
+import { uploadParsedZ } from "./parsed";
 
 export const uploadFullS = {
   id: true,

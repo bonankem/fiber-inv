@@ -12,6 +12,7 @@ import { type ModalFC, useModalViewer } from "#/hooks/useModalViewer";
 import FhcRequestForm from "#/modules/ftth-connections/FhcRequestForm";
 import FhpRequestForm from "#/modules/ftth-projects/FhpRequestForm";
 import FhsRequestForm from "#/modules/ftth-surveys/FhsRequestForm";
+import StaffCreateForm from "#/modules/staff/StaffCreateForm";
 import NotificationBell from "./NotificationBell";
 import type { UserLayoutProps } from "./useUserLayout";
 
@@ -19,6 +20,7 @@ const newForms: Record<string, ModalFC> = {
   "ftth-surveys": FhsRequestForm,
   "ftth-projects": FhpRequestForm,
   "ftth-connections": FhcRequestForm,
+  staff: StaffCreateForm,
 };
 
 export default function UserHeader(props: UserLayoutProps) {

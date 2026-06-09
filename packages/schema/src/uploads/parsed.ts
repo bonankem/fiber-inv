@@ -8,3 +8,9 @@ export const uploadParsedZ = z.discriminatedUnion("type", [
 ]);
 
 export type UploadParsedT = z.infer<typeof uploadParsedZ>;
+
+declare global {
+  namespace PrismaJson {
+    type UploadParsedJson = UploadParsedT;
+  }
+}

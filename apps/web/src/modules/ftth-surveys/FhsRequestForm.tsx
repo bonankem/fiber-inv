@@ -19,15 +19,15 @@ import { req } from "#/utils/form";
 const { PLAQUE_KMZ } = WorkDocType;
 
 export default function FhsRequestForm(props: ModalStateProps) {
-  const [form] = Form.useForm<FhsRequestT>();
   const uploader = useUploader();
   const isUploading = uploader.isUploading(PLAQUE_KMZ);
   const placeholder = isUploading ? m.hint_reading_file() : undefined;
-  const [parsed, setParsed] = useState<UpPlaqueKmzT>();
+  const send = useApiPost<FhsRequestT, FtthSurveyT>("/fhs", ["fhs"]);
+
   const map = useMap();
   const { isDark } = useAppTheme();
-
-  const submitM = useApiPost<FhsRequestT, FtthSurveyT>("/fhs", ["fhs"]);
+  const [parsed, setParsed] = useState<UpPlaqueKmzT>();
+  const [form] = Form.useForm<FhsRequestT>();
 
   const onParse = (data: UpPlaqueKmzT) => {
     setParsed(data);
@@ -44,7 +44,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
   };
 
   const onSubmit = apiCall(async (data: FhsRequestT) => {
-    const result = await submitM.mutateAsync(data);
+    const result = await send.mutateAsync(data);
     message.success(`Submitted ${result.work.sid}`);
     props.state.close();
   });
@@ -56,7 +56,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
       title={m.fhs_form_request()}
       state={props.state}
       onSubmit={onSubmit}
-      submitting={submitM.isPending}
+      submitting={send.isPending}
       className="grid sm:grid-cols-2 gap-2 sm:gap-6 *:flex *:flex-col *:gap-2"
     >
       <section>
@@ -73,24 +73,26 @@ export default function FhsRequestForm(props: ModalStateProps) {
           <CoordsInput placeholder={placeholder} required />
         </Form.Item>
 
-        <GoogleMap
-          defaultCenter={{ lat: 7.5, lng: -5.5 }}
-          defaultZoom={5.5}
-          disableDefaultUI
-          keyboardShortcuts={false}
-          colorScheme={isDark ? "DARK" : "LIGHT"}
-          className="w-full min-h-64 grow rounded-md overflow-hidden mt-3 border"
-        >
-          {parsed && (
-            <Polygon
-              paths={parsed.boundary}
-              strokeColor="#ffcb05"
-              fillColor="#ffcb05"
-              fillOpacity={0.2}
-              strokeOpacity={0.8}
-            />
-          )}
-        </GoogleMap>
+        <div className="grow mt-2.5 min-h-64 rounded-lg overflow-hidden border">
+          <GoogleMap
+            defaultCenter={{ lat: 7.5, lng: -5.5 }}
+            defaultZoom={5.5}
+            disableDefaultUI
+            keyboardShortcuts={false}
+            colorScheme={isDark ? "DARK" : "LIGHT"}
+            className="w-full h-full"
+          >
+            {parsed && (
+              <Polygon
+                paths={parsed.boundary}
+                strokeColor="#ffcb05"
+                fillColor="#ffcb05"
+                fillOpacity={0.2}
+                strokeOpacity={0.8}
+              />
+            )}
+          </GoogleMap>
+        </div>
       </section>
 
       <section>

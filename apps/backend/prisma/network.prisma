@@ -90,7 +90,7 @@ model FtthBox {
     coordsId BigInt?
 
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
-    boundaryId String?   @unique @db.Uuid
+    boundaryId String?   @db.Uuid
 
     inCable Cable? @relation("in")
 

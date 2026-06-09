@@ -8,11 +8,12 @@ import {
   WorkDocType,
   WorkStatus,
 } from "#/db";
-import { connectId, postRoute } from "#/utils";
+import { bad, connectId, postRoute } from "#/utils";
 import { ringWithBbox } from "../geo/utils";
 import {
   addLog,
   create,
+  makeKey,
   nextId,
   setCoords,
   setDocsFrom,
@@ -26,43 +27,53 @@ export default postRoute(
 
 const action = WorkAction.REQUEST;
 const status = WorkStatus.REQUESTED;
-const recipient = StaffRole.PLANNING_MANAGER;
-const { PLAQUE_KMZ } = WorkDocType;
+const sendTo = StaffRole.PLANNING_MANAGER;
 
 type FhsInput = Prisma.FtthSurveyCreateInput;
 
-async function boundaryCreate(id: string): Promise<FhsInput["boundary"]> {
+async function boundaryQuery(id: string): Promise<FhsInput["boundary"]> {
   const up = await prisma.upload.findUnique({ where: { id } });
-  if (up?.parsed?.type !== PLAQUE_KMZ) return undefined;
+  if (up?.parsed?.type !== WorkDocType.PLAQUE_KMZ) return undefined;
   return { create: ringWithBbox(up.parsed.boundary) };
 }
 
+async function nameCheck(name: string) {
+  const key = makeKey(name);
+  const dup = await prisma.work.findFirst({
+    where: { key, fhs: { isNot: null } },
+  });
+  const canRedo: WorkStatus[] = [WorkStatus.CANCELLED, WorkStatus.DECLINED];
+  if (dup && !canRedo.includes(dup.status)) {
+    bad(`Survey already exists: ${dup.name}`);
+  }
+  return key;
+}
+
 async function fhsRequest(dto: FhsRequestT, from: UserT) {
-  const boundary = await boundaryCreate(dto.PLAQUE_KMZ);
   const { name, contact } = dto;
+  const boundary = await boundaryQuery(dto.PLAQUE_KMZ);
+  const key = await nameCheck(name);
 
   return prisma.$transaction(async (tx) => {
     const { sid, requestDate } = await nextId(tx, "FHS");
     return tx.ftthSurvey.create({
-      select: ftthSurveyS,
       data: {
         boundary,
         contact,
         work: create({
           sid,
+          key,
           name,
           status,
           requestDate,
           locality: connectId(dto.localityId),
           coords: setCoords(dto.coords),
-          docs: setDocsFrom(dto, PLAQUE_KMZ),
+          docs: setDocsFrom(dto, WorkDocType.PLAQUE_KMZ),
           logs: addLog(dto, action, from, status),
-          workers: create({
-            userId: dto.managerId,
-            role: recipient,
-          }),
+          workers: create({ userId: dto.managerId, role: sendTo }),
         }),
       },
+      select: ftthSurveyS,
     });
   });
 }

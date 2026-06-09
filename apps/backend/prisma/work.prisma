@@ -33,6 +33,8 @@ model Work {
 
     name String
 
+    key String
+
     status WorkStatus
 
     statusSince DateTime @default(now())
