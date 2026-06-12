@@ -60,18 +60,30 @@ model Session {
     hashed String
 }
 
-model PasswordAttempt {
+enum AuthAction {
+    LOGIN_SUCCESS
+    PASSWORD_FAILED
+    OTP_FAILED
+    FORGOT_PASSWORD
+    CHANGE_PASSWORD
+    RESET_PASSWORD
+    LOGOUT
+}
+
+model AuthLog {
     id String @id @default(uuid(7)) @db.Uuid
 
     time DateTime @default(now())
 
-    email String @db.Citext
-
-    success Boolean
+    action AuthAction
 
     ipAddress String
 
     userAgent String
+
+    email String @db.Citext
+
+    country String?
 
     @@index([email])
 }

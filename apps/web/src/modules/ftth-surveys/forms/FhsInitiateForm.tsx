@@ -1,4 +1,4 @@
-import { Form, Input, InputNumber } from "antd";
+import { Form, Input, InputNumber, Select } from "antd";
 import { m } from "i18n/messages";
 import type { FhsInitiateT } from "schema/fhs";
 import FormModal from "#/components/FormModal";
@@ -6,11 +6,6 @@ import DateInput from "#/components/inputs/DateInput";
 import VendorSelect from "#/components/inputs/VendorSelect";
 import { req } from "#/utils/form";
 import { type FhsFormProps, useFhsUpdate } from "../fhs-types";
-
-async function validateDates(start: unknown, due: unknown) {
-  if (!start || !due || start <= due) return;
-  throw new Error(`${m.field_start_date()} > ${m.field_due_date()}`);
-}
 
 export default function FhsInitiateForm(props: FhsFormProps) {
   const up = useFhsUpdate<FhsInitiateT>(
@@ -25,49 +20,48 @@ export default function FhsInitiateForm(props: FhsFormProps) {
   return (
     <FormModal
       {...up}
+      width={600}
       title={m.fhs_form_initiate()}
       className="grid sm:grid-cols-2 gap-2"
       initialValues={{ vendorId, startDate: today }}
     >
-      <Form.Item
-        name="vendorId"
-        label={m.field_vendor()}
-        className="col-span-full"
-        {...req}
-      >
+      <Form.Item name="vendorId" label={m.field_vendor()} {...req}>
         <VendorSelect />
       </Form.Item>
 
-      <Form.Item
-        name="startDate"
-        label={m.field_start_date()}
-        className="col-span-full"
-        {...req}
-      >
+      <Form.Item name="proposedHp" label={m.field_proposed_hp()} {...req}>
+        <InputNumber className="w-full!" min={0} required />
+      </Form.Item>
+
+      <Form.Item name="startDate" label={m.field_start_date()} {...req}>
         <DateInput />
       </Form.Item>
 
       <Form.Item
         name="dueDate"
         label={m.field_due_date()}
-        className="col-span-full"
         required
         rules={[{ required: true }]}
       >
         <DateInput />
       </Form.Item>
 
-      <Form.Item name="ftthCode" label={m.field_olt_code()} {...req}>
+      <Form.Item name="isNewArea" label={m.area_type()} {...req}>
+        <Select
+          options={[
+            { value: true, label: m.new_area() },
+            { value: false, label: m.existing_area() },
+          ]}
+        />
+      </Form.Item>
+
+      <Form.Item name="areaCode" label={m.plaque_code()} {...req}>
         <Input
           required
           minLength={5}
           maxLength={5}
-          placeholder="5 caractères"
+          placeholder={m.area_code_hint()}
         />
-      </Form.Item>
-
-      <Form.Item name="proposedHp" label={m.field_proposed_hp()} {...req}>
-        <InputNumber className="w-full!" min={0} required />
       </Form.Item>
 
       <Form.Item

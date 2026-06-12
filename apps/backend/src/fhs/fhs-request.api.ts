@@ -51,8 +51,8 @@ async function nameCheck(name: string) {
 
 async function fhsRequest(dto: FhsRequestT, from: UserT) {
   const { name, contact } = dto;
-  const boundary = await boundaryQuery(dto.PLAQUE_KMZ);
   const key = await nameCheck(name);
+  const boundary = await boundaryQuery(dto.PLAQUE_KMZ);
 
   return prisma.$transaction(async (tx) => {
     const { sid, requestDate } = await nextId(tx, "FHS");

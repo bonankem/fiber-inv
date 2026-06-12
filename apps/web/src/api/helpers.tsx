@@ -78,13 +78,13 @@ export async function postJson<I, O>(
   body: I,
   token?: Maybe<string>,
 ) {
+  const headers: HeadersInit = {};
+  if (body) headers["Content-Type"] = "application/json";
+  if (token) headers.Authorization = `Bearer ${token}`;
   const res = await fetch(apiUrl(url), {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: token ? `Bearer ${token}` : "",
-    },
-    body: JSON.stringify(body),
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
   });
   const data = await res.json();
   if (res.ok) return data as O;

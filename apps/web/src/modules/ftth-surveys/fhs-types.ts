@@ -1,7 +1,7 @@
 import { message } from "antd";
 import { m } from "i18n/messages";
 import type { FtthSurveyT } from "schema/fhs";
-import { type ApiPath, useApiPost } from "#/api/helpers";
+import { type ApiPath, apiCall, useApiPost } from "#/api/helpers";
 import type { ModalItemProps } from "#/hooks/useModalViewer";
 
 export type FhsFormProps = ModalItemProps<FtthSurveyT>;
@@ -16,12 +16,12 @@ export function useFhsUpdate<I extends { id: string }>(
   toast?: (a: { id: string }) => string,
 ) {
   const send = useApiPost<I, FtthSurveyT>(path, ["fhs"]);
-  const onSubmit = async (data: I) => {
+  const onSubmit = apiCall(async (data: I) => {
     data.id = props.item.id;
     const { work } = await send.mutateAsync(data);
     message.success(toast ? toast({ id: work.sid }) : m.toast_sent());
     props.state.close();
-  };
+  });
   return {
     onSubmit,
     state: props.state,

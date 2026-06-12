@@ -64,4 +64,6 @@ model Locality {
     boundaryId String?   @unique @db.Uuid
 
     works Work[]
+
+    areas FtthArea[]
 }

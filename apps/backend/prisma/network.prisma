@@ -10,6 +10,9 @@ model FtthArea {
 
     code String @unique
 
+    locality   Locality @relation(fields: [localityId], references: [id])
+    localityId String   @db.Uuid
+
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
     boundaryId String?   @unique @db.Uuid
 

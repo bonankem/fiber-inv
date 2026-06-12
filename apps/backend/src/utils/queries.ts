@@ -4,12 +4,12 @@ import type { WorkUpdateT } from "schema/work";
 import type { Prisma, WorkAction, WorkDocType, WorkStatus } from "#/db";
 import { currentTime, type Falsey, type Maybe, maybeConnect } from "#/utils";
 
-export async function nextId(
-  tx: Prisma.TransactionClient,
-  pre: "FHS" | "FHP" | "FHC",
-) {
+type WorkCode = "FHS" | "FHP" | "FHC";
+type TxClient = Prisma.TransactionClient;
+
+export async function nextIds(tx: TxClient, code: WorkCode, count: number) {
   const now = currentTime();
-  const prefix = `${pre}-${now.format("YYYYMMDD")}-`;
+  const prefix = `${code}-${now.format("YYYYMMDD")}-`;
   const requestDate = now.format("YYYY-MM-DD");
 
   const last = await tx.work.findFirst({
@@ -19,9 +19,18 @@ export async function nextId(
   });
 
   const prev = Number(last?.sid?.slice(prefix.length)) || 0;
-  const next = (prev + 1).toString().padStart(4, "0");
-  const sid = `${prefix}${next}`;
-  return { sid, requestDate };
+  const ids = Array.from({ length: count }, (_, i) => {
+    const n = (prev + i + 1).toString();
+    return `${prefix}${n.padStart(4, "0")}`;
+  });
+  return { ids, requestDate };
+}
+
+export async function nextId(tx: TxClient, code: WorkCode) {
+  return nextIds(tx, code, 1).then((r) => ({
+    requestDate: r.requestDate,
+    sid: r.ids[0],
+  }));
 }
 
 export function maybeCoords(

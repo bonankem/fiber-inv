@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
 import { m } from "i18n/messages";
 import type { AuthLoginReqT, AuthResultT } from "schema/auth";
 import { apiCall, useApiPost } from "#/api/helpers";
@@ -10,7 +10,11 @@ export default function AuthLoginForm(props: LoginFormProps) {
   const loginQ = useApiPost<AuthLoginReqT, AuthResultT>("/auth/login");
 
   const onSubmit = apiCall(async (data: AuthLoginReqT) => {
-    props.onResult?.(await loginQ.mutateAsync(data));
+    message.error(
+      "Session terminée ; vous vous êtes connecté sur un autre appareil ou navigateur.",
+      10000,
+    );
+    //props.onResult?.(await loginQ.mutateAsync(data));
   });
 
   return (

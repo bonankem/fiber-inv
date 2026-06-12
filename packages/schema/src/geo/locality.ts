@@ -13,7 +13,9 @@ export const localityZ = zObject("LocalityT", {
   key: zStr("The locality key (normalized form of the name)"),
 } satisfies Record<keyof typeof localityS, object>);
 
-export const localityP = {
+export const localityP = { select: localityS };
+
+export const localityListP = {
   select: localityS,
   orderBy: { key: "asc" },
 } satisfies Prisma.LocalityFindManyArgs;

@@ -9,6 +9,7 @@ import { workerP, workerZ } from "./worker";
 export const workS = {
   id: true,
   sid: true,
+  key: true,
   name: true,
   status: true,
   coords: coordsP,
@@ -20,6 +21,7 @@ export const workS = {
 export const workZ = zObject("WorkT", {
   id: zStr("The work entry UUID"),
   sid: zStr("The work entry serial ID e.g. FHS-20260601-0001"),
+  key: zStr("Searchable key generated from the name"),
   name: zStr("The name of this work entry"),
   status: z.enum(WorkStatus).describe("Current status"),
   coords: coordsZ.nullable().describe("The location coordinates"),

@@ -1,13 +1,13 @@
 import type { Prisma } from "../prisma";
 import type { z } from "../utils";
 import { type Same, zObject, zStr } from "../utils";
-import { localityP, localityZ } from "./locality";
+import { localityListP, localityZ } from "./locality";
 
 export const districtNestedS = {
   id: true,
   name: true,
   key: true,
-  localities: localityP,
+  localities: localityListP,
 } satisfies Prisma.DistrictSelect;
 
 export const districtNestedZ = zObject("DistrictNestedT", {

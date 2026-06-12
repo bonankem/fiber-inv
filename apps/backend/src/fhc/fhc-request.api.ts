@@ -2,7 +2,7 @@ import { type FhcRequestT, fhcRequestZ, ftthConnectionS } from "schema/fhc";
 import type { UserFullT } from "schema/people";
 import { prisma, WorkAction, WorkStatus } from "#/db";
 import { connectId, postRoute } from "#/utils";
-import { addLog, create, nextId, setCoords } from "#/utils/queries";
+import { addLog, create, makeKey, nextId, setCoords } from "#/utils/queries";
 
 export default postRoute(
   "/fhc",
@@ -28,6 +28,7 @@ async function fhcRequest(dto: FhcRequestT, from: UserFullT) {
           sid,
           requestDate,
           name: dto.name,
+          key: makeKey(dto.name),
           startDate: dto.startDate,
           locality: connectId(dto.localityId),
           coords: setCoords(dto.coords),

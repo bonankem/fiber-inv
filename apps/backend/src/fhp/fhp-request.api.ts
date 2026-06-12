@@ -2,7 +2,7 @@ import { type FhpRequestT, fhpRequestZ, ftthProjectS } from "schema/fhp";
 import type { UserFullT } from "schema/people";
 import { prisma, StaffRole, WorkAction, WorkStatus } from "#/db";
 import { bad, connectId, maybeConnect, postRoute } from "#/utils";
-import { addLog, create, nextId, setCoords } from "../utils/queries";
+import { addLog, create, makeKey, nextId, setCoords } from "../utils/queries";
 
 export default postRoute(
   "/fhp",
@@ -31,6 +31,7 @@ async function fhpRequest(dto: FhpRequestT, from: UserFullT) {
           sid,
           requestDate,
           name: dto.name,
+          key: makeKey(dto.name),
           locality: connectId(dto.localityId),
           coords: setCoords(dto.coords),
           logs: addLog(dto, action, from, status),

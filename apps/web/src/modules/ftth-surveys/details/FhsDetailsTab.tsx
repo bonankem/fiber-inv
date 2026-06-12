@@ -8,7 +8,8 @@ import StatusView from "#/components/StatusView";
 import type { FhsTabProps } from "./types";
 
 export default function FhsDetailsTab(props: FhsTabProps) {
-  const w = props.item.work;
+  const s = props.item;
+  const w = s.work;
   const isAbidjan = w.locality?.district?.name === "Abidjan";
   const localName = isAbidjan ? "Commune" : m.department();
   const ENGINEER = StaffRole.PLANNING_ENGINEER;
@@ -16,17 +17,18 @@ export default function FhsDetailsTab(props: FhsTabProps) {
   return (
     <div className="grid md:grid-cols-2 gap-4">
       <DetailsCard
-        missing="dash"
+        missing="hide"
         items={[
           { label: m.name(), value: w.name },
           { label: m.id(), value: w.sid },
           { label: m.status(), value: <StatusView work={w} smaller /> },
           { label: m.field_assignee(), value: workerOf(w, ENGINEER)?.name },
           { label: m.field_vendor(), value: w.vendor?.name },
+          { label: m.area_code(), value: s.area?.code },
           { label: localName, value: w.locality?.name },
           { label: "District", value: w.locality?.district?.name },
           { label: m.field_coords(), value: <CoordsLink coords={w.coords} /> },
-          { label: "Contact", value: props.item.contact },
+          { label: "Contact", value: s.contact },
         ]}
       />
       <DetailsCard

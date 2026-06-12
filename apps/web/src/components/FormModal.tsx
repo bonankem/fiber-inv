@@ -24,6 +24,7 @@ export type FormModalProps<T> = {
   subtitle?: ReactNode;
   children?: ReactNode;
   onSubmit?: (data: T) => void;
+  okText?: string;
   submitting?: boolean;
   className?: string;
   checkbox?: boolean | string;
@@ -120,7 +121,7 @@ export default function FormModal<T>(props: FormModalProps<T>) {
                 htmlType="submit"
                 loading={props.submitting}
               >
-                {m.send()}
+                {props.okText || m.send()}
               </Button>
             </div>
           </Form>
