@@ -22,6 +22,7 @@ export function badToken(): never {
 
 export const loginUserS = {
   id: true,
+  name: true,
   email: true,
   isAdmin: true,
   password: true,
@@ -106,7 +107,11 @@ export async function authResult(
   const mode = pass?.mfaMode;
 
   if (pass?.mustChange) {
-    return incomplete(S.NEEDS_CHANGE, {});
+    return incomplete(S.NEEDS_CHANGE, {
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    });
   }
 
   if (!mode || mode === M.UNDECIDED) {

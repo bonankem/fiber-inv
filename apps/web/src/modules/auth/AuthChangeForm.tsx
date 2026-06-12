@@ -19,14 +19,6 @@ function req(label: string, ok: (p: string) => boolean) {
   return { label, ok };
 }
 
-const reqs = [
-  req(m.pw_min_length({ min: 6 }), (p) => p.length >= 6),
-  req(m.pw_uppercase(), (p) => /[A-Z]/.test(p)),
-  req(m.pw_lowercase(), (p) => /[a-z]/.test(p)),
-  req(m.pw_number(), (p) => /[0-9]/.test(p)),
-  req(m.pw_symbol(), (p) => /[\W_]/.test(p)),
-];
-
 export default function AuthChangeForm(props: Props) {
   const changeQ = useApiPost<AuthChangeReqT, AuthResultT>("/auth/change");
 
@@ -37,6 +29,25 @@ export default function AuthChangeForm(props: Props) {
     visible: showNew,
     onVisibleChange: setShowNew,
   };
+
+  const min = props.res.isAdmin ? 14 : 12;
+  const suffix = props.res.isAdmin ? " (admin)" : "";
+  const notAllowed = [
+    ...props.res.name.split(/[\W_]+/).filter((n) => n.length >= 3),
+    props.res.email.replace(/@.+/, ""),
+  ].map((s) => s.toLowerCase());
+  const noBlockedWords = (p: string) => {
+    p = p.toLowerCase();
+    return !notAllowed.some((n) => p.includes(n));
+  };
+  const reqs = [
+    req(m.pw_min_length({ min, suffix }), (p) => p.length >= min),
+    req(m.pw_uppercase(), (p) => /[A-Z]/.test(p)),
+    req(m.pw_lowercase(), (p) => /[a-z]/.test(p)),
+    req(m.pw_number(), (p) => /[0-9]/.test(p)),
+    req(m.pw_symbol(), (p) => /[\W_]/.test(p)),
+    req(m.pw_not_name(), noBlockedWords),
+  ];
 
   const newPass = Form.useWatch("newPassword", form) || "";
   const checks = reqs.map((r) => ({ label: r.label, ok: r.ok(newPass) }));
