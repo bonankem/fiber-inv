@@ -21,8 +21,7 @@ async function authChoose(req: AuthChooseReqT, jwt: JWT) {
   const oldMode = p.mfaMode;
 
   if (oldMode === mfaMode) {
-    // nothing to change
-    return authResult(jwt, user);
+    return authResult(jwt, user, true);
   }
 
   if (oldMode !== MfaMode.UNDECIDED && p.mfaVerified) {
@@ -34,5 +33,5 @@ async function authChoose(req: AuthChooseReqT, jwt: JWT) {
     where: { userId },
     data: { mfaMode, mfaVerified: false },
   });
-  return authResult(jwt, user);
+  return authResult(jwt, user, true);
 }

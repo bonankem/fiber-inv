@@ -1,32 +1,71 @@
-import { Form, Input } from "antd";
+import { Form, Input, message, Select } from "antd";
+import { m } from "i18n/messages";
+import { StaffRole } from "schema/enums";
+import { type UserCreateT, type UserFullT, userZ } from "schema/people";
+import { zArray } from "schema/utils";
+import { apiCall, useApiGet, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import type { ModalStateProps } from "#/hooks/useModalViewer";
+import { selectProps } from "#/utils/select";
+import { staffRoleName } from "./utils";
+
+type Data = UserCreateT & { type: string };
 
 export default function StaffCreateForm(props: ModalStateProps) {
+  const usersQ = useApiGet("/users", zArray(userZ));
+  const emails = usersQ.data?.map((u) => u.email.toLowerCase()) ?? [];
+  const checker = async (email: string) => {
+    if (emails.includes(email.toLowerCase().trim())) {
+      throw new Error(m.email_exists());
+    }
+  };
+
+  const [form] = Form.useForm<Data>();
+  const type = Form.useWatch("type", form);
+  const send = useApiPost<UserCreateT, UserFullT>("/users", "all");
+
+  const onSubmit = apiCall(async (data: Data) => {
+    const { type: _, ...out } = data;
+    const result = await send.mutateAsync(out);
+    message.success(`Added ${result.name}`);
+    props.state.close();
+  });
+
   return (
     <FormModal
+      form={form}
+      width={320}
       state={props.state}
-      title="Connecteur syslog CEF"
-      subtitle={
-        <span className="text-sm">
-          Envoyer les journaux d'application au SIEM
-        </span>
-      }
-      okText="Enregistrer"
-      checkbox={false}
-      className="grid grid-cols-2 gap-2"
+      title={m.add_staff()}
+      onSubmit={onSubmit}
     >
-      <Form.Item label="Host" className="col-span-full">
-        <Input placeholder="Nom d'hôte ou adresse IP" />
+      <Form.Item
+        name="email"
+        label={m.email()}
+        required
+        rules={[{ validator: (_, v) => checker(v) }]}
+      >
+        <Input type="email" required />
       </Form.Item>
 
-      <Form.Item label="Port">
-        <Input placeholder="port UDP" />
+      <Form.Item name="name" label={m.name()} required>
+        <Input type="name" required />
       </Form.Item>
 
-      <Form.Item label="Intervalle d'envoi">
-        <Input placeholder="0 = immédiat" />
+      <Form.Item name="type" label={m.type()} required>
+        <Select {...selectProps(["Staff", "Vendor", "Admin"])} />
       </Form.Item>
+
+      {type === "Staff" && (
+        <Form.Item label={m.role()} name="staffRole">
+          <Select
+            options={Object.values(StaffRole).map((value) => ({
+              label: staffRoleName(value),
+              value,
+            }))}
+          />
+        </Form.Item>
+      )}
     </FormModal>
   );
 }

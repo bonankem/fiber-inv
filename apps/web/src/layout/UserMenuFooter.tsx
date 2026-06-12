@@ -10,11 +10,14 @@ import {
 import { Avatar, Button, Dropdown, Tooltip } from "antd";
 import { m } from "i18n/messages";
 import { getLocale, setLocale } from "i18n/runtime";
+import type { UserFullT } from "schema/people";
 import { useModalViewer } from "#/hooks/useModalViewer";
 import LogoutModal from "#/modules/auth/LogoutModal";
 import { useAppTheme } from "#/theme";
+import { shortName } from "#/utils/names";
 
 type Props = {
+  user?: UserFullT;
   collapsed?: boolean;
 };
 
@@ -29,7 +32,7 @@ const languages = [
   { key: "fr", label: "Français" },
 ] as const;
 
-export default function UserMenuFooter({ collapsed }: Props) {
+export default function UserMenuFooter({ user, collapsed }: Props) {
   const modal = useModalViewer();
   const theme = useAppTheme();
   const locale = getLocale();
@@ -97,8 +100,10 @@ export default function UserMenuFooter({ collapsed }: Props) {
           </Avatar>
 
           {!collapsed && (
-            <div className="py-2 pl-3 grow">
-              <div>Leo Aso</div>
+            <div className="py-2 pl-3 pr-4 grow">
+              <div className="one-line">
+                {shortName(user?.name, 25) ?? "My Account"}
+              </div>
               <div className="text-sm font-semibold ">Admin</div>
             </div>
           )}

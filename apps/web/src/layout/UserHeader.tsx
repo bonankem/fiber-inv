@@ -13,6 +13,7 @@ import FhcRequestForm from "#/modules/ftth-connections/FhcRequestForm";
 import FhpRequestForm from "#/modules/ftth-projects/FhpRequestForm";
 import FhsRequestForm from "#/modules/ftth-surveys/FhsRequestForm";
 import StaffCreateForm from "#/modules/staff/StaffCreateForm";
+import UsersReportForm from "#/modules/staff/UsersReportForm";
 import NotificationBell from "./NotificationBell";
 import type { UserLayoutProps } from "./useUserLayout";
 
@@ -21,6 +22,10 @@ const newForms: Record<string, ModalFC> = {
   "ftth-projects": FhpRequestForm,
   "ftth-connections": FhcRequestForm,
   staff: StaffCreateForm,
+};
+
+const titles: Record<string, string> = {
+  staff: m.add_staff(),
 };
 
 export default function UserHeader(props: UserLayoutProps) {
@@ -69,12 +74,22 @@ export default function UserHeader(props: UserLayoutProps) {
             {m.refresh()}
           </Button>
 
-          <Button
-            size="small"
-            icon={<FileExcelOutlined className="text-[0.8em]" />}
-          >
-            {m.reports()}
-          </Button>
+          {pathKey === "staff" ? (
+            <Button
+              size="small"
+              icon={<FileExcelOutlined className="text-[0.8em]" />}
+              onClick={() => modal.open(UsersReportForm)}
+            >
+              Export
+            </Button>
+          ) : (
+            <Button
+              size="small"
+              icon={<FileExcelOutlined className="text-[0.8em]" />}
+            >
+              {m.reports()}
+            </Button>
+          )}
 
           {newForm && (
             <Button
@@ -82,7 +97,7 @@ export default function UserHeader(props: UserLayoutProps) {
               type="primary"
               onClick={() => modal.open(newForm)}
             >
-              {m.new_request()}
+              {titles[pathKey] || m.new_request()}
             </Button>
           )}
         </section>

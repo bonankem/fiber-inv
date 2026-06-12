@@ -1,6 +1,8 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { type DrawerProps, Grid, type MenuProps, type SiderProps } from "antd";
 import { useMemo, useState } from "react";
+import { userFullZ } from "schema/people";
+import { useApiGet } from "#/api/helpers";
 import { navigationData } from "#/layout/navigation.data";
 import { useAppTheme } from "#/theme";
 
@@ -9,6 +11,7 @@ export type UserLayoutProps = ReturnType<typeof useUserLayout>;
 export function useUserLayout() {
   const menuWidth = 240;
   const contentClass = "w-full max-w-480 mx-auto h-full overflow-x-hidden";
+  const user = useApiGet("auth/user", userFullZ);
 
   const [iconOnly, setIconOnly] = useState(false);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -86,6 +89,7 @@ export function useUserLayout() {
     drawer,
     sider,
     menu,
+    user: user.data,
     collapsed,
     isDrawer,
     toggleMenu,

@@ -75,5 +75,17 @@ async function seed(req: SeedReq) {
   const sampleGeo = await geoInitialize();
   const [{ count: newVendors }, { count: newOems }, ...users] =
     await prisma.$transaction([seedVendors, seedOems, ...seedUsers]);
-  return { newVendors, newOems, users, sampleGeo };
+
+  await prisma.security.upsert({
+    where: { id: "ID" },
+    create: {},
+    update: {},
+  });
+
+  return {
+    newVendors,
+    newOems,
+    users,
+    sampleGeo,
+  };
 }

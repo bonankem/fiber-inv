@@ -1,0 +1,26 @@
+enum SingleId {
+    ID
+}
+
+model Security {
+    id SingleId @id @default(ID)
+
+    lockoutAttempts   Int @default(10)
+    lockoutMinutes    Int @default(10)
+    userInactiveDays  Int @default(90)
+    adminInactiveDays Int @default(30)
+    newInactiveDays   Int @default(7)
+    inactiveLockDays  Int @default(30)
+}
+
+model Syslog {
+    id SingleId @id @default(ID)
+
+    host String
+
+    port String
+
+    interval Int @default(1)
+
+    lastSend DateTime?
+}

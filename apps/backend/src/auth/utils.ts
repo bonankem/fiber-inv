@@ -93,6 +93,7 @@ async function authInstall(u: LoginUserT, secret: string) {
 export async function authResult(
   jwt: JWT,
   user: LoginUserT,
+  modePicked?: boolean,
 ): Promise<AuthResultT> {
   const S = AuthStatus;
   const M = MfaMode;
@@ -114,7 +115,7 @@ export async function authResult(
     });
   }
 
-  if (!mode || mode === M.UNDECIDED) {
+  if (!mode || mode === M.UNDECIDED || (!pass.mfaVerified && !modePicked)) {
     // no MFA mode has been verified yet, so pick one
     return incomplete(S.NEEDS_MFA_MODE, {});
   }

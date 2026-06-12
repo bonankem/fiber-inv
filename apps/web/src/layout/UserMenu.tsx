@@ -52,7 +52,7 @@ export function UserMenu(props: UserLayoutProps) {
 
           <Divider className="m-0! p-0!" />
 
-          <UserMenuFooter collapsed={props.collapsed} />
+          <UserMenuFooter user={props.user} collapsed={props.collapsed} />
         </div>
       </Layout.Sider>
     </ConfigProvider>

@@ -37,6 +37,24 @@ export function useApiGet<O, I extends Query = Query>(
   });
 }
 
+export function useApiGetText(
+  path: string | [string, ...string[]],
+  options?: Omit<
+    Parameters<typeof useQuery<string>>[0],
+    "queryFn" | "queryKey"
+  >,
+) {
+  const url = apiUrl(Array.isArray(path) ? path.join("/") : path);
+  const key = Array.isArray(path) ? path : path.replace(/^\//, "").split("/");
+  const token = useAuthToken();
+
+  return useQuery({
+    ...options,
+    queryFn: () => getText(url, token.value),
+    queryKey: key,
+  });
+}
+
 export type ApiPath = string | [string, ...string[]];
 
 export function useApiPost<I, O = unknown>(
@@ -129,6 +147,15 @@ export async function getJson<O, I extends Query = Query>(
 
   if (res.ok) return jsonResponse(data, zShape);
   throw new ApiError(res.status, data.message);
+}
+
+export async function getText<O>(getUrl: string, token?: Maybe<string>) {
+  const url = new URL(apiUrl(getUrl));
+  const res = await fetch(url, {
+    headers: { Authorization: token ? `Bearer ${token}` : "" },
+  });
+  const data = await res.text();
+  return data;
 }
 
 function errorMessage(e: unknown) {

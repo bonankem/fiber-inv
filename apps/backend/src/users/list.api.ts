@@ -1,4 +1,4 @@
-import { userS } from "schema/people";
+import { userFullS } from "schema/people";
 import { prisma } from "#/db";
 import { getRoute } from "#/utils";
 
@@ -11,6 +11,6 @@ export default getRoute(
 export async function listUsers() {
   return prisma.user.findMany({
     orderBy: { key: "asc" },
-    select: userS,
+    select: userFullS,
   });
 }

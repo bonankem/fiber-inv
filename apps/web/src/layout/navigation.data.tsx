@@ -3,6 +3,7 @@ import {
   BriefcaseBusiness,
   Handshake,
   HousePlug,
+  Lock,
   PencilRuler,
   User,
 } from "lucide-react";
@@ -53,6 +54,11 @@ export const navigationData: NavGroup[] = [
         name: m.vendors(),
         path: "/vendors",
         icon: Handshake,
+      },
+      {
+        name: m.sec_settings(),
+        path: "/security",
+        icon: Lock,
       },
     ],
   },
