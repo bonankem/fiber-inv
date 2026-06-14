@@ -4,9 +4,14 @@ import type { IdNameT } from "schema/common";
 import { jsonResponse, type Maybe, type ZodType } from "schema/utils";
 import { useAuthToken } from "./auth";
 
-const base = (
-  (import.meta.env.VITE_API_URL as string) || "http://localhost:3000"
-).replace(/localhost|127.0.0.1/, window.location.hostname);
+function defaultApiUrl() {
+  const { hostname, port, protocol } = window.location;
+  const isMainPort = !port || port === "80" || port === "443";
+  const isProduction = isMainPort || /^https/i.test(protocol);
+  return isProduction ? "/api" : `http://${hostname}:3000`;
+}
+
+const base: string = import.meta.env.VITE_API_URL || defaultApiUrl();
 
 export function apiUrl(url: string) {
   if (/^https?:/i.test(url)) return url;
@@ -26,7 +31,7 @@ export function useApiGet<O, I extends Query = Query>(
   query?: I,
   options?: Omit<Parameters<typeof useQuery<O>>[0], "queryFn" | "queryKey">,
 ) {
-  const url = apiUrl(Array.isArray(path) ? path.join("/") : path);
+  const url = Array.isArray(path) ? path.join("/") : path;
   const key = Array.isArray(path) ? path : path.replace(/^\//, "").split("/");
   const token = useAuthToken();
 
@@ -44,7 +49,7 @@ export function useApiGetText(
     "queryFn" | "queryKey"
   >,
 ) {
-  const url = apiUrl(Array.isArray(path) ? path.join("/") : path);
+  const url = Array.isArray(path) ? path.join("/") : path;
   const key = Array.isArray(path) ? path : path.replace(/^\//, "").split("/");
   const token = useAuthToken();
 
@@ -61,7 +66,7 @@ export function useApiPost<I, O = unknown>(
   path: ApiPath,
   invalidate?: "all" | string[],
 ) {
-  const url = apiUrl(Array.isArray(path) ? path.join("/") : path);
+  const url = Array.isArray(path) ? path.join("/") : path;
   const token = useAuthToken();
   const query = useQueryClient();
 
@@ -149,7 +154,7 @@ export async function getJson<O, I extends Query = Query>(
   throw new ApiError(res.status, data.message);
 }
 
-export async function getText<O>(getUrl: string, token?: Maybe<string>) {
+export async function getText(getUrl: string, token?: Maybe<string>) {
   const url = new URL(apiUrl(getUrl));
   const res = await fetch(url, {
     headers: { Authorization: token ? `Bearer ${token}` : "" },
