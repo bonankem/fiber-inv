@@ -11,6 +11,8 @@ import UserContent from "./UserContent";
 import { UserMenu } from "./UserMenu";
 import { useUserLayout } from "./useUserLayout";
 
+const gMapsKey = import.meta.env.VITE_GOOGLE_MAPS_KEY;
+
 export default function UserLayout() {
   const props = useUserLayout();
   const token = useAuthToken();
@@ -18,11 +20,17 @@ export default function UserLayout() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("GMaps", gMapsKey);
+  }, []);
+
+  useEffect(() => {
     if (!token.value) {
       navigate({ to: "/login" });
     } else if (isApiError(authUser.error, 401)) {
       token.update(null);
       navigate({ to: "/login" });
+    } else if (authUser.error) {
+      console.error(authUser.error);
     }
   }, [token, authUser.error, navigate]);
 
