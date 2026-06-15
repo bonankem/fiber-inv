@@ -35,7 +35,7 @@ export default function UserLayout() {
   }, [token, authUser.error, navigate]);
 
   return (
-    <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_KEY}>
+    <APIProvider apiKey={gMapsKey}>
       <UploaderProvider>
         <ModalProvider>
           {authUser.data ? (

@@ -8,7 +8,10 @@ function defaultApiUrl() {
   const { hostname, port, protocol } = window.location;
   const isMainPort = !port || port === "80" || port === "443";
   const isProduction = isMainPort || /^https/i.test(protocol);
-  return isProduction ? "/api" : `http://${hostname}:3000`;
+
+  const sub = isProduction ? "/api" : ":3000";
+  console.log("API URL", `${protocol}//${hostname}${sub}`);
+  return `${protocol}//${hostname}${sub}`;
 }
 
 const base: string = import.meta.env.VITE_API_URL || defaultApiUrl();
