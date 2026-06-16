@@ -1,8 +1,9 @@
 import { Modal } from "antd";
+import { m } from "i18n/messages";
 import { useApiGetText } from "#/api/helpers";
 import type { ModalStateProps } from "#/hooks/useModalViewer";
 
-export default function UsersReportForm(props: ModalStateProps) {
+export default function UserInfoModal(props: ModalStateProps) {
   const data = useApiGetText("/admin/user-info");
 
   const save = () => {
@@ -20,11 +21,12 @@ export default function UsersReportForm(props: ModalStateProps) {
   };
   return (
     <Modal
-      title="Download Users Report"
+      title={m.users_report()}
       open={props.state.isOpen}
       onCancel={props.state.close}
       loading={data.isLoading}
-      okText="Download"
+      okText={m.download()}
+      cancelText={m.back()}
       onOk={save}
     />
   );

@@ -1,18 +1,14 @@
 import { Form, Input } from "antd";
+import { m } from "i18n/messages";
 import FormModal from "#/components/FormModal";
 import type { ModalStateProps } from "#/hooks/useModalViewer";
 
-export default function StaffCreateForm(props: ModalStateProps) {
+export default function SyslogForm(props: ModalStateProps) {
   return (
     <FormModal
       state={props.state}
-      title="Connecteur syslog CEF"
-      subtitle={
-        <span className="text-sm">
-          Envoyer les journaux d'application au SIEM
-        </span>
-      }
-      okText="Enregistrer"
+      title={m.syslog_server()}
+      okText={m.save()}
       checkbox={false}
       className="grid grid-cols-2 gap-2"
     >

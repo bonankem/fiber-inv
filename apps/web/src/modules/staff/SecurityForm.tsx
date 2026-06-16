@@ -15,7 +15,7 @@ export default function SecurityForm(props: ModalItemProps<SecurityT>) {
     <FormModal
       state={props.state}
       title={m.sec_settings()}
-      okText="Enregistrer"
+      okText={m.save()}
       checkbox={false}
       layout="horizontal"
       initialValues={props.item}

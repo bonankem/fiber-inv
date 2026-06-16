@@ -12,8 +12,10 @@ import { type ModalFC, useModalViewer } from "#/hooks/useModalViewer";
 import FhcRequestForm from "#/modules/ftth-connections/FhcRequestForm";
 import FhpRequestForm from "#/modules/ftth-projects/FhpRequestForm";
 import FhsRequestForm from "#/modules/ftth-surveys/FhsRequestForm";
+import AuthLogsModal from "#/modules/staff/AuthLogsModal";
 import StaffCreateForm from "#/modules/staff/StaffCreateForm";
-import UsersReportForm from "#/modules/staff/UsersReportForm";
+import SyslogForm from "#/modules/staff/SyslogForm";
+import UserInfoModal from "#/modules/staff/UserInfoModal";
 import NotificationBell from "./NotificationBell";
 import type { UserLayoutProps } from "./useUserLayout";
 
@@ -22,10 +24,12 @@ const newForms: Record<string, ModalFC> = {
   "ftth-projects": FhpRequestForm,
   "ftth-connections": FhcRequestForm,
   staff: StaffCreateForm,
+  security: SyslogForm,
 };
 
 const titles: Record<string, string> = {
   staff: m.add_staff(),
+  security: m.syslog_server(),
 };
 
 export default function UserHeader(props: UserLayoutProps) {
@@ -35,6 +39,15 @@ export default function UserHeader(props: UserLayoutProps) {
   const { pathname } = useLocation();
   const pathKey = pathname.split("/")[1].toLowerCase();
   const newForm = newForms[pathKey];
+
+  const onReport = () => {
+    if (pathKey === "staff") {
+      modal.open(UserInfoModal);
+    }
+    if (pathKey === "security") {
+      modal.open(AuthLogsModal);
+    }
+  };
 
   return (
     <Layout.Header
@@ -74,22 +87,15 @@ export default function UserHeader(props: UserLayoutProps) {
             {m.refresh()}
           </Button>
 
-          {pathKey === "staff" ? (
+          {
             <Button
               size="small"
               icon={<FileExcelOutlined className="text-[0.8em]" />}
-              onClick={() => modal.open(UsersReportForm)}
+              onClick={onReport}
             >
-              Export
+              {m.report()}
             </Button>
-          ) : (
-            <Button
-              size="small"
-              icon={<FileExcelOutlined className="text-[0.8em]" />}
-            >
-              {m.reports()}
-            </Button>
-          )}
+          }
 
           {newForm && (
             <Button
