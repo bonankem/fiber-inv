@@ -1,7 +1,6 @@
 import {
   CheckOutlined,
   FontColorsOutlined,
-  LockOutlined,
   LogoutOutlined,
   MoreOutlined,
   SunOutlined,
@@ -13,6 +12,7 @@ import { getLocale, setLocale } from "i18n/runtime";
 import type { UserFullT } from "schema/people";
 import { useModalViewer } from "#/hooks/useModalViewer";
 import LogoutModal from "#/modules/auth/LogoutModal";
+import { roleName } from "#/modules/staff/utils";
 import { useAppTheme } from "#/theme";
 import { shortName } from "#/utils/names";
 
@@ -76,11 +76,11 @@ export default function UserMenuFooter({ user, collapsed }: Props) {
               })),
             },
             { type: "divider" },
-            {
-              key: "password",
-              label: m.change_password(),
-              icon: <LockOutlined />,
-            },
+            // {
+            //   key: "password",
+            //   label: m.change_password(),
+            //   icon: <LockOutlined />,
+            // },
             {
               key: "logout",
               label: m.log_out(),
@@ -99,12 +99,10 @@ export default function UserMenuFooter({ user, collapsed }: Props) {
             <UserOutlined />
           </Avatar>
 
-          {!collapsed && (
+          {!collapsed && user && (
             <div className="py-2 pl-3 pr-4 grow">
-              <div className="one-line">
-                {shortName(user?.name, 25) ?? "My Account"}
-              </div>
-              <div className="text-sm font-semibold ">Admin</div>
+              <div className="one-line">{shortName(user.name, 25)}</div>
+              <div className="one-line text-xs">{roleName(user)}</div>
             </div>
           )}
 

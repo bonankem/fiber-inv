@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { Button, Card, Layout, Spin } from "antd";
@@ -18,21 +19,19 @@ export default function UserLayout() {
   const token = useAuthToken();
   const authUser = useApiGet("auth/user", userFullZ);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    console.log("GMaps", gMapsKey);
-  }, []);
+  const qc = useQueryClient();
 
   useEffect(() => {
     if (!token.value) {
       navigate({ to: "/login" });
     } else if (isApiError(authUser.error, 401)) {
-      token.update(null);
       navigate({ to: "/login" });
+      token.update(null);
+      qc.clear();
     } else if (authUser.error) {
       console.error(authUser.error);
     }
-  }, [token, authUser.error, navigate]);
+  }, [token, authUser.error, navigate, qc]);
 
   return (
     <APIProvider apiKey={gMapsKey}>

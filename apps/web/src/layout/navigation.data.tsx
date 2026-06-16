@@ -10,15 +10,17 @@ import {
 
 type NavIcon = typeof PencilRuler;
 
-type NavItem = {
+export type NavItem = {
   path: string;
   name: string;
   icon: NavIcon;
+  only?: "admin" | "staff";
 };
 
 type NavGroup = {
   name: string;
   list: NavItem[];
+  only?: "admin" | "staff";
 };
 
 export const navigationData: NavGroup[] = [
@@ -44,6 +46,7 @@ export const navigationData: NavGroup[] = [
   },
   {
     name: m.management(),
+    only: "staff",
     list: [
       {
         name: m.mtn_staff(),
@@ -59,6 +62,7 @@ export const navigationData: NavGroup[] = [
         name: m.sec_settings(),
         path: "/security",
         icon: Lock,
+        only: "admin",
       },
     ],
   },

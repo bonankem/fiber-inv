@@ -1,12 +1,12 @@
 import dayjs from "dayjs";
 import { prisma } from "#/db";
-import { type AppReply, getRoute } from "#/utils";
+import { type AnyReply, getRoute } from "#/utils";
 
 export default getRoute("/admin/user-info", null, (_, __, res) =>
   userInfo(res),
 );
 
-async function userInfo(res: AppReply<any>) {
+async function userInfo(res: AnyReply) {
   const users = await prisma.user.findMany({
     include: { password: true },
   });

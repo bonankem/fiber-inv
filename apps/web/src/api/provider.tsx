@@ -14,8 +14,10 @@ const queryClient = new QueryClient({
 
 export default function ApiProvider(props: PropsWithChildren) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>{props.children}</AuthProvider>
-    </QueryClientProvider>
+    <AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        {props.children}
+      </QueryClientProvider>
+    </AuthProvider>
   );
 }

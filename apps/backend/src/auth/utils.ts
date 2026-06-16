@@ -1,13 +1,14 @@
 import { randomInt } from "node:crypto";
+import type { IncomingHttpHeaders } from "node:http";
 import type { JWT } from "@fastify/jwt";
 import { compareSync, hashSync } from "bcryptjs";
 import { generateSecret, generateURI } from "otplib";
 import { type AuthResultT, AuthStatus, type AuthSuccessT } from "schema/auth";
 import { userFullP } from "schema/people";
 import z from "zod";
-import { MfaMode, type Prisma, prisma } from "#/db";
+import { AuthAction, MfaMode, type Prisma, prisma } from "#/db";
 import { appEnv } from "#/env";
-import { bad, type Maybe, newUuid } from "#/utils";
+import { type AnyRequest, bad, type Maybe, newUuid } from "#/utils";
 import { decrypt, encrypt } from "../utils/encryption";
 
 const isDev = appEnv.NODE_ENV !== "production";
@@ -20,6 +21,13 @@ export function badToken(): never {
   bad("Invalid or expired token");
 }
 
+export type AuthReq<T = unknown> = {
+  ip: string;
+  body: T;
+  headers: IncomingHttpHeaders;
+  jwtVerify: AnyRequest["jwtVerify"];
+};
+
 export const loginUserS = {
   id: true,
   name: true,
@@ -29,7 +37,7 @@ export const loginUserS = {
   authenticator: true,
 } satisfies Prisma.UserSelect;
 
-type LoginUserT = Prisma.UserGetPayload<{ select: typeof loginUserS }>;
+export type LoginUserT = Prisma.UserGetPayload<{ select: typeof loginUserS }>;
 
 export function getLoginUser(where: Prisma.UserWhereUniqueInput) {
   return prisma.user.findUnique({ where, select: loginUserS });
@@ -44,6 +52,7 @@ export function checkHash(
 
 export async function authSuccess(
   jwt: JWT,
+  req: AuthReq,
   userId: string,
   existing?: string,
 ): Promise<AuthSuccessT> {
@@ -59,6 +68,20 @@ export async function authSuccess(
     update: { hashed, expiry, userId },
     create: { hashed, expiry, userId, id },
     select: { user: userFullP },
+  });
+
+  await prisma.authLog.create({
+    data: {
+      action: AuthAction.LOGIN_SUCCESS,
+      email: user.email,
+      ipAddress: req.ip,
+      userAgent: req.headers["user-agent"],
+    },
+  });
+
+  await prisma.password.update({
+    where: { userId },
+    data: { lockUntil: null },
   });
 
   const status = AuthStatus.SUCCESS;
@@ -92,6 +115,7 @@ async function authInstall(u: LoginUserT, secret: string) {
 
 export async function authResult(
   jwt: JWT,
+  req: AuthReq,
   user: LoginUserT,
   modePicked?: boolean,
 ): Promise<AuthResultT> {
@@ -141,7 +165,7 @@ export async function authResult(
   }
 
   // authentication complete
-  return authSuccess(jwt, user.id);
+  return authSuccess(jwt, req, user.id);
 }
 
 const tempTokenZ = z.object({ userId: z.string() });

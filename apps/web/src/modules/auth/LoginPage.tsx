@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { message } from "antd";
+import { message, Spin } from "antd";
 import * as m from "i18n/messages";
 import { useState } from "react";
 import { type AuthResultT, AuthStatus } from "schema/auth";
@@ -18,13 +18,15 @@ export default function LoginPage() {
   const queries = useQueryClient();
 
   const onResult = async (res: AuthResultT) => {
+    setResult(res);
     if (res.status === AuthStatus.SUCCESS) {
       authToken.update(res.token);
       await queries.invalidateQueries();
-      navigate({ to: "/ftth-surveys", replace: true });
-      message.success(m.welcome({ name: res.user.name }));
+      setTimeout(() => {
+        navigate({ to: "/ftth-surveys", replace: true });
+        message.success(m.welcome({ name: res.user.name }));
+      }, 500);
     } else {
-      setResult(res);
       navigate({ hash: "setup", replace: true });
     }
   };
@@ -50,6 +52,10 @@ export default function LoginPage() {
 
   if (result?.status === AuthStatus.NEEDS_INSTALL) {
     return <AuthInstallForm {...props} res={result} />;
+  }
+
+  if (result?.status === AuthStatus.SUCCESS) {
+    return <Spin rootClassName="w-full!" />;
   }
 
   return <AuthLoginForm {...props} />;

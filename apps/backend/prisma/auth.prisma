@@ -10,6 +10,8 @@ model Password {
 
     mustChange Boolean
 
+    lockUntil DateTime?
+
     mfaMode MfaMode
 
     mfaVerified Boolean @default(false)
@@ -64,6 +66,7 @@ enum AuthAction {
     LOGIN_SUCCESS
     PASSWORD_FAILED
     OTP_FAILED
+    LOCKOUT
     FORGOT_PASSWORD
     CHANGE_PASSWORD
     RESET_PASSWORD
@@ -79,9 +82,9 @@ model AuthLog {
 
     ipAddress String
 
-    userAgent String
-
     email String @db.Citext
+
+    userAgent String?
 
     country String?
 

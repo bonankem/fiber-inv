@@ -5,21 +5,27 @@ import { type AuthVerifyReqT, authVerifyReqZ } from "schema/auth";
 import { MfaMode, prisma } from "#/db";
 import { bad, postRoute } from "#/utils";
 import { decrypt } from "../utils/encryption";
-import { authSuccess, badToken, getLoginUser, verifyTempToken } from "./utils";
+import {
+  type AuthReq,
+  authSuccess,
+  badToken,
+  getLoginUser,
+  verifyTempToken,
+} from "./utils";
 
 export default postRoute(
   "/auth/verify",
   () => authVerifyReqZ,
-  (req, app) => authVerify(req.body, app.jwt),
+  (req, app) => authVerify(req, app.jwt),
 );
 
 function badOtp(): never {
   bad("Incorrect or expired OTP");
 }
 
-async function authVerify(req: AuthVerifyReqT, jwt: JWT) {
-  const { userId } = verifyTempToken(jwt, req.token);
-  const mode = req.mode;
+async function authVerify(req: AuthReq<AuthVerifyReqT>, jwt: JWT) {
+  const { userId } = verifyTempToken(jwt, req.body.token);
+  const { otp, mode } = req.body;
 
   const user = (await getLoginUser({ id: userId })) || badToken();
 
@@ -48,7 +54,7 @@ async function authVerify(req: AuthVerifyReqT, jwt: JWT) {
     }
 
     await prisma.$transaction(actions);
-    return authSuccess(jwt, userId);
+    return authSuccess(jwt, req, userId);
   }
 
   if (mode === MfaMode.AUTHENTICATOR) {
@@ -57,16 +63,16 @@ async function authVerify(req: AuthVerifyReqT, jwt: JWT) {
     if (!a) badOtp();
     const verified = verifySync({
       secret: decrypt(a.secret),
-      token: req.otp,
+      token: otp,
       epochTolerance: 30,
     });
     return result(verified.valid);
   }
 
-  return result(req.otp === "123456" || req.otp === "456789");
+  return result(otp === "123456" || otp === "456789");
   // const since = new Date(Date.now() - OTP_EXPIRY_MINUTES * 60000);
   // const otps = await prisma.otp.findMany({
   //   where: { userId, mode, createdAt: { gte: since } },
   // });
-  // return result(otps.some((o) => compareSync(req.otp, o.hashed)));
+  // return result(otps.some((o) => compareSync(otp, o.hashed)));
 }

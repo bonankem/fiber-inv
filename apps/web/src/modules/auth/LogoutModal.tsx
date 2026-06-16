@@ -16,9 +16,9 @@ export default function LogoutModal(props: ModalStateProps) {
   const doLogout = async () => {
     if (pending) return;
     await logout.mutateAsync().catch(() => {});
-    token.update(null);
-    await client.invalidateQueries();
     navigate({ to: "/login", replace: true });
+    token.update(null);
+    client.clear();
   };
 
   return (

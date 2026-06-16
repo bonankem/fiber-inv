@@ -1,4 +1,4 @@
-import { Form, Input, message, Select } from "antd";
+import { Alert, Form, Input, message, Select } from "antd";
 import { m } from "i18n/messages";
 import { StaffRole } from "schema/enums";
 import { type UserCreateT, type UserFullT, userZ } from "schema/people";
@@ -66,6 +66,8 @@ export default function StaffCreateForm(props: ModalStateProps) {
           />
         </Form.Item>
       )}
+
+      {type && <Alert title="L'utili" />}
     </FormModal>
   );
 }

@@ -41,6 +41,7 @@ async function wipeDb(q: QueryT) {
     p.district,
     q.fully && p.user,
     q.fully && p.vendor,
+    q.fully && p.authLog,
   ]);
 
   const results = await p.$transaction(tables.map((t) => t.deleteMany()));

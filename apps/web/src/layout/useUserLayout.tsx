@@ -1,6 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { type DrawerProps, Grid, type MenuProps, type SiderProps } from "antd";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { userFullZ } from "schema/people";
 import { useApiGet } from "#/api/helpers";
 import { navigationData } from "#/layout/navigation.data";
@@ -26,13 +26,26 @@ export function useUserLayout() {
     else setIconOnly((b) => !b);
   };
 
+  const willShow = useCallback(
+    ({ only }: { only?: "admin" | "staff" }) => {
+      if (!only) return true;
+      if (user.data) {
+        const { isAdmin, staffRole } = user.data;
+        if (only === "admin") return isAdmin;
+        if (only === "staff") return isAdmin || !!staffRole;
+      }
+      return false;
+    },
+    [user.data],
+  );
+
   const items = useMemo(() => {
-    return navigationData.flatMap((g) => [
+    return navigationData.filter(willShow).flatMap((g) => [
       {
         key: g.name,
         type: "group" as const,
         label: collapsed ? "" : g.name,
-        children: g.list.map((i) => ({
+        children: g.list.filter(willShow).map((i) => ({
           key: i.path,
           label: <Link to={i.path}>{i.name}</Link>,
           onClick: () => setDrawerOpen(false),
@@ -45,7 +58,7 @@ export function useUserLayout() {
       },
       { type: "divider" as const },
     ]);
-  }, [collapsed]);
+  }, [collapsed, willShow]);
 
   const selected = useMemo(
     () =>

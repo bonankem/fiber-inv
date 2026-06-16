@@ -15,11 +15,11 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <>
-      <ThemeProvider>
-        <ApiProvider>
+      <ApiProvider>
+        <ThemeProvider>
           <Outlet />
-        </ApiProvider>
-      </ThemeProvider>
+        </ThemeProvider>
+      </ApiProvider>
 
       <TanStackDevtools
         config={{ position: "bottom-left" }}
