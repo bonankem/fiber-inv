@@ -4,11 +4,11 @@ model FtthArea {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
+    code String @unique
+
     name String @unique
 
     key String @unique
-
-    code String @unique
 
     locality   Locality @relation(fields: [localityId], references: [id])
     localityId String   @db.Uuid
@@ -16,9 +16,9 @@ model FtthArea {
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
     boundaryId String?   @unique @db.Uuid
 
-    surveys FtthSurvey[]
-
     olts Olt[]
+
+    surveys FtthSurvey[]
 
     connections FtthConnection[]
 }
@@ -35,9 +35,9 @@ model Oem {
 
     olts Olt[]
 
-    boxes FtthBox[]
-
     onts Ont[]
+
+    boxes FtthBox[]
 }
 
 model Olt {
@@ -82,6 +82,8 @@ model FtthBox {
     name String @unique
 
     serial String? @unique
+
+    ports Int?
 
     oem   Oem    @relation(fields: [oemId], references: [id])
     oemId String @db.Uuid

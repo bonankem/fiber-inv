@@ -6,12 +6,10 @@ import { useAuthToken } from "./auth";
 
 function defaultApiUrl() {
   const { hostname, port, protocol } = window.location;
+  const base = `${protocol}//${hostname}`;
   const isMainPort = !port || port === "80" || port === "443";
   const isProduction = isMainPort || /^https/i.test(protocol);
-
-  const sub = isProduction ? "/api" : ":3000";
-  console.log("API URL", `${protocol}//${hostname}${sub}`);
-  return `${protocol}//${hostname}${sub}`;
+  return isProduction ? `${base}/api` : `${base}:3000`;
 }
 
 const base: string = import.meta.env.VITE_API_URL || defaultApiUrl();
