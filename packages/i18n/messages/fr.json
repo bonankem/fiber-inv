@@ -193,6 +193,8 @@
   "toast_rejected": "{id} rejetée",
   "toast_requested": "{id} demandée",
   "toast_sent": "Envoyé",
+  "error_page": "Erreur lors du chargement de la page",
+  "retry": "Réessayer",
   "toast_submitted": "{id} soumise",
   "toast_updated": "{id} mise à jour",
   "type": "Type",
