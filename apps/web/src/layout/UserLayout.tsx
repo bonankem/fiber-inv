@@ -8,8 +8,10 @@ import { useAuthToken } from "#/api/auth";
 import { isApiError, useApiGet } from "#/api/helpers";
 import { ModalProvider } from "#/providers/ModalProvider";
 import UploaderProvider from "#/providers/UploaderProvider";
+import InactivityModal from "./InactivityModal";
 import UserContent from "./UserContent";
 import { UserMenu } from "./UserMenu";
+import { useOnActivity } from "./useOnActivity";
 import { useUserLayout } from "./useUserLayout";
 
 const gMapsKey = import.meta.env.VITE_GOOGLE_MAPS_KEY;
@@ -33,6 +35,8 @@ export default function UserLayout() {
     }
   }, [token, authUser.error, navigate, qc]);
 
+  const { timeLeft } = useOnActivity();
+
   return (
     <APIProvider apiKey={gMapsKey}>
       <UploaderProvider>
@@ -41,6 +45,7 @@ export default function UserLayout() {
             <Layout className="w-dvw h-dvh overflow-hidden">
               <UserMenu {...props} />
               <UserContent {...props} />
+              <InactivityModal timeLeft={timeLeft} />
             </Layout>
           ) : authUser.isPending ? (
             <Spin fullscreen />

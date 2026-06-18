@@ -1,25 +1,11 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
 import { Modal } from "antd";
 import { m } from "i18n/messages";
-import { useAuthToken } from "#/api/auth";
-import { useApiPost } from "#/api/helpers";
 import type { ModalStateProps } from "#/hooks/useModalViewer";
+import { useLogout } from "./utils";
 
 export default function LogoutModal(props: ModalStateProps) {
-  const logout = useApiPost<void>("/auth/logout");
-  const client = useQueryClient();
-  const token = useAuthToken();
-  const navigate = useNavigate();
-  const pending = logout.isPending;
-
-  const doLogout = async () => {
-    if (pending) return;
-    await logout.mutateAsync().catch(() => {});
-    navigate({ to: "/login", replace: true });
-    token.update(null);
-    client.clear();
-  };
+  const logout = useLogout();
+  const pending = logout.pending;
 
   return (
     <Modal
@@ -28,7 +14,7 @@ export default function LogoutModal(props: ModalStateProps) {
       okText={m.log_out()}
       cancelText={m.back()}
       closable={false}
-      onOk={doLogout}
+      onOk={logout.call}
       mask={{ blur: true, closable: !pending }}
       cancelButtonProps={{ className: pending ? "hidden" : "" }}
       okButtonProps={{ loading: pending }}
