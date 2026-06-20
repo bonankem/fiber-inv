@@ -20,7 +20,6 @@ async function fhpInitiate(dto: FhpInitiateT) {
     statusError: "Job is already initiated",
   });
   const toVendor = v || s.work.vendor;
-  console.log({ v: v?.name, v2: s.work?.vendor?.name, vid: vendorId });
   if (!toVendor) bad("Vendor is required");
 
   return prisma.ftthProject.update({

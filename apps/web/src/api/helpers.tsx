@@ -77,7 +77,6 @@ export function useApiPost<I, O = unknown>(
       if (invalidate === "all") {
         query.invalidateQueries();
       } else if (invalidate?.length) {
-        console.log("Invalidating", invalidate);
         query.invalidateQueries({ queryKey: invalidate });
       }
     },

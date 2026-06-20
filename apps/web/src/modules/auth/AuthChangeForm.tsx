@@ -51,9 +51,7 @@ export default function AuthChangeForm(props: Props) {
 
   const newPass = Form.useWatch("newPassword", form) || "";
   const checks = reqs.map((r) => ({ label: r.label, ok: r.ok(newPass) }));
-
   const allOk = checks.every((c) => c.ok);
-  console.log(newPass);
 
   const onSubmit = apiCall(async (input: Input) => {
     const result = await changeQ.mutateAsync({

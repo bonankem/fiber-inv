@@ -62,7 +62,6 @@ export function appRoute<S extends FS>(r: () => AppRoute<S>) {
 function rbac(allow?: Allow) {
   if (!allow) return undefined;
   return async (req: AppRequest<FS>) => {
-    console.log("RBAC", allow);
     if (allow) req.allow = allow;
   };
 }

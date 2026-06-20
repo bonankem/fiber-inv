@@ -1,5 +1,4 @@
 import { message } from "antd";
-import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { funnel } from "remeda";
 import { useLogout } from "#/modules/auth/utils";
@@ -44,7 +43,6 @@ export function useOnActivity() {
   }, [interval, logout.call]);
 
   const onActivity = useCallback(() => {
-    console.log("Activity at", dayjs().format("HH:mm:ss"));
     localStorage.setItem(key, Date.now().toString());
     setTimeLeft(max);
   }, []);
