@@ -35,6 +35,11 @@ model Authenticator {
     installed Boolean
 }
 
+enum OtpReason {
+    LOGIN
+    CHANGE_PASSWORD
+}
+
 model Otp {
     id String @id @default(uuid(7)) @db.Uuid
 
@@ -43,7 +48,11 @@ model Otp {
 
     createdAt DateTime @default(now())
 
+    expiresAt DateTime
+
     mode MfaMode
+
+    reason OtpReason
 
     hashed String
 }

@@ -1,7 +1,10 @@
+import { randomBytes } from "node:crypto";
 import { hashSync } from "bcryptjs";
 import { type UserCreateT, userCreateZ, userS } from "schema/people";
 import { Allow } from "#/auth/guard";
 import { MfaMode, prisma } from "#/db";
+import { isDev } from "#/env";
+import { sendMail } from "#/mail";
 import { bad, maybeConnect, postRoute } from "#/utils";
 import { makeKey } from "#/utils/queries";
 
@@ -27,8 +30,11 @@ async function createUser(req: UserCreateT) {
   });
   if (!exists) bad("Email already registered");
 
-  const hashed = hashSync("12345");
-  return prisma.user.create({
+  const password = randomBytes(9).toString("base64");
+  const hashed = hashSync(password);
+  if (isDev) console.log(password);
+
+  const user = await prisma.user.create({
     data: {
       key: makeKey(req.name),
       name: req.name,
@@ -48,4 +54,20 @@ async function createUser(req: UserCreateT) {
     },
     select: userS,
   });
+
+  sendMail({
+    subject: "Welcome to ServiceX",
+    to: [user.email],
+    lines: [
+      "An account has been created for you on MTNCI ServiceX.",
+      "Your login details are shown below. You will need to change you password after logging in.",
+    ],
+    fields: [
+      ["Name", user.name],
+      ["Email", user.email],
+      ["Password", password],
+    ],
+  });
+
+  return user;
 }

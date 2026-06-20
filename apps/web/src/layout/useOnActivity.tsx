@@ -1,5 +1,7 @@
 import { message } from "antd";
+import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { funnel } from "remeda";
 import { useLogout } from "#/modules/auth/utils";
 
 // The amount of time left needs to be tracked in local storage so that it is shared across tabs.
@@ -42,17 +44,23 @@ export function useOnActivity() {
   }, [interval, logout.call]);
 
   const onActivity = useCallback(() => {
+    console.log("Activity at", dayjs().format("HH:mm:ss"));
     localStorage.setItem(key, Date.now().toString());
     setTimeLeft(max);
   }, []);
 
   useEffect(() => {
+    const throttled = funnel(onActivity, {
+      triggerAt: "both",
+      minGapMs: 1000,
+    });
+    const callback = () => throttled.call();
     const body = document.body;
-    body.addEventListener("click", onActivity);
-    body.addEventListener("keyup", onActivity);
+    body.addEventListener("mouseup", callback);
+    body.addEventListener("keyup", callback);
     return () => {
-      body.removeEventListener("click", onActivity);
-      body.removeEventListener("keyup", onActivity);
+      body.removeEventListener("mouseup", callback);
+      body.removeEventListener("keyup", callback);
     };
   }, [onActivity]);
 

@@ -23,7 +23,7 @@ export default function AuthLayout() {
         <CopyrightFooter />
       </footer>
       <div className="w-full max-w-sm m-auto pb-8">
-        <MtnLogo className="mx-16 my-8 text-[#ffcb05]" />
+        <MtnLogo className="max-w-40 mx-auto mb-12 text-[#ffcb05]" />
         <Card>
           <Outlet />
         </Card>

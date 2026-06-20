@@ -1,10 +1,12 @@
 import type { JWT } from "@fastify/jwt";
 import type { PrismaPromise } from "@prisma/client/runtime/client";
+import { compareSync } from "bcryptjs";
 import { verifySync } from "otplib";
 import { type AuthVerifyReqT, authVerifyReqZ } from "schema/auth";
 import { MfaMode, prisma } from "#/db";
 import { bad, postRoute } from "#/utils";
 import { decrypt } from "../utils/encryption";
+import { OTP_EXPIRY_MINUTES } from "./config";
 import {
   type AuthReq,
   authSuccess,
@@ -69,10 +71,11 @@ async function authVerify(req: AuthReq<AuthVerifyReqT>, jwt: JWT) {
     return result(verified.valid);
   }
 
-  return result(otp === "123456" || otp === "456789");
-  // const since = new Date(Date.now() - OTP_EXPIRY_MINUTES * 60000);
-  // const otps = await prisma.otp.findMany({
-  //   where: { userId, mode, createdAt: { gte: since } },
-  // });
-  // return result(otps.some((o) => compareSync(otp, o.hashed)));
+  const since = new Date(Date.now() - OTP_EXPIRY_MINUTES * 60000);
+  const otps = await prisma.otp.findMany({
+    where: { userId, mode, createdAt: { gte: since } },
+  });
+  const valid = otps.some((o) => compareSync(otp, o.hashed));
+  if (valid) await prisma.otp.deleteMany({ where: { userId } });
+  return result(valid);
 }

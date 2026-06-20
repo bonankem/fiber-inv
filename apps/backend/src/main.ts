@@ -15,10 +15,12 @@ import {
 } from "fastify-zod-openapi";
 import api from "./api";
 import { appEnv } from "./env";
+import { verifyMail } from "./mail";
 
 const app = fastify({
   logger: { transport: { target: "@fastify/one-line-logger" } },
   bodyLimit: 50 * 1024 * 1024, // 100MB
+  trustProxy: appEnv.TRUST_PROXY,
 }).withTypeProvider<FastifyZodOpenApiTypeProvider>();
 
 app.setValidatorCompiler(validatorCompiler);
@@ -49,5 +51,6 @@ app.register(api);
 app.get("/", () => ({ name: "ServiceX" }));
 
 const remote = process.argv.includes("--host");
-app.log.info(`remote:: ${remote}`);
 app.listen({ port: appEnv.PORT, host: remote ? "0.0.0.0" : undefined });
+
+verifyMail(app.log);

@@ -2,16 +2,17 @@ import { randomInt } from "node:crypto";
 import type { IncomingHttpHeaders } from "node:http";
 import type { JWT } from "@fastify/jwt";
 import { compareSync, hashSync } from "bcryptjs";
+import dayjs from "dayjs";
 import { generateSecret, generateURI } from "otplib";
 import { type AuthResultT, AuthStatus, type AuthSuccessT } from "schema/auth";
 import { userFullP } from "schema/people";
 import z from "zod";
-import { AuthAction, MfaMode, type Prisma, prisma } from "#/db";
-import { appEnv } from "#/env";
+import { AuthAction, MfaMode, OtpReason, type Prisma, prisma } from "#/db";
+import { isDev } from "#/env";
+import { sendMail } from "#/mail";
 import { type AnyRequest, bad, type Maybe, newUuid } from "#/utils";
 import { decrypt, encrypt } from "../utils/encryption";
-
-const isDev = appEnv.NODE_ENV !== "production";
+import { OTP_EXPIRY_MINUTES } from "./config";
 
 export function badLogin(): never {
   bad("Invalid email or password");
@@ -19,6 +20,39 @@ export function badLogin(): never {
 
 export function badToken(): never {
   bad("Invalid or expired token");
+}
+
+export function randomOtp() {
+  return randomInt(111111, 999999).toString();
+}
+
+type OtpUserT = Pick<LoginUserT, "id" | "email">;
+async function deliverOtp(mode: MfaMode, user: OtpUserT, reason: OtpReason) {
+  const otp = randomOtp();
+
+  sendUserOtp(user, mode, otp);
+  const until = dayjs().add(OTP_EXPIRY_MINUTES, "minutes");
+  await prisma.otp.create({
+    data: {
+      mode,
+      reason,
+      userId: user.id,
+      hashed: hashSync(otp),
+      expiresAt: until.toDate(),
+    },
+  });
+  if (isDev) console.log(`${otp} via ${mode}`);
+  return otp;
+}
+
+export function sendUserOtp(user: OtpUserT, mode: MfaMode, otp: string) {
+  if (mode === MfaMode.EMAIL) {
+    sendMail({
+      to: [user.email],
+      subject: "Verify OTP",
+      lines: [`Your OTP is ${otp}.`],
+    });
+  }
 }
 
 export type AuthReq<T = unknown> = {
@@ -156,11 +190,7 @@ export async function authResult(
   }
 
   if (mode !== M.NONE) {
-    const otp = isDev ? "456789" : randomInt(111111, 999999).toString();
-    const hashed = hashSync(otp);
-    await prisma.otp.create({
-      data: { userId: user.id, mode, hashed },
-    });
+    await deliverOtp(mode, user, OtpReason.LOGIN);
     return incomplete(S.NEEDS_OTP, { mode });
   }
 

@@ -51,6 +51,8 @@ export type AppRouteFunc<S extends FS, T> = (
 export type AnyRequest = AppRequest<FS>;
 export type AnyReply = AppReply<FS>;
 
+export type AppLog = App["log"];
+
 export const appPlugin = (p: AppPlugin) => p;
 
 export function appRoute<S extends FS>(r: () => AppRoute<S>) {
