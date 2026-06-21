@@ -1,7 +1,6 @@
-import type { JWT } from "@fastify/jwt";
 import { type AuthChooseReqT, authChooseReqZ } from "schema/auth";
 import { MfaMode, prisma } from "#/db";
-import { bad, postRoute } from "#/utils";
+import { type App, bad, postRoute } from "#/utils";
 import {
   type AuthReq,
   authResult,
@@ -13,11 +12,11 @@ import {
 export default postRoute(
   "/auth/choose",
   () => authChooseReqZ,
-  (req, app) => authChoose(req, app.jwt),
+  (req, app) => authChoose(req, app),
 );
 
-async function authChoose(req: AuthReq<AuthChooseReqT>, jwt: JWT) {
-  const { userId } = verifyTempToken(jwt, req.body.token);
+async function authChoose(req: AuthReq<AuthChooseReqT>, app: App) {
+  const { userId } = verifyTempToken(app.jwt, req.body.token);
   const mfaMode = req.body.mode;
 
   const user = await getLoginUser({ id: userId });
@@ -27,7 +26,7 @@ async function authChoose(req: AuthReq<AuthChooseReqT>, jwt: JWT) {
   const oldMode = p.mfaMode;
 
   if (oldMode === mfaMode) {
-    return authResult(jwt, req, user, true);
+    return authResult(app, req, user, true);
   }
 
   if (oldMode !== MfaMode.UNDECIDED && p.mfaVerified) {
@@ -39,5 +38,5 @@ async function authChoose(req: AuthReq<AuthChooseReqT>, jwt: JWT) {
     where: { userId },
     data: { mfaMode, mfaVerified: false },
   });
-  return authResult(jwt, req, user, true);
+  return authResult(app, req, user, true);
 }

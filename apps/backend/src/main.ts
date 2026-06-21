@@ -16,6 +16,7 @@ import {
 import api from "./api";
 import { appEnv } from "./env";
 import { verifyMail } from "./mail";
+import { appSocket } from "./socket";
 
 const app = fastify({
   logger: { transport: { target: "@fastify/one-line-logger" } },
@@ -36,9 +37,8 @@ app.register(fastifyCors);
 app.register(fastifyFormbody);
 app.register(fastifyMultipart);
 app.register(fastifySensible);
-app.register(fastifyJwt, {
-  secret: getJwtSecret(),
-});
+app.register(fastifyJwt, { secret: getJwtSecret() });
+app.register(appSocket);
 
 await app.register(fastifyZodOpenApiPlugin);
 await app.register(fastifySwagger, {
@@ -51,6 +51,9 @@ app.register(api);
 app.get("/", () => ({ name: "ServiceX" }));
 
 const remote = process.argv.includes("--host");
-app.listen({ port: appEnv.PORT, host: remote ? "0.0.0.0" : undefined });
+app.listen({
+  port: appEnv.PORT,
+  host: remote ? "0.0.0.0" : "127.0.0.1",
+});
 
 verifyMail(app.log);

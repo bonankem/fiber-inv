@@ -1,4 +1,4 @@
-import { ConfigProvider, type ThemeConfig, theme } from "antd";
+import { App, ConfigProvider, type ThemeConfig, theme } from "antd";
 import antdEn from "antd/es/locale/en_GB";
 import antdFr from "antd/es/locale/fr_FR";
 import dayjs from "dayjs";
@@ -105,7 +105,7 @@ export default function ThemeProvider(props: PropsWithChildren) {
   return (
     <AppThemeContext value={{ isDark, value, setValue }}>
       <ConfigProvider theme={{ ...baseTheme, algorithm }} locale={antLocale}>
-        {props.children}
+        <App>{props.children}</App>
       </ConfigProvider>
     </AppThemeContext>
   );

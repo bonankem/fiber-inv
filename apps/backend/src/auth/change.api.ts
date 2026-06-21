@@ -1,8 +1,7 @@
-import type { JWT } from "@fastify/jwt";
 import { compareSync, hashSync } from "bcryptjs";
 import { type AuthChangeReqT, authChangeReqZ } from "schema/auth";
 import { prisma } from "#/db";
-import { bad, postRoute } from "#/utils";
+import { type App, bad, postRoute } from "#/utils";
 import { ADMIN_PASS_LENGTH, PASS_HISTORY, USER_PASS_LENGTH } from "./config";
 import {
   type AuthReq,
@@ -15,15 +14,15 @@ import {
 export default postRoute(
   "/auth/change",
   () => authChangeReqZ,
-  (req, app) => authChange(req, app.jwt),
+  (req, app) => authChange(req, app),
 );
 
 function wrongPassword(): never {
   bad("Old password is not correct");
 }
 
-async function authChange(req: AuthReq<AuthChangeReqT>, jwt: JWT) {
-  const { userId } = verifyTempToken(jwt, req.body.token);
+async function authChange(req: AuthReq<AuthChangeReqT>, app: App) {
+  const { userId } = verifyTempToken(app.jwt, req.body.token);
   const user = await getLoginUser({ id: userId });
   if (!user) badToken();
 
@@ -49,5 +48,5 @@ async function authChange(req: AuthReq<AuthChangeReqT>, jwt: JWT) {
     },
   });
 
-  return authResult(jwt, req, { ...user, password: updated });
+  return authResult(app, req, { ...user, password: updated });
 }

@@ -32,6 +32,7 @@
     "react-dom": "^19.2.0",
     "remeda": "^2.34.0",
     "schema": "workspace:*",
+    "socket.io-client": "^4.8.3",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.1.18",
     "uuidv7": "^1.2.1"

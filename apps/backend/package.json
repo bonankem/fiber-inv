@@ -31,6 +31,7 @@
     "remeda": "^2.34.0",
     "saxes": "^6.0.0",
     "schema": "workspace:*",
+    "socket.io": "^4.8.3",
     "uuidv7": "^1.2.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
     "yauzl-promise": "^4.0.0",

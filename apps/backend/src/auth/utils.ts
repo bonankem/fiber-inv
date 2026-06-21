@@ -4,13 +4,18 @@ import type { JWT } from "@fastify/jwt";
 import { compareSync, hashSync } from "bcryptjs";
 import dayjs from "dayjs";
 import { generateSecret, generateURI } from "otplib";
-import { type AuthResultT, AuthStatus, type AuthSuccessT } from "schema/auth";
+import {
+  type AuthResultT,
+  AuthStatus,
+  type AuthSuccessT,
+  IoEvent,
+} from "schema/auth";
 import { userFullP } from "schema/people";
 import z from "zod";
 import { AuthAction, MfaMode, OtpReason, type Prisma, prisma } from "#/db";
 import { isDev } from "#/env";
 import { sendMail } from "#/mail";
-import { type AnyRequest, bad, type Maybe, newUuid } from "#/utils";
+import { type AnyRequest, type App, bad, type Maybe, newUuid } from "#/utils";
 import { decrypt, encrypt } from "../utils/encryption";
 import { OTP_EXPIRY_MINUTES } from "./config";
 
@@ -85,11 +90,12 @@ export function checkHash(
 }
 
 export async function authSuccess(
-  jwt: JWT,
+  app: App,
   req: AuthReq,
   userId: string,
   existing?: string,
 ): Promise<AuthSuccessT> {
+  const { jwt, ioUser } = app;
   const id = existing || newUuid();
   const ids = { userId, sessionId: id };
   const token = jwt.sign(ids, { expiresIn: "1d" });
@@ -118,6 +124,7 @@ export async function authSuccess(
     data: { lockUntil: null },
   });
 
+  ioUser(userId, IoEvent.NEW_SESSION);
   const status = AuthStatus.SUCCESS;
   return { status, user, token, refresh };
 }
@@ -148,7 +155,7 @@ async function authInstall(u: LoginUserT, secret: string) {
 }
 
 export async function authResult(
-  jwt: JWT,
+  app: App,
   req: AuthReq,
   user: LoginUserT,
   modePicked?: boolean,
@@ -158,7 +165,7 @@ export async function authResult(
 
   const incomplete = <S extends AuthStatus, T>(status: S, data: T) => {
     const userId = user.id;
-    const token = jwt.sign({ userId }, { expiresIn: "1h" });
+    const token = app.jwt.sign({ userId }, { expiresIn: "1h" });
     return { status, userId, token, ...data };
   };
 
@@ -195,7 +202,7 @@ export async function authResult(
   }
 
   // authentication complete
-  return authSuccess(jwt, req, user.id);
+  return authSuccess(app, req, user.id);
 }
 
 const tempTokenZ = z.object({ userId: z.string() });

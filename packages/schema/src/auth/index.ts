@@ -9,3 +9,4 @@ export * from "./auth-result";
 export * from "./auth-status";
 export * from "./auth-success";
 export * from "./auth-verify-req";
+export * from "./socket-io";

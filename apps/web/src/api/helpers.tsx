@@ -12,13 +12,14 @@ function defaultApiUrl() {
   return isProduction ? `${base}/api` : `${base}:3000`;
 }
 
-const base: string = import.meta.env.VITE_API_URL || defaultApiUrl();
+export const apiBaseUrl: string = (
+  (import.meta.env.VITE_API_URL as string) || defaultApiUrl()
+).replace(/\/$/, "");
 
 export function apiUrl(url: string) {
   if (/^https?:/i.test(url)) return url;
-  if (base.endsWith("/")) return `${base}${url.replace(/^\//, "")}`;
-  if (url.startsWith("/")) return `${base}${url}`;
-  return `${base}/${url}`;
+  const slash = url.startsWith("/") ? "" : "/";
+  return `${apiBaseUrl}${slash}${url}`;
 }
 
 export function downloadUrl(up: IdNameT) {

@@ -1,9 +1,8 @@
-import type { JWT } from "@fastify/jwt";
 import { httpErrors } from "@fastify/sensible";
 import dayjs from "dayjs";
 import { type AuthLoginReqT, authLoginReqZ } from "schema/auth";
 import { AuthAction, prisma } from "#/db";
-import { type Maybe, postRoute } from "#/utils";
+import { type App, type Maybe, postRoute } from "#/utils";
 import {
   type AuthReq,
   authResult,
@@ -16,10 +15,10 @@ import {
 export default postRoute(
   "/auth/login",
   () => authLoginReqZ,
-  (req, app) => login(req, app.jwt),
+  (req, app) => login(req, app),
 );
 
-async function login(req: AuthReq<AuthLoginReqT>, jwt: JWT) {
+async function login(req: AuthReq<AuthLoginReqT>, app: App) {
   const { email, password } = req.body;
   const u = await getLoginUser({ email });
 
@@ -36,7 +35,7 @@ async function login(req: AuthReq<AuthLoginReqT>, jwt: JWT) {
     badLogin();
   }
 
-  return authResult(jwt, req, u);
+  return authResult(app, req, u);
 }
 
 async function logPasswordFailed(

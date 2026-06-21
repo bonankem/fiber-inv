@@ -3,9 +3,12 @@ import { useNavigate } from "@tanstack/react-router";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { Button, Card, Layout, Spin } from "antd";
 import { useEffect } from "react";
+import { IoEvent } from "schema/auth";
 import { userFullZ } from "schema/people";
+import { io } from "socket.io-client";
+import AuthProvider from "#/api/AuthProvider";
 import { useAuthToken } from "#/api/auth";
-import { isApiError, useApiGet } from "#/api/helpers";
+import { apiBaseUrl, isApiError, useApiGet } from "#/api/helpers";
 import { ModalProvider } from "#/providers/ModalProvider";
 import UploaderProvider from "#/providers/UploaderProvider";
 import InactivityModal from "./InactivityModal";
@@ -16,12 +19,57 @@ import { useUserLayout } from "./useUserLayout";
 
 const gMapsKey = import.meta.env.VITE_GOOGLE_MAPS_KEY;
 
+const socket = io(apiBaseUrl, {
+  autoConnect: false,
+  auth: (cb) => cb({ token: AuthProvider.fetchToken() }),
+});
+
 export default function UserLayout() {
   const props = useUserLayout();
   const token = useAuthToken();
   const authUser = useApiGet("auth/user", userFullZ);
   const navigate = useNavigate();
   const qc = useQueryClient();
+
+  useEffect(() => {
+    if (token.value) {
+      socket.connect();
+    }
+
+    function onConnect() {
+      console.log("IO connected");
+    }
+
+    function onDisconnect() {
+      console.log("IO disconnected");
+    }
+
+    function onMessage(value: string) {
+      console.log("IO message", value);
+      const parts = value.split(":");
+      const event = parts[0] as IoEvent;
+      if (event === IoEvent.NEW_SESSION) {
+        authUser.refetch();
+      }
+    }
+
+    function onError(e: Error) {
+      console.log("IO error", e.message);
+    }
+
+    socket.on("connect", onConnect);
+    socket.on("connect_error", onError);
+    socket.on("disconnect", onDisconnect);
+    socket.on("message", onMessage);
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("connect_error", onError);
+      socket.off("disconnect", onDisconnect);
+      socket.off("message", onMessage);
+      socket.disconnect();
+    };
+  }, [token.value, authUser.refetch]);
 
   useEffect(() => {
     if (!token.value) {
