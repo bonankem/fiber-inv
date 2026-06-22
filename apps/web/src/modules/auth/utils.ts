@@ -10,7 +10,7 @@ export type LoginFormProps<Extra = object> = Extra & {
 };
 
 export function useLogout() {
-  const logout = useApiPost<void>("/auth/logout");
+  const logout = useApiPost<void>("/session/logout");
   const client = useQueryClient();
   const token = useAuthToken();
   const navigate = useNavigate();

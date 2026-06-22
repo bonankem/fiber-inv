@@ -11,7 +11,7 @@ export type UserLayoutProps = ReturnType<typeof useUserLayout>;
 export function useUserLayout() {
   const menuWidth = 240;
   const contentClass = "w-full max-w-480 mx-auto h-full overflow-x-hidden";
-  const user = useApiGet("auth/user", userFullZ);
+  const user = useApiGet("session/user", userFullZ);
 
   const [iconOnly, setIconOnly] = useState(false);
   const [isDrawerOpen, setDrawerOpen] = useState(false);

@@ -7,6 +7,7 @@ import fhp from "./fhp";
 import fhs from "./fhs";
 import geo from "./geo";
 import network from "./network";
+import session from "./session";
 import setup from "./setup";
 import uploads from "./uploads";
 import users from "./users";
@@ -24,6 +25,7 @@ export default appPlugin(async (app) => {
   app.register(fhc);
   app.register(geo);
   app.register(users);
+  app.register(session);
   app.register(vendors);
   app.register(uploads);
   app.register(network);

@@ -7,7 +7,7 @@ import { isApiError, showAppError, useApiGet } from "#/api/helpers";
 
 export function useSessionCheck() {
   const token = useAuthToken();
-  const authUser = useApiGet("auth/user", userFullZ);
+  const authUser = useApiGet("session/user", userFullZ);
   const navigate = useNavigate();
   const qc = useQueryClient();
 

@@ -1,7 +1,7 @@
 import { prisma } from "#/db";
 import { type AnyRequest, postRoute, unauthorized } from "#/utils";
 
-export default postRoute("/auth/logout", null, (req) => logout(req));
+export default postRoute("/session/logout", null, (req) => logout(req));
 
 async function logout(req: AnyRequest) {
   const expiresAt = { lte: new Date() };
