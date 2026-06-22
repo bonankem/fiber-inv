@@ -1,6 +1,7 @@
 import { randomInt } from "node:crypto";
 import type { IncomingHttpHeaders } from "node:http";
 import type { JWT } from "@fastify/jwt";
+import { httpErrors } from "@fastify/sensible";
 import { compareSync, hashSync } from "bcryptjs";
 import dayjs from "dayjs";
 import { generateSecret, generateURI } from "otplib";
@@ -25,6 +26,14 @@ export function badLogin(): never {
 
 export function badToken(): never {
   bad("Invalid or expired token");
+}
+
+export function sessionExpired(): never {
+  throw httpErrors.unauthorized("Session expired");
+}
+
+export function sessionReplaced(): never {
+  throw httpErrors.unauthorized("Session ended due to login on another device");
 }
 
 export function randomOtp() {
@@ -100,14 +109,20 @@ export async function authSuccess(
   const ids = { userId, sessionId: id };
   const token = jwt.sign(ids, { expiresIn: "1d" });
   const refresh = jwt.sign(ids, { expiresIn: "7d" });
-  const expiry = new Date(Date.now() + 7 * 86400000);
+  const expiresAt = new Date(Date.now() + 7 * 86400000);
   const hashed = hashSync(refresh);
+  const now = new Date();
 
   const { user } = await prisma.session.upsert({
     where: { id },
-    update: { hashed, expiry, userId },
-    create: { hashed, expiry, userId, id },
+    update: { hashed, expiresAt, userId },
+    create: { hashed, expiresAt, userId, id },
     select: { user: userFullP },
+  });
+
+  await prisma.session.updateMany({
+    where: { userId, id: { not: id } },
+    data: { replacedAt: now },
   });
 
   await prisma.authLog.create({

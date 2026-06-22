@@ -1,16 +1,13 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { Button, Card, Layout, Spin } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { IoEvent } from "schema/auth";
-import { userFullZ } from "schema/people";
 import { io } from "socket.io-client";
 import AuthProvider from "#/api/AuthProvider";
-import { useAuthToken } from "#/api/auth";
-import { apiBaseUrl, isApiError, useApiGet } from "#/api/helpers";
+import { apiBaseUrl } from "#/api/helpers";
 import { ModalProvider } from "#/providers/ModalProvider";
 import UploaderProvider from "#/providers/UploaderProvider";
+import { useSessionCheck } from "#/utils/session";
 import InactivityModal from "./InactivityModal";
 import UserContent from "./UserContent";
 import { UserMenu } from "./UserMenu";
@@ -26,13 +23,15 @@ const socket = io(apiBaseUrl, {
 
 export default function UserLayout() {
   const props = useUserLayout();
-  const token = useAuthToken();
-  const authUser = useApiGet("auth/user", userFullZ);
-  const navigate = useNavigate();
-  const qc = useQueryClient();
+  const session = useSessionCheck();
+  const [nextCheck, setNextCheck] = useState<number>();
 
   useEffect(() => {
-    if (token.value) {
+    if (nextCheck) session.refetch();
+  }, [nextCheck, session]);
+
+  useEffect(() => {
+    if (session.token) {
       socket.connect();
     }
 
@@ -49,7 +48,7 @@ export default function UserLayout() {
       const parts = value.split(":");
       const event = parts[0] as IoEvent;
       if (event === IoEvent.NEW_SESSION) {
-        authUser.refetch();
+        setNextCheck(Date.now());
       }
     }
 
@@ -69,19 +68,7 @@ export default function UserLayout() {
       socket.off("message", onMessage);
       socket.disconnect();
     };
-  }, [token.value, authUser.refetch]);
-
-  useEffect(() => {
-    if (!token.value) {
-      navigate({ to: "/login" });
-    } else if (isApiError(authUser.error, 401)) {
-      navigate({ to: "/login" });
-      token.update(null);
-      qc.clear();
-    } else if (authUser.error) {
-      console.error(authUser.error);
-    }
-  }, [token, authUser.error, navigate, qc]);
+  }, [session.token]);
 
   const { timeLeft } = useOnActivity();
 
@@ -89,13 +76,13 @@ export default function UserLayout() {
     <APIProvider apiKey={gMapsKey}>
       <UploaderProvider>
         <ModalProvider>
-          {authUser.data ? (
+          {session.user ? (
             <Layout className="w-dvw h-dvh overflow-hidden">
               <UserMenu {...props} />
               <UserContent {...props} />
               <InactivityModal timeLeft={timeLeft} />
             </Layout>
-          ) : authUser.isPending ? (
+          ) : session.loading ? (
             <Spin fullscreen />
           ) : (
             <div className="w-dvw h-dvh flex items-center justify-center">
@@ -104,7 +91,7 @@ export default function UserLayout() {
                 <Button
                   size="small"
                   type="primary"
-                  onClick={() => authUser.refetch()}
+                  onClick={() => session.refetch()}
                 >
                   Retry
                 </Button>

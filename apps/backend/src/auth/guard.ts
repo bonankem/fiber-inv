@@ -1,10 +1,14 @@
-import { httpErrors } from "@fastify/sensible";
 import type { FastifySchema } from "fastify";
 import fastifyPlugin from "fastify-plugin";
 import { type UserFullT, userFullP } from "schema/people";
 import { prisma } from "#/db";
 import { type AppRequest, accessDenied, unauthorized } from "#/utils";
-import { type AuthIdsT, tryAuthToken } from "./utils";
+import {
+  type AuthIdsT,
+  sessionExpired,
+  sessionReplaced,
+  tryAuthToken,
+} from "./utils";
 
 export enum Allow {
   PUBLIC = "PUBLIC",
@@ -57,13 +61,14 @@ export const authGuard = fastifyPlugin(async (app) => {
     const now = new Date();
     const { sessionId: id, userId } = authIds;
     const session = await prisma.session.findUnique({
-      where: { id, userId, expiry: { gt: now } },
+      where: { id, userId, expiresAt: { gt: now } },
       include: { user: userFullP },
     });
     // no active session and allow !== PUBLIC -> 401
     req.maybeUser = session?.user || null;
     if (isPublic) return;
-    if (!session) throw httpErrors.unauthorized();
+    if (!session) sessionExpired();
+    if (session.replacedAt) sessionReplaced();
 
     const { isAdmin, staffRole } = session.user;
     if (isAdmin) return; // admins bypass RBAC

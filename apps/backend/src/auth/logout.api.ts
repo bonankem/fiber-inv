@@ -4,11 +4,11 @@ import { type AnyRequest, postRoute, unauthorized } from "#/utils";
 export default postRoute("/auth/logout", null, (req) => logout(req));
 
 async function logout(req: AnyRequest) {
-  const expiry = { lte: new Date() };
+  const expiresAt = { lte: new Date() };
   const { sessionId, userId } = req.authIds || unauthorized();
 
   const { count } = await prisma.session.deleteMany({
-    where: { userId, OR: [{ id: sessionId }, { expiry }] },
+    where: { userId, OR: [{ id: sessionId }, { expiresAt }] },
   });
   if (count > 0) {
     const user = await prisma.user.findUnique({

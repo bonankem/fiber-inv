@@ -1,10 +1,23 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, Tooltip } from "antd";
 import { m } from "i18n/messages";
+import { type Locale, setLocale } from "i18n/runtime";
 import type { AuthLoginReqT, AuthResultT } from "schema/auth";
 import { apiCall, useApiPost } from "#/api/helpers";
 import TextLink from "#/components/TextLink";
 import AuthHeader from "./AuthHeader";
 import type { LoginFormProps } from "./utils";
+
+function Lang(props: { locale: Locale; abbr: string; name: string }) {
+  return (
+    <Tooltip title={props.name} trigger="hover" placement="bottom">
+      <span>
+        <TextLink onClick={() => setLocale(props.locale)}>
+          {props.abbr}
+        </TextLink>
+      </span>
+    </Tooltip>
+  );
+}
 
 export default function AuthLoginForm(props: LoginFormProps) {
   const loginQ = useApiPost<AuthLoginReqT, AuthResultT>("/auth/login");
@@ -35,7 +48,11 @@ export default function AuthLoginForm(props: LoginFormProps) {
           {m.login()}
         </Button>
 
-        <section className="mt-4 flex justify-end">
+        <section className="flex justify-between gap-2 mt-4">
+          <section className="flex gap-1">
+            <Lang locale="en" abbr="EN" name="English" />/
+            <Lang locale="fr" abbr="FR" name="Français" />
+          </section>
           <TextLink to="/reset">{m.forgot_password()}</TextLink>
         </section>
       </Form>
