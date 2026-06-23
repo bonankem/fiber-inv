@@ -87,6 +87,7 @@ async function createUser(req: Req) {
       ["Email", user.email],
       ["Password", password],
     ],
+    button: "/",
   });
 
   return user;
