@@ -8,7 +8,6 @@ import { getRoute, postRoute } from "#/utils";
 const defaultSyslog: SyslogT = {
   host: "127.0.0.1",
   port: 514,
-  interval: 0,
   enabled: false,
 };
 
