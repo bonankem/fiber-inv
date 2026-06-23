@@ -1,5 +1,6 @@
 import { type AuthChangeReqT, authChangeReqZ } from "schema/auth";
-import { prisma } from "#/db";
+import { sendSyslog } from "#/admin/syslog";
+import { AuthAction, prisma } from "#/db";
 import { type App, bad, postRoute } from "#/utils";
 import {
   type AuthReq,
@@ -28,5 +29,19 @@ async function authChange(req: AuthReq<AuthChangeReqT>, app: App) {
 
   const data = await checkPasswordChange(oldPassword, newPassword, user);
   const password = await prisma.password.update({ where: { userId }, data });
+
+  await prisma.authLog.create({
+    data: {
+      action: AuthAction.CHANGE_PASSWORD,
+      email: user.email,
+      ipAddress: req.ip,
+      userAgent: req.headers["user-agent"],
+    },
+  });
+  await sendSyslog(AuthAction.LOCKOUT, {
+    email: user.email,
+    ip: req.ip,
+  });
+
   return authResult(app, req, { ...user, password });
 }

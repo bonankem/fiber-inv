@@ -1,32 +1,39 @@
 import { randomBytes } from "node:crypto";
 import { hashSync } from "bcryptjs";
 import { type UserCreateT, userCreateZ, userS } from "schema/people";
+import { sendSyslog } from "#/admin/syslog";
 import { Allow } from "#/auth/guard";
-import { MfaMode, prisma } from "#/db";
+import { AuthAction, MfaMode, prisma } from "#/db";
 import { isDev } from "#/env";
 import { sendMail } from "#/mail";
-import { bad, maybeConnect, postRoute } from "#/utils";
+import { type AnyRequest, bad, maybeConnect, postRoute } from "#/utils";
 import { makeKey } from "#/utils/queries";
 
 export default postRoute(
   "/users",
   () => userCreateZ,
-  (req) => createUser(req.body),
+  (req) => createUser(req),
   Allow.ADMIN,
 );
 
-async function createUser(req: UserCreateT) {
-  if (!req.isAdmin && !req.staffRole && !req.vendorId) {
+type Req = AnyRequest & {
+  body: UserCreateT;
+};
+
+async function createUser(req: Req) {
+  const { name, email, isAdmin, staffRole, vendorId } = req.body;
+
+  if (!isAdmin && !staffRole && !vendorId) {
     bad("Select a user role");
   }
-  if (req.isAdmin && (req.staffRole || req.vendorId)) {
+  if (isAdmin && (staffRole || vendorId)) {
     bad("Admin cannot have staff or vendor role");
   }
-  if (req.staffRole && req.vendorId) {
+  if (staffRole && vendorId) {
     bad("Vendor cannot have staff role");
   }
   const exists = prisma.user.findUnique({
-    where: { email: req.email },
+    where: { email },
   });
   if (!exists) bad("Email already registered");
 
@@ -36,12 +43,12 @@ async function createUser(req: UserCreateT) {
 
   const user = await prisma.user.create({
     data: {
-      key: makeKey(req.name),
-      name: req.name,
-      email: req.email,
-      isAdmin: req.isAdmin ?? false,
-      staffRole: req.staffRole,
-      vendor: maybeConnect(req.vendorId),
+      key: makeKey(name),
+      name,
+      email: email,
+      isAdmin: isAdmin ?? false,
+      staffRole: staffRole,
+      vendor: maybeConnect(vendorId),
       password: {
         create: {
           hashed,
@@ -53,6 +60,19 @@ async function createUser(req: UserCreateT) {
       },
     },
     select: userS,
+  });
+
+  await prisma.authLog.create({
+    data: {
+      action: AuthAction.ADD_USER,
+      email: user.email,
+      ipAddress: req.ip,
+      userAgent: req.headers["user-agent"] || "",
+    },
+  });
+  await sendSyslog(AuthAction.ADD_USER, {
+    email: user.email,
+    ip: req.ip,
   });
 
   sendMail({

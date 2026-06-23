@@ -13,6 +13,7 @@ import {
 } from "schema/auth";
 import { userFullP } from "schema/people";
 import z from "zod";
+import { sendSyslog } from "#/admin/syslog";
 import { AuthAction, MfaMode, OtpReason, type Prisma, prisma } from "#/db";
 import { isDev } from "#/env";
 import { sendMail } from "#/mail";
@@ -43,10 +44,6 @@ export function sessionExpired(): never {
 
 export function sessionReplaced(): never {
   throw httpErrors.unauthorized("Session ended due to login on another device");
-}
-
-export function badOtp(): never {
-  bad("Incorrect or expired OTP");
 }
 
 export function randomOtp() {
@@ -88,6 +85,10 @@ export function sendUserOtp(user: OtpUserT, mode: MfaMode, otp: string) {
       lines: [`Your OTP is ${otp}.`],
     });
   }
+}
+
+export function badOtp(): never {
+  bad("Incorrect or expired OTP");
 }
 
 export async function checkOtp(userId: string, otp: string, mode: MfaMode) {
@@ -176,9 +177,13 @@ export async function authSuccess(
     data: {
       action: AuthAction.LOGIN_SUCCESS,
       email: user.email,
-      ipAddress: req.ip,
+      ipAddress: (req.headers["x-real-ip"] as string) || req.ip,
       userAgent: req.headers["user-agent"],
     },
+  });
+  await sendSyslog(AuthAction.LOGIN_SUCCESS, {
+    email: user.email,
+    ip: req.ip,
   });
 
   await prisma.password.update({

@@ -18,7 +18,7 @@ model Syslog {
 
     host String
 
-    port String
+    port Int
 
     interval Int @default(1)
 

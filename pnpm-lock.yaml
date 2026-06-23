@@ -129,6 +129,9 @@ importers:
       '@types/pg':
         specifier: ^8.20.0
         version: 8.20.0
+      '@types/syslog-pro':
+        specifier: ^1.0.3
+        version: 1.0.3
       '@types/yauzl-promise':
         specifier: ^4.0.1
         version: 4.0.1
@@ -3203,6 +3206,9 @@ packages:
 
   '@types/stack-utils@2.0.3':
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
+
+  '@types/syslog-pro@1.0.3':
+    resolution: {integrity: sha512-tI558N5Io/04ya5eO5HJRIHLLJK/2Q1y4j6Fb0POVSNgRFxfJCOZHEyNrpcagdEtw9i25Diq3NXfs1qa0yyMIw==}
 
   '@types/ws@8.18.1':
     resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
@@ -10856,6 +10862,8 @@ snapshots:
       csstype: 3.2.3
 
   '@types/stack-utils@2.0.3': {}
+
+  '@types/syslog-pro@1.0.3': {}
 
   '@types/ws@8.18.1':
     dependencies:

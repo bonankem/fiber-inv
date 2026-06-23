@@ -41,6 +41,7 @@
   "devDependencies": {
     "@types/nodemailer": "^8.0.1",
     "@types/pg": "^8.20.0",
+    "@types/syslog-pro": "^1.0.3",
     "@types/yauzl-promise": "^4.0.1",
     "prisma": "^7.8.0",
     "prisma-json-types-generator": "^5.0.0"

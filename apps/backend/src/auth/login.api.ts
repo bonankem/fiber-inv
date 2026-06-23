@@ -1,6 +1,7 @@
 import { httpErrors } from "@fastify/sensible";
 import dayjs from "dayjs";
 import { type AuthLoginReqT, authLoginReqZ } from "schema/auth";
+import { sendSyslog } from "#/admin/syslog";
 import { AuthAction, prisma } from "#/db";
 import { type App, type Maybe, postRoute } from "#/utils";
 import {
@@ -43,18 +44,18 @@ async function logPasswordFailed(
   user: Maybe<LoginUserT>,
   time: Date,
 ) {
+  const email = req.body.email;
   await prisma.authLog.create({
     data: {
       action: AuthAction.PASSWORD_FAILED,
-      email: req.body.email,
+      email,
       time,
       ipAddress: req.ip,
       userAgent: req.headers["user-agent"],
     },
   });
-  if (user) {
-    await maybeLockout(user, req, time);
-  }
+  await sendSyslog(AuthAction.PASSWORD_FAILED, { email, ip: req.ip });
+  if (user) await maybeLockout(user, req, time);
 }
 
 async function maybeLockout(user: LoginUserT, req: AuthReq, time: Date) {
@@ -73,16 +74,18 @@ async function maybeLockout(user: LoginUserT, req: AuthReq, time: Date) {
   });
 
   const userId = user.id;
+  const email = user.email;
   if (attempts.every((a) => a.action === PASSWORD_FAILED)) {
     const lockUntil = dayjs(time).add(sec.lockoutMinutes, "minutes").toDate();
     await prisma.password.update({ where: { userId }, data: { lockUntil } });
     await prisma.authLog.create({
       data: {
         action: AuthAction.LOCKOUT,
-        email: user.email,
+        email,
         ipAddress: req.ip,
         userAgent: req.headers["user-agent"],
       },
     });
+    await sendSyslog(AuthAction.LOCKOUT, { email, ip: req.ip });
   }
 }
