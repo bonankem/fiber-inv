@@ -1,5 +1,5 @@
 import { type Prisma, StaffRole } from "../prisma";
-import { type Same, z, zObject, zStr, zStrNul } from "../utils";
+import { type Same, z, zDateNul, zObject, zStr, zStrNul } from "../utils";
 import { vendorP, vendorZ } from "./vendor";
 
 export const userFullS = {
@@ -9,6 +9,7 @@ export const userFullS = {
   phone: true,
   isAdmin: true,
   staffRole: true,
+  expiredAt: true,
   vendor: vendorP,
 } satisfies Prisma.UserSelect;
 
@@ -18,6 +19,7 @@ export const userFullZ = zObject("UserFullT", {
   email: zStr("The user's email address"),
   phone: zStrNul("The user's phone number"),
   isAdmin: z.boolean().describe("Is this user an admin?"),
+  expiredAt: zDateNul("The time that the account expired, or null"),
   staffRole: z
     .enum(StaffRole)
     .nullable()

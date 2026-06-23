@@ -130,6 +130,8 @@ export const loginUserS = {
   email: true,
   isAdmin: true,
   password: true,
+  expiredAt: true,
+  lastActive: true,
   authenticator: true,
 } satisfies Prisma.UserSelect;
 
@@ -171,6 +173,10 @@ export async function authSuccess(
   await prisma.session.updateMany({
     where: { userId, id: { not: id } },
     data: { replacedAt: now },
+  });
+  await prisma.user.update({
+    where: { id: userId },
+    data: { lastActive: now },
   });
 
   await prisma.authLog.create({

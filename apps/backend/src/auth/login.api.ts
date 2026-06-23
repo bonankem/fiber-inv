@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { type AuthLoginReqT, authLoginReqZ } from "schema/auth";
 import { sendSyslog } from "#/admin/syslog.api";
 import { AuthAction, prisma } from "#/db";
-import { type App, type Maybe, postRoute } from "#/utils";
+import { type App, bad, type Maybe, postRoute } from "#/utils";
 import {
   type AuthReq,
   authResult,
@@ -24,19 +24,26 @@ async function login(req: AuthReq<AuthLoginReqT>, app: App) {
   const u = await getLoginUser({ email });
 
   const now = new Date();
-  const lock = u?.password?.lockUntil;
-  if (lock && lock > now) {
-    throw httpErrors.tooManyRequests(
-      "Account locked: too many failed login attempts",
-    );
-  }
 
   if (!checkHash(password, u?.password?.hashed)) {
     await logPasswordFailed(req, u, now);
     badLogin();
   }
 
+  checkRestrictions(u, now);
   return authResult(app, req, u);
+}
+
+function checkRestrictions(user: LoginUserT, now: Date) {
+  const lockUntil = user?.password?.lockUntil;
+  if (lockUntil && lockUntil > now) {
+    throw httpErrors.tooManyRequests(
+      "Account locked: too many failed login attempts",
+    );
+  }
+  if (user.expiredAt) {
+    bad("Account expired. Contact administrator.");
+  }
 }
 
 async function logPasswordFailed(

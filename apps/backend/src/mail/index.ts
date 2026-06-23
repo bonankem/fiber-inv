@@ -174,8 +174,10 @@ export function sendMail(mail: MailData) {
   const html = composeHtml([...htmlLines, htmlField, button]);
 
   const options: Mail.Options = { to, from, subject, html, text };
+  mailLog.info("About to send");
   mailer.sendMail(options, (e) => {
     if (e) mailLog.warn(`Mail error: ${e.message}`);
-    if (e) console.error(e);
+    else mailLog.info("Mail sent");
+    mailLog.info("Mail done");
   });
 }

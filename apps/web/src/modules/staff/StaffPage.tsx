@@ -16,6 +16,11 @@ export default function StaffPage() {
           { key: "name", title: m.name(), render: (u) => u.name },
           { key: "email", title: m.email(), render: (u) => u.email },
           { key: "role", title: m.role(), render: (u) => roleName(u) },
+          {
+            key: "status",
+            title: m.status(),
+            render: (u) => (u.expiredAt ? "Expired" : "Active"),
+          },
         ],
       }}
     />
