@@ -1,5 +1,5 @@
+import { read, utils } from "@e965/xlsx";
 import type { UpFhsCoordsT } from "schema/uploads";
-import { read, utils } from "xlsx";
 import { BoxType, WorkDocType } from "#/db";
 import { filterTruthy, maybeCoords } from "#/utils/queries";
 import type { ParserInput } from "./utils";
