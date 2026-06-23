@@ -20,9 +20,10 @@ export enum Allow {
 declare module "fastify" {
   interface FastifyRequest {
     allow: Allow;
-    authIds: AuthIdsT | null;
-    maybeUser: UserFullT | null;
+    authIds: AuthIdsT;
     authUser: UserFullT;
+    maybeIds: AuthIdsT | null;
+    maybeUser: UserFullT | null;
   }
 }
 
@@ -38,8 +39,15 @@ export function getReqToken(req: AppRequest<FastifySchema>) {
 
 export const authGuard = fastifyPlugin(async (app) => {
   app.decorateRequest("allow", Allow.USER);
-  app.decorateRequest("authIds", null);
+  app.decorateRequest("maybeIds", null);
   app.decorateRequest("maybeUser", null);
+
+  app.decorateRequest("authIds", {
+    getter() {
+      return this.maybeIds || unauthorized();
+    },
+  });
+
   app.decorateRequest("authUser", {
     getter() {
       return this.maybeUser || unauthorized();
@@ -52,7 +60,7 @@ export const authGuard = fastifyPlugin(async (app) => {
 
     const token = getReqToken(req);
     const authIds = tryAuthToken(app.jwt, token);
-    req.authIds = authIds;
+    req.maybeIds = authIds;
     if (!authIds) {
       if (isPublic) return;
       else unauthorized();

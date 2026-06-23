@@ -1,43 +1,15 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form } from "antd";
 import type { OTPRef } from "antd/es/input/OTP";
 import { m } from "i18n/messages";
-import { type RefObject, useRef } from "react";
+import { useRef } from "react";
 import type { AuthNeedsOtpT, AuthResultT, AuthVerifyReqT } from "schema/auth";
 import { apiCall, useApiPost } from "#/api/helpers";
+import OtpInput from "#/components/inputs/OtpInput";
 import TextLink from "#/components/TextLink";
 import AuthHeader from "./AuthHeader";
 import type { LoginFormProps } from "./utils";
 
 type Props = LoginFormProps<{ res: AuthNeedsOtpT }>;
-
-const prompts = {
-  EMAIL: m.mfa_prompt_email(),
-  SMS: m.mfa_prompt_sms(),
-  WHATSAPP: m.mfa_prompt_whatsapp(),
-  AUTHENTICATOR: m.mfa_prompt_app(),
-};
-
-const noop = (_: unknown) => {};
-
-function OtpInput(props: {
-  value?: string;
-  onChange?: (s: string) => void;
-  ref: RefObject<OTPRef | null>;
-}) {
-  const onChange = props.onChange || noop;
-  return (
-    <Input.OTP
-      ref={props.ref}
-      size="large"
-      length={6}
-      value={props.value || ""}
-      inputMode="numeric"
-      formatter={(s) => s.replace(/\D/g, "")}
-      onInput={(v) => onChange(v.join(""))}
-      onChange={onChange}
-    />
-  );
-}
 
 export default function AuthOtpForm(props: Props) {
   const { mode, token } = props.res;
@@ -59,7 +31,7 @@ export default function AuthOtpForm(props: Props) {
 
   return (
     <main>
-      <AuthHeader title={m.mfa_enter_otp()} subtitle={prompts[mode]} />
+      <AuthHeader title={m.mfa_enter_otp()} subtitle={OtpInput.prompts[mode]} />
 
       <Form form={form} layout="vertical" onFinish={onSubmit}>
         <Form.Item

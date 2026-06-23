@@ -1,6 +1,7 @@
 import {
   CheckOutlined,
   FontColorsOutlined,
+  LockOutlined,
   LogoutOutlined,
   MoreOutlined,
   SunOutlined,
@@ -11,7 +12,8 @@ import { m } from "i18n/messages";
 import { getLocale, setLocale } from "i18n/runtime";
 import type { UserFullT } from "schema/people";
 import { useModalViewer } from "#/hooks/useModalViewer";
-import LogoutModal from "#/modules/auth/LogoutModal";
+import LogoutModal from "#/modules/session/LogoutModal";
+import PasswordModal from "#/modules/session/PasswordModal";
 import { roleName } from "#/modules/staff/utils";
 import { useAppTheme } from "#/theme";
 import { shortName } from "#/utils/names";
@@ -76,11 +78,12 @@ export default function UserMenuFooter({ user, collapsed }: Props) {
               })),
             },
             { type: "divider" },
-            // {
-            //   key: "password",
-            //   label: m.change_password(),
-            //   icon: <LockOutlined />,
-            // },
+            {
+              key: "password",
+              label: m.change_password(),
+              icon: <LockOutlined />,
+              onClick: () => modal.open(PasswordModal),
+            },
             {
               key: "logout",
               label: m.log_out(),

@@ -68,6 +68,7 @@ export function ModalProvider(props: PropsWithChildren) {
     }
 
     function open(m: ModalFC) {
+      console.log("Opening", m.name);
       clearTimeout(closing);
       setModalFC(() => m);
       setItem(undefined);

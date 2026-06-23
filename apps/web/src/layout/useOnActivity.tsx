@@ -1,7 +1,7 @@
 import { message } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { funnel } from "remeda";
-import { useLogout } from "#/modules/auth/utils";
+import { useLogout } from "#/modules/session/utils";
 
 // The amount of time left needs to be tracked in local storage so that it is shared across tabs.
 // Without this, having multiple tabs open would cause the session to timeout in the other tabs

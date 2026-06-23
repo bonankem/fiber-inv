@@ -2,9 +2,9 @@ import { randomInt } from "node:crypto";
 import type { IncomingHttpHeaders } from "node:http";
 import type { JWT } from "@fastify/jwt";
 import { httpErrors } from "@fastify/sensible";
-import { compareSync, hashSync } from "bcryptjs";
+import { compare, compareSync, hashSync } from "bcryptjs";
 import dayjs from "dayjs";
-import { generateSecret, generateURI } from "otplib";
+import { generateSecret, generateURI, verifySync } from "otplib";
 import {
   type AuthResultT,
   AuthStatus,
@@ -18,7 +18,12 @@ import { isDev } from "#/env";
 import { sendMail } from "#/mail";
 import { type AnyRequest, type App, bad, type Maybe, newUuid } from "#/utils";
 import { decrypt, encrypt } from "../utils/encryption";
-import { OTP_EXPIRY_MINUTES } from "./config";
+import {
+  ADMIN_PASS_LENGTH,
+  OTP_EXPIRY_MINUTES,
+  PASS_HISTORY,
+  USER_PASS_LENGTH,
+} from "./config";
 
 export function badLogin(): never {
   bad("Invalid email or password");
@@ -26,6 +31,10 @@ export function badLogin(): never {
 
 export function badToken(): never {
   bad("Invalid or expired token");
+}
+
+export function wrongPassword(): never {
+  bad("Old password is not correct");
 }
 
 export function sessionExpired(): never {
@@ -36,12 +45,24 @@ export function sessionReplaced(): never {
   throw httpErrors.unauthorized("Session ended due to login on another device");
 }
 
+export function badOtp(): never {
+  bad("Incorrect or expired OTP");
+}
+
 export function randomOtp() {
   return randomInt(111111, 999999).toString();
 }
 
 type OtpUserT = Pick<LoginUserT, "id" | "email">;
-async function deliverOtp(mode: MfaMode, user: OtpUserT, reason: OtpReason) {
+
+export async function deliverOtp(
+  mode: MfaMode,
+  user: OtpUserT,
+  reason: OtpReason,
+) {
+  const { EMAIL } = MfaMode;
+  if (mode !== EMAIL) return "";
+
   const otp = randomOtp();
 
   sendUserOtp(user, mode, otp);
@@ -67,6 +88,32 @@ export function sendUserOtp(user: OtpUserT, mode: MfaMode, otp: string) {
       lines: [`Your OTP is ${otp}.`],
     });
   }
+}
+
+export async function checkOtp(userId: string, otp: string, mode: MfaMode) {
+  if (mode === MfaMode.AUTHENTICATOR) {
+    const db = prisma.authenticator;
+    const a = await db.findUnique({ where: { userId } });
+    if (!a) badOtp();
+
+    const verified = verifySync({
+      secret: decrypt(a.secret),
+      token: otp,
+      epochTolerance: 30,
+    });
+    if (!verified.valid) badOtp();
+  }
+
+  const since = new Date(Date.now() - OTP_EXPIRY_MINUTES * 60000);
+  const otps = await prisma.otp.findMany({
+    where: { userId, mode, createdAt: { gte: since } },
+  });
+  const valid = otps.some((o) => compareSync(otp, o.hashed));
+  if (!valid) badOtp();
+
+  await prisma.otp.deleteMany({
+    where: { userId, reason: OtpReason.CHANGE_PASSWORD },
+  });
 }
 
 export type AuthReq<T = unknown> = {
@@ -246,4 +293,28 @@ export function tryAuthToken(jwt: JWT, token: Maybe<string>) {
     if (isDev) console.error(e);
     return null;
   }
+}
+
+export async function checkNewPassword(newPass: string, user: LoginUserT) {
+  const min = user.isAdmin ? ADMIN_PASS_LENGTH : USER_PASS_LENGTH;
+  if (newPass.length < min) bad("Password too short");
+
+  const older = user.password?.history ?? [];
+  const tests = await Promise.all(older.map((h) => compare(newPass, h)));
+  if (tests.some(Boolean)) bad("Cannot use password from recent history");
+
+  const hashed = hashSync(newPass);
+  const history = [...older, hashed].slice(-PASS_HISTORY);
+  return { hashed, history, mustChange: false, lastChange: new Date() };
+}
+
+export async function checkPasswordChange(
+  oldPass: string,
+  newPass: string,
+  user: LoginUserT,
+) {
+  const pass = user?.password || wrongPassword();
+  if (!compareSync(oldPass, pass.hashed)) wrongPassword();
+  if (oldPass === newPass) bad("Cannot reuse the same password");
+  return checkNewPassword(newPass, user);
 }
