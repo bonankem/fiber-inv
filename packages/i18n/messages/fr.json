@@ -202,5 +202,10 @@
   "vendors": "Fournisseurs",
   "view_details": "Voir les détails",
   "welcome": "Bienvenue, {name}!",
-  "zzzzzzz": "Ceci sert simplement à pouvoir trier les lignes sans se soucier des problèmes de virgules."
+  "zzzzzzz": "Ceci sert simplement à pouvoir trier les lignes sans se soucier des problèmes de virgules.",
+  "saved": "Enregistré",
+  "host": "Hôte",
+  "host_hint": "FQDN ou adresse IP",
+  "port_udp": "Port (UDP)",
+  "state": "État"
 }

@@ -1,5 +1,5 @@
 import { type AuthChangeReqT, authChangeReqZ } from "schema/auth";
-import { sendSyslog } from "#/admin/syslog";
+import { sendSyslog } from "#/admin/syslog.api";
 import { AuthAction, prisma } from "#/db";
 import { type App, bad, postRoute } from "#/utils";
 import {
@@ -38,7 +38,7 @@ async function authChange(req: AuthReq<AuthChangeReqT>, app: App) {
       userAgent: req.headers["user-agent"],
     },
   });
-  await sendSyslog(AuthAction.LOCKOUT, {
+  await sendSyslog(AuthAction.CHANGE_PASSWORD, {
     email: user.email,
     ip: req.ip,
   });

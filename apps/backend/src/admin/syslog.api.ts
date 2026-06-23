@@ -1,26 +1,28 @@
+import console from "node:console";
+import type { SyslogT } from "schema/admin";
+import { syslogZ } from "schema/admin";
 import { CEF } from "syslog-pro";
 import { type AuthAction, prisma } from "#/db";
+import { getRoute, postRoute } from "#/utils";
+
+const defaultSyslog: SyslogT = {
+  host: "127.0.0.1",
+  port: 514,
+  interval: 0,
+  enabled: false,
+};
+
+export let syslogServer = defaultSyslog;
 
 const params: CEF.Options = {
   deviceVendor: "Zoracom",
   deviceProduct: "ServiceX",
   deviceVersion: "1.0",
-  server: {
-    target: "127.0.0.1",
-    port: 8514,
-    protocol: "udp",
-  },
 };
 
 export async function initSyslogServer() {
   const data = await prisma.syslog.findFirst();
-  if (data) {
-    params.server = {
-      target: data.host,
-      port: data.port,
-      protocol: "udp",
-    };
-  }
+  if (data) syslogServer = data;
 }
 
 const severities: Record<AuthAction, CEF.Severity> = {
@@ -51,9 +53,18 @@ type Info = {
 };
 
 export async function sendSyslog(action: AuthAction, info?: Info) {
-  if (!params.server) return;
+  if (!syslogServer.enabled) {
+    console.log("syslog disabled");
+    return;
+  }
+
   const log = new CEF({
     ...params,
+    server: {
+      target: syslogServer.host,
+      port: syslogServer.port,
+      protocol: "udp",
+    },
     name: action,
     severity: severities[action],
     deviceEventClassId: classIds[action].toString(),
@@ -61,3 +72,20 @@ export async function sendSyslog(action: AuthAction, info?: Info) {
   });
   await log.send().catch(() => {});
 }
+
+export const getSyslogApi = getRoute("/admin/syslog", null, () => syslogServer);
+
+export const setSyslogApi = postRoute(
+  "/admin/syslog",
+  () => syslogZ,
+  async ({ body }) => {
+    await prisma.syslog.upsert({
+      where: { id: "ID" },
+      update: body,
+      create: body,
+    });
+    syslogServer = body;
+    console.log(syslogServer);
+    return { success: true };
+  },
+);

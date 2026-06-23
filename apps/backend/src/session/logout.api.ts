@@ -1,4 +1,4 @@
-import { sendSyslog } from "#/admin/syslog";
+import { sendSyslog } from "#/admin/syslog.api";
 import { AuthAction, prisma } from "#/db";
 import { type AnyRequest, bad, postRoute } from "#/utils";
 
@@ -16,13 +16,12 @@ async function logout(req: AnyRequest) {
   const email = req.authUser.email;
   await prisma.authLog.create({
     data: {
-      action: AuthAction.LOCKOUT,
+      action: AuthAction.LOGOUT,
       email,
       ipAddress: req.ip,
       userAgent: req.headers["user-agent"] || "",
     },
   });
   await sendSyslog(AuthAction.LOGOUT, { email, ip: req.ip });
-
   return { success: true };
 }

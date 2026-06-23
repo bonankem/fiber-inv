@@ -1,7 +1,7 @@
 import { httpErrors } from "@fastify/sensible";
 import dayjs from "dayjs";
 import { type AuthLoginReqT, authLoginReqZ } from "schema/auth";
-import { sendSyslog } from "#/admin/syslog";
+import { sendSyslog } from "#/admin/syslog.api";
 import { AuthAction, prisma } from "#/db";
 import { type App, type Maybe, postRoute } from "#/utils";
 import {

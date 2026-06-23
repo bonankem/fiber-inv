@@ -20,7 +20,7 @@ model Syslog {
 
     port Int
 
-    interval Int @default(1)
+    enabled Boolean @default(true)
 
     lastSend DateTime?
 }

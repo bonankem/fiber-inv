@@ -13,7 +13,7 @@ import {
 } from "schema/auth";
 import { userFullP } from "schema/people";
 import z from "zod";
-import { sendSyslog } from "#/admin/syslog";
+import { sendSyslog } from "#/admin/syslog.api";
 import { AuthAction, MfaMode, OtpReason, type Prisma, prisma } from "#/db";
 import { isDev } from "#/env";
 import { sendMail } from "#/mail";
@@ -82,7 +82,7 @@ export function sendUserOtp(user: OtpUserT, mode: MfaMode, otp: string) {
     sendMail({
       to: [user.email],
       subject: "Verify OTP",
-      lines: [`Your OTP is ${otp}.`],
+      lines: [`Your OTP is ${otp}`],
     });
   }
 }

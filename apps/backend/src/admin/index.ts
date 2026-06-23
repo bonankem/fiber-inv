@@ -1,8 +1,8 @@
 import { Allow } from "#/auth/guard";
 import { appPlugin } from "#/utils";
-import getAuthLogsApi from "./get-auth-logs.api";
-import getSecurityApi from "./get-security.api";
-import setSecurityApi from "./set-security.api";
+import getAuthLogsApi from "./auth-logs.api";
+import { getSecurityApi, setSecurityApi } from "./security.api";
+import { getSyslogApi, setSyslogApi } from "./syslog.api";
 import userInfoApi from "./user-info.api";
 
 export default appPlugin(async (app) => {
@@ -11,6 +11,8 @@ export default appPlugin(async (app) => {
   });
   app.register(getSecurityApi);
   app.register(setSecurityApi);
+  app.register(getSyslogApi);
+  app.register(setSyslogApi);
   app.register(userInfoApi);
   app.register(getAuthLogsApi);
 });

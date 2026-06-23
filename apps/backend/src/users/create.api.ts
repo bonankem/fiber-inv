@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { hashSync } from "bcryptjs";
 import { type UserCreateT, userCreateZ, userS } from "schema/people";
-import { sendSyslog } from "#/admin/syslog";
+import { sendSyslog } from "#/admin/syslog.api";
 import { Allow } from "#/auth/guard";
 import { AuthAction, MfaMode, prisma } from "#/db";
 import { isDev } from "#/env";

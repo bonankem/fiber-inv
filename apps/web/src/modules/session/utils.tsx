@@ -20,7 +20,7 @@ export function useLogout() {
   const call = async () => {
     if (pending) return;
     navigate({ to: "/login", replace: true });
-    logout.mutateAsync().catch(() => {});
+    await logout.mutateAsync().catch(() => {});
     client.clear();
     token.update(null);
   };

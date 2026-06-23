@@ -26,6 +26,7 @@ export type FormModalProps<T> = {
   onSubmit?: (data: T) => void;
   okText?: string;
   submitting?: boolean;
+  preparing?: boolean;
   className?: string;
   checkbox?: boolean | string;
   maskCloseable?: boolean;
@@ -86,7 +87,7 @@ export default function FormModal<T>(props: FormModalProps<T>) {
       footer={null}
       classNames={{ body: "overflow-x-hidden! *" }}
     >
-      <Spin spinning={props.submitting || false}>
+      <Spin spinning={props.submitting || props.preparing || false}>
         <ConfigProvider theme={themeConfig}>
           <Form
             form={props.form}

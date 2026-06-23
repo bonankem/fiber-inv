@@ -6,13 +6,13 @@ type Props = InputNumberProps & {
 };
 
 export default function IntInput(props: Props) {
-  const { addonBefore, ...rest } = props;
+  const { addonBefore, controls = false, ...rest } = props;
   if (!rest.min) rest.min = 0;
 
   return (
     <Space.Compact className="w-full">
       {addonBefore && <Space.Addon>{addonBefore}</Space.Addon>}
-      <InputNumber {...rest} />
+      <InputNumber {...rest} controls={controls} />
     </Space.Compact>
   );
 }

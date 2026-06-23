@@ -4,7 +4,7 @@ import {
   type SessionPasswordResT,
   sessionPasswordReqZ,
 } from "schema/session";
-import { sendSyslog } from "#/admin/syslog";
+import { sendSyslog } from "#/admin/syslog.api";
 import {
   checkOtp,
   checkPasswordChange,
@@ -56,7 +56,7 @@ async function changePassword(req: Req): Promise<SessionPasswordResT> {
       userAgent: req.headers["user-agent"],
     },
   });
-  await sendSyslog(AuthAction.LOCKOUT, {
+  await sendSyslog(AuthAction.CHANGE_PASSWORD, {
     email: user.email,
     ip: req.ip,
   });

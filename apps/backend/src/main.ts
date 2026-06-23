@@ -13,6 +13,7 @@ import {
   serializerCompiler,
   validatorCompiler,
 } from "fastify-zod-openapi";
+import { initSyslogServer } from "./admin/syslog.api";
 import api from "./api";
 import { appEnv } from "./env";
 import { verifyMail } from "./mail";
@@ -56,4 +57,5 @@ app.listen({
   host: remote ? "0.0.0.0" : "127.0.0.1",
 });
 
+initSyslogServer();
 verifyMail(app.log);
