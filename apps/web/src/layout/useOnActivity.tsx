@@ -17,7 +17,7 @@ export function useOnActivity() {
   const interval = useMemo(() => {
     // check every second when we are almost out of time
     // but use a larger interval otherwise
-    return timeLeft < 60000 ? 1000 : 20000;
+    return timeLeft < 120000 ? 1000 : 20000;
   }, [timeLeft]);
 
   const logout = useLogout();

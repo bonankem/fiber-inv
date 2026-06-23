@@ -34,7 +34,6 @@ export default function StaffCreateForm(props: ModalStateProps) {
   return (
     <FormModal
       form={form}
-      width={320}
       state={props.state}
       title={m.add_staff()}
       onSubmit={onSubmit}
@@ -67,7 +66,7 @@ export default function StaffCreateForm(props: ModalStateProps) {
         </Form.Item>
       )}
 
-      {type && <Alert title="L'utili" />}
+      {type && <Alert showIcon title={m.login_will_be_sent()} />}
     </FormModal>
   );
 }
