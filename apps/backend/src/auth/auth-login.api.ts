@@ -30,27 +30,25 @@ async function login(req: RequestWith<AuthLoginReqT>, app: App) {
   const u = await getLoginUser({ email });
 
   const now = new Date();
+  const lockUntil = u?.password?.lockUntil;
+  if (lockUntil && lockUntil > now) {
+    throw httpErrors.tooManyRequests(
+      "Account locked: too many failed login attempts",
+    );
+  }
 
   if (!checkHash(password, u?.password?.hashed)) {
     await logPasswordFailed(req, u, now);
     badLogin();
   }
 
-  checkRestrictions(u, now);
+  if (u.expiredAt) {
+    bad("Account expired. Contact administrator.");
+  }
   return authResult(app, req, u);
 }
 
-function checkRestrictions(user: LoginUserT, now: Date) {
-  const lockUntil = user?.password?.lockUntil;
-  if (lockUntil && lockUntil > now) {
-    throw httpErrors.tooManyRequests(
-      "Account locked: too many failed login attempts",
-    );
-  }
-  if (user.expiredAt) {
-    bad("Account expired. Contact administrator.");
-  }
-}
+function checkRestrictions(user: LoginUserT, now: Date) {}
 
 async function logPasswordFailed(
   req: RequestWith<AuthLoginReqT>,
