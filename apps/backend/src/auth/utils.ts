@@ -102,14 +102,14 @@ export async function checkOtp(userId: string, otp: string, mode: MfaMode) {
       epochTolerance: 30,
     });
     if (!verified.valid) badOtp();
+  } else {
+    const since = new Date(Date.now() - OTP_EXPIRY_MINUTES * 60000);
+    const otps = await prisma.otp.findMany({
+      where: { userId, mode, createdAt: { gte: since } },
+    });
+    const valid = otps.some((o) => compareSync(otp, o.hashed));
+    if (!valid) badOtp();
   }
-
-  const since = new Date(Date.now() - OTP_EXPIRY_MINUTES * 60000);
-  const otps = await prisma.otp.findMany({
-    where: { userId, mode, createdAt: { gte: since } },
-  });
-  const valid = otps.some((o) => compareSync(otp, o.hashed));
-  if (!valid) badOtp();
 
   await prisma.otp.deleteMany({
     where: { userId, reason: OtpReason.CHANGE_PASSWORD },
