@@ -46,7 +46,7 @@ export const navigationData: NavGroup[] = [
   },
   {
     name: m.management(),
-    only: "staff",
+    only: "admin",
     list: [
       {
         name: m.mtn_staff(),

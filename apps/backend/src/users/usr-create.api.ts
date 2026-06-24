@@ -48,7 +48,7 @@ async function createUser(req: RequestWith<UserCreateT>) {
       password: {
         create: {
           hashed,
-          history: [],
+          history: [hashed],
           mfaMode: MfaMode.UNDECIDED,
           mfaVerified: false,
           mustChange: true,

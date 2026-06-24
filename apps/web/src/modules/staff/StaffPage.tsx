@@ -1,5 +1,8 @@
+import { useNavigate } from "@tanstack/react-router";
+import { Spin } from "antd";
 import dayjs from "dayjs";
 import { m } from "i18n/messages";
+import { useEffect } from "react";
 import { type UserFullT, userFullZ } from "schema/people";
 import { zArray } from "schema/utils";
 import { useApiGet } from "#/api/helpers";
@@ -24,6 +27,18 @@ const actions = buildActions<UserFullT, unknown, unknown>(
 
 export default function StaffPage() {
   const query = useApiGet("/users", zArray(userFullZ));
+  const me = useApiGet("/session/user", userFullZ);
+  const nav = useNavigate();
+
+  useEffect(() => {
+    if (!me.data?.isAdmin) {
+      nav({ to: "/", replace: true });
+    }
+  }, [me.data?.isAdmin, nav]);
+
+  if (me.isLoading) {
+    return <Spin />;
+  }
 
   return (
     <DataPage
