@@ -25,6 +25,7 @@ const schema = z.object({
   MAIL_URL: z.url().optional(),
   MAIL_FROM: z.email().optional(),
   MAIL_NAME: z.string().optional(),
+  MAIL_SECURE: z.string().optional(),
 });
 
 export const appEnv = await schema.parseAsync(process.env).catch((e) => {

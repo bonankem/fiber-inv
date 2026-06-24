@@ -13,11 +13,14 @@ function getMailTransport() {
   if (pro === "smtp:") {
     const user = url.username || undefined;
     const pass = url.password || undefined;
+    const secure = appEnv.MAIL_SECURE
+      ? appEnv.MAIL_SECURE === "true"
+      : !!url.port?.includes("465");
     return createTransport({
       host: url.hostname,
       port: Number(url.port),
       auth: { user, pass },
-      secure: url.port?.includes("465"),
+      secure,
     });
   }
 
