@@ -57,7 +57,7 @@ export default function ForgotPage() {
           block
           type="primary"
           loading={send.isPending}
-          disabled={!turnstile}
+          disabled={!!tKey && !turnstile}
         >
           {m.send()}
         </Button>
