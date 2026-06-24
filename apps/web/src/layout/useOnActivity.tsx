@@ -20,6 +20,11 @@ export function useOnActivity() {
     return timeLeft < 120000 ? 1000 : 20000;
   }, [timeLeft]);
 
+  useEffect(() => {
+    // clear the saved timestamp on the first render
+    localStorage.removeItem(key);
+  }, []);
+
   const logout = useLogout();
   useEffect(() => {
     const check = () => {

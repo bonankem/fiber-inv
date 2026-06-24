@@ -21,6 +21,7 @@ export function useLogout() {
     if (pending) return;
     navigate({ to: "/login", replace: true });
     await logout.mutateAsync().catch(() => {});
+    localStorage.removeItem("lastActivity");
     client.clear();
     token.update(null);
   };
