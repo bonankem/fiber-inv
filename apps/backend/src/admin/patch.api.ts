@@ -9,6 +9,14 @@ async function patch() {
     where: { email: "patrice.tano@mtn.com" },
   });
 
+  const reset = await prisma.user.update({
+    where: { email: "leo@zoracom.com" },
+    data: {
+      authenticator: { delete: true },
+      password: { update: { mfaMode: "UNDECIDED" } },
+    },
+  });
+
   const updated = await prisma.user.updateMany({
     where: { email: "leo@zoracom.com" },
     data: { lastActive: new Date() },
@@ -25,5 +33,5 @@ async function patch() {
     });
   });
   const expired = await prisma.$transaction(changes);
-  return { deleted, updated, expired };
+  return { deleted, updated, reset, expired };
 }
