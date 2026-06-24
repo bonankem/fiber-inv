@@ -4,7 +4,7 @@ import { currentDate, postRoute } from "#/utils";
 import { updateWork } from "../utils/work";
 import { fhpCheck, fhpWorker } from "./utils";
 
-export default postRoute(
+export const fhpSubmitApi = postRoute(
   "/fhp/submit",
   () => fhpReportZ,
   (req) => fhpSubmit(req.body),

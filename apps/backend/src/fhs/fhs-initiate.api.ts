@@ -11,7 +11,7 @@ import { Allow } from "../auth/guard";
 import { updateWork } from "../utils/work";
 import { fhsCheck } from "./utils";
 
-export default postRoute(
+export const fhsInitiateApi = postRoute(
   "/fhs/initiate",
   () => fhsInitiateZ,
   (req) => fhsInitiate(req.body, req.authUser),

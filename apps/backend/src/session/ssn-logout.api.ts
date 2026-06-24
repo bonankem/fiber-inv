@@ -2,7 +2,9 @@ import { authLog } from "#/admin/syslog.api";
 import { AuthAction, prisma } from "#/db";
 import { type AnyRequest, bad, postRoute } from "#/utils";
 
-export default postRoute("/session/logout", null, (req) => logout(req));
+export const logoutApi = postRoute("/session/logout", null, (req) =>
+  logout(req),
+);
 
 async function logout(req: AnyRequest) {
   const expiresAt = { lte: new Date() };

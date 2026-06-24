@@ -8,7 +8,7 @@ import { createManyCoords, getLatLngId } from "../utils/queries";
 import { updateWork } from "../utils/work";
 import { fhsCheck, fhsWorker } from "./utils";
 
-export default postRoute(
+export const fhsSubmitApi = postRoute(
   "/fhs/submit",
   () => fhsSubmitZ,
   (req) => fhsSubmit(req.body, req.authUser),

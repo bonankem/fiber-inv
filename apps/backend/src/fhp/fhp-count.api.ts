@@ -6,7 +6,7 @@ import { prisma, WorkStatus as S } from "#/db";
 import { getRoute } from "#/utils";
 import { workNotOpen, workStopped, workWhere } from "./filter";
 
-export default getRoute(
+export const fhpCountApi = getRoute(
   "/fhp/count",
   () => fhpFilterZ,
   (req) => fhpCount(req.query),

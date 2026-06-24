@@ -3,7 +3,7 @@ import { prisma } from "#/db";
 import { getRoute } from "#/utils";
 import { workWhere } from "./filter";
 
-export default getRoute(
+export const fhpListApi = getRoute(
   "/fhp",
   () => fhpFilterZ,
   (req) => fhpList(req.query),

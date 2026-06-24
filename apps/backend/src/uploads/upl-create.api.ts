@@ -10,7 +10,7 @@ import { prisma } from "#/db";
 import { appRoute, bad, type Maybe } from "#/utils";
 import { maybeParse } from "./parsers";
 
-export default appRoute(() => ({
+export const createApi = appRoute(() => ({
   method: "POST",
   url: "/uploads",
   schema: { querystring: uploadOptionsZ },

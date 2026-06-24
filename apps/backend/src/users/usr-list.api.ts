@@ -2,7 +2,7 @@ import { userFullS } from "schema/people";
 import { prisma } from "#/db";
 import { getRoute } from "#/utils";
 
-export default getRoute(
+export const listApi = getRoute(
   "/users",
   () => ({}),
   () => listUsers(),

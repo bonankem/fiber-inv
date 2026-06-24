@@ -14,7 +14,7 @@ import {
 import { prisma } from "#/db";
 import { type AnyRequest, postRoute, unauthorized } from "#/utils";
 
-export default postRoute(
+export const passwordApi = postRoute(
   "/session/password",
   () => sessionPasswordReqZ,
   (req) => changePassword(req),

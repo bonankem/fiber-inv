@@ -4,7 +4,7 @@ import { prisma, WorkStatus } from "#/db";
 import { getRoute } from "#/utils";
 import { workAccess } from "../work/filter";
 
-export default getRoute("/fhs/for-project", null, (req) =>
+export const fhsForProjectApi = getRoute("/fhs/for-project", null, (req) =>
   fhsForProject(req.authUser),
 );
 

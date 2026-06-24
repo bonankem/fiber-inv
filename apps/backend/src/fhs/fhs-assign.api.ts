@@ -5,7 +5,7 @@ import { postRoute } from "#/utils";
 import { updateWork } from "../utils/work";
 import { fhsCheck } from "./utils";
 
-export default postRoute(
+export const fhsAssignApi = postRoute(
   "/fhs/assign",
   () => fhsAssignZ,
   (req) => fhsAssign(req.body, req.authUser),

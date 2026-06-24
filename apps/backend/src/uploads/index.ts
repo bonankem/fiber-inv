@@ -1,14 +1,14 @@
 import { appPlugin } from "#/utils";
-import cleanupApi from "./cleanup.api";
-import createApi from "./create.api";
-import downloadApi from "./download.api";
-import getApi from "./get.api";
-import listApi from "./list.api";
+import { cleanupApi } from "./upl-cleanup.api";
+import { createApi } from "./upl-create.api";
+import { downloadApi } from "./upl-download.api";
+import { getApi } from "./upl-get.api";
+import { listApi } from "./upl-list.api";
 
 export default appPlugin(async (app) => {
-  app.register(downloadApi);
-  app.register(createApi);
   app.register(cleanupApi);
-  app.register(listApi);
+  app.register(createApi);
+  app.register(downloadApi);
   app.register(getApi);
+  app.register(listApi);
 });

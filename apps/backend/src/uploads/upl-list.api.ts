@@ -1,7 +1,7 @@
 import { prisma } from "#/db";
 import { getRoute } from "#/utils";
 
-export default getRoute("/uploads", null, () => {
+export const listApi = getRoute("/uploads", null, () => {
   return prisma.upload.findMany({
     orderBy: { sentAt: "desc" },
     take: 20,

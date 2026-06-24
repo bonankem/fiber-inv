@@ -4,7 +4,7 @@ import { prisma } from "#/db";
 import { idRoute, notFound } from "#/utils";
 import { workAccess } from "../work/filter";
 
-export default idRoute("/fhs/:id", (req) =>
+export const fhsGetApi = idRoute("/fhs/:id", (req) =>
   fhsGet(req.params.id, req.authUser),
 );
 

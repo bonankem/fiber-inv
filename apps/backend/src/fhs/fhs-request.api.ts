@@ -19,7 +19,7 @@ import {
   setDocsFrom,
 } from "../utils/queries";
 
-export default postRoute(
+export const fhsRequestApi = postRoute(
   "/fhs",
   () => fhsRequestZ,
   (req) => fhsRequest(req.body, req.authUser),

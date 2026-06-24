@@ -4,7 +4,7 @@ import { bad, postRoute } from "#/utils";
 import { updateWork } from "../utils/work";
 import { fhpCheck } from "./utils";
 
-export default postRoute(
+export const fhpInitiateApi = postRoute(
   "/fhp/initiate",
   () => fhpInitiateZ,
   (req) => fhpInitiate(req.body),

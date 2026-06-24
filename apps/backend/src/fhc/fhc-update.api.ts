@@ -11,8 +11,8 @@ import {
 } from "#/utils";
 import { updateWork } from "#/utils/work";
 
-export default postRoute(
-  "/fhp/update",
+export const fhcUpdateApi = postRoute(
+  "/fhc/update",
   () => fhcUpdateZ,
   (req) => fhcUpdate(req.body, req.authUser),
 );

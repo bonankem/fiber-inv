@@ -4,7 +4,7 @@ import { prisma } from "#/db";
 import { getRoute } from "#/utils";
 import { fhcWorkWhere } from "./filter";
 
-export default getRoute(
+export const fhcListApi = getRoute(
   "/fhc",
   () => fhcFilterZ,
   (req) => fhcList(req.query, req.authUser),

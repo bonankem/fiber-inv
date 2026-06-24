@@ -1,6 +1,6 @@
 import { appPlugin } from "#/utils";
-import createApi from "./create.api";
-import listApi from "./list.api";
+import { createApi } from "./vnd-create.api";
+import { listApi } from "./vnd-list.api";
 
 export default appPlugin(async (app) => {
   app.register(listApi);

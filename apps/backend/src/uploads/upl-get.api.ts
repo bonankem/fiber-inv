@@ -7,7 +7,7 @@ const paramsZ = z.strictObject({
   name: z.string(),
 });
 
-export default appRoute(() => ({
+export const getApi = appRoute(() => ({
   url: "/uploads/:id/:name",
   method: "GET",
   schema: { params: paramsZ },

@@ -6,7 +6,7 @@ import { postRoute } from "#/utils";
 import { updateWork } from "../utils/work";
 import { fhsCheck } from "./utils";
 
-export default postRoute(
+export const fhsDeclineApi = postRoute(
   "/fhs/decline",
   () => workUpdateZ,
   (req) => fhsDecline(req.body, req.authUser),

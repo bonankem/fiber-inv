@@ -3,7 +3,7 @@ import { prisma } from "#/db";
 import { type AnyReply, getRoute } from "#/utils";
 import { sendCsv } from "#/utils/csv";
 
-export default getRoute("/admin/auth-logs", null, (_, __, res) =>
+export const authLogsAoi = getRoute("/admin/auth-logs", null, (_, __, res) =>
   getAuthLogs(res),
 );
 

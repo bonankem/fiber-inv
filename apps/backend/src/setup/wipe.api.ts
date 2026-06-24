@@ -6,7 +6,7 @@ import { postRoute } from "#/utils";
 import { Allow } from "../auth/guard";
 import { filterTruthy } from "../utils/queries";
 
-export default postRoute(
+export const wipeApi = postRoute(
   "/setup/wipe",
   () => queryZ,
   (req) => wipeDb(req.body),

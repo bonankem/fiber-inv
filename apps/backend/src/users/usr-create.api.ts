@@ -9,7 +9,7 @@ import { sendMail } from "#/mail";
 import { bad, maybeConnect, postRoute, type RequestWith } from "#/utils";
 import { makeKey } from "#/utils/queries";
 
-export default postRoute(
+export const createApi = postRoute(
   "/users",
   () => userCreateZ,
   (req) => createUser(req),

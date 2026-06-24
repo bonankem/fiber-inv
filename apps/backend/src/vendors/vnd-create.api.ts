@@ -3,7 +3,7 @@ import { prisma } from "#/db";
 import { bad, postRoute } from "#/utils";
 import { makeKey } from "../utils/queries";
 
-export default postRoute(
+export const createApi = postRoute(
   "/vendors",
   () => vendorCreateZ,
   (req) => createVendor(req.body),

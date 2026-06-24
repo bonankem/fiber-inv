@@ -7,7 +7,7 @@ import { Allow } from "../auth/guard";
 import { geoInitialize } from "../geo/geo-initialize.api";
 import { create, makeKey } from "../utils/queries";
 
-export default postRoute(
+export const seedApi = postRoute(
   "/setup/seed",
   () => seedReq,
   (req) => seed(req.body),

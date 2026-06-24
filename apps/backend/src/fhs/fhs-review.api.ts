@@ -6,7 +6,7 @@ import { bad, currentDate, postRoute } from "#/utils";
 import { updateWork } from "../utils/work";
 import { fhsCheck } from "./utils";
 
-export default postRoute(
+export const fhsReviewApi = postRoute(
   "/fhs/review",
   () => fhsReviewZ,
   (req) => fhsReview(req.body, req.authUser),

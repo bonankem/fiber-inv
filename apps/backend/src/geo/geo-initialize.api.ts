@@ -7,7 +7,9 @@ import polygons from "./geo.json" with { type: "json" };
 import { geoNames } from "./geo.names";
 import { ringWithBbox } from "./utils";
 
-export default postRoute("/geo/initialize", null, () => geoInitialize());
+export const geoInitializeApi = postRoute("/geo/initialize", null, () =>
+  geoInitialize(),
+);
 
 export async function geoInitialize() {
   const boundaries = assoc(

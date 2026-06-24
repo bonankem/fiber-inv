@@ -4,7 +4,7 @@ import { prisma, WorkAction, WorkStatus } from "#/db";
 import { connectId, postRoute } from "#/utils";
 import { addLog, create, makeKey, nextId, setCoords } from "#/utils/queries";
 
-export default postRoute(
+export const fhcRequestApi = postRoute(
   "/fhc",
   () => fhcRequestZ,
   (req) => fhcRequest(req.body, req.authUser),

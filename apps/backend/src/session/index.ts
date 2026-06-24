@@ -1,7 +1,7 @@
 import { appPlugin } from "#/utils";
-import logoutApi from "./logout.api";
-import passwordApi from "./password.api";
-import userApi from "./user.api";
+import { logoutApi } from "./ssn-logout.api";
+import { passwordApi } from "./ssn-password.api";
+import { userApi } from "./ssn-user.api";
 
 export default appPlugin(async (app) => {
   app.register(userApi);

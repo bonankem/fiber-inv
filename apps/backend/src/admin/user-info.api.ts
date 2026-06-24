@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { prisma } from "#/db";
 import { type AnyReply, getRoute } from "#/utils";
 
-export default getRoute("/admin/user-info", null, (_, __, res) =>
+export const userInfoApi = getRoute("/admin/user-info", null, (_, __, res) =>
   userInfo(res),
 );
 

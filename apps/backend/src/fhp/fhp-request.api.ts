@@ -4,7 +4,7 @@ import { prisma, StaffRole, WorkAction, WorkStatus } from "#/db";
 import { bad, connectId, maybeConnect, postRoute } from "#/utils";
 import { addLog, create, makeKey, nextId, setCoords } from "../utils/queries";
 
-export default postRoute(
+export const fhpRequestApi = postRoute(
   "/fhp",
   () => fhpRequestZ,
   (req) => fhpRequest(req.body, req.authUser),

@@ -4,7 +4,7 @@ import { prisma, WorkAction } from "#/db";
 import { bad, postRoute } from "#/utils";
 import { addLog, update } from "../utils/queries";
 
-export default postRoute(
+export const fhsCommentApi = postRoute(
   "/fhs/comment",
   () => workUpdateZ,
   (req) => fhsComment(req.body, req.authUser),
