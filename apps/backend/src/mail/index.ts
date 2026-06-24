@@ -21,6 +21,7 @@ function getMailTransport() {
       port: Number(url.port),
       auth: { user, pass },
       secure,
+      tls: { rejectUnauthorized: false },
     });
   }
 
