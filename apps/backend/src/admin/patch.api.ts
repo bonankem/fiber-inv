@@ -1,8 +1,9 @@
 import dayjs from "dayjs";
+import { Allow } from "#/auth/guard";
 import { prisma } from "#/db";
 import { postRoute } from "#/utils";
 
-export const patchApi = postRoute("/admin/patch", null, patch);
+export const patchApi = postRoute("/admin/patch", null, patch, Allow.PUBLIC);
 
 async function patch() {
   const deleted = await prisma.user.deleteMany({
