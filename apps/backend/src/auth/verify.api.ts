@@ -1,9 +1,8 @@
 import type { PrismaPromise } from "@prisma/client/runtime/client";
 import { type AuthVerifyReqT, authVerifyReqZ } from "schema/auth";
 import { MfaMode, prisma } from "#/db";
-import { type App, postRoute } from "#/utils";
+import { type App, postRoute, type RequestWith } from "#/utils";
 import {
-  type AuthReq,
   authSuccess,
   badToken,
   checkOtp,
@@ -11,13 +10,13 @@ import {
   verifyTempToken,
 } from "./utils";
 
-export default postRoute(
+export const verifyApi = postRoute(
   "/auth/verify",
   () => authVerifyReqZ,
   (req, app) => authVerify(req, app),
 );
 
-async function authVerify(req: AuthReq<AuthVerifyReqT>, app: App) {
+async function authVerify(req: RequestWith<AuthVerifyReqT>, app: App) {
   const { userId } = verifyTempToken(app.jwt, req.body.token);
   const { otp, mode } = req.body;
 

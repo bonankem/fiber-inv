@@ -1,11 +1,31 @@
-import { Form } from "antd";
+import { Form, message } from "antd";
 import { m } from "i18n/messages";
-import type { SecurityT } from "schema/admin";
+import { useEffect, useState } from "react";
+import { type SecurityT, securityZ } from "schema/admin";
+import { apiCall, useApiGet, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import IntInput from "#/components/inputs/IntInput";
 import type { ModalItemProps } from "#/hooks/useModalViewer";
 
 export default function SecurityForm(props: ModalItemProps<SecurityT>) {
+  const [form] = Form.useForm<SecurityT>();
+  const query = useApiGet<SecurityT>("/admin/security", securityZ);
+  const send = useApiPost<SecurityT>("/admin/security", ["admin"]);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    if (query.data && !ready) {
+      form.setFieldsValue(query.data);
+      setReady(true);
+    }
+  }, [ready, query.data, form]);
+
+  const onSubmit = apiCall(async (data: SecurityT) => {
+    await send.mutateAsync(data);
+    message.success(m.saved());
+    props.state.close();
+  });
+
   const label = {
     labelCol: { span: 16 },
     labelAlign: "left",
@@ -13,8 +33,10 @@ export default function SecurityForm(props: ModalItemProps<SecurityT>) {
 
   return (
     <FormModal
+      width={400}
       state={props.state}
       title={m.sec_settings()}
+      onSubmit={onSubmit}
       okText={m.save()}
       checkbox={false}
       layout="horizontal"
@@ -30,7 +52,15 @@ export default function SecurityForm(props: ModalItemProps<SecurityT>) {
         <IntInput controls={false} suffix={m.days()} />
       </Form.Item>
 
-      <Form.Item name="userInactiveDays" label={m.sec_new_accts()} {...label}>
+      <Form.Item name="newInactiveDays" label={m.sec_new_accts()} {...label}>
+        <IntInput controls={false} suffix={m.days()} />
+      </Form.Item>
+
+      <Form.Item
+        name="inactiveLockDays"
+        label={m.sec_remove_expired()}
+        {...label}
+      >
         <IntInput controls={false} suffix={m.days()} />
       </Form.Item>
 

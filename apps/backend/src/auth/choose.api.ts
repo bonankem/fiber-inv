@@ -1,21 +1,15 @@
 import { type AuthChooseReqT, authChooseReqZ } from "schema/auth";
 import { MfaMode, prisma } from "#/db";
-import { type App, bad, postRoute } from "#/utils";
-import {
-  type AuthReq,
-  authResult,
-  badToken,
-  getLoginUser,
-  verifyTempToken,
-} from "./utils";
+import { type App, bad, postRoute, type RequestWith } from "#/utils";
+import { authResult, badToken, getLoginUser, verifyTempToken } from "./utils";
 
-export default postRoute(
+export const chooseApi = postRoute(
   "/auth/choose",
   () => authChooseReqZ,
   (req, app) => authChoose(req, app),
 );
 
-async function authChoose(req: AuthReq<AuthChooseReqT>, app: App) {
+async function authChoose(req: RequestWith<AuthChooseReqT>, app: App) {
   const { userId } = verifyTempToken(app.jwt, req.body.token);
   const mfaMode = req.body.mode;
 

@@ -1,8 +1,7 @@
 import { createTransport } from "nodemailer";
 import type Mail from "nodemailer/lib/mailer";
-import { filterTruthy } from "schema/utils";
 import { appEnv } from "#/env";
-import type { AppLog } from "#/utils";
+import type { AppLog, Maybe } from "#/utils";
 
 function getMailTransport() {
   const envUrl = appEnv.MAIL_URL;
@@ -49,7 +48,7 @@ type MailData = {
   subject: string;
   lines: string[];
   fields?: [string, string][];
-  button?: `/${string}` | false;
+  button?: `/${string}` | [string, `/${string}`] | false;
 };
 
 const escapes = {
@@ -72,32 +71,42 @@ function cleanText(s: string) {
   return s.replace(/\s+/g, " ").trim();
 }
 
-function renderHtmlFields(mail: MailData) {
-  if (!mail.fields?.length) return "";
-  const lines = mail.fields.map(([k, v]) => {
+function renderFields({ fields }: MailData) {
+  if (!fields?.length) return null;
+
+  const lines = fields.map(([k, v]) => {
     k = escapeHtml(k);
     v = escapeHtml(v);
     return `<b>${k}<b>: ${v}</br>`;
   });
-  return `<p>${lines.join("")}</p>`;
-}
-
-function renderTextFields(mail: MailData) {
-  if (!mail.fields?.length) return "";
-  return mail.fields
+  const html = `<p class="line">${lines.join("")}</p>`;
+  const text = fields
     .map(([k, v]) => `${cleanText(k)}: ${cleanText(v)}\n`)
     .join("");
+  return { html, text };
 }
 
 const frontendUrl = appEnv.FRONTEND_URL?.replace(/\/$/, "");
 
-function getButtonUrl(mail: MailData) {
-  const path = mail.button;
-  if (!path || !frontendUrl) return "";
-  return new URL(path, frontendUrl).href;
+function renderButton(mail: MailData) {
+  const b = mail.button;
+  if (!b || !frontendUrl) return null;
+
+  const path = Array.isArray(b) ? b[1] : b;
+  const href = new URL(path, frontendUrl).href;
+
+  const html = `<p><a href="${href}"
+    class="button"
+    style="background-color: #ffcb05; color: #000000">
+    ${Array.isArray(b) ? b[0] : "Open ServiceX"}
+  </button></a><p>`.replace(/\n */g, " ");
+  return { html, href };
+}
+function composeText(...lines: Maybe<string>[]) {
+  return lines.filter(Boolean).join("\n\n");
 }
 
-function composeHtml(lines: (string | string[])[]) {
+function composeHtml(...lines: Maybe<string>[]) {
   const result = `
   <!DOCTYPE html>
   <html>
@@ -139,7 +148,7 @@ function composeHtml(lines: (string | string[])[]) {
   <body>
     <div class="wrapper">
     <div class="content">
-    ${lines.flat().filter(Boolean).join("\n")}
+    ${lines.filter(Boolean).join("\n")}
     </div>
     <div style="font-size:4px;color:#f0f0f0">${new Date().toString()}</div>
     </div>
@@ -148,36 +157,20 @@ function composeHtml(lines: (string | string[])[]) {
   return result.replace(/\n +/g, "\n").trim();
 }
 
-function getButtonHtml(url: string) {
-  if (!url) return "";
-  return `<p><a href="${url}"
-    class="button"
-    style="background-color: #ffcb05; color: #000000">
-    Open ServiceX
-  </button></a><p>`.replace(/\n */g, " ");
-}
-
-export function sendMail(mail: MailData) {
-  if (!mailer) return;
+export function sendMail(mail: Maybe<MailData>) {
+  if (!mailer || !mail?.to?.length) return;
 
   const { to, subject, lines } = mail;
-  if (mail.to.length === 0) return;
-
   const htmlLines = lines.map((s) => `<p class="line">${escapeHtml(s)}</p>`);
   const textLines = lines.map((s) => cleanText(s));
-  const htmlField = renderHtmlFields(mail);
-  const textField = renderTextFields(mail);
-  const url = getButtonUrl(mail);
-  const button = getButtonHtml(url);
+  const fields = renderFields(mail);
+  const button = renderButton(mail);
 
-  const text = filterTruthy([...textLines, textField, url]).join("\n\n");
-  const html = composeHtml([...htmlLines, htmlField, button]);
+  const text = composeText(...textLines, fields?.text, button?.href);
+  const html = composeHtml(...htmlLines, fields?.html, button?.html);
+  const data: Mail.Options = { from, to, subject, html, text };
 
-  const options: Mail.Options = { to, from, subject, html, text };
-  mailLog.info("About to send");
-  mailer.sendMail(options, (e) => {
+  mailer.sendMail(data, (e) => {
     if (e) mailLog.warn(`Mail error: ${e.message}`);
-    else mailLog.info("Mail sent");
-    mailLog.info("Mail done");
   });
 }

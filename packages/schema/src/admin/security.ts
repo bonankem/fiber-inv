@@ -12,11 +12,11 @@ export const securityS = {
 
 export const securityZ = zObject("SecurityT", {
   adminInactiveDays: z.int(),
+  userInactiveDays: z.int(),
+  newInactiveDays: z.int(),
   inactiveLockDays: z.int(),
   lockoutAttempts: z.int(),
   lockoutMinutes: z.int(),
-  newInactiveDays: z.int(),
-  userInactiveDays: z.int(),
 } satisfies Record<keyof typeof securityS, object>);
 
 type SecurityP = Prisma.SecurityGetPayload<{ select: typeof securityS }>;

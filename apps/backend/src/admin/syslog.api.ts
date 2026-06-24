@@ -3,7 +3,7 @@ import type { SyslogT } from "schema/admin";
 import { syslogZ } from "schema/admin";
 import { CEF } from "syslog-pro";
 import { type AuthAction, prisma } from "#/db";
-import { getRoute, postRoute } from "#/utils";
+import { type AnyRequest, getRoute, postRoute } from "#/utils";
 
 const defaultSyslog: SyslogT = {
   host: "127.0.0.1",
@@ -51,12 +51,24 @@ type Info = {
   email?: string;
 };
 
-export async function sendSyslog(action: AuthAction, info?: Info) {
+export async function authLog(
+  action: AuthAction,
+  req: AnyRequest,
+  email: string,
+) {
+  await prisma.authLog.create({
+    data: {
+      action,
+      email,
+      ipAddress: req.ip,
+      userAgent: req.headers["user-agent"],
+    },
+  });
+
   if (!syslogServer.enabled) {
     console.log("syslog disabled");
     return;
   }
-
   const log = new CEF({
     ...params,
     server: {
@@ -67,7 +79,7 @@ export async function sendSyslog(action: AuthAction, info?: Info) {
     name: action,
     severity: severities[action],
     deviceEventClassId: classIds[action].toString(),
-    extensions: info,
+    extensions: { email, ip: req.ip },
   });
   await log.send().catch(() => {});
 }

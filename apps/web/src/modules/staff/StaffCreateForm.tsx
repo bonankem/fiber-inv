@@ -25,7 +25,8 @@ export default function StaffCreateForm(props: ModalStateProps) {
   const send = useApiPost<UserCreateT, UserFullT>("/users", "all");
 
   const onSubmit = apiCall(async (data: Data) => {
-    const { type: _, ...out } = data;
+    const { type, ...out } = data;
+    if (type === "Admin") out.isAdmin = true;
     const result = await send.mutateAsync(out);
     message.success(`Added ${result.name}`);
     props.state.close();

@@ -48,8 +48,8 @@ export default function SyslogForm(props: ModalStateProps) {
       <Form.Item name="enabled" label={m.state()}>
         <Select
           options={[
-            { value: true, label: "Enabled" },
-            { value: false, label: "Disabled" },
+            { value: true, label: m.enabled() },
+            { value: false, label: m.disabled() },
           ]}
         />
       </Form.Item>

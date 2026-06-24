@@ -18,8 +18,11 @@ async function patch() {
     where: { lastActive: null },
   });
   const changes = users.map((u) => {
-    const expiredAt = dayjs(u.createdAt).add(2, "days").toDate();
-    return prisma.user.update({ where: { id: u.id }, data: { expiredAt } });
+    const expiredAt = dayjs(u.createdAt).add(1, "days").toDate();
+    return prisma.user.update({
+      where: { id: u.id },
+      data: { expiredAt },
+    });
   });
   const expired = await prisma.$transaction(changes);
   return { deleted, updated, expired };

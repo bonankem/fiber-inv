@@ -19,8 +19,9 @@ import { Route as UserOverviewRouteImport } from './routes/_user/overview'
 import { Route as UserFtthSurveysRouteImport } from './routes/_user/ftth-surveys'
 import { Route as UserFtthProjectsRouteImport } from './routes/_user/ftth-projects'
 import { Route as UserFtthConnectionsRouteImport } from './routes/_user/ftth-connections'
-import { Route as AuthResetRouteImport } from './routes/_auth/reset'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
+import { Route as AuthForgotRouteImport } from './routes/_auth/forgot'
+import { Route as AuthResetCodeRouteImport } from './routes/_auth/reset.$code'
 
 const UserRouteRoute = UserRouteRouteImport.update({
   id: '/_user',
@@ -70,21 +71,26 @@ const UserFtthConnectionsRoute = UserFtthConnectionsRouteImport.update({
   path: '/ftth-connections',
   getParentRoute: () => UserRouteRoute,
 } as any)
-const AuthResetRoute = AuthResetRouteImport.update({
-  id: '/reset',
-  path: '/reset',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthForgotRoute = AuthForgotRouteImport.update({
+  id: '/forgot',
+  path: '/forgot',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthResetCodeRoute = AuthResetCodeRouteImport.update({
+  id: '/reset/$code',
+  path: '/reset/$code',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/forgot': typeof AuthForgotRoute
   '/login': typeof AuthLoginRoute
-  '/reset': typeof AuthResetRoute
   '/ftth-connections': typeof UserFtthConnectionsRoute
   '/ftth-projects': typeof UserFtthProjectsRoute
   '/ftth-surveys': typeof UserFtthSurveysRoute
@@ -92,11 +98,12 @@ export interface FileRoutesByFullPath {
   '/security': typeof UserSecurityRoute
   '/staff': typeof UserStaffRoute
   '/vendors': typeof UserVendorsRoute
+  '/reset/$code': typeof AuthResetCodeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/forgot': typeof AuthForgotRoute
   '/login': typeof AuthLoginRoute
-  '/reset': typeof AuthResetRoute
   '/ftth-connections': typeof UserFtthConnectionsRoute
   '/ftth-projects': typeof UserFtthProjectsRoute
   '/ftth-surveys': typeof UserFtthSurveysRoute
@@ -104,14 +111,15 @@ export interface FileRoutesByTo {
   '/security': typeof UserSecurityRoute
   '/staff': typeof UserStaffRoute
   '/vendors': typeof UserVendorsRoute
+  '/reset/$code': typeof AuthResetCodeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
   '/_user': typeof UserRouteRouteWithChildren
+  '/_auth/forgot': typeof AuthForgotRoute
   '/_auth/login': typeof AuthLoginRoute
-  '/_auth/reset': typeof AuthResetRoute
   '/_user/ftth-connections': typeof UserFtthConnectionsRoute
   '/_user/ftth-projects': typeof UserFtthProjectsRoute
   '/_user/ftth-surveys': typeof UserFtthSurveysRoute
@@ -119,13 +127,14 @@ export interface FileRoutesById {
   '/_user/security': typeof UserSecurityRoute
   '/_user/staff': typeof UserStaffRoute
   '/_user/vendors': typeof UserVendorsRoute
+  '/_auth/reset/$code': typeof AuthResetCodeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/forgot'
     | '/login'
-    | '/reset'
     | '/ftth-connections'
     | '/ftth-projects'
     | '/ftth-surveys'
@@ -133,11 +142,12 @@ export interface FileRouteTypes {
     | '/security'
     | '/staff'
     | '/vendors'
+    | '/reset/$code'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/forgot'
     | '/login'
-    | '/reset'
     | '/ftth-connections'
     | '/ftth-projects'
     | '/ftth-surveys'
@@ -145,13 +155,14 @@ export interface FileRouteTypes {
     | '/security'
     | '/staff'
     | '/vendors'
+    | '/reset/$code'
   id:
     | '__root__'
     | '/'
     | '/_auth'
     | '/_user'
+    | '/_auth/forgot'
     | '/_auth/login'
-    | '/_auth/reset'
     | '/_user/ftth-connections'
     | '/_user/ftth-projects'
     | '/_user/ftth-surveys'
@@ -159,6 +170,7 @@ export interface FileRouteTypes {
     | '/_user/security'
     | '/_user/staff'
     | '/_user/vendors'
+    | '/_auth/reset/$code'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -239,13 +251,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserFtthConnectionsRouteImport
       parentRoute: typeof UserRouteRoute
     }
-    '/_auth/reset': {
-      id: '/_auth/reset'
-      path: '/reset'
-      fullPath: '/reset'
-      preLoaderRoute: typeof AuthResetRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
     '/_auth/login': {
       id: '/_auth/login'
       path: '/login'
@@ -253,17 +258,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/forgot': {
+      id: '/_auth/forgot'
+      path: '/forgot'
+      fullPath: '/forgot'
+      preLoaderRoute: typeof AuthForgotRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/reset/$code': {
+      id: '/_auth/reset/$code'
+      path: '/reset/$code'
+      fullPath: '/reset/$code'
+      preLoaderRoute: typeof AuthResetCodeRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
   }
 }
 
 interface AuthRouteRouteChildren {
+  AuthForgotRoute: typeof AuthForgotRoute
   AuthLoginRoute: typeof AuthLoginRoute
-  AuthResetRoute: typeof AuthResetRoute
+  AuthResetCodeRoute: typeof AuthResetCodeRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthForgotRoute: AuthForgotRoute,
   AuthLoginRoute: AuthLoginRoute,
-  AuthResetRoute: AuthResetRoute,
+  AuthResetCodeRoute: AuthResetCodeRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(

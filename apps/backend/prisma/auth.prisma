@@ -101,3 +101,15 @@ model AuthLog {
 
     @@index([email])
 }
+
+model PasswordReset {
+    email String @db.Citext
+
+    key String @unique
+
+    hashed String
+
+    createdAt DateTime @default(now())
+
+    expiresAt DateTime
+}

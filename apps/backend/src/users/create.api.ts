@@ -1,12 +1,12 @@
 import { randomBytes } from "node:crypto";
 import { hashSync } from "bcryptjs";
 import { type UserCreateT, userCreateZ, userS } from "schema/people";
-import { sendSyslog } from "#/admin/syslog.api";
+import { authLog } from "#/admin/syslog.api";
 import { Allow } from "#/auth/guard";
 import { AuthAction, MfaMode, prisma } from "#/db";
 import { isDev } from "#/env";
 import { sendMail } from "#/mail";
-import { type AnyRequest, bad, maybeConnect, postRoute } from "#/utils";
+import { bad, maybeConnect, postRoute, type RequestWith } from "#/utils";
 import { makeKey } from "#/utils/queries";
 
 export default postRoute(
@@ -16,11 +16,7 @@ export default postRoute(
   Allow.ADMIN,
 );
 
-type Req = AnyRequest & {
-  body: UserCreateT;
-};
-
-async function createUser(req: Req) {
+async function createUser(req: RequestWith<UserCreateT>) {
   const { name, email, isAdmin, staffRole, vendorId } = req.body;
 
   if (!isAdmin && !staffRole && !vendorId) {
@@ -62,18 +58,7 @@ async function createUser(req: Req) {
     select: userS,
   });
 
-  await prisma.authLog.create({
-    data: {
-      action: AuthAction.ADD_USER,
-      email: user.email,
-      ipAddress: req.ip,
-      userAgent: req.headers["user-agent"] || "",
-    },
-  });
-  await sendSyslog(AuthAction.ADD_USER, {
-    email: user.email,
-    ip: req.ip,
-  });
+  await authLog(AuthAction.ADD_USER, req, user.email);
 
   sendMail({
     subject: "Welcome to ServiceX",

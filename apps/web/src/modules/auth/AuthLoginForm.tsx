@@ -53,7 +53,7 @@ export default function AuthLoginForm(props: LoginFormProps) {
             <Lang locale="en" abbr="EN" name="English" />/
             <Lang locale="fr" abbr="FR" name="Français" />
           </section>
-          <TextLink to="/reset">{m.forgot_password()}</TextLink>
+          <TextLink to="/forgot">{m.forgot_password()}</TextLink>
         </section>
       </Form>
     </main>

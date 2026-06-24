@@ -1,11 +1,17 @@
 import { httpErrors } from "@fastify/sensible";
 import dayjs from "dayjs";
 import { type AuthLoginReqT, authLoginReqZ } from "schema/auth";
-import { sendSyslog } from "#/admin/syslog.api";
+import { authLog } from "#/admin/syslog.api";
 import { AuthAction, prisma } from "#/db";
-import { type App, bad, type Maybe, postRoute } from "#/utils";
 import {
-  type AuthReq,
+  type AnyRequest,
+  type App,
+  bad,
+  type Maybe,
+  postRoute,
+  type RequestWith,
+} from "#/utils";
+import {
   authResult,
   badLogin,
   checkHash,
@@ -13,13 +19,13 @@ import {
   type LoginUserT,
 } from "./utils";
 
-export default postRoute(
+export const loginApi = postRoute(
   "/auth/login",
   () => authLoginReqZ,
   (req, app) => login(req, app),
 );
 
-async function login(req: AuthReq<AuthLoginReqT>, app: App) {
+async function login(req: RequestWith<AuthLoginReqT>, app: App) {
   const { email, password } = req.body;
   const u = await getLoginUser({ email });
 
@@ -47,25 +53,17 @@ function checkRestrictions(user: LoginUserT, now: Date) {
 }
 
 async function logPasswordFailed(
-  req: AuthReq<AuthLoginReqT>,
+  req: RequestWith<AuthLoginReqT>,
   user: Maybe<LoginUserT>,
   time: Date,
 ) {
   const email = req.body.email;
-  await prisma.authLog.create({
-    data: {
-      action: AuthAction.PASSWORD_FAILED,
-      email,
-      time,
-      ipAddress: req.ip,
-      userAgent: req.headers["user-agent"],
-    },
-  });
-  await sendSyslog(AuthAction.PASSWORD_FAILED, { email, ip: req.ip });
+
+  await authLog(AuthAction.PASSWORD_FAILED, req, email);
   if (user) await maybeLockout(user, req, time);
 }
 
-async function maybeLockout(user: LoginUserT, req: AuthReq, time: Date) {
+async function maybeLockout(user: LoginUserT, req: AnyRequest, time: Date) {
   const { PASSWORD_FAILED, LOGIN_SUCCESS } = AuthAction;
   const sec = await prisma.security.findFirst();
   if (!sec) return;
@@ -85,14 +83,6 @@ async function maybeLockout(user: LoginUserT, req: AuthReq, time: Date) {
   if (attempts.every((a) => a.action === PASSWORD_FAILED)) {
     const lockUntil = dayjs(time).add(sec.lockoutMinutes, "minutes").toDate();
     await prisma.password.update({ where: { userId }, data: { lockUntil } });
-    await prisma.authLog.create({
-      data: {
-        action: AuthAction.LOCKOUT,
-        email,
-        ipAddress: req.ip,
-        userAgent: req.headers["user-agent"],
-      },
-    });
-    await sendSyslog(AuthAction.LOCKOUT, { email, ip: req.ip });
+    await authLog(AuthAction.LOCKOUT, req, email);
   }
 }

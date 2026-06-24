@@ -15,7 +15,7 @@ import type { LoginFormProps } from "./utils";
 type Props = LoginFormProps<{ res: AuthNeedsChangeT }>;
 
 export default function AuthChangeForm(props: Props) {
-  const changeQ = useApiPost<AuthChangeReqT, AuthResultT>("/auth/change");
+  const send = useApiPost<AuthChangeReqT, AuthResultT>("/auth/change");
 
   type Input = {
     oldPassword: string;
@@ -26,7 +26,7 @@ export default function AuthChangeForm(props: Props) {
   const checks = usePasswordChecks(form, props.res);
 
   const onSubmit = apiCall(async (input: Input) => {
-    const result = await changeQ.mutateAsync({
+    const result = await send.mutateAsync({
       token: props.res.token,
       oldPassword: input.oldPassword,
       newPassword: input.newPassword,
@@ -77,14 +77,14 @@ export default function AuthChangeForm(props: Props) {
           block
           type="primary"
           htmlType="submit"
-          loading={changeQ.isPending}
+          loading={send.isPending}
           disabled={!checks.allOk}
         >
           {m.send()}
         </Button>
 
         <section className="mt-4 flex justify-end">
-          <TextLink disabled={changeQ.isPending} onClick={props.onCancel}>
+          <TextLink disabled={send.isPending} onClick={props.onCancel}>
             {m.back()}
           </TextLink>
         </section>

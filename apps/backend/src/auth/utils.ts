@@ -1,5 +1,4 @@
 import { randomInt } from "node:crypto";
-import type { IncomingHttpHeaders } from "node:http";
 import type { JWT } from "@fastify/jwt";
 import { httpErrors } from "@fastify/sensible";
 import { compare, compareSync, hashSync } from "bcryptjs";
@@ -13,7 +12,7 @@ import {
 } from "schema/auth";
 import { userFullP } from "schema/people";
 import z from "zod";
-import { sendSyslog } from "#/admin/syslog.api";
+import { authLog } from "#/admin/syslog.api";
 import { AuthAction, MfaMode, OtpReason, type Prisma, prisma } from "#/db";
 import { isDev } from "#/env";
 import { sendMail } from "#/mail";
@@ -117,13 +116,6 @@ export async function checkOtp(userId: string, otp: string, mode: MfaMode) {
   });
 }
 
-export type AuthReq<T = unknown> = {
-  ip: string;
-  body: T;
-  headers: IncomingHttpHeaders;
-  jwtVerify: AnyRequest["jwtVerify"];
-};
-
 export const loginUserS = {
   id: true,
   name: true,
@@ -150,7 +142,7 @@ export function checkHash(
 
 export async function authSuccess(
   app: App,
-  req: AuthReq,
+  req: AnyRequest,
   userId: string,
   existing?: string,
 ): Promise<AuthSuccessT> {
@@ -179,18 +171,7 @@ export async function authSuccess(
     data: { lastActive: now },
   });
 
-  await prisma.authLog.create({
-    data: {
-      action: AuthAction.LOGIN_SUCCESS,
-      email: user.email,
-      ipAddress: (req.headers["x-real-ip"] as string) || req.ip,
-      userAgent: req.headers["user-agent"],
-    },
-  });
-  await sendSyslog(AuthAction.LOGIN_SUCCESS, {
-    email: user.email,
-    ip: req.ip,
-  });
+  await authLog(AuthAction.LOGIN_SUCCESS, req, user.email);
 
   await prisma.password.update({
     where: { userId },
@@ -229,7 +210,7 @@ async function authInstall(u: LoginUserT, secret: string) {
 
 export async function authResult(
   app: App,
-  req: AuthReq,
+  req: AnyRequest,
   user: LoginUserT,
   modePicked?: boolean,
 ): Promise<AuthResultT> {

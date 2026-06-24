@@ -33,10 +33,10 @@ function req(label: string, ok: (p: string) => boolean) {
 }
 
 export function usePasswordChecks<
-  F extends { oldPassword: string; newPassword: string },
+  F extends { oldPassword?: string; newPassword: string },
 >(
   form: FormInstance<F>,
-  user: Maybe<Pick<UserFullT, "name" | "email" | "isAdmin">>,
+  user?: Maybe<Pick<UserFullT, "name" | "email" | "isAdmin">>,
 ) {
   const [showNew, setShowNew] = useState(false);
   const visibilityToggle = {
@@ -72,7 +72,8 @@ export function usePasswordChecks<
 
   const newPassRule: Rule = (form) => ({
     async validator(_, value) {
-      if (value && value === form.getFieldValue("oldPassword")) {
+      const old = form.getFieldValue("oldPassword");
+      if (value && old && value === old) {
         throw new Error(m.error_same_password());
       }
     },

@@ -38,6 +38,7 @@ export function getReqToken(req: AppRequest<FastifySchema>) {
 }
 
 export const authGuard = fastifyPlugin(async (app) => {
+  // default access policy is to allow only logged-in users
   app.decorateRequest("allow", Allow.USER);
   app.decorateRequest("maybeIds", null);
   app.decorateRequest("maybeUser", null);

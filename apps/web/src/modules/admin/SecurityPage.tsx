@@ -34,6 +34,11 @@ export default function SecurityPage() {
               label: m.sec_new_accts(),
               children: data?.newInactiveDays,
             },
+            {
+              key: "4",
+              label: m.sec_remove_expired(),
+              children: data?.inactiveLockDays,
+            },
           ]}
         />
 

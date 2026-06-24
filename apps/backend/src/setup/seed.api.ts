@@ -1,5 +1,5 @@
 import { hashSync } from "bcryptjs";
-import { zFormObject } from "schema/utils";
+import { zObject } from "schema/utils";
 import z from "zod";
 import { MfaMode, type Prisma, prisma, StaffRole } from "#/db";
 import { postRoute } from "#/utils";
@@ -14,7 +14,7 @@ export default postRoute(
   Allow.PUBLIC,
 );
 
-export const seedReq = zFormObject("SeedReqT", {
+export const seedReq = zObject("SeedReqT", {
   users: z.array(
     z.strictObject({
       name: z.string(),

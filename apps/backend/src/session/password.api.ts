@@ -4,7 +4,7 @@ import {
   type SessionPasswordResT,
   sessionPasswordReqZ,
 } from "schema/session";
-import { sendSyslog } from "#/admin/syslog.api";
+import { authLog } from "#/admin/syslog.api";
 import {
   checkOtp,
   checkPasswordChange,
@@ -33,32 +33,19 @@ async function changePassword(req: Req): Promise<SessionPasswordResT> {
     req.body.newPassword,
     user,
   );
+  const userId = user.id;
 
-  const mfa = user.password?.mfaMode ?? MfaMode.NONE;
-  if (mfa !== MfaMode.NONE) {
+  const mfa = user.password?.mfaMode;
+  if (mfa && mfa !== MfaMode.NONE) {
     const otp = req.body.otp;
     if (!otp) {
       deliverOtp(mfa, user, OtpReason.CHANGE_PASSWORD);
       return { needsOtp: mfa };
     }
-    await checkOtp(user.id, otp, mfa);
+    await checkOtp(userId, otp, mfa);
   }
 
-  await prisma.password.update({
-    where: { userId: user.id },
-    data,
-  });
-  await prisma.authLog.create({
-    data: {
-      action: AuthAction.CHANGE_PASSWORD,
-      email: user.email,
-      ipAddress: req.ip,
-      userAgent: req.headers["user-agent"],
-    },
-  });
-  await sendSyslog(AuthAction.CHANGE_PASSWORD, {
-    email: user.email,
-    ip: req.ip,
-  });
+  await prisma.password.update({ where: { userId }, data });
+  await authLog(AuthAction.CHANGE_PASSWORD, req, user.email);
   return { needsOtp: MfaMode.NONE };
 }
