@@ -1,4 +1,5 @@
 import { Tooltip } from "antd";
+import { m } from "i18n/messages";
 import type { CoordsT } from "schema/geo";
 import type { Maybe } from "schema/utils";
 
@@ -14,7 +15,7 @@ export default function CoordsLink(props: { coords: Maybe<CoordsT> }) {
   const link = `https://www.google.com/maps/place/${c.lat},${c.lng}`;
 
   return (
-    <Tooltip title="View on Google Maps">
+    <Tooltip title={m.view_on_google_maps()}>
       <a
         href={link}
         target="_blank"

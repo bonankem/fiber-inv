@@ -17,7 +17,8 @@ type Props = {
 
 export default function DateInput(props: Props) {
   const change = (d: Dayjs | null) => {
-    props.onChange?.(d?.format("YYYY-MM-DD") || null);
+    const value = d?.format("YYYY-MM-DD") || null;
+    props.onChange?.(value);
   };
   return (
     <DatePicker

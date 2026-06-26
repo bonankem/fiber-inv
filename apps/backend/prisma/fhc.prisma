@@ -13,9 +13,6 @@ model FtthConnection {
 
     phone String?
 
-    area   FtthArea? @relation(fields: [areaId], references: [id])
-    areaId String?   @db.Uuid
-
     olt   Olt?    @relation(fields: [oltId], references: [id])
     oltId String? @db.Uuid
 

@@ -1,5 +1,6 @@
 import { appPlugin } from "#/utils";
 import { fhsAssignApi } from "./fhs-assign.api";
+import { fhsCodesApi } from "./fhs-codes.api";
 import { fhsCommentApi } from "./fhs-comment.api";
 import { fhsCountApi } from "./fhs-count.api";
 import { fhsDeclineApi } from "./fhs-decline.api";
@@ -14,6 +15,7 @@ import { fhsSubmitApi } from "./fhs-submit.api";
 
 export default appPlugin(async (app) => {
   app.register(fhsAssignApi);
+  app.register(fhsCodesApi);
   app.register(fhsCommentApi);
   app.register(fhsCountApi);
   app.register(fhsDeclineApi);

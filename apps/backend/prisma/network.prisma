@@ -16,11 +16,9 @@ model FtthArea {
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
     boundaryId String?   @unique @db.Uuid
 
+    works Work[]
+
     olts Olt[]
-
-    surveys FtthSurvey[]
-
-    connections FtthConnection[]
 }
 
 model Oem {

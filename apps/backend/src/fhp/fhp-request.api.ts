@@ -38,7 +38,7 @@ async function fhpRequest(dto: FhpRequestT, from: UserFullT) {
           workers: create({ userId: dto.managerId, role: toWhom }),
         }),
         survey: maybeConnect(dto.surveyId),
-        hp: dto.hp || s.reportedHp || s.proposedHp || 0,
+        hp: dto.hp || s.reportedHp || s.expectedHp || 0,
       },
       select: ftthProjectS,
     });

@@ -1,11 +1,11 @@
 import { Map as GoogleMap, Polygon, useMap } from "@vis.gl/react-google-maps";
-import { Form, Input, message } from "antd";
+import { Form, Input, message, Select } from "antd";
 import { m } from "i18n/messages";
 import { useState } from "react";
 import { WorkDocType } from "schema/enums";
-import type { FhsRequestT, FtthSurveyT } from "schema/fhs";
+import { type FhsRequestT, type FtthSurveyT, fhsCodesZ } from "schema/fhs";
 import type { UpPlaqueKmzT } from "schema/uploads";
-import { apiCall, useApiPost } from "#/api/helpers";
+import { apiCall, useApiGet, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import CoordsInput from "#/components/inputs/CoordsInput";
 import FileUpload from "#/components/inputs/FileUpload";
@@ -24,22 +24,32 @@ export default function FhsRequestForm(props: ModalStateProps) {
   const placeholder = isUploading ? m.hint_reading_file() : undefined;
   const send = useApiPost<FhsRequestT, FtthSurveyT>("/fhs", ["fhs"]);
 
+  const codes = useApiGet("/fhs/codes", fhsCodesZ);
+
   const map = useMap();
   const { isDark } = useAppTheme();
   const [parsed, setParsed] = useState<UpPlaqueKmzT>();
+  const [isNew, setIsNew] = useState<boolean>();
   const [form] = Form.useForm<FhsRequestT>();
+
+  const onSetIsNew = (value: boolean) => {
+    setIsNew(value);
+    form.resetFields(["areaCode"]);
+  };
 
   const onParse = (data: UpPlaqueKmzT) => {
     setParsed(data);
     map?.fitBounds(data.bbox, 50);
 
     form.setFieldsValue({
+      name: data.name,
       coords: data.coords,
       localityId: data.localityId,
-      name: data.name,
       contact: undefined,
+      areaCode: undefined,
     });
-    const toFocus = data.name ? "fhs-contact" : "fhs-name";
+    setIsNew(undefined);
+    const toFocus = data.name ? "fhs-type" : "fhs-name";
     document.getElementById(toFocus)?.focus();
   };
 
@@ -49,10 +59,16 @@ export default function FhsRequestForm(props: ModalStateProps) {
     props.state.close();
   });
 
+  const validateCode = async (_: unknown, code: string) => {
+    if (isNew && codes.data?.some((c) => c.code === code)) {
+      throw new Error(m.area_already_exists({ code }));
+    }
+  };
+
   return (
     <FormModal
       form={form}
-      width={720}
+      width={640}
       title={m.fhs_form_request()}
       state={props.state}
       onSubmit={onSubmit}
@@ -67,6 +83,10 @@ export default function FhsRequestForm(props: ModalStateProps) {
             onParsed={onParse}
             placeholder={m.hint_choose_kmz()}
           />
+        </Form.Item>
+
+        <Form.Item name="localityId" label={m.locality()} {...req}>
+          <LocalitySelect placeholder={placeholder} />
         </Form.Item>
 
         <Form.Item name="coords" label={m.field_coords()} required>
@@ -100,8 +120,46 @@ export default function FhsRequestForm(props: ModalStateProps) {
           <Input required id="fhs-name" placeholder={placeholder} />
         </Form.Item>
 
-        <Form.Item name="localityId" label={m.locality()} {...req}>
-          <LocalitySelect placeholder={placeholder} />
+        <Form.Item
+          {...req}
+          label={m.type()}
+          name={isNew === undefined ? "isNew" : undefined}
+        >
+          <Select
+            id="fhs-type"
+            value={isNew}
+            onChange={onSetIsNew}
+            showAction={["focus"]}
+            options={[
+              { value: true, label: m.new_area() },
+              { value: false, label: m.extension() },
+            ]}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="areaCode"
+          label={m.area_code()}
+          rules={[...req.rules, { validator: validateCode }]}
+        >
+          {isNew ? (
+            <Input
+              required
+              autoComplete="off"
+              title={m.area_code_hint()}
+              placeholder={m.area_code_hint()}
+              pattern="^[A-Z]{5}$"
+            />
+          ) : (
+            <Select
+              placeholder={m.choose_existing_area()}
+              loading={codes.isLoading}
+              options={codes.data?.map((a) => ({
+                value: a.code,
+                label: `${a.code} - ${a.name}`,
+              }))}
+            />
+          )}
         </Form.Item>
 
         <Form.Item name="contact" label={m.client_contact()} required>

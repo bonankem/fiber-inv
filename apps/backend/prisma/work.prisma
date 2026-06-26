@@ -56,6 +56,9 @@ model Work {
     locality   Locality? @relation(fields: [localityId], references: [id])
     localityId String?   @db.Uuid
 
+    area   FtthArea? @relation(fields: [areaId], references: [id])
+    areaId String?   @db.Uuid
+
     workers Worker[]
 
     logs WorkLog[]

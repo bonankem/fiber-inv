@@ -17,8 +17,9 @@ export const fhsReportS = {
   concretePoles: true,
   oldManholes: true,
   oldPoles: true,
-  transportMetres: true,
-  distMetres: true,
+  transportLength: true,
+  distLength: true,
+  ductLength: true,
 } satisfies Prisma.FhsReportSelect;
 
 export const fhsReportZ = zObject("FhsReportT", {
@@ -37,8 +38,9 @@ export const fhsReportZ = zObject("FhsReportT", {
   concretePoles: z.int(),
   oldManholes: z.int(),
   oldPoles: z.int(),
-  transportMetres: z.int(),
-  distMetres: z.int(),
+  transportLength: z.int(),
+  distLength: z.int(),
+  ductLength: z.int(),
 } satisfies Record<keyof typeof fhsReportS, object>);
 
 export const fhsReportP = { select: fhsReportS };

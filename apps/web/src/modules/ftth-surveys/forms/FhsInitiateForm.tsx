@@ -1,6 +1,10 @@
-import { Form, Input, InputNumber, Select } from "antd";
+import { Form, Input, InputNumber } from "antd";
+import type { ConfigType } from "dayjs";
+import dayjs from "dayjs";
 import { m } from "i18n/messages";
+import { useState } from "react";
 import type { FhsInitiateT } from "schema/fhs";
+import type { Maybe } from "schema/utils";
 import FormModal from "#/components/FormModal";
 import DateInput from "#/components/inputs/DateInput";
 import VendorSelect from "#/components/inputs/VendorSelect";
@@ -14,22 +18,44 @@ export default function FhsInitiateForm(props: FhsFormProps) {
     m.toast_initiated,
   );
 
+  const [form] = Form.useForm<FhsInitiateT>();
   const vendorId = props.item.work.vendor?.id;
   const today = new Date().toISOString().slice(0, 10);
+  const start = Form.useWatch("startDate", form);
+  const [isNew, setIsNew] = useState<boolean>();
+
+  const checkDueDate = async (_: unknown, due: Maybe<ConfigType>) => {
+    console.log(start, due);
+    if (!start || !due) throw new Error("Both needed");
+    console.log(start, due);
+    if (start && due && dayjs(start).isAfter(due)) {
+      throw new Error(m.start_past_due());
+    }
+  };
 
   return (
     <FormModal
       {...up}
-      width={600}
+      form={form}
+      width={480}
       title={m.fhs_form_initiate()}
       className="grid sm:grid-cols-2 gap-2"
       initialValues={{ vendorId, startDate: today }}
     >
+      <Form.Item name="areaCode" label={m.area_code()} {...req}>
+        <Input
+          required
+          minLength={5}
+          maxLength={5}
+          placeholder={m.area_code_hint()}
+        />
+      </Form.Item>
+
       <Form.Item name="vendorId" label={m.field_vendor()} {...req}>
         <VendorSelect />
       </Form.Item>
 
-      <Form.Item name="proposedHp" label={m.field_proposed_hp()} {...req}>
+      <Form.Item name="expectedHp" label={m.field_expected_hp()} {...req}>
         <InputNumber className="w-full!" min={0} required />
       </Form.Item>
 
@@ -41,27 +67,9 @@ export default function FhsInitiateForm(props: FhsFormProps) {
         name="dueDate"
         label={m.field_due_date()}
         required
-        rules={[{ required: true }]}
+        rules={[...req.rules, { validator: checkDueDate }]}
       >
         <DateInput />
-      </Form.Item>
-
-      <Form.Item name="isNewArea" label={m.area_type()} {...req}>
-        <Select
-          options={[
-            { value: true, label: m.new_area() },
-            { value: false, label: m.existing_area() },
-          ]}
-        />
-      </Form.Item>
-
-      <Form.Item name="areaCode" label={m.plaque_code()} {...req}>
-        <Input
-          required
-          minLength={5}
-          maxLength={5}
-          placeholder={m.area_code_hint()}
-        />
       </Form.Item>
 
       <Form.Item

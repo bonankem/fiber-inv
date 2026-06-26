@@ -8,14 +8,11 @@ model FtthSurvey {
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
     boundaryId String?   @unique @db.Uuid
 
-    area   FtthArea? @relation(fields: [areaId], references: [id])
-    areaId String?   @db.Uuid
-
-    isNewArea Boolean?
-
     contact String?
 
-    proposedHp Int?
+    isNewArea Boolean
+
+    expectedHp Int?
 
     reportedHp Int?
 
@@ -37,6 +34,8 @@ model FhsReport {
 
     hp Int
 
+    olts Int
+
     oltCards Int
 
     xBoxes Int
@@ -55,11 +54,15 @@ model FhsReport {
 
     concretePoles Int
 
+    transportLength Int
+
+    distLength Int
+
+    ductLength Int
+
     oldManholes Int
 
     oldPoles Int
 
-    transportMetres Int
-
-    distMetres Int
+    oldDuct Int
 }

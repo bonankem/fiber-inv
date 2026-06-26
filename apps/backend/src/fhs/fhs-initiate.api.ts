@@ -5,8 +5,9 @@ import {
   ftthSurveyS,
 } from "schema/fhs";
 import type { UserT } from "schema/people";
-import { prisma, WorkAction, WorkStatus } from "#/db";
-import { bad, postRoute } from "#/utils";
+import { type Prisma, prisma, WorkAction, WorkStatus } from "#/db";
+import { bad, connectId, postRoute } from "#/utils";
+import { makeKey } from "#/utils/queries";
 import { Allow } from "../auth/guard";
 import { updateWork } from "../utils/work";
 import { fhsCheck } from "./utils";
@@ -17,22 +18,6 @@ export const fhsInitiateApi = postRoute(
   (req) => fhsInitiate(req.body, req.authUser),
   Allow.STAFF,
 );
-
-async function checkArea(dto: FhsInitiateT, fhs: FtthSurveyT) {
-  if (!dto.isNewArea) {
-    const id = dto.areaId || bad("Area is required");
-    return { connect: { id } };
-  }
-  const code = dto.areaCode || bad("Code required for new areas");
-  const area = await prisma.ftthArea.findUnique({ where: { code } });
-  if (area) bad(`${code} already exists: ${area.name}`);
-
-  const { key, name, locality } = fhs.work;
-
-  // surveys should always have locality, but check to be sure
-  const localityId = locality?.id || bad("Locality required");
-  return { create: { code, key, name, localityId } };
-}
 
 async function fhsInitiate(dto: FhsInitiateT, user: UserT) {
   const { id, vendorId, startDate, dueDate } = dto;
@@ -49,9 +34,7 @@ async function fhsInitiate(dto: FhsInitiateT, user: UserT) {
   return prisma.ftthSurvey.update({
     where: { id },
     data: {
-      area: await checkArea(dto, s),
-      isNewArea: dto.isNewArea,
-      proposedHp: dto.proposedHp,
+      expectedHp: dto.expectedHp,
       work: updateWork({
         dto,
         old: s.work,
@@ -60,9 +43,32 @@ async function fhsInitiate(dto: FhsInitiateT, user: UserT) {
         status: WorkStatus.ONGOING,
         logTo: vendor,
         from: user,
-        also: { startDate, dueDate },
+        also: {
+          startDate,
+          dueDate,
+          area: areaQuery(dto, s),
+        },
       }),
     },
     select: ftthSurveyS,
   });
+}
+
+function areaQuery(dto: FhsInitiateT, fhs: FtthSurveyT) {
+  const code = dto.areaCode;
+  if (!code || code === fhs.work.area?.code) return undefined;
+
+  const name = dto.areaName || fhs.work.name;
+  const localityId = fhs.work.locality?.id || bad("No locality");
+  return {
+    connectOrCreate: {
+      where: { code },
+      create: {
+        code,
+        name,
+        key: makeKey(name),
+        locality: connectId(localityId),
+      },
+    },
+  } satisfies Prisma.FtthAreaUpdateOneWithoutWorksNestedInput;
 }
