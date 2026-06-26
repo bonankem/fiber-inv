@@ -7,7 +7,7 @@ import { ACCOUNT_EXPIRY_HOURS } from "./config";
 
 export const authCron = appPlugin(async (app) => {
   const expireUsersJob = new SimpleIntervalJob(
-    { minutes: 1 },
+    { minutes: 30 },
     new AsyncTask(
       "expireUsers",
       () => expireUsers(app.log),
