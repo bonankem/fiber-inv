@@ -82,6 +82,8 @@ enum AuthAction {
     FORGOT_PASSWORD
     LOGOUT
     ADD_USER
+    EXPIRED
+    UNLOCKED_BY_ADMIN
 }
 
 model AuthLog {

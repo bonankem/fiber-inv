@@ -33,6 +33,8 @@ const severities: Record<AuthAction, CEF.Severity> = {
   PASSWORD_FAILED: "Medium",
   LOCKOUT: "High",
   ADD_USER: "Low",
+  EXPIRED: "Low",
+  UNLOCKED_BY_ADMIN: "Low",
 };
 
 const classIds: Record<AuthAction, number> = {
@@ -44,6 +46,8 @@ const classIds: Record<AuthAction, number> = {
   CHANGE_PASSWORD: 5,
   LOGOUT: 6,
   ADD_USER: 7,
+  EXPIRED: 8,
+  UNLOCKED_BY_ADMIN: 9,
 };
 
 type Info = {
@@ -53,15 +57,15 @@ type Info = {
 
 export async function authLog(
   action: AuthAction,
-  req: AnyRequest,
+  req: AnyRequest | null,
   email: string,
 ) {
   await prisma.authLog.create({
     data: {
       action,
       email,
-      ipAddress: req.ip,
-      userAgent: req.headers["user-agent"],
+      ipAddress: req?.ip ?? "",
+      userAgent: req?.headers["user-agent"] ?? "",
     },
   });
 
@@ -79,7 +83,7 @@ export async function authLog(
     name: action,
     severity: severities[action],
     deviceEventClassId: classIds[action].toString(),
-    extensions: { email, ip: req.ip },
+    extensions: { email, ip: req?.ip },
   });
   await log.send().catch(() => {});
 }
