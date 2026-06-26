@@ -3,6 +3,7 @@ import fastifyCors from "@fastify/cors";
 import fastifyFormbody from "@fastify/formbody";
 import fastifyJwt from "@fastify/jwt";
 import fastifyMultipart from "@fastify/multipart";
+import fastifySchedule from "@fastify/schedule";
 import fastifySensible from "@fastify/sensible";
 import fastifySwagger from "@fastify/swagger";
 import fastify from "fastify";
@@ -41,6 +42,7 @@ app.register(fastifySensible);
 app.register(fastifyJwt, { secret: getJwtSecret() });
 app.register(appSocket);
 
+await app.register(fastifySchedule);
 await app.register(fastifyZodOpenApiPlugin);
 await app.register(fastifySwagger, {
   openapi: { openapi: "3.1.0" },

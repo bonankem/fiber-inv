@@ -1,4 +1,5 @@
 import { appPlugin } from "#/utils";
+import { authCron } from "./auth.cron";
 import { changeApi } from "./auth-change.api";
 import { chooseApi } from "./auth-choose.api";
 import { forgotApi } from "./auth-forgot.api";
@@ -13,6 +14,8 @@ export default appPlugin(async (app) => {
     // all auth endpoints are public
     req.allow = Allow.PUBLIC;
   });
+  app.register(authCron);
+
   app.register(changeApi);
   app.register(chooseApi);
   app.register(forgotApi);
