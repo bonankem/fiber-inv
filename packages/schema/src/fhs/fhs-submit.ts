@@ -4,6 +4,7 @@ import { workUpdateDto } from "../work/work-update";
 
 export const fhsSubmitZ = workUpdateDto("FhsSubmitT", {
   hp: z.int("Number of HPs/ELs"),
+  olts: z.int("Number of new OLTs"),
   oltCards: z.int("Number of olt cards"),
   xBoxes: z.int("Number of X boxes"),
   hubBoxes: z.int("Number of hub boxes"),
@@ -15,8 +16,9 @@ export const fhsSubmitZ = workUpdateDto("FhsSubmitT", {
   concretePoles: z.int("Number of concrete poles"),
   oldManholes: z.int("Number of existing manholes"),
   oldPoles: z.int("Number of existing poles"),
-  transportMetres: z.int("Total transport cable length in metres"),
-  distMetres: z.int("Total distribution cable length in metres"),
+  transportLength: z.int("Total transport cable length in metres"),
+  distLength: z.int("Total distribution cable length in metres"),
+  ductLength: z.int("Total new duct length in metres"),
 
   [Doc.PLAN_KMZ]: zStr("KMZ upload ID"),
   [Doc.PLAN_BOQ]: zStr("BOQ upload ID"),

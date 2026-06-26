@@ -56,10 +56,11 @@ async function fhsInitiate(dto: FhsInitiateT, user: UserT) {
 
 function areaQuery(dto: FhsInitiateT, fhs: FtthSurveyT) {
   const code = dto.areaCode;
-  if (!code || code === fhs.work.area?.code) return undefined;
+  const { area, locality } = fhs.work;
+  if (!code || code === area?.code) return undefined;
 
-  const name = dto.areaName || fhs.work.name;
-  const localityId = fhs.work.locality?.id || bad("No locality");
+  const name = fhs.work.name;
+  const localityId = locality?.id || bad("No locality");
   return {
     connectOrCreate: {
       where: { code },

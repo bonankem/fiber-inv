@@ -63,6 +63,4 @@ model FhsReport {
     oldManholes Int
 
     oldPoles Int
-
-    oldDuct Int
 }

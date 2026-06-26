@@ -30,7 +30,7 @@ const status = WorkStatus.REQUESTED;
 const sendTo = StaffRole.PLANNING_MANAGER;
 
 async function fhsRequest(dto: FhsRequestT, from: UserT) {
-  const { name, contact } = dto;
+  const { name, contact, isNewArea } = dto;
   const key = await nameCheck(name);
   const boundary = await boundaryQuery(dto.PLAQUE_KMZ);
 
@@ -40,6 +40,7 @@ async function fhsRequest(dto: FhsRequestT, from: UserT) {
       data: {
         boundary,
         contact,
+        isNewArea,
         work: create({
           sid,
           key,
