@@ -1,8 +1,9 @@
 import { StaffRole, type WorkStatus } from "schema/enums";
 import { ftthSurveyS } from "schema/fhs";
+import type { Maybe } from "schema/utils";
 import type { WorkT } from "schema/work";
 import { prisma } from "#/db";
-import { bad, type Maybe, notFound } from "#/utils";
+import { bad, notFound } from "#/utils/errors";
 
 type Findable<T> = {
   findUnique(args: { where: { id: string } }): Promise<T>;

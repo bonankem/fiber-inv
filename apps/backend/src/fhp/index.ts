@@ -1,4 +1,4 @@
-import { appPlugin } from "#/utils";
+import { appPlugin } from "#/utils/routing";
 import { fhpAssignApi } from "./fhp-assign.api";
 import { fhpCountApi } from "./fhp-count.api";
 import { fhpInitiateApi } from "./fhp-initiate.api";
@@ -7,7 +7,7 @@ import { fhpRequestApi } from "./fhp-request.api";
 import { fhpReviewApi } from "./fhp-review.api";
 import { fhpSubmitApi } from "./fhp-submit.api";
 
-export default appPlugin(async (app) => {
+export default appPlugin((app) => {
   app.register(fhpAssignApi);
   app.register(fhpCountApi);
   app.register(fhpInitiateApi);

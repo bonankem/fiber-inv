@@ -51,11 +51,12 @@ function worker(work: WorkT, role: Maybe<StaffRole>) {
 
 const colors: Partial<Record<WorkStatus, TagProps["color"]>> = {
   CLOSED: "green",
-  REVIEW: "gold",
+  REVIEW: "purple",
   REVIEW_FAILED: "volcano",
   DECLINED: "red",
   CANCELLED: "red",
-  REQUESTED: "gold",
+  REQUESTED: "purple",
+  ASSIGNED: "purple",
 };
 
 const statusNames: Record<WorkStatus, string> = {

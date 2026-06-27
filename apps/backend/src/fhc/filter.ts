@@ -1,9 +1,8 @@
 import { Subset } from "schema/common";
 import type { FhcFilterT } from "schema/fhc";
 import type { UserFullT } from "schema/people";
-import { whereNone } from "schema/utils";
+import { type Maybe, whereNone } from "schema/utils";
 import { type Prisma, StaffRole, WorkStatus } from "#/db";
-import type { Maybe } from "#/utils";
 import { filterTruthy, qOr, qSidIs } from "../utils/queries";
 import { type WorkWhere, workIsOnVendor } from "../utils/work";
 import { workAccess } from "../work/filter";

@@ -6,18 +6,20 @@ import {
 } from "schema/fhs";
 import type { UserT } from "schema/people";
 import { type Prisma, prisma, WorkAction, WorkStatus } from "#/db";
-import { bad, connectId, postRoute } from "#/utils";
+import { bad } from "#/utils/errors";
+import { connectId } from "#/utils/ids";
 import { makeKey } from "#/utils/queries";
+import { postRoute } from "#/utils/routing";
 import { Allow } from "../auth/guard";
 import { updateWork } from "../utils/work";
 import { fhsCheck } from "./utils";
 
-export const fhsInitiateApi = postRoute(
-  "/fhs/initiate",
-  () => fhsInitiateZ,
-  (req) => fhsInitiate(req.body, req.authUser),
-  Allow.STAFF,
-);
+export const fhsInitiateApi = postRoute({
+  url: "/fhs/initiate",
+  schema: fhsInitiateZ,
+  allow: Allow.STAFF,
+  handler: (req) => fhsInitiate(req.body, req.authUser),
+});
 
 async function fhsInitiate(dto: FhsInitiateT, user: UserT) {
   const { id, vendorId, startDate, dueDate } = dto;

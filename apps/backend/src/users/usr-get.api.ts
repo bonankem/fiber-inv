@@ -1,6 +1,6 @@
 import { userS } from "schema/people";
 import { prisma } from "#/db";
-import { idRoute } from "#/utils";
+import { idRoute } from "#/utils/routing";
 
 export const getApi = idRoute("/users/:id", (req) => getUser(req.params.id));
 

@@ -1,9 +1,8 @@
 import { indexBy, pipe, sortBy } from "remeda";
 import type { CoordsT } from "schema/geo";
 import type { UpPlanKmzT } from "schema/uploads";
-import { filterTruthy } from "schema/utils";
+import { filterTruthy, type Maybe } from "schema/utils";
 import { BoxType, WorkDocType } from "#/db";
-import type { Maybe } from "#/utils";
 import { filterPlacemarks, type KmzPlacemark, parseSimpleKmz } from "./kmz";
 import type { ParserInput } from "./utils";
 

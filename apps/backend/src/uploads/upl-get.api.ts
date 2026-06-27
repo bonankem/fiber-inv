@@ -1,22 +1,23 @@
 import z from "zod";
 import { prisma } from "#/db";
-import { type AppReply, appRoute, notFound } from "#/utils";
+import { notFound } from "#/utils/errors";
+import { type AnyReply, appRoute } from "#/utils/routing";
 
 const paramsZ = z.strictObject({
   id: z.string(),
   name: z.string(),
 });
 
-export const getApi = appRoute(() => ({
+export const getApi = appRoute({
   url: "/uploads/:id/:name",
   method: "GET",
   schema: { params: paramsZ },
   handler(req, reply) {
     return getUpload(req.params.id, reply);
   },
-}));
+});
 
-async function getUpload(id: string, reply: AppReply) {
+async function getUpload(id: string, reply: AnyReply) {
   const up = await prisma.uploadInDb.findUnique({
     where: { uploadId: id },
     select: { data: true, upload: true },

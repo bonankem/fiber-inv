@@ -1,7 +1,7 @@
 import type { UserFullT } from "schema/people";
 import { workLogS } from "schema/work";
 import { prisma } from "#/db";
-import { idRoute } from "#/utils";
+import { idRoute } from "#/utils/routing";
 import { workAccess } from "../work/filter";
 
 export const fhsLogsApi = idRoute("/fhs/:id/logs", (req) =>

@@ -3,14 +3,14 @@ import type { SubsetCounts } from "schema/common";
 import { type FhpFilterT, fhpFilterZ } from "schema/fhp";
 import { assoc } from "schema/utils";
 import { prisma, WorkStatus as S } from "#/db";
-import { getRoute } from "#/utils";
+import { getRoute } from "#/utils/routing";
 import { workNotOpen, workStopped, workWhere } from "./filter";
 
-export const fhpCountApi = getRoute(
-  "/fhp/count",
-  () => fhpFilterZ,
-  (req) => fhpCount(req.query),
-);
+export const fhpCountApi = getRoute({
+  url: "/fhp/count",
+  schema: fhpFilterZ,
+  handler: (req) => fhpCount(req.query),
+});
 
 async function fhpCount(input: FhpFilterT): Promise<SubsetCounts> {
   delete input.subset;

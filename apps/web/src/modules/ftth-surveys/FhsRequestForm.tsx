@@ -29,13 +29,8 @@ export default function FhsRequestForm(props: ModalStateProps) {
   const map = useMap();
   const { isDark } = useAppTheme();
   const [parsed, setParsed] = useState<UpPlaqueKmzT>();
-  const [isNew, setIsNew] = useState<boolean>();
   const [form] = Form.useForm<FhsRequestT>();
-
-  const onSetIsNew = (value: boolean) => {
-    setIsNew(value);
-    form.resetFields(["areaCode"]);
-  };
+  const isNew = Form.useWatch("isNewArea", form);
 
   const onParse = (data: UpPlaqueKmzT) => {
     setParsed(data);
@@ -47,8 +42,8 @@ export default function FhsRequestForm(props: ModalStateProps) {
       localityId: data.localityId,
       contact: undefined,
       areaCode: undefined,
+      isNewArea: undefined,
     });
-    setIsNew(undefined);
     const toFocus = data.name ? "fhs-type" : "fhs-name";
     document.getElementById(toFocus)?.focus();
   };
@@ -120,16 +115,11 @@ export default function FhsRequestForm(props: ModalStateProps) {
           <Input required id="fhs-name" placeholder={placeholder} />
         </Form.Item>
 
-        <Form.Item
-          {...req}
-          label={m.type()}
-          name={isNew === undefined ? "isNew" : undefined}
-        >
+        <Form.Item {...req} name="isNewArea" label={m.type()}>
           <Select
             id="fhs-type"
-            value={isNew}
-            onChange={onSetIsNew}
             showAction={["focus"]}
+            onChange={() => form.resetFields(["areaCode"])}
             options={[
               { value: true, label: m.new_area() },
               { value: false, label: m.extension() },

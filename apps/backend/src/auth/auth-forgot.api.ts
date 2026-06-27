@@ -2,22 +2,18 @@ import { randomBytes } from "node:crypto";
 import { hashSync } from "bcryptjs";
 import dayjs from "dayjs";
 import { type AuthForgotReqT, authForgotReqZ } from "schema/auth";
+import type { Maybe } from "schema/utils";
 import { prisma } from "#/db";
 import { appEnv, isDev } from "#/env";
 import { sendMail } from "#/mail";
-import {
-  type AppLog,
-  bad,
-  type Maybe,
-  postRoute,
-  type RequestWith,
-} from "#/utils";
+import { bad } from "#/utils/errors";
+import { type AppLog, postRoute, type RequestWith } from "#/utils/routing";
 
-export const forgotApi = postRoute(
-  "/auth/forgot",
-  () => authForgotReqZ,
-  (req, app) => forgot(req, app.log),
-);
+export const forgotApi = postRoute({
+  url: "/auth/forgot",
+  schema: authForgotReqZ,
+  handler: (req, app) => forgot(req, app.log),
+});
 
 const EXPIRY_MINUTES = 30;
 const RETRY_SECONDS = 60;

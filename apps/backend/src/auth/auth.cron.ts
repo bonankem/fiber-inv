@@ -1,11 +1,11 @@
 import dayjs from "dayjs";
 import { AsyncTask, SimpleIntervalJob } from "toad-scheduler";
-import { authLog } from "#/admin/syslog.api";
+import { authLog } from "#/admin/adm-syslog.api";
 import { AuthAction, prisma } from "#/db";
-import { type AppLog, appPlugin } from "#/utils";
+import { type AppLog, appPlugin } from "#/utils/routing";
 import { ACCOUNT_EXPIRY_HOURS } from "./config";
 
-export const authCron = appPlugin(async (app) => {
+export const authCron = appPlugin((app) => {
   const expireUsersJob = new SimpleIntervalJob(
     { minutes: 30 },
     new AsyncTask(

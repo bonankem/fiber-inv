@@ -1,14 +1,15 @@
 import { type FhcRequestT, fhcRequestZ, ftthConnectionS } from "schema/fhc";
 import type { UserFullT } from "schema/people";
 import { prisma, WorkAction, WorkStatus } from "#/db";
-import { connectId, postRoute } from "#/utils";
+import { connectId } from "#/utils/ids";
 import { addLog, create, makeKey, nextId, setCoords } from "#/utils/queries";
+import { postRoute } from "#/utils/routing";
 
-export const fhcRequestApi = postRoute(
-  "/fhc",
-  () => fhcRequestZ,
-  (req) => fhcRequest(req.body, req.authUser),
-);
+export const fhcRequestApi = postRoute({
+  url: "/fhc",
+  schema: fhcRequestZ,
+  handler: (req) => fhcRequest(req.body, req.authUser),
+});
 
 async function fhcRequest(dto: FhcRequestT, from: UserFullT) {
   const status = WorkStatus.REQUESTED;

@@ -12,11 +12,13 @@ import {
 } from "schema/auth";
 import { userFullP } from "schema/people";
 import z from "zod";
-import { authLog } from "#/admin/syslog.api";
+import { authLog } from "#/admin/adm-syslog.api";
 import { AuthAction, MfaMode, OtpReason, type Prisma, prisma } from "#/db";
 import { isDev } from "#/env";
 import { sendMail } from "#/mail";
-import { type AnyRequest, type App, bad, type Maybe, newUuid } from "#/utils";
+import { bad } from "#/utils/errors";
+import { newUuid } from "#/utils/ids";
+import type { AnyRequest, App, Maybe } from "#/utils/routing";
 import { decrypt, encrypt } from "../utils/encryption";
 import {
   ADMIN_PASS_LENGTH,

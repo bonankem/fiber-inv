@@ -1,15 +1,17 @@
 import { idKeyNameS } from "schema/common";
 import { assoc } from "schema/utils";
 import { prisma } from "#/db";
-import { bad, postRoute } from "#/utils";
+import { bad } from "#/utils/errors";
+import { postRoute } from "#/utils/routing";
 import { makeKey } from "../utils/queries";
 import polygons from "./geo.json" with { type: "json" };
 import { geoNames } from "./geo.names";
 import { ringWithBbox } from "./utils";
 
-export const geoInitializeApi = postRoute("/geo/initialize", null, () =>
-  geoInitialize(),
-);
+export const geoInitializeApi = postRoute({
+  url: "/geo/initialize",
+  handler: () => geoInitialize(),
+});
 
 export async function geoInitialize() {
   const boundaries = assoc(

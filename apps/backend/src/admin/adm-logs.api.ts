@@ -1,11 +1,12 @@
 import dayjs from "dayjs";
 import { prisma } from "#/db";
-import { type AnyReply, getRoute } from "#/utils";
 import { sendCsv } from "#/utils/csv";
+import { type AnyReply, getRoute } from "#/utils/routing";
 
-export const authLogsAoi = getRoute("/admin/auth-logs", null, (_, __, res) =>
-  getAuthLogs(res),
-);
+export const authLogsAoi = getRoute({
+  url: "/admin/auth-logs",
+  handler: (_, __, res) => getAuthLogs(res),
+});
 
 async function getAuthLogs(res: AnyReply) {
   const since = dayjs().subtract(24, "hours").toDate();

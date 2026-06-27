@@ -1,16 +1,16 @@
 import { httpErrors } from "@fastify/sensible";
 import dayjs from "dayjs";
 import { type AuthLoginReqT, authLoginReqZ } from "schema/auth";
-import { authLog } from "#/admin/syslog.api";
+import type { Maybe } from "schema/utils";
+import { authLog } from "#/admin/adm-syslog.api";
 import { AuthAction, prisma } from "#/db";
+import { bad } from "#/utils/errors";
 import {
   type AnyRequest,
   type App,
-  bad,
-  type Maybe,
   postRoute,
   type RequestWith,
-} from "#/utils";
+} from "#/utils/routing";
 import {
   authResult,
   badLogin,
@@ -19,11 +19,11 @@ import {
   type LoginUserT,
 } from "./utils";
 
-export const loginApi = postRoute(
-  "/auth/login",
-  () => authLoginReqZ,
-  (req, app) => login(req, app),
-);
+export const loginApi = postRoute({
+  url: "/auth/login",
+  schema: authLoginReqZ,
+  handler: (req, app) => login(req, app),
+});
 
 async function login(req: RequestWith<AuthLoginReqT>, app: App) {
   const { email, password } = req.body;

@@ -1,4 +1,4 @@
-import { appPlugin } from "#/utils";
+import { appPlugin } from "#/utils/routing";
 import { fhsAssignApi } from "./fhs-assign.api";
 import { fhsCodesApi } from "./fhs-codes.api";
 import { fhsCommentApi } from "./fhs-comment.api";
@@ -13,7 +13,7 @@ import { fhsRequestApi } from "./fhs-request.api";
 import { fhsReviewApi } from "./fhs-review.api";
 import { fhsSubmitApi } from "./fhs-submit.api";
 
-export default appPlugin(async (app) => {
+export default appPlugin((app) => {
   app.register(fhsAssignApi);
   app.register(fhsCodesApi);
   app.register(fhsCommentApi);

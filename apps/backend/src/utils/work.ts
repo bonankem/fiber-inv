@@ -1,4 +1,5 @@
 import type { IdNameT } from "schema/common";
+import type { Falsey, Maybe } from "schema/utils";
 import type { WorkT, WorkUpdateT } from "schema/work";
 import type {
   Prisma,
@@ -7,7 +8,7 @@ import type {
   WorkDocType,
   WorkStatus,
 } from "#/db";
-import { type Falsey, type Maybe, maybeConnect } from "#/utils";
+import { maybeConnect } from "./ids";
 import { addUploads, create, filterTruthy } from "./queries";
 
 export type WorkWhere = Prisma.WorkWhereInput;

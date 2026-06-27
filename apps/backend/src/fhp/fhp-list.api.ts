@@ -1,13 +1,13 @@
 import { type FhpFilterT, fhpFilterZ, ftthProjectS } from "schema/fhp";
 import { prisma } from "#/db";
-import { getRoute } from "#/utils";
+import { getRoute } from "#/utils/routing";
 import { workWhere } from "./filter";
 
-export const fhpListApi = getRoute(
-  "/fhp",
-  () => fhpFilterZ,
-  (req) => fhpList(req.query),
-);
+export const fhpListApi = getRoute({
+  url: "/fhp",
+  schema: fhpFilterZ,
+  handler: (req) => fhpList(req.query),
+});
 
 async function fhpList(input: FhpFilterT) {
   return prisma.ftthProject.findMany({

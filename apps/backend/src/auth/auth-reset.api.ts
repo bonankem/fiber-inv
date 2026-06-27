@@ -1,15 +1,16 @@
 import { compareSync } from "bcryptjs";
 import { type AuthResetReqT, authResetReqZ } from "schema/auth";
-import { authLog } from "#/admin/syslog.api";
+import { authLog } from "#/admin/adm-syslog.api";
 import { AuthAction, prisma } from "#/db";
-import { bad, postRoute, type RequestWith } from "#/utils";
+import { bad } from "#/utils/errors";
+import { postRoute, type RequestWith } from "#/utils/routing";
 import { checkNewPassword, getLoginUser } from "./utils";
 
-export const resetApi = postRoute(
-  "/auth/reset",
-  () => authResetReqZ,
-  (req) => resetPassword(req),
-);
+export const resetApi = postRoute({
+  url: "/auth/reset",
+  schema: authResetReqZ,
+  handler: (req) => resetPassword(req),
+});
 
 function invalidReset(): never {
   bad("Reset link is invalid or expired");

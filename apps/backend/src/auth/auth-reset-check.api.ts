@@ -5,13 +5,13 @@ import {
   authResetCheckReqZ,
 } from "schema/auth";
 import { prisma } from "#/db";
-import { postRoute, type RequestWith } from "#/utils";
+import { postRoute, type RequestWith } from "#/utils/routing";
 
-export const resetCheckApi = postRoute(
-  "/auth/reset-check",
-  () => authResetCheckReqZ,
-  (req) => resetCheck(req),
-);
+export const resetCheckApi = postRoute({
+  url: "/auth/reset-check",
+  schema: authResetCheckReqZ,
+  handler: (req) => resetCheck(req),
+});
 
 async function invalidReset(): Promise<AuthResetCheckResT> {
   return { valid: false, name: "", email: "", isAdmin: false };

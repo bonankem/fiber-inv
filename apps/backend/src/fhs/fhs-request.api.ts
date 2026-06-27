@@ -8,7 +8,9 @@ import {
   WorkDocType,
   WorkStatus,
 } from "#/db";
-import { bad, connectId, postRoute } from "#/utils";
+import { bad } from "#/utils/errors";
+import { connectId } from "#/utils/ids";
+import { postRoute } from "#/utils/routing";
 import { ringWithBbox } from "../geo/utils";
 import {
   addLog,
@@ -19,11 +21,11 @@ import {
   setDocsFrom,
 } from "../utils/queries";
 
-export const fhsRequestApi = postRoute(
-  "/fhs",
-  () => fhsRequestZ,
-  (req) => fhsRequest(req.body, req.authUser),
-);
+export const fhsRequestApi = postRoute({
+  url: "/fhs",
+  schema: fhsRequestZ,
+  handler: (req) => fhsRequest(req.body, req.authUser),
+});
 
 const action = WorkAction.REQUEST;
 const status = WorkStatus.REQUESTED;

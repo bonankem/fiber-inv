@@ -2,20 +2,16 @@ import { type FhcUpdateT, fhcUpdateZ, ftthConnectionS } from "schema/fhc";
 import type { UserFullT } from "schema/people";
 import { workFullP } from "schema/work";
 import { type Prisma, prisma, WorkAction, WorkStatus } from "#/db";
-import {
-  bad,
-  connectIdOrKey,
-  maybeConnect,
-  notFound,
-  postRoute,
-} from "#/utils";
+import { bad, notFound } from "#/utils/errors";
+import { connectIdOrKey, maybeConnect } from "#/utils/ids";
+import { postRoute } from "#/utils/routing";
 import { updateWork } from "#/utils/work";
 
-export const fhcUpdateApi = postRoute(
-  "/fhc/update",
-  () => fhcUpdateZ,
-  (req) => fhcUpdate(req.body, req.authUser),
-);
+export const fhcUpdateApi = postRoute({
+  url: "/fhc/update",
+  schema: fhcUpdateZ,
+  handler: (req) => fhcUpdate(req.body, req.authUser),
+});
 
 async function fhcUpdate(dto: FhcUpdateT, from: UserFullT) {
   const fhc = await prisma.ftthConnection.findUnique({

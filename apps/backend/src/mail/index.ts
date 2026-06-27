@@ -1,7 +1,8 @@
 import { createTransport } from "nodemailer";
 import type Mail from "nodemailer/lib/mailer";
+import type { Maybe } from "schema/utils";
 import { appEnv } from "#/env";
-import type { AppLog, Maybe } from "#/utils";
+import type { AppLog } from "#/utils/routing";
 
 function getMailTransport() {
   const envUrl = appEnv.MAIL_URL;

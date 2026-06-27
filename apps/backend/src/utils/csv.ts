@@ -1,5 +1,5 @@
 import type { Maybe } from "schema/utils";
-import type { AnyReply } from "#/utils";
+import type { AnyReply } from "#/utils/routing";
 
 export type CsvFunc<T> = (t: T) => Maybe<string | Date>;
 

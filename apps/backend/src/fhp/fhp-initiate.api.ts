@@ -1,14 +1,15 @@
 import { type FhpInitiateT, fhpInitiateZ, ftthProjectS } from "schema/fhp";
 import { prisma, WorkAction, WorkStatus } from "#/db";
-import { bad, postRoute } from "#/utils";
+import { bad } from "#/utils/errors";
+import { postRoute } from "#/utils/routing";
 import { updateWork } from "../utils/work";
 import { fhpCheck } from "./utils";
 
-export const fhpInitiateApi = postRoute(
-  "/fhp/initiate",
-  () => fhpInitiateZ,
-  (req) => fhpInitiate(req.body),
-);
+export const fhpInitiateApi = postRoute({
+  url: "/fhp/initiate",
+  schema: fhpInitiateZ,
+  handler: (req) => fhpInitiate(req.body),
+});
 
 async function fhpInitiate(dto: FhpInitiateT) {
   const { id: workId, vendorId } = dto;

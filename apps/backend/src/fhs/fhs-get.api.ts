@@ -1,7 +1,8 @@
 import { ftthSurveyFullS } from "schema/fhs";
 import type { UserFullT } from "schema/people";
 import { prisma } from "#/db";
-import { idRoute, notFound } from "#/utils";
+import { notFound } from "#/utils/errors";
+import { idRoute } from "#/utils/routing";
 import { workAccess } from "../work/filter";
 
 export const fhsGetApi = idRoute("/fhs/:id", (req) =>

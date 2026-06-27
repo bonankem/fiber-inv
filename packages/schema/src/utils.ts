@@ -102,6 +102,8 @@ export function zFormObject<T extends ZodRawShape>(id: string, shape: T) {
 
 export type Maybe<T> = T | null | undefined;
 
+export type Falsey<T> = T | null | undefined | "" | false;
+
 export function jsonResponse<T>(text: unknown, shape: ZodType<T>) {
   if (!text) return undefined as T;
 
@@ -128,8 +130,6 @@ export function assoc<T, K extends string | number, V>(
   }
   return record;
 }
-
-export type Falsey<T> = T | null | undefined | "" | false;
 
 export function filterNotNull<T>(list: Maybe<T>[]) {
   return list.filter((t) => t !== null && t !== undefined) as T[];

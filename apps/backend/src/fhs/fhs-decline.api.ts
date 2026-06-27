@@ -2,15 +2,15 @@ import { ftthSurveyS } from "schema/fhs";
 import type { UserT } from "schema/people";
 import { type WorkUpdateT, workUpdateZ } from "schema/work";
 import { prisma, WorkAction, WorkStatus } from "#/db";
-import { postRoute } from "#/utils";
+import { postRoute } from "#/utils/routing";
 import { updateWork } from "../utils/work";
 import { fhsCheck } from "./utils";
 
-export const fhsDeclineApi = postRoute(
-  "/fhs/decline",
-  () => workUpdateZ,
-  (req) => fhsDecline(req.body, req.authUser),
-);
+export const fhsDeclineApi = postRoute({
+  url: "/fhs/decline",
+  schema: workUpdateZ,
+  handler: (req) => fhsDecline(req.body, req.authUser),
+});
 
 async function fhsDecline(dto: WorkUpdateT, from: UserT) {
   const { s } = await fhsCheck({

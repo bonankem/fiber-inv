@@ -2,26 +2,27 @@ import type { PrismaPromise } from "@prisma/client/runtime/client";
 import { zFormObject } from "schema/utils";
 import z from "zod";
 import { prisma } from "#/db";
-import { postRoute } from "#/utils";
+import { postRoute } from "#/utils/routing";
 import { Allow } from "../auth/guard";
 import { filterTruthy } from "../utils/queries";
 
-export const wipeApi = postRoute(
-  "/setup/wipe",
-  () => queryZ,
-  (req) => wipeDb(req.body),
-  Allow.PUBLIC,
-);
-
-const queryZ = zFormObject("ResetT", {
+const wipeQueryZ = zFormObject("ResetT", {
   commit: z.boolean().optional(),
   fully: z.boolean().optional(),
 }).nullable();
 
-type QueryT = z.infer<typeof queryZ>;
+export const wipeApi = postRoute({
+  url: "/setup/wipe",
+  schema: wipeQueryZ,
+  handler: (req) => wipeDb(req.body),
+  allow: Allow.ADMIN,
+});
+
+type WipeQueryT = z.infer<typeof wipeQueryZ>;
+
 type Deletable = { deleteMany(): PrismaPromise<{ count: number }> };
 
-async function wipeDb(q: QueryT) {
+async function wipeDb(q: WipeQueryT) {
   if (!q?.commit) return { commit: false };
 
   const p = prisma;

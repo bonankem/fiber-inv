@@ -3,16 +3,18 @@ import { type FhsSubmitT, fhsSubmitZ, ftthSurveyS } from "schema/fhs";
 import type { UserT } from "schema/people";
 import { filterTruthy } from "schema/utils";
 import { type Prisma, prisma, WorkAction, WorkDocType, WorkStatus } from "#/db";
-import { bad, currentDate, postRoute } from "#/utils";
+import { bad } from "#/utils/errors";
+import { postRoute } from "#/utils/routing";
+import { currentDate } from "#/utils/time";
 import { createManyCoords, getLatLngId } from "../utils/queries";
 import { updateWork } from "../utils/work";
 import { fhsCheck, fhsWorker } from "./utils";
 
-export const fhsSubmitApi = postRoute(
-  "/fhs/submit",
-  () => fhsSubmitZ,
-  (req) => fhsSubmit(req.body, req.authUser),
-);
+export const fhsSubmitApi = postRoute({
+  url: "/fhs/submit",
+  schema: fhsSubmitZ,
+  handler: (req) => fhsSubmit(req.body, req.authUser),
+});
 
 async function getReportedBoxes(uploadId: string) {
   const coords = await prisma.upload.findFirst({

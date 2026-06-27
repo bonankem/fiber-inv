@@ -1,15 +1,15 @@
 import { type FhsAssignT, fhsAssignZ, ftthSurveyS } from "schema/fhs";
 import type { UserT } from "schema/people";
 import { prisma, StaffRole, WorkAction, WorkStatus } from "#/db";
-import { postRoute } from "#/utils";
+import { postRoute } from "#/utils/routing";
 import { updateWork } from "../utils/work";
 import { fhsCheck } from "./utils";
 
-export const fhsAssignApi = postRoute(
-  "/fhs/assign",
-  () => fhsAssignZ,
-  (req) => fhsAssign(req.body, req.authUser),
-);
+export const fhsAssignApi = postRoute({
+  url: "/fhs/assign",
+  schema: fhsAssignZ,
+  handler: (req) => fhsAssign(req.body, req.authUser),
+});
 
 async function fhsAssign(dto: FhsAssignT, from: UserT) {
   const { id: workId, userId, vendorId } = dto;

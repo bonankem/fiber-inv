@@ -1,20 +1,22 @@
 import { randomBytes } from "node:crypto";
 import { hashSync } from "bcryptjs";
 import { type UserCreateT, userCreateZ, userS } from "schema/people";
-import { authLog } from "#/admin/syslog.api";
+import { authLog } from "#/admin/adm-syslog.api";
 import { Allow } from "#/auth/guard";
 import { AuthAction, MfaMode, prisma } from "#/db";
 import { isDev } from "#/env";
 import { sendMail } from "#/mail";
-import { bad, maybeConnect, postRoute, type RequestWith } from "#/utils";
+import { bad } from "#/utils/errors";
+import { maybeConnect } from "#/utils/ids";
 import { makeKey } from "#/utils/queries";
+import { postRoute, type RequestWith } from "#/utils/routing";
 
-export const createApi = postRoute(
-  "/users",
-  () => userCreateZ,
-  (req) => createUser(req),
-  Allow.ADMIN,
-);
+export const createApi = postRoute({
+  url: "/users",
+  schema: userCreateZ,
+  handler: createUser,
+  allow: Allow.ADMIN,
+});
 
 async function createUser(req: RequestWith<UserCreateT>) {
   const { name, email, isAdmin, staffRole, vendorId } = req.body;

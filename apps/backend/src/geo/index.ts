@@ -1,8 +1,8 @@
-import { appPlugin } from "#/utils";
+import { appPlugin } from "#/utils/routing";
 import { geoDistrictsApi } from "./geo-districts.api";
 import { geoInitializeApi } from "./geo-initialize.api";
 
-export default appPlugin(async (app) => {
+export default appPlugin((app) => {
   app.register(geoDistrictsApi);
   app.register(geoInitializeApi);
 });

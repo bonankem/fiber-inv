@@ -1,12 +1,13 @@
 import { ftthSurveyBriefS } from "schema/fhs";
 import type { UserFullT } from "schema/people";
 import { prisma, WorkStatus } from "#/db";
-import { getRoute } from "#/utils";
+import { getRoute } from "#/utils/routing";
 import { workAccess } from "../work/filter";
 
-export const fhsForProjectApi = getRoute("/fhs/for-project", null, (req) =>
-  fhsForProject(req.authUser),
-);
+export const fhsForProjectApi = getRoute({
+  url: "/fhs/for-project",
+  handler: (req) => fhsForProject(req.authUser),
+});
 
 async function fhsForProject(user: UserFullT) {
   return prisma.ftthSurvey.findMany({

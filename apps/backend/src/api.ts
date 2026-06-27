@@ -1,7 +1,7 @@
-import { appPlugin } from "#/utils";
+import { appPlugin, rbac } from "#/utils/routing";
 import admin from "./admin";
 import auth from "./auth";
-import { authGuard } from "./auth/guard";
+import { Allow, authGuard } from "./auth/guard";
 import fhc from "./fhc";
 import fhp from "./fhp";
 import fhs from "./fhs";
@@ -14,8 +14,10 @@ import users from "./users";
 import vendors from "./vendors";
 import work from "./work";
 
-export default appPlugin(async (app) => {
+export default appPlugin((app) => {
   app.register(authGuard);
+
+  app.get("/", { onRequest: rbac(Allow.PUBLIC) }, () => ({ name: "ServiceX" }));
 
   app.register(admin);
   app.register(auth);

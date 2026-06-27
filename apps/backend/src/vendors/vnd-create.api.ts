@@ -1,13 +1,14 @@
 import { type VendorCreateT, vendorCreateZ, vendorS } from "schema/people";
 import { prisma } from "#/db";
-import { bad, postRoute } from "#/utils";
+import { bad } from "#/utils/errors";
+import { postRoute } from "#/utils/routing";
 import { makeKey } from "../utils/queries";
 
-export const createApi = postRoute(
-  "/vendors",
-  () => vendorCreateZ,
-  (req) => createVendor(req.body),
-);
+export const createApi = postRoute({
+  url: "/vendors",
+  schema: vendorCreateZ,
+  handler: (req) => createVendor(req.body),
+});
 
 async function createVendor({ name }: VendorCreateT) {
   const key = makeKey(name);

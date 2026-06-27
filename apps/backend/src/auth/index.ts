@@ -1,4 +1,4 @@
-import { appPlugin } from "#/utils";
+import { appPlugin, rbac } from "#/utils/routing";
 import { authCron } from "./auth.cron";
 import { changeApi } from "./auth-change.api";
 import { chooseApi } from "./auth-choose.api";
@@ -9,11 +9,9 @@ import { resetCheckApi } from "./auth-reset-check.api";
 import { verifyApi } from "./auth-verify.api";
 import { Allow } from "./guard";
 
-export default appPlugin(async (app) => {
-  app.addHook("onRequest", async (req) => {
-    // all auth endpoints are public
-    req.allow = Allow.PUBLIC;
-  });
+export default appPlugin((app) => {
+  app.addHook("onRequest", rbac(Allow.PUBLIC));
+
   app.register(authCron);
 
   app.register(changeApi);

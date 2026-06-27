@@ -4,7 +4,7 @@ import {
   type SessionPasswordResT,
   sessionPasswordReqZ,
 } from "schema/session";
-import { authLog } from "#/admin/syslog.api";
+import { authLog } from "#/admin/adm-syslog.api";
 import {
   checkOtp,
   checkPasswordChange,
@@ -12,13 +12,14 @@ import {
   getLoginUser,
 } from "#/auth/utils";
 import { prisma } from "#/db";
-import { type AnyRequest, postRoute, unauthorized } from "#/utils";
+import { unauthorized } from "#/utils/errors";
+import { type AnyRequest, postRoute } from "#/utils/routing";
 
-export const passwordApi = postRoute(
-  "/session/password",
-  () => sessionPasswordReqZ,
-  (req) => changePassword(req),
-);
+export const passwordApi = postRoute({
+  url: "/session/password",
+  schema: sessionPasswordReqZ,
+  handler: changePassword,
+});
 
 type Req = AnyRequest & {
   body: SessionPasswordReqT;

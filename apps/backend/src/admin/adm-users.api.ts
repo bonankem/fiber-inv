@@ -1,10 +1,11 @@
 import dayjs from "dayjs";
 import { prisma } from "#/db";
-import { type AnyReply, getRoute } from "#/utils";
+import { type AnyReply, getRoute } from "#/utils/routing";
 
-export const userInfoApi = getRoute("/admin/user-info", null, (_, __, res) =>
-  userInfo(res),
-);
+export const userInfoApi = getRoute({
+  url: "/admin/user-info",
+  handler: (_, __, res) => userInfo(res),
+});
 
 async function userInfo(res: AnyReply) {
   const users = await prisma.user.findMany({

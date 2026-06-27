@@ -5,7 +5,7 @@ import {
   scryptSync,
 } from "node:crypto";
 import { appEnv } from "#/env";
-import { bad } from "#/utils";
+import { bad } from "./errors";
 
 const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 16;

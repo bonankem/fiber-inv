@@ -1,10 +1,12 @@
-import { authLog } from "#/admin/syslog.api";
+import { authLog } from "#/admin/adm-syslog.api";
 import { AuthAction, prisma } from "#/db";
-import { type AnyRequest, bad, postRoute } from "#/utils";
+import { bad } from "#/utils/errors";
+import { type AnyRequest, postRoute } from "#/utils/routing";
 
-export const logoutApi = postRoute("/session/logout", null, (req) =>
-  logout(req),
-);
+export const logoutApi = postRoute({
+  url: "/session/logout",
+  handler: logout,
+});
 
 async function logout(req: AnyRequest) {
   const expiresAt = { lte: new Date() };

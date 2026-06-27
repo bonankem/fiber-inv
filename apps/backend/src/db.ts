@@ -2,7 +2,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "schema/prisma.client";
 import { appEnv } from "#/env";
 
-function envUrl() {
+function dbUrl() {
   const url = appEnv.DATABASE_URL;
   const ssl = appEnv.DB_SSL;
 
@@ -13,7 +13,7 @@ function envUrl() {
 }
 
 export const prisma = new PrismaClient({
-  adapter: new PrismaPg({ connectionString: envUrl() }),
+  adapter: new PrismaPg({ connectionString: dbUrl() }),
 });
 
 export * from "schema/prisma";

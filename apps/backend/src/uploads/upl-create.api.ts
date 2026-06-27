@@ -5,19 +5,19 @@ import {
   uploadFullS,
   uploadOptionsZ,
 } from "schema/uploads";
+import type { Maybe } from "schema/utils";
 import { uuidv7 } from "uuidv7";
 import { prisma } from "#/db";
-import { appRoute, bad, type Maybe } from "#/utils";
+import { bad } from "#/utils/errors";
+import { appRoute } from "#/utils/routing";
 import { maybeParse } from "./parsers";
 
-export const createApi = appRoute(() => ({
-  method: "POST",
+export const createApi = appRoute({
   url: "/uploads",
+  method: "POST",
   schema: { querystring: uploadOptionsZ },
-  handler: async (req) => {
-    return createUpload(await req.file(), req.query);
-  },
-}));
+  handler: (req) => req.file().then((f) => createUpload(f, req.query)),
+});
 
 async function createUpload(
   file: Maybe<MultipartFile>,

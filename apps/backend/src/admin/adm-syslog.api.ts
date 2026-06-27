@@ -3,7 +3,7 @@ import type { SyslogT } from "schema/admin";
 import { syslogZ } from "schema/admin";
 import { CEF } from "syslog-pro";
 import { type AuthAction, prisma } from "#/db";
-import { type AnyRequest, getRoute, postRoute } from "#/utils";
+import { type AnyRequest, getRoute, postRoute } from "#/utils/routing";
 
 const defaultSyslog: SyslogT = {
   host: "127.0.0.1",
@@ -50,11 +50,6 @@ const classIds: Record<AuthAction, number> = {
   UNLOCKED_BY_ADMIN: 9,
 };
 
-type Info = {
-  ip?: string;
-  email?: string;
-};
-
 export async function authLog(
   action: AuthAction,
   req: AnyRequest | null,
@@ -88,12 +83,15 @@ export async function authLog(
   await log.send().catch(() => {});
 }
 
-export const getSyslogApi = getRoute("/admin/syslog", null, () => syslogServer);
+export const getSyslogApi = getRoute({
+  url: "/admin/syslog",
+  handler: () => syslogServer,
+});
 
-export const setSyslogApi = postRoute(
-  "/admin/syslog",
-  () => syslogZ,
-  async ({ body }) => {
+export const setSyslogApi = postRoute({
+  url: "/admin/syslog",
+  schema: syslogZ,
+  handler: async ({ body }) => {
     await prisma.syslog.upsert({
       where: { id: "ID" },
       update: body,
@@ -103,4 +101,4 @@ export const setSyslogApi = postRoute(
     console.log(syslogServer);
     return { success: true };
   },
-);
+});

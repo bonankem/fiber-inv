@@ -1,8 +1,8 @@
-import type { FastifySchema } from "fastify";
 import fastifyPlugin from "fastify-plugin";
 import { type UserFullT, userFullP } from "schema/people";
 import { prisma } from "#/db";
-import { type AppRequest, accessDenied, unauthorized } from "#/utils";
+import { accessDenied, unauthorized } from "#/utils/errors";
+import type { AnyRequest } from "#/utils/routing";
 import {
   type AuthIdsT,
   sessionExpired,
@@ -27,7 +27,7 @@ declare module "fastify" {
   }
 }
 
-export function getReqToken(req: AppRequest<FastifySchema>) {
+export function getReqToken(req: AnyRequest) {
   const header = req.headers.authorization;
   const bearer = header && /Bearer (.+)/.exec(header)?.[1];
   if (bearer) return bearer;

@@ -1,14 +1,15 @@
 import type { UserT } from "schema/people";
 import { type WorkUpdateT, workUpdateZ } from "schema/work";
 import { prisma, WorkAction } from "#/db";
-import { bad, postRoute } from "#/utils";
+import { bad } from "#/utils/errors";
+import { postRoute } from "#/utils/routing";
 import { addLog, update } from "../utils/queries";
 
-export const fhsCommentApi = postRoute(
-  "/fhs/comment",
-  () => workUpdateZ,
-  (req) => fhsComment(req.body, req.authUser),
-);
+export const fhsCommentApi = postRoute({
+  url: "/fhs/comment",
+  schema: workUpdateZ,
+  handler: (req) => fhsComment(req.body, req.authUser),
+});
 
 async function fhsComment(body: WorkUpdateT, from: UserT) {
   const { id, comment } = body;

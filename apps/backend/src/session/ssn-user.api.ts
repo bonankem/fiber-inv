@@ -1,3 +1,6 @@
-import { getRoute } from "#/utils";
+import { getRoute } from "#/utils/routing";
 
-export const userApi = getRoute("/session/user", null, (req) => req.authUser);
+export const userApi = getRoute({
+  url: "/session/user",
+  handler: (req) => req.authUser,
+});

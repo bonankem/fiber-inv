@@ -1,6 +1,6 @@
 import { workLogS } from "schema/work";
 import { prisma } from "#/db";
-import { idRoute } from "#/utils";
+import { idRoute } from "#/utils/routing";
 
 export default idRoute("/work/:id/logs", (req) => workLogs(req.params.id));
 

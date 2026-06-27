@@ -1,8 +1,10 @@
 import type { IdNameT } from "schema/common";
 import type { CoordsT } from "schema/geo";
+import type { Falsey, Maybe } from "schema/utils";
 import type { WorkUpdateT } from "schema/work";
 import type { Prisma, WorkAction, WorkDocType, WorkStatus } from "#/db";
-import { currentTime, type Falsey, type Maybe, maybeConnect } from "#/utils";
+import { maybeConnect } from "./ids";
+import { currentTime } from "./time";
 
 type WorkCode = "FHS" | "FHP" | "FHC";
 type TxClient = Prisma.TransactionClient;

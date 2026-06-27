@@ -2,17 +2,10 @@ import { hashSync } from "bcryptjs";
 import { zObject } from "schema/utils";
 import z from "zod";
 import { MfaMode, type Prisma, prisma, StaffRole } from "#/db";
-import { postRoute } from "#/utils";
+import { postRoute } from "#/utils/routing";
 import { Allow } from "../auth/guard";
 import { geoInitialize } from "../geo/geo-initialize.api";
 import { create, makeKey } from "../utils/queries";
-
-export const seedApi = postRoute(
-  "/setup/seed",
-  () => seedReq,
-  (req) => seed(req.body),
-  Allow.PUBLIC,
-);
 
 export const seedReq = zObject("SeedReqT", {
   users: z.array(
@@ -30,7 +23,14 @@ export const seedReq = zObject("SeedReqT", {
   password: z.string(),
 });
 
-export type SeedReq = z.infer<typeof seedReq>;
+type SeedReq = z.infer<typeof seedReq>;
+
+export const seedApi = postRoute({
+  url: "/setup/seed",
+  schema: seedReq,
+  handler: (req) => seed(req.body),
+  allow: Allow.PUBLIC,
+});
 
 function makeVendor(name: string | undefined) {
   if (!name) return undefined;

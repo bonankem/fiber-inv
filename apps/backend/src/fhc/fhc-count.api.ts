@@ -4,14 +4,14 @@ import { type FhcFilterT, fhcFilterZ } from "schema/fhc";
 import type { UserFullT } from "schema/people";
 import { assoc } from "schema/utils";
 import { prisma, WorkStatus as S } from "#/db";
-import { getRoute } from "#/utils";
+import { getRoute } from "#/utils/routing";
 import { fhcWorkWhere, workNotOpen, workStopped } from "./filter";
 
-export const fhcCountApi = getRoute(
-  "/fhc/count",
-  () => fhcFilterZ,
-  (req) => fhcCount(req.query, req.authUser),
-);
+export const fhcCountApi = getRoute({
+  url: "/fhc/count",
+  schema: fhcFilterZ,
+  handler: (req) => fhcCount(req.query, req.authUser),
+});
 
 async function fhcCount(
   input: FhcFilterT,

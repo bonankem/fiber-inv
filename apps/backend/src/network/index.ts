@@ -1,6 +1,6 @@
-import { appPlugin } from "#/utils";
+import { appPlugin } from "#/utils/routing";
 import { oltListApi } from "./net-olt-list.api";
 
-export default appPlugin(async (app) => {
+export default appPlugin((app) => {
   app.register(oltListApi);
 });

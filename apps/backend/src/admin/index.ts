@@ -1,16 +1,15 @@
 import { Allow } from "#/auth/guard";
-import { appPlugin } from "#/utils";
-import { authLogsAoi } from "./auth-logs.api";
-import { patchApi } from "./patch.api";
-import { getSecurityApi, setSecurityApi } from "./security.api";
-import { getSyslogApi, setSyslogApi } from "./syslog.api";
-import { unlockApi } from "./unlock.api";
-import { userInfoApi } from "./user-info.api";
+import { appPlugin, rbac } from "#/utils/routing";
+import { authLogsAoi } from "./adm-logs.api";
+import { patchApi } from "./adm-patch.api";
+import { getSecurityApi, setSecurityApi } from "./adm-security.api";
+import { getSyslogApi, setSyslogApi } from "./adm-syslog.api";
+import { unlockApi } from "./adm-unlock.api";
+import { userInfoApi } from "./adm-users.api";
 
-export default appPlugin(async (app) => {
-  app.addHook("onRequest", async (req) => {
-    req.allow = Allow.ADMIN;
-  });
+export default appPlugin((app) => {
+  app.addHook("onRequest", rbac(Allow.ADMIN));
+
   app.register(authLogsAoi);
   app.register(getSecurityApi);
   app.register(getSyslogApi);

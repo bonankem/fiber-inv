@@ -2,15 +2,17 @@ import { WorkAction, WorkStatus } from "schema/enums";
 import { type FhsReviewT, fhsReviewZ, ftthSurveyS } from "schema/fhs";
 import type { UserT } from "schema/people";
 import { prisma } from "#/db";
-import { bad, currentDate, postRoute } from "#/utils";
+import { bad } from "#/utils/errors";
+import { postRoute } from "#/utils/routing";
+import { currentDate } from "#/utils/time";
 import { updateWork } from "../utils/work";
 import { fhsCheck } from "./utils";
 
-export const fhsReviewApi = postRoute(
-  "/fhs/review",
-  () => fhsReviewZ,
-  (req) => fhsReview(req.body, req.authUser),
-);
+export const fhsReviewApi = postRoute({
+  url: "/fhs/review",
+  schema: fhsReviewZ,
+  handler: (req) => fhsReview(req.body, req.authUser),
+});
 
 async function fhsReview(dto: FhsReviewT, from: UserT) {
   const { s } = await fhsCheck({

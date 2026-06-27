@@ -1,14 +1,15 @@
 import { type FhpReportT, fhpReportZ, ftthProjectS } from "schema/fhp";
 import { type Prisma, prisma, WorkAction, WorkStatus } from "#/db";
-import { currentDate, postRoute } from "#/utils";
+import { postRoute } from "#/utils/routing";
+import { currentDate } from "#/utils/time";
 import { updateWork } from "../utils/work";
 import { fhpCheck, fhpWorker } from "./utils";
 
-export const fhpSubmitApi = postRoute(
-  "/fhp/submit",
-  () => fhpReportZ,
-  (req) => fhpSubmit(req.body),
-);
+export const fhpSubmitApi = postRoute({
+  url: "/fhp/submit",
+  schema: fhpReportZ,
+  handler: (req) => fhpSubmit(req.body),
+});
 
 async function fhpSubmit(dto: FhpReportT) {
   const { id, comment, uploads, AS_BUILT_BOQ, AS_BUILT_KMZ, ...fields } = dto;

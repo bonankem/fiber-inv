@@ -1,14 +1,16 @@
 import { type FhpRequestT, fhpRequestZ, ftthProjectS } from "schema/fhp";
 import type { UserFullT } from "schema/people";
 import { prisma, StaffRole, WorkAction, WorkStatus } from "#/db";
-import { bad, connectId, maybeConnect, postRoute } from "#/utils";
+import { bad } from "#/utils/errors";
+import { connectId, maybeConnect } from "#/utils/ids";
+import { postRoute } from "#/utils/routing";
 import { addLog, create, makeKey, nextId, setCoords } from "../utils/queries";
 
-export const fhpRequestApi = postRoute(
-  "/fhp",
-  () => fhpRequestZ,
-  (req) => fhpRequest(req.body, req.authUser),
-);
+export const fhpRequestApi = postRoute({
+  url: "/fhp",
+  schema: fhpRequestZ,
+  handler: (req) => fhpRequest(req.body, req.authUser),
+});
 
 const ID = "FHP";
 const action = WorkAction.REQUEST;

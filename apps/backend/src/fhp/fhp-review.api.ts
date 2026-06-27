@@ -1,15 +1,17 @@
 import { WorkAction, WorkStatus } from "schema/enums";
 import { type FhpReviewT, fhpReviewZ, ftthProjectS } from "schema/fhp";
 import { prisma } from "#/db";
-import { bad, currentDate, postRoute } from "#/utils";
+import { bad } from "#/utils/errors";
+import { postRoute } from "#/utils/routing";
+import { currentDate } from "#/utils/time";
 import { updateWork } from "../utils/work";
 import { fhpCheck } from "./utils";
 
-export const fhpReviewApi = postRoute(
-  "/fhp/review",
-  () => fhpReviewZ,
-  (req) => fhpReview(req.body),
-);
+export const fhpReviewApi = postRoute({
+  url: "/fhp/review",
+  schema: fhpReviewZ,
+  handler: (req) => fhpReview(req.body),
+});
 
 async function fhpReview(dto: FhpReviewT) {
   const { s } = await fhpCheck({

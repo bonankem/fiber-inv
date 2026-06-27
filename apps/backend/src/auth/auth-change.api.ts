@@ -1,7 +1,8 @@
 import { type AuthChangeReqT, authChangeReqZ } from "schema/auth";
-import { authLog } from "#/admin/syslog.api";
+import { authLog } from "#/admin/adm-syslog.api";
 import { AuthAction, prisma } from "#/db";
-import { type App, bad, postRoute, type RequestWith } from "#/utils";
+import { bad } from "#/utils/errors";
+import { type App, postRoute, type RequestWith } from "#/utils/routing";
 import {
   authResult,
   badToken,
@@ -10,11 +11,11 @@ import {
   verifyTempToken,
 } from "./utils";
 
-export const changeApi = postRoute(
-  "/auth/change",
-  () => authChangeReqZ,
-  (req, app) => authChange(req, app),
-);
+export const changeApi = postRoute({
+  url: "/auth/change",
+  schema: authChangeReqZ,
+  handler: (req, app) => authChange(req, app),
+});
 
 async function authChange(req: RequestWith<AuthChangeReqT>, app: App) {
   const { oldPassword, newPassword, token } = req.body;

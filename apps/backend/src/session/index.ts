@@ -1,10 +1,10 @@
 import { prisma } from "#/db";
-import { appPlugin } from "#/utils";
+import { appPlugin } from "#/utils/routing";
 import { logoutApi } from "./ssn-logout.api";
 import { passwordApi } from "./ssn-password.api";
 import { userApi } from "./ssn-user.api";
 
-export default appPlugin(async (app) => {
+export default appPlugin((app) => {
   app.register(userApi);
   app.register(logoutApi);
   app.register(passwordApi);

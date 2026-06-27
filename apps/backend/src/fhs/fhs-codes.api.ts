@@ -1,9 +1,12 @@
 import { type FhsCodesT, fhsCodesUrl } from "schema/fhs";
 import { prisma } from "#/db";
-import { getRoute } from "#/utils";
+import { getRoute } from "#/utils/routing";
 import { workStopped } from "./filter";
 
-export const fhsCodesApi = getRoute(fhsCodesUrl, null, fhsCodes);
+export const fhsCodesApi = getRoute({
+  url: fhsCodesUrl,
+  handler: fhsCodes,
+});
 
 async function fhsCodes(): Promise<FhsCodesT> {
   const areas = await prisma.ftthArea.findMany({

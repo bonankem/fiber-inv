@@ -14,7 +14,7 @@ import {
   serializerCompiler,
   validatorCompiler,
 } from "fastify-zod-openapi";
-import { initSyslogServer } from "./admin/syslog.api";
+import { initSyslogServer } from "./admin/adm-syslog.api";
 import api from "./api";
 import { appEnv } from "./env";
 import { verifyMail } from "./mail";
@@ -50,8 +50,6 @@ await app.register(fastifySwagger, {
 });
 
 app.register(api);
-
-app.get("/", () => ({ name: "ServiceX" }));
 
 const remote = process.argv.includes("--host");
 app.listen({
