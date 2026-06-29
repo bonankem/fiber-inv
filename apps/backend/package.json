@@ -29,6 +29,7 @@
     "fastify-zod-openapi": "^5.6.1",
     "nodemailer": "^9.0.1",
     "otplib": "^13.4.0",
+    "pdf-parse": "^2.4.5",
     "pg": "^8.20.0",
     "remeda": "^2.34.0",
     "saxes": "^6.0.0",

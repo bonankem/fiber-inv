@@ -4,15 +4,21 @@ import { z, zObject, zStr, zStrOpt } from "../utils";
 export const fhcRequestZ = zObject("FhcRequestT", {
   tn: zStr("Customer TN"),
   name: zStr("Customer name"),
+  coords: coordsZ.describe("Location coordinates"),
+  vendorId: zStr("Vendor ID"),
+  localityId: zStr("Locality ID"),
   email: zStrOpt("Customer email address"),
   phone: zStrOpt("Customer phone number"),
-  address: zStr("Location address"),
-  coords: coordsZ.describe("Location coordinates"),
-  localityId: zStr("Locality ID"),
-  vendorId: zStr("Vendor ID"),
+  address: zStrOpt("Location address"),
   startDate: zStrOpt("Scheduled date"),
   comment: zStrOpt("Added comment"),
   uploads: z.array(z.string()).optional(),
 });
 
 export type FhcRequestT = z.infer<typeof fhcRequestZ>;
+
+export const fhcRequestManyZ = zObject("FhsRequestManyT", {
+  items: z.array(fhcRequestZ),
+});
+
+export type FhcRequestManyT = z.infer<typeof fhcRequestManyZ>;

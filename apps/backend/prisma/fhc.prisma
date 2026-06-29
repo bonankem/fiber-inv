@@ -7,7 +7,7 @@ model FtthConnection {
 
     tn String
 
-    address String
+    address String?
 
     email String?
 

@@ -1,17 +1,20 @@
 import {
+  EditOutlined,
   FileExcelOutlined,
   MenuOutlined,
   PlusOutlined,
   ReloadOutlined,
+  UnorderedListOutlined,
 } from "@ant-design/icons";
 import { useLocation } from "@tanstack/react-router";
-import { Button, Layout, theme } from "antd";
+import { Button, Dropdown, Layout, theme } from "antd";
 import { m } from "i18n/messages";
 import { twJoin } from "tailwind-merge";
 import { type ModalFC, useModalViewer } from "#/hooks/useModalViewer";
 import AuthLogsModal from "#/modules/admin/AuthLogsModal";
 import SyslogForm from "#/modules/admin/SyslogForm";
 import FhcRequestForm from "#/modules/ftth-connections/FhcRequestForm";
+import FhcRequestManyForm from "#/modules/ftth-connections/FhcRequestManyForm";
 import FhpRequestForm from "#/modules/ftth-projects/FhpRequestForm";
 import FhsRequestForm from "#/modules/ftth-surveys/FhsRequestForm";
 import StaffCreateForm from "#/modules/staff/StaffCreateForm";
@@ -19,10 +22,26 @@ import UserInfoModal from "#/modules/staff/UserInfoModal";
 import NotificationBell from "./NotificationBell";
 import type { UserLayoutProps } from "./useUserLayout";
 
-const newForms: Record<string, ModalFC> = {
+type MultiForm = {
+  name: string;
+  form: ModalFC;
+  icon?: typeof EditOutlined;
+};
+const newForms: Record<string, ModalFC | MultiForm[]> = {
   "ftth-surveys": FhsRequestForm,
   "ftth-projects": FhpRequestForm,
-  "ftth-connections": FhcRequestForm,
+  "ftth-connections": [
+    {
+      name: m.input_manually(),
+      form: FhcRequestForm,
+      icon: EditOutlined,
+    },
+    {
+      name: m.read_from_file(),
+      form: FhcRequestManyForm,
+      icon: UnorderedListOutlined,
+    },
+  ],
   staff: StaffCreateForm,
   security: SyslogForm,
 };
@@ -86,7 +105,6 @@ export default function UserHeader(props: UserLayoutProps) {
           >
             {m.refresh()}
           </Button>
-
           {
             <Button
               size="small"
@@ -96,8 +114,7 @@ export default function UserHeader(props: UserLayoutProps) {
               {m.report()}
             </Button>
           }
-
-          {newForm && (
+          {typeof newForm === "function" && (
             <Button
               size="small"
               type="primary"
@@ -105,6 +122,25 @@ export default function UserHeader(props: UserLayoutProps) {
             >
               {titles[pathKey] || m.new_request()}
             </Button>
+          )}
+
+          {Array.isArray(newForm) && (
+            <Dropdown
+              trigger={["click"]}
+              placement="bottomRight"
+              menu={{
+                items: newForm.map((e) => ({
+                  key: e.name,
+                  icon: e.icon && <e.icon />,
+                  label: e.name,
+                  onClick: () => modal.open(e.form),
+                })),
+              }}
+            >
+              <Button size="small" type="primary">
+                {titles[pathKey] || m.new_request()}
+              </Button>
+            </Dropdown>
           )}
         </section>
 

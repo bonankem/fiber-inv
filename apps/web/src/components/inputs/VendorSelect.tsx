@@ -24,7 +24,7 @@ export default function VendorSelect({ staffRole, ...props }: Props) {
       {...props}
       options={options}
       loading={query.isLoading}
-      showSearch={{ optionFilterProp: "label" }}
+      showSearch={props.showSearch ?? { optionFilterProp: "label" }}
       classNames={{ popup: { listItem: "text-sm!" } }}
     />
   );

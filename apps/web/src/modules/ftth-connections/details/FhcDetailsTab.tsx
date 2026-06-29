@@ -16,7 +16,7 @@ export default function FhcDetailsTab(props: FhcTabProps) {
         missing="dash"
         items={[
           { label: m.name(), value: w.name },
-          { label: "FN", value: i.fn },
+          { label: "TN", value: i.tn && `${i.tn}@mtn.ci` },
           { label: m.id(), value: w.sid },
           { label: m.address(), value: i.address },
           { label: m.phone(), value: i.phone },

@@ -19,11 +19,11 @@ export default function FhcUpdateForm({ item, state }: FhcFormProps) {
       state={state}
       width={560}
       title="Progress Update"
-      subtitle={`${item.fn}: ${item.work.name}`}
+      subtitle={`${item.tn}: ${item.work.name}`}
       className="grid md:grid-cols-2 gap-x-2"
     >
       {img(Doc.FHC_FAT, "FAT")}
-      {img(Doc.FHC_DROP_CABLE_LABEL, "Drop Cable Label")}
+      {img(Doc.FHC_DROP_CABLE, "Drop Cable Label")}
       {img(Doc.FHC_FAT_POWER_TEST, "FAT Power Test")}
       {img(Doc.FHC_ATB_POWER_TEST, "ATB Power Test")}
       {img(Doc.FHC_ONT_INDICATORS, "ONT Indicators")}

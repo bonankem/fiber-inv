@@ -13,6 +13,7 @@ import {
 } from "antd";
 import { m } from "i18n/messages";
 import type { ReactNode } from "react";
+import { twJoin } from "tailwind-merge";
 import type { ModalState } from "#/hooks/useModalViewer";
 import { useUploader } from "#/hooks/useUploader";
 
@@ -25,6 +26,7 @@ export type FormModalProps<T> = {
   children?: ReactNode;
   onSubmit?: (data: T) => void;
   okText?: string;
+  hasOk?: boolean;
   submitting?: boolean;
   preparing?: boolean;
   className?: string;
@@ -112,18 +114,23 @@ export default function FormModal<T>(props: FormModalProps<T>) {
             )}
 
             <div
-              className="self-center w-full max-w-md grid grid-cols-2 gap-2"
+              className={twJoin(
+                "self-center grid gap-2",
+                props.hasOk !== false && "grid-cols-2 w-full max-w-md",
+              )}
               style={{ backgroundColor: token.colorBgContainer }}
             >
               <Button onClick={close}>{m.back()}</Button>
 
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={props.submitting}
-              >
-                {props.okText || m.send()}
-              </Button>
+              {props.hasOk !== false && (
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={props.submitting}
+                >
+                  {props.okText || m.send()}
+                </Button>
+              )}
             </div>
           </Form>
         </ConfigProvider>

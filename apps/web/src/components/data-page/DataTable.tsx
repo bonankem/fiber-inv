@@ -3,7 +3,7 @@ import ExportButton from "./ExportButton";
 import type { DataTableProps } from "./types";
 import { useResolvedColumns } from "./utils";
 
-export default function DataTable<T extends { id: string }>(
+export default function DataTable<T extends { id: string } | { tn: string }>(
   props: DataTableProps<T>,
 ) {
   const { columns, scrollX, maxHeight } = useResolvedColumns(props);
@@ -13,7 +13,7 @@ export default function DataTable<T extends { id: string }>(
     <Table
       size="small"
       dataSource={props.data ?? []}
-      rowKey={(r) => r.id}
+      rowKey={(r) => ("id" in r ? r.id : r.tn)}
       scroll={{ x: scrollX }}
       loading={props.loading}
       columns={columns}

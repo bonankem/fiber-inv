@@ -53,7 +53,7 @@ export default function FhcRequestForm(props: ModalStateProps) {
         <CoordsInput />
       </Form.Item>
 
-      <Form.Item name="fn" label="FN" required>
+      <Form.Item name="tn" label="TN" required>
         <Input required />
       </Form.Item>
 

@@ -43,7 +43,24 @@ export function maybeCoords(
   const lng = Number(longitude);
   if (Number.isNaN(lat)) return null;
   if (Number.isNaN(lng)) return null;
-  return { lat, lng };
+  return { lat: to5dp(lat), lng: to5dp(lng) };
+}
+
+export function parseCoords(s: Maybe<string>): CoordsT | null {
+  if (!s) return null;
+  const match = /^([-+]?\d+\.?\d*)[, ]+([-+]?\d+\.?\d*)$/.exec(s.trim());
+  if (!match) return null;
+
+  const value = maybeCoords(match[1], match[2]);
+  if (!value) return null;
+
+  if (value.lat < 0 && value.lng > 0) {
+    // In CI, lat is +ve, lng is -ve
+    // if we have the reverse, then flip the values
+    return { lat: value.lng, lng: value.lat };
+  }
+
+  return value;
 }
 
 const TEN_5 = 100000;
@@ -190,8 +207,13 @@ export function qSidIs(sid: Maybe<string>) {
 }
 
 export function makeKey(text: string) {
-  const norm = text.normalize("NFKD");
-  return norm.toLowerCase().replace(/[\W_]+/g, "");
+  const norm = text.normalize("NFKD").toLowerCase();
+  return norm.replace(/[\W_]+/g, "");
+}
+
+export function makeKeySpaced(text: string) {
+  const norm = text.normalize("NFKD").toLowerCase();
+  return norm.replace(/[\W_]+/g, " ").trim();
 }
 
 export function filterNotNull<T>(list: Maybe<T>[]) {

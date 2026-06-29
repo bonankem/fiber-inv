@@ -84,6 +84,14 @@ export function useApiPost<I, O = unknown>(
   });
 }
 
+export function useApiUpload<O>(path: ApiPath) {
+  const url = Array.isArray(path) ? path.join("/") : path;
+  const token = useAuthToken();
+  return useMutation({
+    mutationFn: (file: File) => postFile<O>(url, file, token.value),
+  });
+}
+
 type Query = {
   [key in string]?:
     | null
@@ -110,6 +118,25 @@ export async function postJson<I, O>(
     headers,
     body: body ? JSON.stringify(body) : undefined,
   });
+  const data = await res.json();
+  if (res.ok) return data as O;
+
+  const message = data.message || "API error";
+  throw new Error(message);
+}
+
+export async function postFile<O>(
+  url: string,
+  file: File,
+  token?: Maybe<string>,
+) {
+  const headers: HeadersInit = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const body = new FormData();
+  body.append("file", file);
+
+  const res = await fetch(apiUrl(url), { method: "POST", headers, body });
   const data = await res.json();
   if (res.ok) return data as O;
 
@@ -174,7 +201,7 @@ export function showAppError(e: unknown) {
   message.error(errorMessage(e));
 }
 
-export function apiCall<I, O>(f: (i: I) => O) {
+export function apiCall<I, O>(f: (i: I) => O | Promise<O>) {
   return async (i: I) => {
     try {
       return await f(i);
