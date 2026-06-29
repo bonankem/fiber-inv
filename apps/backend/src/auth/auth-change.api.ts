@@ -5,7 +5,6 @@ import { AuthAction, prisma } from "#/db";
 import { type App, postRoute, type RequestWith } from "#/utils/routing";
 import {
   authResult,
-  badToken,
   checkPasswordChange,
   getLoginUser,
   verifyTempToken,
@@ -21,10 +20,10 @@ async function authChange(req: RequestWith<AuthChangeReqT>, app: App) {
   const { oldPassword, newPassword, token } = req.body;
   const { userId } = verifyTempToken(app.jwt, token);
   const user = await getLoginUser({ id: userId });
-  if (!user) badToken();
+  if (!user) bad(Err.INVALID_TOKEN);
 
   if (user.password?.mustChange === false) {
-    bad(Err.CHANGE_PASSWORD_TOO_SOON);
+    bad(Err.CANNOT_CHANGE_PASSWORD_YET);
   }
 
   const data = await checkPasswordChange(oldPassword, newPassword, user);

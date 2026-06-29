@@ -27,18 +27,6 @@ import {
   USER_PASS_LENGTH,
 } from "./config";
 
-export function badToken(): never {
-  bad(Err.INVALID_TOKEN);
-}
-
-export function wrongPassswod(): never {
-  bad(Err.OLD_PASSWORD_IS_INCORRECT);
-}
-
-export function randomOtp() {
-  return randomInt(111111, 999999).toString();
-}
-
 type OtpUserT = Pick<LoginUserT, "id" | "email">;
 
 export async function deliverOtp(
@@ -46,13 +34,10 @@ export async function deliverOtp(
   user: OtpUserT,
   reason: OtpReason,
 ) {
-  const { EMAIL } = MfaMode;
-  if (mode !== EMAIL) return "";
-
-  const otp = randomOtp();
+  const otp = randomInt(111111, 999999).toString();
+  const until = dayjs().add(OTP_EXPIRY_MINUTES, "minutes");
 
   sendUserOtp(user, mode, otp);
-  const until = dayjs().add(OTP_EXPIRY_MINUTES, "minutes");
   await prisma.otp.create({
     data: {
       mode,
@@ -62,6 +47,7 @@ export async function deliverOtp(
       expiresAt: until.toDate(),
     },
   });
+
   if (isDev) console.log(`${otp} via ${mode}`);
   return otp;
 }
@@ -256,7 +242,7 @@ export function verifyTempToken(jwt: JWT, token: string) {
     return tempTokenZ.parse(jwt.verify(token));
   } catch (e) {
     if (isDev) console.error(e);
-    badToken();
+    bad(Err.INVALID_TOKEN);
   }
 }
 

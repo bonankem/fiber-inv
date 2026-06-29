@@ -17,7 +17,6 @@ async function fhpReview(dto: FhpReviewT) {
   const { s } = await fhpCheck({
     workId: dto.id,
     status: WorkStatus.REVIEW,
-    statusError: "Job is not under review",
   });
   const ok = dto.passed;
   if (!ok) mustHave(dto.comment, "comment");

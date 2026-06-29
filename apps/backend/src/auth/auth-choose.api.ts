@@ -2,7 +2,7 @@ import { type AuthChooseReqT, authChooseReqZ } from "schema/auth";
 import { bad, Err } from "schema/errors";
 import { MfaMode, prisma } from "#/db";
 import { type App, postRoute, type RequestWith } from "#/utils/routing";
-import { authResult, badToken, getLoginUser, verifyTempToken } from "./utils";
+import { authResult, getLoginUser, verifyTempToken } from "./utils";
 
 export const chooseApi = postRoute({
   url: "/auth/choose",
@@ -15,9 +15,9 @@ async function authChoose(req: RequestWith<AuthChooseReqT>, app: App) {
   const mfaMode = req.body.mode;
 
   const user = await getLoginUser({ id: userId });
-  if (!user?.password) badToken();
+  if (!user?.password) bad(Err.INVALID_TOKEN);
 
-  const p = user.password || badToken();
+  const p = user.password || bad(Err.INVALID_TOKEN);
   const oldMode = p.mfaMode;
 
   if (oldMode === mfaMode) {

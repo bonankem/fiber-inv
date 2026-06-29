@@ -18,7 +18,6 @@ async function fhsAssign(dto: FhsAssignT, from: UserT) {
     userId,
     vendorId,
     status: WorkStatus.REQUESTED,
-    statusError: "Survey is already assigned",
   });
   return prisma.ftthSurvey.update({
     where: { id: workId },

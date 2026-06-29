@@ -17,7 +17,6 @@ async function fhpInitiate(dto: FhpInitiateT) {
     workId,
     vendorId,
     status: WorkStatus.ASSIGNED,
-    statusError: "Job is already initiated",
   });
   mustHave(v || s.work.vendor, "vendorId");
 

@@ -1,14 +1,9 @@
 import type { PrismaPromise } from "@prisma/client/runtime/client";
 import { type AuthVerifyReqT, authVerifyReqZ } from "schema/auth";
+import { bad, Err } from "schema/errors";
 import { MfaMode, prisma } from "#/db";
 import { type App, postRoute, type RequestWith } from "#/utils/routing";
-import {
-  authSuccess,
-  badToken,
-  checkOtp,
-  getLoginUser,
-  verifyTempToken,
-} from "./utils";
+import { authSuccess, checkOtp, getLoginUser, verifyTempToken } from "./utils";
 
 export const verifyApi = postRoute({
   url: "/auth/verify",
@@ -20,7 +15,7 @@ async function authVerify(req: RequestWith<AuthVerifyReqT>, app: App) {
   const { userId } = verifyTempToken(app.jwt, req.body.token);
   const { otp, mode } = req.body;
 
-  const user = (await getLoginUser({ id: userId })) || badToken();
+  const user = (await getLoginUser({ id: userId })) || bad(Err.INVALID_TOKEN);
   await checkOtp(userId, otp, mode);
 
   const actions: PrismaPromise<unknown>[] = [];

@@ -17,7 +17,6 @@ async function fhpAssign(dto: FhpAssignT) {
     userId,
     vendorId,
     status: WorkStatus.REQUESTED,
-    statusError: "Already assigned",
   });
   return prisma.ftthProject.update({
     select: ftthProjectS,
