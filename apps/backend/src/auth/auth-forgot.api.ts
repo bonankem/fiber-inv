@@ -2,11 +2,11 @@ import { randomBytes } from "node:crypto";
 import { hashSync } from "bcryptjs";
 import dayjs from "dayjs";
 import { type AuthForgotReqT, authForgotReqZ } from "schema/auth";
+import { bad, Err } from "schema/errors";
 import type { Maybe } from "schema/utils";
 import { prisma } from "#/db";
 import { appEnv, isDev } from "#/env";
 import { sendMail } from "#/mail";
-import { bad } from "#/utils/errors";
 import { type AppLog, postRoute, type RequestWith } from "#/utils/routing";
 
 export const forgotApi = postRoute({
@@ -32,7 +32,7 @@ async function forgot(req: RequestWith<AuthForgotReqT>, log: AppLog) {
   const now = dayjs();
   if (last) {
     const interval = now.diff(last.createdAt, "seconds");
-    if (interval < RETRY_SECONDS) bad("Wait before retrying");
+    if (interval < RETRY_SECONDS) bad(Err.WAIT_BEFORE_RETRYING);
   }
 
   const exp = now.add(EXPIRY_MINUTES, "minutes");
@@ -62,14 +62,10 @@ async function forgot(req: RequestWith<AuthForgotReqT>, log: AppLog) {
   return { success: true };
 }
 
-function botCheckFailed(): never {
-  bad("Anti-bot verification failed");
-}
-
 async function checkTurnstile(token: Maybe<string>, ip: string, log: AppLog) {
   const secret = appEnv.TURNSTILE_SECRET;
   if (!secret) return;
-  if (!token) botCheckFailed();
+  if (!token) bad(Err.BOT_CHECK_FAILED);
 
   try {
     const response = await fetch(
@@ -80,7 +76,7 @@ async function checkTurnstile(token: Maybe<string>, ip: string, log: AppLog) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          secret,
+          secret: appEnv.TURNSTILE_SECRET,
           response: token,
           remoteip: ip,
         }),
@@ -92,6 +88,6 @@ async function checkTurnstile(token: Maybe<string>, ip: string, log: AppLog) {
     if (isDev && e instanceof Error) {
       log.error(`Turnstile error: ${e.message}`);
     }
-    botCheckFailed();
+    bad(Err.BOT_CHECK_FAILED);
   }
 }

@@ -1,7 +1,7 @@
+import { Err, mustHave } from "schema/errors";
 import { type FhpRequestT, fhpRequestZ, ftthProjectS } from "schema/fhp";
 import type { UserFullT } from "schema/people";
 import { prisma, StaffRole, WorkAction, WorkStatus } from "#/db";
-import { bad } from "#/utils/errors";
 import { connectId, maybeConnect } from "#/utils/ids";
 import { postRoute } from "#/utils/routing";
 import { addLog, create, makeKey, nextId, setCoords } from "../utils/queries";
@@ -21,7 +21,7 @@ async function fhpRequest(dto: FhpRequestT, from: UserFullT) {
   const s = await prisma.ftthSurvey.findUnique({
     where: { id: dto.surveyId },
   });
-  if (!s) bad("Survey not found");
+  mustHave(s, "surveyId", Err.NOT_FOUND);
 
   return prisma.$transaction(async (tx) => {
     const { sid, requestDate } = await nextId(tx, ID);

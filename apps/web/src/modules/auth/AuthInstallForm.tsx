@@ -66,9 +66,8 @@ export default function AuthInstallForm(props: Props) {
       <Form form={form} layout="vertical" onFinish={onSubmit}>
         <QRCode
           value={props.res.otpUri}
-          className="w-full! h-auto! p-8! mb-4!"
+          className="w-full! h-auto! p-4! mb-4!"
           icon="/mtn-square.svg"
-          //   iconSize={{ width: 96, height: 54 }}
         />
 
         <Form.Item

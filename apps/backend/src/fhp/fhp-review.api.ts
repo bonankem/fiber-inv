@@ -1,7 +1,7 @@
 import { WorkAction, WorkStatus } from "schema/enums";
+import { mustHave } from "schema/errors";
 import { type FhpReviewT, fhpReviewZ, ftthProjectS } from "schema/fhp";
 import { prisma } from "#/db";
-import { bad } from "#/utils/errors";
 import { postRoute } from "#/utils/routing";
 import { currentDate } from "#/utils/time";
 import { updateWork } from "../utils/work";
@@ -20,9 +20,8 @@ async function fhpReview(dto: FhpReviewT) {
     statusError: "Job is not under review",
   });
   const ok = dto.passed;
-  if (!ok && !dto.comment) {
-    bad("Comment is required");
-  }
+  if (!ok) mustHave(dto.comment, "comment");
+
   return prisma.ftthProject.update({
     select: ftthProjectS,
     where: { id: dto.id },

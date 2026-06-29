@@ -1,8 +1,8 @@
 import { WorkAction, WorkStatus } from "schema/enums";
+import { mustHaveFields } from "schema/errors";
 import { type FhsReviewT, fhsReviewZ, ftthSurveyS } from "schema/fhs";
 import type { UserT } from "schema/people";
 import { prisma } from "#/db";
-import { bad } from "#/utils/errors";
 import { postRoute } from "#/utils/routing";
 import { currentDate } from "#/utils/time";
 import { updateWork } from "../utils/work";
@@ -18,12 +18,10 @@ async function fhsReview(dto: FhsReviewT, from: UserT) {
   const { s } = await fhsCheck({
     workId: dto.id,
     status: WorkStatus.REVIEW,
-    statusError: "Survey is not under review",
   });
   const ok = dto.passed;
-  if (!ok && !dto.comment) {
-    bad("Comment is required");
-  }
+  if (!ok) mustHaveFields(dto, "comment");
+
   return prisma.ftthSurvey.update({
     select: ftthSurveyS,
     where: { id: dto.id },

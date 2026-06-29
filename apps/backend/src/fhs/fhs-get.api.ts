@@ -1,7 +1,7 @@
+import { bad, Err } from "schema/errors";
 import { ftthSurveyFullS } from "schema/fhs";
 import type { UserFullT } from "schema/people";
 import { prisma } from "#/db";
-import { notFound } from "#/utils/errors";
 import { idRoute } from "#/utils/routing";
 import { workAccess } from "../work/filter";
 
@@ -14,5 +14,5 @@ async function fhsGet(id: string, user: UserFullT) {
     where: { id, work: workAccess(user) },
     select: ftthSurveyFullS,
   });
-  return s || notFound();
+  return s || bad(Err.NOT_FOUND);
 }

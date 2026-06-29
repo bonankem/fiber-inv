@@ -1,9 +1,9 @@
 import { uniqueBy } from "remeda";
+import { bad, Err } from "schema/errors";
 import { type FhsSubmitT, fhsSubmitZ, ftthSurveyS } from "schema/fhs";
 import type { UserT } from "schema/people";
 import { filterTruthy } from "schema/utils";
 import { type Prisma, prisma, WorkAction, WorkDocType, WorkStatus } from "#/db";
-import { bad } from "#/utils/errors";
 import { postRoute } from "#/utils/routing";
 import { currentDate } from "#/utils/time";
 import { createManyCoords, getLatLngId } from "../utils/queries";
@@ -22,7 +22,7 @@ async function getReportedBoxes(uploadId: string) {
     select: { parsed: true },
   });
   if (coords?.parsed?.type !== WorkDocType.COORDINATES) {
-    bad("Invalid coordinates file, no boxes found");
+    bad(Err.INVALID_FILE, WorkDocType.COORDINATES);
   }
   const now = new Date();
   const parsedBoxes = uniqueBy(coords.parsed.boxes, (b) => b.name);

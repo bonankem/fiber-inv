@@ -1,7 +1,7 @@
 import { type AuthChangeReqT, authChangeReqZ } from "schema/auth";
+import { bad, Err } from "schema/errors";
 import { authLog } from "#/admin/adm-syslog.api";
 import { AuthAction, prisma } from "#/db";
-import { bad } from "#/utils/errors";
 import { type App, postRoute, type RequestWith } from "#/utils/routing";
 import {
   authResult,
@@ -24,7 +24,7 @@ async function authChange(req: RequestWith<AuthChangeReqT>, app: App) {
   if (!user) badToken();
 
   if (user.password?.mustChange === false) {
-    bad("Password was already changed");
+    bad(Err.CHANGE_PASSWORD_TOO_SOON);
   }
 
   const data = await checkPasswordChange(oldPassword, newPassword, user);

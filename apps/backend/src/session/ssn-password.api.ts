@@ -1,4 +1,5 @@
 import { AuthAction, MfaMode, OtpReason } from "schema/enums";
+import { bad, Err } from "schema/errors";
 import {
   type SessionPasswordReqT,
   type SessionPasswordResT,
@@ -12,7 +13,6 @@ import {
   getLoginUser,
 } from "#/auth/utils";
 import { prisma } from "#/db";
-import { unauthorized } from "#/utils/errors";
 import { type AnyRequest, postRoute } from "#/utils/routing";
 
 export const passwordApi = postRoute({
@@ -27,7 +27,7 @@ type Req = AnyRequest & {
 
 async function changePassword(req: Req): Promise<SessionPasswordResT> {
   const user = await getLoginUser({ id: req.authIds.userId });
-  if (!user) unauthorized();
+  if (!user) bad(Err.LOGIN_REQUIRED);
 
   const data = await checkPasswordChange(
     req.body.oldPassword,

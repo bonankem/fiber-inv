@@ -15,7 +15,7 @@ export const wipeApi = postRoute({
   url: "/setup/wipe",
   schema: wipeQueryZ,
   handler: (req) => wipeDb(req.body),
-  allow: Allow.ADMIN,
+  allow: Allow.PUBLIC,
 });
 
 type WipeQueryT = z.infer<typeof wipeQueryZ>;

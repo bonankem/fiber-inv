@@ -1,3 +1,4 @@
+import { bad, Err } from "schema/errors";
 import { type FhsRequestT, fhsRequestZ, ftthSurveyS } from "schema/fhs";
 import type { UserT } from "schema/people";
 import {
@@ -8,7 +9,6 @@ import {
   WorkDocType,
   WorkStatus,
 } from "#/db";
-import { bad } from "#/utils/errors";
 import { connectId } from "#/utils/ids";
 import { postRoute } from "#/utils/routing";
 import { ringWithBbox } from "../geo/utils";
@@ -72,7 +72,7 @@ async function nameCheck(name: string) {
   });
   const canRedo: WorkStatus[] = [WorkStatus.CANCELLED, WorkStatus.DECLINED];
   if (dup && !canRedo.includes(dup.status)) {
-    bad(`Survey already exists: ${dup.name}`);
+    bad(Err.ALREADY_EXISTS, dup.name);
   }
   return key;
 }

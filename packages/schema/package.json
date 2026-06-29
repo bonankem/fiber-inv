@@ -4,6 +4,7 @@
   "exports": {
     "./enums": "./dist/prisma/generated/enums.js",
     "./prisma.client": "./dist/prisma.client.js",
+    "./errors": "./dist/errors.js",
     "./utils": "./dist/utils.js",
     "./*": "./dist/*/index.js"
   },

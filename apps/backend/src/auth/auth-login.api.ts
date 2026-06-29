@@ -1,23 +1,17 @@
 import { httpErrors } from "@fastify/sensible";
 import dayjs from "dayjs";
 import { type AuthLoginReqT, authLoginReqZ } from "schema/auth";
+import { bad, Err } from "schema/errors";
 import type { Maybe } from "schema/utils";
 import { authLog } from "#/admin/adm-syslog.api";
 import { AuthAction, prisma } from "#/db";
-import { bad } from "#/utils/errors";
 import {
   type AnyRequest,
   type App,
   postRoute,
   type RequestWith,
 } from "#/utils/routing";
-import {
-  authResult,
-  badLogin,
-  checkHash,
-  getLoginUser,
-  type LoginUserT,
-} from "./utils";
+import { authResult, checkHash, getLoginUser, type LoginUserT } from "./utils";
 
 export const loginApi = postRoute({
   url: "/auth/login",
@@ -39,16 +33,12 @@ async function login(req: RequestWith<AuthLoginReqT>, app: App) {
 
   if (!checkHash(password, u?.password?.hashed)) {
     await logPasswordFailed(req, u, now);
-    badLogin();
+    bad(Err.INVALID_LOGIN);
   }
 
-  if (u.expiredAt) {
-    bad("Account expired. Contact administrator.");
-  }
+  if (u.expiredAt) bad(Err.ACCOUNT_EXPIRED);
   return authResult(app, req, u);
 }
-
-function checkRestrictions(user: LoginUserT, now: Date) {}
 
 async function logPasswordFailed(
   req: RequestWith<AuthLoginReqT>,

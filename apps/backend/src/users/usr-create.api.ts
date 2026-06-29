@@ -1,12 +1,12 @@
 import { randomBytes } from "node:crypto";
 import { hashSync } from "bcryptjs";
+import { bad, Err } from "schema/errors";
 import { type UserCreateT, userCreateZ, userS } from "schema/people";
 import { authLog } from "#/admin/adm-syslog.api";
 import { Allow } from "#/auth/guard";
 import { AuthAction, MfaMode, prisma } from "#/db";
 import { isDev } from "#/env";
 import { sendMail } from "#/mail";
-import { bad } from "#/utils/errors";
 import { maybeConnect } from "#/utils/ids";
 import { makeKey } from "#/utils/queries";
 import { postRoute, type RequestWith } from "#/utils/routing";
@@ -22,18 +22,16 @@ async function createUser(req: RequestWith<UserCreateT>) {
   const { name, email, isAdmin, staffRole, vendorId } = req.body;
 
   if (!isAdmin && !staffRole && !vendorId) {
-    bad("Select a user role");
+    bad(Err.FIELD_REQUIRED, "role");
   }
   if (isAdmin && (staffRole || vendorId)) {
-    bad("Admin cannot have staff or vendor role");
+    bad(Err.ADMIN_CANNOT_HAVE_ROLE);
   }
   if (staffRole && vendorId) {
-    bad("Vendor cannot have staff role");
+    bad(Err.VENDOR_CANNOT_BE_STAFF);
   }
-  const exists = prisma.user.findUnique({
-    where: { email },
-  });
-  if (!exists) bad("Email already registered");
+  const exists = prisma.user.findUnique({ where: { email } });
+  if (!exists) bad(Err.ALREADY_EXISTS, email);
 
   const password = randomBytes(9).toString("base64");
   const hashed = hashSync(password);

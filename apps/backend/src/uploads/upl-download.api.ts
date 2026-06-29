@@ -1,6 +1,6 @@
+import { bad, Err } from "schema/errors";
 import z from "zod";
 import { prisma } from "#/db";
-import { notFound } from "#/utils/errors";
 import { appRoute, rbac } from "#/utils/routing";
 import { Allow } from "../auth/guard";
 
@@ -19,7 +19,7 @@ export const downloadApi = appRoute({
       where: { id: req.params.id },
       include: { inDb: true },
     });
-    if (!up?.inDb) notFound("File not found");
+    if (!up?.inDb) bad(Err.NOT_FOUND);
 
     const inline = /^image\/|\/pdf$/.test(up.type);
     const disp = inline ? "inline" : "attachment";

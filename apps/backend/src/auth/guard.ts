@@ -1,14 +1,9 @@
 import fastifyPlugin from "fastify-plugin";
+import { bad, Err } from "schema/errors";
 import { type UserFullT, userFullP } from "schema/people";
 import { prisma } from "#/db";
-import { accessDenied, unauthorized } from "#/utils/errors";
 import type { AnyRequest } from "#/utils/routing";
-import {
-  type AuthIdsT,
-  sessionExpired,
-  sessionReplaced,
-  tryAuthToken,
-} from "./utils";
+import { type AuthIdsT, tryAuthToken } from "./utils";
 
 export enum Allow {
   PUBLIC = "PUBLIC",
@@ -45,13 +40,13 @@ export const authGuard = fastifyPlugin(async (app) => {
 
   app.decorateRequest("authIds", {
     getter() {
-      return this.maybeIds || unauthorized();
+      return this.maybeIds || bad(Err.LOGIN_REQUIRED);
     },
   });
 
   app.decorateRequest("authUser", {
     getter() {
-      return this.maybeUser || unauthorized();
+      return this.maybeUser || bad(Err.LOGIN_REQUIRED);
     },
   });
 
@@ -64,7 +59,7 @@ export const authGuard = fastifyPlugin(async (app) => {
     req.maybeIds = authIds;
     if (!authIds) {
       if (isPublic) return;
-      else unauthorized();
+      else bad(Err.LOGIN_REQUIRED);
     }
 
     const now = new Date();
@@ -76,12 +71,12 @@ export const authGuard = fastifyPlugin(async (app) => {
     // no active session and allow !== PUBLIC -> 401
     req.maybeUser = session?.user || null;
     if (isPublic) return;
-    if (!session) sessionExpired();
-    if (session.replacedAt) sessionReplaced();
+    if (!session) bad(Err.SESSION_EXPIRED);
+    if (session.replacedAt) bad(Err.SESSION_CHANGED_DEVICE);
 
     const { isAdmin, staffRole } = session.user;
     if (isAdmin) return; // admins bypass RBAC
-    if (allow === Allow.ADMIN) accessDenied();
-    if (allow === Allow.STAFF && !staffRole) accessDenied();
+    if (allow === Allow.ADMIN) bad(Err.ACCESS_DENIED);
+    if (allow === Allow.STAFF && !staffRole) bad(Err.ACCESS_DENIED);
   });
 });

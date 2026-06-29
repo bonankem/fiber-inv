@@ -1,7 +1,6 @@
 import { randomInt } from "node:crypto";
 import type { JWT } from "@fastify/jwt";
-import { httpErrors } from "@fastify/sensible";
-import { compare, compareSync, hashSync } from "bcryptjs";
+import { compareSync, hashSync } from "bcryptjs";
 import dayjs from "dayjs";
 import { generateSecret, generateURI, verifySync } from "otplib";
 import {
@@ -10,15 +9,16 @@ import {
   type AuthSuccessT,
   IoEvent,
 } from "schema/auth";
+import { bad, Err } from "schema/errors";
 import { userFullP } from "schema/people";
+import type { Maybe } from "schema/utils";
 import z from "zod";
 import { authLog } from "#/admin/adm-syslog.api";
 import { AuthAction, MfaMode, OtpReason, type Prisma, prisma } from "#/db";
 import { isDev } from "#/env";
 import { sendMail } from "#/mail";
-import { bad } from "#/utils/errors";
 import { newUuid } from "#/utils/ids";
-import type { AnyRequest, App, Maybe } from "#/utils/routing";
+import type { AnyRequest, App } from "#/utils/routing";
 import { decrypt, encrypt } from "../utils/encryption";
 import {
   ADMIN_PASS_LENGTH,
@@ -27,24 +27,12 @@ import {
   USER_PASS_LENGTH,
 } from "./config";
 
-export function badLogin(): never {
-  bad("Invalid email or password");
-}
-
 export function badToken(): never {
-  bad("Invalid or expired token");
+  bad(Err.INVALID_TOKEN);
 }
 
-export function wrongPassword(): never {
-  bad("Old password is not correct");
-}
-
-export function sessionExpired(): never {
-  throw httpErrors.unauthorized("Session expired");
-}
-
-export function sessionReplaced(): never {
-  throw httpErrors.unauthorized("Session ended due to login on another device");
+export function wrongPassswod(): never {
+  bad(Err.OLD_PASSWORD_IS_INCORRECT);
 }
 
 export function randomOtp() {
@@ -89,28 +77,28 @@ export function sendUserOtp(user: OtpUserT, mode: MfaMode, otp: string) {
 }
 
 export function badOtp(): never {
-  bad("Incorrect or expired OTP");
+  bad(Err.INCORRECT_OTP);
 }
 
 export async function checkOtp(userId: string, otp: string, mode: MfaMode) {
   if (mode === MfaMode.AUTHENTICATOR) {
     const db = prisma.authenticator;
     const a = await db.findUnique({ where: { userId } });
-    if (!a) badOtp();
+    if (!a) bad(Err.INCORRECT_OTP);
 
-    const verified = verifySync({
+    const { valid } = verifySync({
       secret: decrypt(a.secret),
       token: otp,
       epochTolerance: 30,
     });
-    if (!verified.valid) badOtp();
+    if (!valid) bad(Err.INCORRECT_OTP);
   } else {
     const since = new Date(Date.now() - OTP_EXPIRY_MINUTES * 60000);
     const otps = await prisma.otp.findMany({
       where: { userId, mode, createdAt: { gte: since } },
     });
     const valid = otps.some((o) => compareSync(otp, o.hashed));
-    if (!valid) badOtp();
+    if (!valid) bad(Err.INCORRECT_OTP);
   }
 
   await prisma.otp.deleteMany({
@@ -291,11 +279,11 @@ export function tryAuthToken(jwt: JWT, token: Maybe<string>) {
 
 export async function checkNewPassword(newPass: string, user: LoginUserT) {
   const min = user.isAdmin ? ADMIN_PASS_LENGTH : USER_PASS_LENGTH;
-  if (newPass.length < min) bad("Password too short");
+  if (newPass.length < min) bad(Err.PASSWORD_TOO_SHORT);
 
   const older = user.password?.history ?? [];
-  const tests = await Promise.all(older.map((h) => compare(newPass, h)));
-  if (tests.some(Boolean)) bad("Cannot use password from recent history");
+  const found = older.some((h) => compareSync(newPass, h));
+  if (found) bad(Err.CANNOT_REUSE_PASSWORD_HISTORY);
 
   const hashed = hashSync(newPass);
   const history = [...older, hashed].slice(-PASS_HISTORY);
@@ -307,8 +295,9 @@ export async function checkPasswordChange(
   newPass: string,
   user: LoginUserT,
 ) {
-  const pass = user?.password || wrongPassword();
-  if (!compareSync(oldPass, pass.hashed)) wrongPassword();
-  if (oldPass === newPass) bad("Cannot reuse the same password");
+  const p = user?.password;
+  const match = p && compareSync(oldPass, p.hashed);
+  if (!match) bad(Err.OLD_PASSWORD_IS_INCORRECT);
+  if (oldPass === newPass) bad(Err.CANNOT_USE_SAME_PASSWORD);
   return checkNewPassword(newPass, user);
 }

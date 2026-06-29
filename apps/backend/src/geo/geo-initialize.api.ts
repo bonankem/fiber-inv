@@ -1,7 +1,7 @@
 import { idKeyNameS } from "schema/common";
 import { assoc } from "schema/utils";
 import { prisma } from "#/db";
-import { bad } from "#/utils/errors";
+import { fatal } from "#/utils/errors";
 import { postRoute } from "#/utils/routing";
 import { makeKey } from "../utils/queries";
 import polygons from "./geo.json" with { type: "json" };
@@ -30,7 +30,7 @@ export async function geoInitialize() {
     if (!boundaries[makeKey(d)]) missing.push(d);
   }
   if (missing.length > 0) {
-    bad(`No polygon for ${missing.join(", ")}`);
+    fatal(`No polygon for ${missing.join(", ")}`);
   }
 
   const deptSet = new Set(depts.map(makeKey));
@@ -52,7 +52,7 @@ export async function geoInitialize() {
     const dKey = makeKey(g.name);
     return g.list.map((name) => {
       const key = makeKey(name);
-      const bnd = boundaries[key] || bad(`No polygon for ${name}`);
+      const bnd = boundaries[key] || fatal(`No polygon for ${name}`);
       return prisma.locality.upsert({
         where: { key },
         update: {

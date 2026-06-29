@@ -17,7 +17,11 @@ import work from "./work";
 export default appPlugin((app) => {
   app.register(authGuard);
 
-  app.get("/", { onRequest: rbac(Allow.PUBLIC) }, () => ({ name: "ServiceX" }));
+  app.get(
+    "/", // for health checks
+    { onRequest: rbac(Allow.PUBLIC) },
+    () => ({ name: "ServiceX" }),
+  );
 
   app.register(admin);
   app.register(auth);

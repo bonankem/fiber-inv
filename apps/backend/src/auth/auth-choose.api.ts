@@ -1,6 +1,6 @@
 import { type AuthChooseReqT, authChooseReqZ } from "schema/auth";
+import { bad, Err } from "schema/errors";
 import { MfaMode, prisma } from "#/db";
-import { bad } from "#/utils/errors";
 import { type App, postRoute, type RequestWith } from "#/utils/routing";
 import { authResult, badToken, getLoginUser, verifyTempToken } from "./utils";
 
@@ -25,8 +25,7 @@ async function authChoose(req: RequestWith<AuthChooseReqT>, app: App) {
   }
 
   if (oldMode !== MfaMode.UNDECIDED && p.mfaVerified) {
-    // cannot call this endpoint when MFA mode is already verified
-    bad(`MFA mode is already set to ${oldMode}`);
+    bad(Err.INVALID_LOGIN);
   }
 
   user.password = await prisma.password.update({

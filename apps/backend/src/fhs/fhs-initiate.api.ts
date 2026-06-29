@@ -1,3 +1,4 @@
+import { mustHave } from "schema/errors";
 import {
   type FhsInitiateT,
   type FtthSurveyT,
@@ -6,7 +7,7 @@ import {
 } from "schema/fhs";
 import type { UserT } from "schema/people";
 import { type Prisma, prisma, WorkAction, WorkStatus } from "#/db";
-import { bad } from "#/utils/errors";
+import { fatal } from "#/utils/errors";
 import { connectId } from "#/utils/ids";
 import { makeKey } from "#/utils/queries";
 import { postRoute } from "#/utils/routing";
@@ -27,11 +28,9 @@ async function fhsInitiate(dto: FhsInitiateT, user: UserT) {
     workId: id,
     vendorId,
     status: WorkStatus.ASSIGNED,
-    statusError: "Job is already initiated",
   });
-
   const vendor = v || s.work.vendor;
-  if (!vendor) bad("Vendor is required");
+  mustHave(vendor, "vendorId");
 
   return prisma.ftthSurvey.update({
     where: { id },
@@ -62,7 +61,7 @@ function areaQuery(dto: FhsInitiateT, fhs: FtthSurveyT) {
   if (!code || code === area?.code) return undefined;
 
   const name = fhs.work.name;
-  const localityId = locality?.id || bad("No locality");
+  const localityId = locality?.id || fatal("No locality");
   return {
     connectOrCreate: {
       where: { code },

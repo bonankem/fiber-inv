@@ -1,4 +1,5 @@
 import type { MultipartFile } from "@fastify/multipart";
+import { Err, mustHave } from "schema/errors";
 import {
   type UploadFullT,
   type UploadOptionsT,
@@ -8,7 +9,6 @@ import {
 import type { Maybe } from "schema/utils";
 import { uuidv7 } from "uuidv7";
 import { prisma } from "#/db";
-import { bad } from "#/utils/errors";
 import { appRoute } from "#/utils/routing";
 import { maybeParse } from "./parsers";
 
@@ -23,7 +23,7 @@ async function createUpload(
   file: Maybe<MultipartFile>,
   query: UploadOptionsT,
 ): Promise<UploadFullT> {
-  if (!file) bad("No file");
+  mustHave(file, Err.FILE_REQUIRED);
 
   const data = (await file.toBuffer()) as Buffer<ArrayBuffer>;
   const size = data.byteLength;

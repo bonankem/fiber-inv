@@ -16,7 +16,6 @@ async function fhsDecline(dto: WorkUpdateT, from: UserT) {
   const { s } = await fhsCheck({
     workId: dto.id,
     status: WorkStatus.REQUESTED,
-    statusError: "Survey is already assigned",
   });
   return prisma.ftthSurvey.update({
     where: { id: s.id },

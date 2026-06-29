@@ -1,8 +1,8 @@
+import { bad, Err, mustHave } from "schema/errors";
 import { type FhcUpdateT, fhcUpdateZ, ftthConnectionS } from "schema/fhc";
 import type { UserFullT } from "schema/people";
 import { workFullP } from "schema/work";
 import { type Prisma, prisma, WorkAction, WorkStatus } from "#/db";
-import { bad, notFound } from "#/utils/errors";
 import { connectIdOrKey, maybeConnect } from "#/utils/ids";
 import { postRoute } from "#/utils/routing";
 import { updateWork } from "#/utils/work";
@@ -18,11 +18,11 @@ async function fhcUpdate(dto: FhcUpdateT, from: UserFullT) {
     where: { id: dto.id },
     include: { work: workFullP },
   });
-  if (!fhc) notFound();
+  if (!fhc) bad(Err.NOT_FOUND);
 
   if (dto.finish) {
-    if (!dto.fatId && !fhc.fatId) bad("FAT is required");
-    if (!dto.oltId && !fhc.oltId) bad("OLT is required");
+    mustHave(dto.fatId || fhc.fatId, "fatId");
+    mustHave(dto.oltId || fhc.oltId, "oltId");
   }
 
   const { ONGOING, REVIEW } = WorkStatus;
@@ -50,7 +50,9 @@ async function fhcUpdate(dto: FhcUpdateT, from: UserFullT) {
 function ontUpdate(dto: FhcUpdateT): Prisma.FtthConnectionUpdateInput["ont"] {
   const { ontSerial: serial, ontModel: model, ontOem } = dto;
   if (!serial) return undefined;
-  if (!model || !ontOem) bad("ONT model and OEM are required");
+  mustHave(model, "ontModel");
+  mustHave(ontOem, "ontOem");
+
   const oem = connectIdOrKey(ontOem);
   return {
     upsert: {

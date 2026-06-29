@@ -5,7 +5,7 @@ import {
   scryptSync,
 } from "node:crypto";
 import { appEnv } from "#/env";
-import { bad } from "./errors";
+import { fatal } from "./errors";
 
 const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 16;
@@ -14,7 +14,7 @@ let savedKey: Buffer;
 
 function encryptionKey() {
   if (savedKey) return savedKey;
-  const value = appEnv.CRYPTO_KEY || bad("Auth encryption disabled");
+  const value = appEnv.CRYPTO_KEY || fatal("Auth encryption disabled");
   const key = scryptSync(value, "key.salt", 32);
   savedKey = key;
   return key;

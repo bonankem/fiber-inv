@@ -1,9 +1,9 @@
 import type { WorkStatus } from "schema/enums";
+import { bad, Err } from "schema/errors";
 import { ftthProjectS } from "schema/fhp";
 import type { Maybe } from "schema/utils";
 import type { WorkT } from "schema/work";
 import { prisma, StaffRole } from "#/db";
-import { bad, notFound } from "#/utils/errors";
 
 type Findable<T> = {
   findUnique(args: { where: { id: string } }): Promise<T>;
@@ -25,7 +25,7 @@ export async function fhpCheck(ids: {
   userId?: string;
   vendorId?: string;
   status?: WorkStatus | WorkStatus[];
-  statusError?: string;
+  statusError?: Err;
 }) {
   const { workId, userId, vendorId, status } = ids;
   const [s, u, v] = await Promise.all([
@@ -36,12 +36,12 @@ export async function fhpCheck(ids: {
     maybeFind(prisma.user, userId),
     maybeFind(prisma.vendor, vendorId),
   ]);
-  if (!s) notFound("Project not found");
+  if (!s) bad(Err.NOT_FOUND);
 
   if (status) {
     const ws = s.work.status;
     const ok = Array.isArray(status) ? status.includes(ws) : status === ws;
-    if (!ok) bad(ids.statusError || "Cannot perform this action at this stage");
+    if (!ok) bad(ids.statusError || Err.STATUS_ALREADY_CHANGED);
   }
 
   return { s, u, v };

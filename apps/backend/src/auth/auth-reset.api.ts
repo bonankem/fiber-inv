@@ -1,8 +1,8 @@
 import { compareSync } from "bcryptjs";
 import { type AuthResetReqT, authResetReqZ } from "schema/auth";
+import { bad, Err } from "schema/errors";
 import { authLog } from "#/admin/adm-syslog.api";
 import { AuthAction, prisma } from "#/db";
-import { bad } from "#/utils/errors";
 import { postRoute, type RequestWith } from "#/utils/routing";
 import { checkNewPassword, getLoginUser } from "./utils";
 
@@ -13,7 +13,7 @@ export const resetApi = postRoute({
 });
 
 function invalidReset(): never {
-  bad("Reset link is invalid or expired");
+  bad(Err.RESET_LINK_INVALID);
 }
 
 async function resetPassword(req: RequestWith<AuthResetReqT>) {

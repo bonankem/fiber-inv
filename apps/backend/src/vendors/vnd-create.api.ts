@@ -1,6 +1,6 @@
+import { bad, Err } from "schema/errors";
 import { type VendorCreateT, vendorCreateZ, vendorS } from "schema/people";
 import { prisma } from "#/db";
-import { bad } from "#/utils/errors";
 import { postRoute } from "#/utils/routing";
 import { makeKey } from "../utils/queries";
 
@@ -14,7 +14,7 @@ async function createVendor({ name }: VendorCreateT) {
   const key = makeKey(name);
 
   const old = await prisma.vendor.findUnique({ where: { key } });
-  if (old) bad(`Vendor already exists: ${old.name}`);
+  if (old) bad(Err.ALREADY_EXISTS, old.name);
 
   return prisma.vendor.create({ data: { key, name }, select: vendorS });
 }

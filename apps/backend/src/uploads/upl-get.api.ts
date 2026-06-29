@@ -1,6 +1,6 @@
+import { bad, Err } from "schema/errors";
 import z from "zod";
 import { prisma } from "#/db";
-import { notFound } from "#/utils/errors";
 import { type AnyReply, appRoute } from "#/utils/routing";
 
 const paramsZ = z.strictObject({
@@ -22,7 +22,7 @@ async function getUpload(id: string, reply: AnyReply) {
     where: { uploadId: id },
     select: { data: true, upload: true },
   });
-  if (!up) notFound();
+  if (!up) bad(Err.NOT_FOUND);
 
   const { name, type } = up.upload;
   const canBeInline = /^image\/|\/pdf$/i.test(type);
