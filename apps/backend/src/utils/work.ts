@@ -96,17 +96,20 @@ export function updateDocs<T extends WorkDocType>(
     deleteMany: toDelete.length
       ? { workId, type: { in: toDelete } }
       : undefined,
-    upsert: toUpdate.map((type) => {
-      // biome-ignore lint/style/noNonNullAssertion: already confirmed to be non-null
-      const value = docs[type]!;
-      const uploadId = typeof value === "string" ? value : value.uploadId;
-      const key = typeof value === "string" ? "" : value.key;
-      return {
-        where: { uniq: { workId, type, key } },
-        create: { uploadId, type },
-        update: { uploadId },
-      };
-    }),
+    upsert: filterTruthy(
+      toUpdate.map((type) => {
+        const value = docs[type];
+        if (!value) return null;
+
+        const uploadId = typeof value === "string" ? value : value.uploadId;
+        const key = typeof value === "string" ? "" : value.key;
+        return {
+          where: { uniq: { workId, type, key } },
+          create: { uploadId, type },
+          update: { uploadId },
+        };
+      }),
+    ),
   } satisfies Prisma.WorkUpdateInput["docs"];
 }
 
