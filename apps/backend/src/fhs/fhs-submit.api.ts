@@ -72,14 +72,13 @@ async function fhsSubmit(dto: FhsSubmitT, from: UserT) {
   } satisfies Prisma.FhsReportUpdateInput;
   const resent = s.work.status !== WorkStatus.ONGOING;
   const action = resent ? WorkAction.RESEND_REPORT : WorkAction.SUBMIT_REPORT;
-  const boxes = await getReportedBoxes(COORDINATES);
+  // const boxes = await getReportedBoxes(COORDINATES);
 
   return prisma.ftthSurvey.update({
     select: ftthSurveyS,
     where: { id },
     data: {
       reportedHp: report.hp,
-      boxes,
       report: {
         upsert: {
           create: report,

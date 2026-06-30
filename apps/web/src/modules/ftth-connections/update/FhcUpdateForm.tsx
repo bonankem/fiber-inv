@@ -1,5 +1,8 @@
 import { Form, Input, Select } from "antd";
-import { WorkDocType as Doc } from "schema/enums";
+import { BoxType, WorkDocType as Doc } from "schema/enums";
+import { boxZ, oltZ } from "schema/network";
+import { zArray } from "schema/utils";
+import { useApiGet } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import FileUpload from "#/components/inputs/FileUpload";
 import IntInput from "#/components/inputs/IntInput";
@@ -14,6 +17,9 @@ function img(type: Doc & `FHC_${string}`, label: string) {
 }
 
 export default function FhcUpdateForm({ item, state }: FhcFormProps) {
+  const olts = useApiGet("/network/olt", zArray(oltZ));
+  const boxes = useApiGet("/network/boxes", zArray(boxZ));
+
   return (
     <FormModal
       state={state}
@@ -35,7 +41,12 @@ export default function FhcUpdateForm({ item, state }: FhcFormProps) {
       </Form.Item>
 
       <Form.Item label="FAT">
-        <Select />
+        <Select
+          showSearch={{ optionFilterProp: "label" }}
+          options={boxes.data
+            ?.filter((p) => p.type !== BoxType.HUB)
+            ?.map((o) => ({ value: o.id, label: o.name }))}
+        />
       </Form.Item>
 
       <Form.Item label="FAT Port">

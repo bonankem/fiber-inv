@@ -1,15 +1,7 @@
 import { mustHave } from "schema/errors";
-import {
-  type FhsInitiateT,
-  type FtthSurveyT,
-  fhsInitiateZ,
-  ftthSurveyS,
-} from "schema/fhs";
+import { type FhsInitiateT, fhsInitiateZ, ftthSurveyS } from "schema/fhs";
 import type { UserT } from "schema/people";
-import { type Prisma, prisma, WorkAction, WorkStatus } from "#/db";
-import { fatal } from "#/utils/errors";
-import { connectId } from "#/utils/ids";
-import { makeKey } from "#/utils/queries";
+import { prisma, WorkAction, WorkStatus } from "#/db";
 import { postRoute } from "#/utils/routing";
 import { Allow } from "../auth/guard";
 import { updateWork } from "../utils/work";
@@ -47,30 +39,9 @@ async function fhsInitiate(dto: FhsInitiateT, user: UserT) {
         also: {
           startDate,
           dueDate,
-          area: areaQuery(dto, s),
         },
       }),
     },
     select: ftthSurveyS,
   });
-}
-
-function areaQuery(dto: FhsInitiateT, fhs: FtthSurveyT) {
-  const code = dto.areaCode;
-  const { area, locality } = fhs.work;
-  if (!code || code === area?.code) return undefined;
-
-  const name = fhs.work.name;
-  const localityId = locality?.id || fatal("No locality");
-  return {
-    connectOrCreate: {
-      where: { code },
-      create: {
-        code,
-        name,
-        key: makeKey(name),
-        locality: connectId(localityId),
-      },
-    },
-  } satisfies Prisma.FtthAreaUpdateOneWithoutWorksNestedInput;
 }

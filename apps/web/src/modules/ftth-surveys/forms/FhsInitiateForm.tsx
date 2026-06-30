@@ -2,7 +2,6 @@ import { Form, Input, InputNumber } from "antd";
 import type { ConfigType } from "dayjs";
 import dayjs from "dayjs";
 import { m } from "i18n/messages";
-import { useState } from "react";
 import type { FhsInitiateT } from "schema/fhs";
 import type { Maybe } from "schema/utils";
 import FormModal from "#/components/FormModal";
@@ -19,10 +18,7 @@ export default function FhsInitiateForm(props: FhsFormProps) {
   );
 
   const [form] = Form.useForm<FhsInitiateT>();
-  const vendorId = props.item.work.vendor?.id;
-  const today = new Date().toISOString().slice(0, 10);
   const start = Form.useWatch("startDate", form);
-  const [isNew, setIsNew] = useState<boolean>();
 
   const checkDueDate = async (_: unknown, due: Maybe<ConfigType>) => {
     console.log(start, due);
@@ -37,20 +33,14 @@ export default function FhsInitiateForm(props: FhsFormProps) {
     <FormModal
       {...up}
       form={form}
-      width={480}
+      width={400}
       title={m.fhs_form_initiate()}
       className="grid sm:grid-cols-2 gap-2"
-      initialValues={{ vendorId, startDate: today }}
+      initialValues={{
+        vendorId: props.item.work.vendor?.id,
+        startDate: new Date().toISOString().slice(0, 10),
+      }}
     >
-      <Form.Item name="areaCode" label={m.area_code()} {...req}>
-        <Input
-          required
-          minLength={5}
-          maxLength={5}
-          placeholder={m.area_code_hint()}
-        />
-      </Form.Item>
-
       <Form.Item name="vendorId" label={m.field_vendor()} {...req}>
         <VendorSelect />
       </Form.Item>
@@ -69,7 +59,7 @@ export default function FhsInitiateForm(props: FhsFormProps) {
         required
         rules={[...req.rules, { validator: checkDueDate }]}
       >
-        <DateInput />
+        <DateInput minDate={start} />
       </Form.Item>
 
       <Form.Item

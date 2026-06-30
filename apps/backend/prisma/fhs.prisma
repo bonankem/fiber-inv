@@ -57,10 +57,4 @@ model FhsReport {
     transportLength Int
 
     distLength Int
-
-    ductLength Int
-
-    oldManholes Int
-
-    oldPoles Int
 }

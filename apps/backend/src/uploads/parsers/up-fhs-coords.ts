@@ -5,7 +5,7 @@ import { filterTruthy, maybeCoords } from "#/utils/queries";
 import type { ParserInput } from "./utils";
 
 function boxType(name: string) {
-  const re = /^(.+_X\d+)(?:(_H\d+)(_([SE])\d+)?)?/.exec(name);
+  const re = /^(.+-X\d+)(?:(-H\d+)(-([SE])\d+)?)?/.exec(name);
   if (!re) return null;
   if (!re[2]) return BoxType.X;
   if (!re[3]) return BoxType.HUB;
@@ -50,6 +50,7 @@ export async function parseUpFhsCoords({
     if (!name) return undefined;
 
     const type = boxType(name);
+    console.log({ name, type });
     if (!type) return undefined;
 
     const h = Number(r[hpKey]);

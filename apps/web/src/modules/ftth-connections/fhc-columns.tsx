@@ -35,7 +35,9 @@ export const fhcColumns: fhcColumn[] = [
     key: "status",
     title: m.status(),
     width: 150,
-    render: (t) => <StatusView work={t.work} />,
+    render: (t) => (
+      <StatusView work={t.work} pendingOn={{ REQUESTED: "VENDOR" }} />
+    ),
   },
   {
     key: "vendor",

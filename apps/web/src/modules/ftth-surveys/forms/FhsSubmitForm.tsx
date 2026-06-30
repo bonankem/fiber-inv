@@ -34,7 +34,7 @@ const qtyInput = (name: keyof FhsSubmitT, label: string, length = false) => (
     <IntInput
       required
       className="w-full! text-sm! h-8!"
-      addonBefore={<div className="one-line w-28 text-sm!">{label}</div>}
+      addonBefore={<div className="one-line w-36 text-sm!">{label}</div>}
       placeholder={length ? m.length() : undefined}
       suffix={length ? "m" : undefined}
       controls={false}
@@ -97,10 +97,10 @@ export default function FhsSubmitForm(props: FhsFormProps) {
   const boxCounts = (boxes: UpFhsBoxT[]) => {
     const count = countBy(boxes, (b) => b.type ?? "");
     return {
-      xBoxes: count.X_BOX ?? 0,
-      hubBoxes: count.HUB_BOX,
-      subBoxes: count.SUB_BOX,
-      endBoxes: count.END_BOX,
+      xBoxes: count.X ?? 0,
+      hubBoxes: count.HUB,
+      subBoxes: count.SUB,
+      endBoxes: count.END,
     };
   };
 
@@ -114,7 +114,7 @@ export default function FhsSubmitForm(props: FhsFormProps) {
   };
 
   const onParseCoords = (up: UpFhsCoordsT) => {
-    const fatTypes: Maybe<BoxType>[] = [BoxType.SUB_BOX, BoxType.END_BOX];
+    const fatTypes: Maybe<BoxType>[] = [BoxType.SUB, BoxType.END];
     const fats = up.boxes.filter((b) => fatTypes.includes(b.type));
     const hp = sumBy(fats, (b) => b.hp || 0);
     form.setFieldsValue({
@@ -129,10 +129,10 @@ export default function FhsSubmitForm(props: FhsFormProps) {
     <FormModal
       form={form}
       title={m.fhs_form_submit()}
-      width={mobile ? 480 : 880}
+      width={mobile ? 480 : 920}
       state={props.state}
       subtitle={props.item.work.name}
-      className="grid gap-4 grid-cols-1 md:grid-cols-[4fr_3fr_4fr]"
+      className="grid gap-4 grid-cols-1 md:grid-cols-3"
       onSubmit={onSubmit}
     >
       <div className="flex flex-col gap-2">
@@ -152,6 +152,7 @@ export default function FhsSubmitForm(props: FhsFormProps) {
         <h2 className="font-medium">Nouvelles quantités</h2>
 
         {qtyInput("hp", m.field_hp())}
+        {qtyInput("olts", m.new_olts())}
         {qtyInput("oltCards", m.field_olt_cards())}
         {qtyInput("xBoxes", m.field_x_boxes())}
         {qtyInput("hubBoxes", m.field_hub_boxes())}
@@ -161,8 +162,8 @@ export default function FhsSubmitForm(props: FhsFormProps) {
         {qtyInput("metalPoles", m.field_metal_poles())}
         {qtyInput("closures", m.field_closures())}
         {qtyInput("manholes", m.field_manholes())}
-        {qtyInput("transportMetres", m.field_tran_cables(), true)}
-        {qtyInput("distMetres", m.field_dist_cables(), true)}
+        {qtyInput("transportLength", m.field_tran_cables(), true)}
+        {qtyInput("distLength", m.field_dist_cables(), true)}
       </div>
 
       <Card classNames={{ body: "p-0!" }}>

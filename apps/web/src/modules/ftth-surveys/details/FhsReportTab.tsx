@@ -1,4 +1,5 @@
 import { Card, Spin } from "antd";
+import { m } from "i18n/messages";
 import DetailsCard from "#/components/DetailsCard";
 import type { FhsTabProps } from "./types";
 
@@ -11,23 +12,24 @@ export default function FhsReportTab(props: FhsTabProps) {
   }
 
   return (
-    <div className="grid md:grid-cols-[1fr_2fr] gap-4">
+    <div className="grid md:grid-cols-2 gap-4">
       <DetailsCard
         missing="dash"
         title="Nouvelles quantités"
         items={[
           { label: "HP", value: rep.hp },
-          { label: "OLT Cards", value: rep.oltCards },
-          { label: "X Boxes", value: rep.xBoxes },
-          { label: "Hub Boxes", value: rep.hubBoxes },
-          { label: "Sub Boxes", value: rep.subBoxes },
-          { label: "End Boxes", value: rep.endBoxes },
-          { label: "Closures", value: rep.closures },
-          { label: "Chambres", value: rep.manholes },
-          { label: "Poteaux bétons", value: rep.metalPoles },
-          { label: "Poteaux metalliques", value: rep.concretePoles },
-          { label: "Câbles transport", value: `${rep.transportMetres} m` },
-          { label: "Câbles distribution", value: `${rep.distMetres} m` },
+          { label: m.new_olts(), value: rep.oltCards },
+          { label: m.field_olt_cards(), value: rep.oltCards },
+          { label: m.field_x_boxes(), value: rep.xBoxes },
+          { label: m.field_hub_boxes(), value: rep.hubBoxes },
+          { label: m.field_sub_boxes(), value: rep.subBoxes },
+          { label: m.field_end_boxes(), value: rep.endBoxes },
+          { label: m.field_closures(), value: rep.closures },
+          { label: m.field_manholes(), value: rep.manholes },
+          { label: m.field_concrete_poles(), value: rep.metalPoles },
+          { label: m.field_metal_poles(), value: rep.concretePoles },
+          { label: m.field_tran_cables(), value: `${rep.transportLength} m` },
+          { label: m.field_dist_cables(), value: `${rep.distLength} m` },
         ]}
       />
       <section className="flex flex-col gap-2">

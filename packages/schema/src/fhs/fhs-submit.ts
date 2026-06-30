@@ -14,11 +14,8 @@ export const fhsSubmitZ = workUpdateDto("FhsSubmitT", {
   closures: z.int("Number of closures"),
   metalPoles: z.int("Number of metal poles"),
   concretePoles: z.int("Number of concrete poles"),
-  oldManholes: z.int("Number of existing manholes"),
-  oldPoles: z.int("Number of existing poles"),
   transportLength: z.int("Total transport cable length in metres"),
   distLength: z.int("Total distribution cable length in metres"),
-  ductLength: z.int("Total new duct length in metres"),
 
   [Doc.PLAN_KMZ]: zStr("KMZ upload ID"),
   [Doc.PLAN_BOQ]: zStr("BOQ upload ID"),

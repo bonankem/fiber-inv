@@ -9,6 +9,16 @@ export const upPlanKmzItemZ = z.object({
   oldName: z.string().optional(),
 });
 
+export enum PlanKmzIssue {
+  INCORRECT_BOX_NAME,
+  INCORRECT_CABLE_NAME,
+}
+
+export const upPlanKmzIssueZ = z.object({
+  type: z.enum(PlanKmzIssue),
+  name: z.string(),
+});
+
 export const upPlanKmzItemsZ = z.array(upPlanKmzItemZ);
 
 export const upPlanKmzZ = zObject("UpPlanKmzT", {
@@ -17,6 +27,9 @@ export const upPlanKmzZ = zObject("UpPlanKmzT", {
   cables: upPlanKmzItemsZ,
   metalPoles: upPlanKmzItemsZ,
   concretePoles: upPlanKmzItemsZ,
+  issues: z.array(upPlanKmzIssueZ),
 });
 
 export type UpPlanKmzT = z.infer<typeof upPlanKmzZ>;
+
+export type UpPlanKmzIssueT = z.infer<typeof upPlanKmzIssueZ>;
