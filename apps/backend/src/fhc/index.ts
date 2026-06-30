@@ -4,7 +4,7 @@ import { fhcExtractApi } from "./fhc-extract.api";
 import { fhcListApi } from "./fhc-list.api";
 import { fhcRequestManyApi } from "./fhc-many.api";
 import { fhcRequestApi } from "./fhc-request.api";
-import { fhcUpdateApi } from "./fhc-update.api";
+import { fhcUpdateApi } from "./fhc-submit.api";
 
 export default appPlugin((app) => {
   app.register(fhcCountApi);

@@ -1,9 +1,10 @@
-import { Form, Input, Select } from "antd";
+import { Form, Input, message, Select } from "antd";
 import { m } from "i18n/messages";
 import { BoxType, WorkDocType as Doc } from "schema/enums";
+import type { FhcSubmitT, FtthConnectionT } from "schema/fhc";
 import { boxZ } from "schema/network";
 import { zArray } from "schema/utils";
-import { useApiGet } from "#/api/helpers";
+import { apiCall, useApiGet, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import FileUpload from "#/components/inputs/FileUpload";
 import IntInput from "#/components/inputs/IntInput";
@@ -20,6 +21,15 @@ function img(type: Doc & `FHC_${string}`, label: string) {
 export default function FhcSubmitForm({ item, state }: FhcFormProps) {
   const boxes = useApiGet("/network/boxes", zArray(boxZ));
 
+  const send = useApiPost<FhcSubmitT, FtthConnectionT>("/fhc/submit", ["fhp"]);
+
+  const onSubmit = apiCall(async (data: FhcSubmitT) => {
+    data.id = item.id;
+    const result = await send.mutateAsync(data);
+    message.success(`Submitted ${result.work.sid}`);
+    state.close();
+  });
+
   return (
     <FormModal
       state={state}
@@ -27,6 +37,7 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
       title={m.fhc_form_finish()}
       subtitle={`${item.tn}: ${item.work.name}`}
       className="grid md:grid-cols-2 gap-x-2"
+      onSubmit={onSubmit}
     >
       {img(Doc.FHC_FAT, "FAT")}
       {img(Doc.FHC_DROP_CABLE, "Drop Cable Label")}

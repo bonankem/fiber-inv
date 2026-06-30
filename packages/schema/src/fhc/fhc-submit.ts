@@ -6,8 +6,7 @@ const fhcImageTypes = Object.values(WorkDocType).filter((t) =>
   t.startsWith("FHC_"),
 ) as (WorkDocType & `FHC_${string}`)[];
 
-export const fhcUpdateZ = workUpdateDto("FhcUpdateT", {
-  finish: z.boolean().optional(),
+export const fhcSubmitZ = workUpdateDto("FhcUpdateT", {
   images: z.partialRecord(z.enum(fhcImageTypes), z.string()),
   ontSerial: z.string().optional(),
   ontModel: z.string().optional(),
@@ -19,4 +18,4 @@ export const fhcUpdateZ = workUpdateDto("FhcUpdateT", {
   cableLength: z.int().optional(),
 });
 
-export type FhcUpdateT = z.infer<typeof fhcUpdateZ>;
+export type FhcSubmitT = z.infer<typeof fhcSubmitZ>;
