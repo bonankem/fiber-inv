@@ -1,6 +1,7 @@
 import { Form, Input, Select } from "antd";
+import { m } from "i18n/messages";
 import { BoxType, WorkDocType as Doc } from "schema/enums";
-import { boxZ, oltZ } from "schema/network";
+import { boxZ } from "schema/network";
 import { zArray } from "schema/utils";
 import { useApiGet } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
@@ -16,15 +17,14 @@ function img(type: Doc & `FHC_${string}`, label: string) {
   );
 }
 
-export default function FhcUpdateForm({ item, state }: FhcFormProps) {
-  const olts = useApiGet("/network/olt", zArray(oltZ));
+export default function FhcSubmitForm({ item, state }: FhcFormProps) {
   const boxes = useApiGet("/network/boxes", zArray(boxZ));
 
   return (
     <FormModal
       state={state}
       width={560}
-      title="Progress Update"
+      title={m.fhc_form_finish()}
       subtitle={`${item.tn}: ${item.work.name}`}
       className="grid md:grid-cols-2 gap-x-2"
     >

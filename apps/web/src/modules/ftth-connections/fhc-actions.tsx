@@ -4,7 +4,7 @@ import { WorkStatus as When } from "schema/enums";
 import type { FtthConnectionT as What } from "schema/fhc";
 import { buildActions } from "#/components/actions/types";
 import CommentForm from "../work/CommentForm";
-import FhcUpdateForm from "./update/FhcUpdateForm";
+import FhcSubmitForm from "./update/FhcSubmitForm";
 
 function isWhen(what: What, when: When) {
   return what.work.status === when;
@@ -16,9 +16,9 @@ function isWho() {
 
 export const fhcActions = buildActions(isWhen, isWho, [
   {
-    name: "Update",
+    name: m.action_finish(),
     icon: SendOutlined,
-    form: FhcUpdateForm,
+    form: FhcSubmitForm,
     when: [When.REQUESTED, When.ONGOING],
     main: true,
   },

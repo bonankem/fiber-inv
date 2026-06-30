@@ -4,6 +4,7 @@ import { filterTruthy } from "schema/utils";
 import WorkLogsTab from "../../../components/WorkLogsTab";
 import type { FhpFormProps } from "../fhp-types";
 import FhpDetailsTab from "./FhpDetailsTab";
+import FhpReportTab from "./FhpReportTab";
 import type { FhpTabProps } from "./types";
 
 export default function FhpDetailsModal(props: FhpFormProps) {
@@ -26,6 +27,11 @@ export default function FhpDetailsModal(props: FhpFormProps) {
             key: "details",
             label: m.details(),
             children: <FhpDetailsTab {...tabProps} />,
+          },
+          props.item.report && {
+            key: "report",
+            label: m.report(),
+            children: <FhpReportTab {...tabProps} />,
           },
           {
             key: "logs",

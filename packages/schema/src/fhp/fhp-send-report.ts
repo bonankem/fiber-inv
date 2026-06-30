@@ -2,7 +2,7 @@ import { workUpdateDto } from "#/work";
 import { WorkDocType as Doc } from "../prisma";
 import { z, zStr } from "../utils";
 
-export const fhpReportZ = workUpdateDto("FhpReportT", {
+export const fhpSendReportZ = workUpdateDto("FhpReportT", {
   xBoxes: z.int("Number of X boxes"),
   hubBoxes: z.int("Number of hub boxes"),
   subBoxes: z.int("Number of sub boxes"),
@@ -18,4 +18,4 @@ export const fhpReportZ = workUpdateDto("FhpReportT", {
   [Doc.AS_BUILT_BOQ]: zStr("BOQ upload ID"),
 });
 
-export type FhpReportT = z.infer<typeof fhpReportZ>;
+export type FhpSendReportT = z.infer<typeof fhpSendReportZ>;

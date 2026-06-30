@@ -57,6 +57,7 @@
   "expired_on": "Expired {date}",
   "export": "Export",
   "extension": "Extension",
+  "fhc_form_finish": "Finish Connection",
   "fhc_form_request": "Home Connection Request",
   "fhp_form_accept": "Accept Project Report",
   "fhp_form_assign": "Assign FTTH Project",

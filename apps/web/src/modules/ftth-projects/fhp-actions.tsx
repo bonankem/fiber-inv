@@ -48,6 +48,13 @@ export const fhpActions = buildActions(isWhen, isWho, [
     form: FhpInitiateForm,
     main: true,
   },
+  // {
+  //   name: m.action_images(),
+  //   icon: FileImageOutlined,
+  //   when: [When.ONGOING],
+  //   form: FhpImagesForm,
+  //   main: true,
+  // },
   {
     name: m.action_finish(),
     icon: CheckSquareOutlined,
