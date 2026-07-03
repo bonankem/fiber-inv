@@ -10,7 +10,7 @@ import {
   IoEvent,
 } from "schema/auth";
 import { bad, Err } from "schema/errors";
-import { userFullP } from "schema/people";
+import { userFullS } from "schema/people";
 import type { Maybe } from "schema/utils";
 import z from "zod";
 import { authLog } from "#/admin/adm-syslog.api";
@@ -97,6 +97,9 @@ export const loginUserS = {
   name: true,
   email: true,
   isAdmin: true,
+  mfaMode: true,
+  mfaVerified: true,
+  lockUntil: true,
   password: true,
   expiredAt: true,
   lastActive: true,
@@ -131,30 +134,28 @@ export async function authSuccess(
   const hashed = hashSync(refresh);
   const now = new Date();
 
-  const { user } = await prisma.session.upsert({
-    where: { id },
-    update: { hashed, expiresAt, userId },
-    create: { hashed, expiresAt, userId, id },
-    select: { user: userFullP },
-  });
-
-  await prisma.session.updateMany({
-    where: { userId, id: { not: id } },
-    data: { replacedAt: now },
-  });
-  await prisma.user.update({
+  const user = await prisma.user.update({
+    select: userFullS,
     where: { id: userId },
-    data: { lastActive: now },
+    data: {
+      lastActive: now,
+      joined: true,
+      sessions: {
+        upsert: {
+          where: { id },
+          update: { hashed, expiresAt },
+          create: { hashed, expiresAt, id },
+        },
+        updateMany: {
+          where: { userId, id: { not: id } },
+          data: { replacedAt: now },
+        },
+      },
+    },
   });
-
   await authLog(AuthAction.LOGIN_SUCCESS, req, user.email);
-
-  await prisma.password.update({
-    where: { userId },
-    data: { lockUntil: null },
-  });
-
   ioUser(userId, IoEvent.NEW_SESSION);
+
   const status = AuthStatus.SUCCESS;
   return { status, user, token, refresh };
 }
@@ -199,10 +200,9 @@ export async function authResult(
     return { status, userId, token, ...data };
   };
 
-  const pass = user.password;
-  const mode = pass?.mfaMode;
+  const mode = user.mfaMode;
 
-  if (pass?.mustChange) {
+  if (user.password?.mustChange) {
     return incomplete(S.NEEDS_CHANGE, {
       name: user.name,
       email: user.email,
@@ -210,7 +210,7 @@ export async function authResult(
     });
   }
 
-  if (!mode || mode === M.UNDECIDED || (!pass.mfaVerified && !modePicked)) {
+  if (!mode || mode === M.UNDECIDED || (!user.mfaVerified && !modePicked)) {
     // no MFA mode has been verified yet, so pick one
     return incomplete(S.NEEDS_MFA_MODE, {});
   }

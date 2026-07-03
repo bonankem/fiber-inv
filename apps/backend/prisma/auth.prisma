@@ -9,12 +9,6 @@ model Password {
     lastChange DateTime @default(now())
 
     mustChange Boolean
-
-    lockUntil DateTime?
-
-    mfaMode MfaMode
-
-    mfaVerified Boolean @default(false)
 }
 
 enum MfaMode {

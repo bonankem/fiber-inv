@@ -2,7 +2,7 @@ import { type AuthChooseReqT, authChooseReqZ } from "schema/auth";
 import { bad, Err } from "schema/errors";
 import { MfaMode, prisma } from "#/db";
 import { type App, postRoute, type RequestWith } from "#/utils/routing";
-import { authResult, getLoginUser, verifyTempToken } from "./utils";
+import { authResult, getLoginUser, loginUserS, verifyTempToken } from "./utils";
 
 export const chooseApi = postRoute({
   url: "/auth/choose",
@@ -15,22 +15,20 @@ async function authChoose(req: RequestWith<AuthChooseReqT>, app: App) {
   const mfaMode = req.body.mode;
 
   const user = await getLoginUser({ id: userId });
-  if (!user?.password) bad(Err.INVALID_TOKEN);
+  if (!user) bad(Err.INVALID_TOKEN);
 
-  const p = user.password || bad(Err.INVALID_TOKEN);
-  const oldMode = p.mfaMode;
-
-  if (oldMode === mfaMode) {
+  if (user.mfaMode === mfaMode) {
     return authResult(app, req, user, true);
   }
 
-  if (oldMode !== MfaMode.UNDECIDED && p.mfaVerified) {
-    bad(Err.INVALID_LOGIN);
+  if (user.mfaMode !== MfaMode.UNDECIDED && user.mfaVerified) {
+    bad(Err.MFA_ALREADY_SET);
   }
 
-  user.password = await prisma.password.update({
-    where: { userId },
+  const updated = await prisma.user.update({
+    where: { id: userId },
     data: { mfaMode, mfaVerified: false },
+    select: loginUserS,
   });
-  return authResult(app, req, user, true);
+  return authResult(app, req, updated, true);
 }

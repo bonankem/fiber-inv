@@ -24,8 +24,7 @@ async function login(req: RequestWith<AuthLoginReqT>, app: App) {
   const u = await getLoginUser({ email });
 
   const now = new Date();
-  const lockUntil = u?.password?.lockUntil;
-  if (lockUntil && lockUntil > now) {
+  if (u?.lockUntil && u.lockUntil > now) {
     throw httpErrors.tooManyRequests(
       "Account locked: too many failed login attempts",
     );
@@ -66,11 +65,9 @@ async function maybeLockout(user: LoginUserT, req: AnyRequest, time: Date) {
     orderBy: { time: "desc" },
   });
 
-  const userId = user.id;
-  const email = user.email;
   if (attempts.every((a) => a.action === PASSWORD_FAILED)) {
     const lockUntil = dayjs(time).add(sec.lockoutMinutes, "minutes").toDate();
-    await prisma.password.update({ where: { userId }, data: { lockUntil } });
-    await authLog(AuthAction.LOCKOUT, req, email);
+    await prisma.user.update({ where: { id: user.id }, data: { lockUntil } });
+    await authLog(AuthAction.LOCKOUT, req, user.email);
   }
 }

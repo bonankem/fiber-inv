@@ -1,7 +1,7 @@
 import { hashSync } from "bcryptjs";
 import { zObject } from "schema/utils";
 import z from "zod";
-import { MfaMode, type Prisma, prisma, StaffRole } from "#/db";
+import { type Prisma, prisma, StaffRole } from "#/db";
 import { postRoute } from "#/utils/routing";
 import { Allow } from "../auth/guard";
 import { geoInitialize } from "../geo/geo-initialize.api";
@@ -45,7 +45,6 @@ async function seed(req: SeedReq) {
   const password: Prisma.PasswordCreateNestedOneWithoutUserInput = create({
     hashed,
     history: [hashed],
-    mfaMode: MfaMode.UNDECIDED,
     mustChange: true,
   });
 

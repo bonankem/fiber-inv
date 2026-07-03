@@ -12,24 +12,36 @@ model User {
 
     phone String?
 
-    isAdmin Boolean
+    isAdmin Boolean @default(false)
 
     staffRole StaffRole?
 
     vendor   Vendor? @relation(fields: [vendorId], references: [id])
     vendorId String? @db.Uuid
 
-    lastActive DateTime?
+    // auth
+
+    joined Boolean @default(false)
+
+    mfaMode MfaMode @default(UNDECIDED)
+
+    mfaVerified Boolean @default(false)
+
+    lastActive DateTime @default(now())
 
     expiredAt DateTime?
+
+    lockUntil DateTime?
 
     password Password?
 
     authenticator Authenticator?
 
+    sessions Session[]
+
     otps Otp[]
 
-    sessions Session[]
+    // work
 
     works Worker[]
 

@@ -1,4 +1,3 @@
-import type { PrismaPromise } from "@prisma/client/runtime/client";
 import { type AuthVerifyReqT, authVerifyReqZ } from "schema/auth";
 import { bad, Err } from "schema/errors";
 import { MfaMode, prisma } from "#/db";
@@ -12,33 +11,25 @@ export const verifyApi = postRoute({
 });
 
 async function authVerify(req: RequestWith<AuthVerifyReqT>, app: App) {
-  const { userId } = verifyTempToken(app.jwt, req.body.token);
+  const { userId: id } = verifyTempToken(app.jwt, req.body.token);
   const { otp, mode } = req.body;
 
-  const user = (await getLoginUser({ id: userId })) || bad(Err.INVALID_TOKEN);
-  await checkOtp(userId, otp, mode);
+  const user = await getLoginUser({ id });
+  if (!user) bad(Err.INVALID_TOKEN);
+  await checkOtp(id, otp, mode);
 
-  const actions: PrismaPromise<unknown>[] = [];
-  actions.push(prisma.otp.deleteMany({ where: { userId } }));
+  const verifiedNow = user.mfaVerified === false;
+  const usedAuthApp = mode === MfaMode.AUTHENTICATOR;
+  const installedNow = usedAuthApp && !user.authenticator?.installed;
 
-  if (user.password?.mfaVerified === false) {
-    actions.push(
-      prisma.password.update({
-        where: { userId },
-        data: { mfaMode: mode, mfaVerified: true },
-      }),
-    );
-  }
-
-  if (mode === MfaMode.AUTHENTICATOR) {
-    actions.push(
-      prisma.authenticator.update({
-        where: { userId },
-        data: { installed: true },
-      }),
-    );
-  }
-
-  await prisma.$transaction(actions);
-  return authSuccess(app, req, userId);
+  await prisma.user.update({
+    where: { id },
+    data: {
+      mfaMode: verifiedNow ? mode : undefined,
+      mfaVerified: verifiedNow ? true : undefined,
+      authenticator: installedNow ? { update: { installed: true } } : undefined,
+      otps: { deleteMany: {} },
+    },
+  });
+  return authSuccess(app, req, id);
 }

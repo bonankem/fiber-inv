@@ -14,11 +14,10 @@ import {
   serializerCompiler,
   validatorCompiler,
 } from "fastify-zod-openapi";
-import { ApiError } from "schema/errors";
-import { ZodError } from "zod";
 import { initSyslogServer } from "./admin/adm-syslog.api";
 import api from "./api";
 import { appEnv } from "./env";
+import { appErrorHandler } from "./error";
 import { verifyMail } from "./mail";
 import { appSocket } from "./socket";
 
@@ -53,25 +52,7 @@ await app.register(fastifySwagger, {
 
 app.register(api);
 
-app.setErrorHandler((error, _, reply) => {
-  if (error instanceof ApiError) {
-    reply.status(error.status).send({
-      message: error.message,
-      error: error.message,
-      param: error.param,
-    });
-  } else if (error instanceof ZodError) {
-    const first = error.issues[0];
-    reply.status(400).send({
-      error: "VALIDATION_ERROR",
-      message: "VALIDATION_ERROR",
-      field: first.path?.[0],
-      issues: error.issues,
-    });
-  } else {
-    reply.send(error);
-  }
-});
+app.setErrorHandler(appErrorHandler);
 
 const remote = process.argv.includes("--host");
 app.listen({

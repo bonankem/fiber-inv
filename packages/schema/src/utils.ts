@@ -147,3 +147,9 @@ export function enumWithPrefix<E extends string, P extends string>(
   const filtered = values.filter((e) => e.startsWith(prefix));
   return filtered as readonly (E & `${P}${string}`)[];
 }
+
+export function listAndMore<T>(list: (string | number)[], max: number) {
+  const n = list.length;
+  if (n <= max) return list.join(", ");
+  return `${list.slice(0, max).join(", ")} and ${n - max} more`;
+}

@@ -42,7 +42,7 @@ async function createUser(req: RequestWith<UserCreateT>) {
       key: makeKey(name),
       name,
       email: email,
-      isAdmin: isAdmin ?? false,
+      isAdmin: isAdmin,
       staffRole: staffRole,
       vendor: maybeConnect(vendorId),
       password: {

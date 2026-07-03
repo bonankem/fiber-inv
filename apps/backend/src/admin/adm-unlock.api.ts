@@ -1,20 +1,19 @@
 import z from "zod";
 import { prisma } from "#/db";
-import { postRoute, type RequestWith } from "#/utils/routing";
+import { postRoute } from "#/utils/routing";
 
 export const unlockApi = postRoute({
   url: "/admin/unlock",
   schema: z.object({ id: z.string() }),
-  handler: (req) => unlock(req),
+  handler: (req) => unlock(req.body.id),
 });
 
-async function unlock(req: RequestWith<{ id: string }>) {
-  const now = new Date();
+async function unlock(id: string) {
   await prisma.user.update({
-    where: { id: req.body.id },
+    where: { id },
     data: {
       expiredAt: null,
-      lastActive: now,
+      lastActive: new Date(),
     },
   });
   return { success: true };

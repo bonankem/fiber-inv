@@ -1,0 +1,60 @@
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { ApiError, Err } from "schema/errors";
+import { ZodError } from "zod";
+import type { App } from "./utils/routing";
+
+type ErrorHandler = Parameters<App["setErrorHandler"]>[0];
+
+export const appErrorHandler: ErrorHandler = (error, req, reply) => {
+  if (!(error instanceof Error)) {
+    return reply.send(error);
+  }
+
+  if (error instanceof ApiError) {
+    return reply.status(error.status).send({
+      message: error.message,
+      param: error.param,
+    });
+  }
+
+  function send(message: Err, param?: unknown) {
+    return reply.status(400).send({ message, param });
+  }
+
+  if (error instanceof ZodError) {
+    return send(Err.INVALID_INPUT, error.issues[0].path?.[0]);
+  }
+
+  const isAdmin = req.maybeUser?.isAdmin;
+  if (error instanceof PrismaClientKnownRequestError) {
+    const { code, meta } = error;
+    if (code === "P2001") {
+      return send(Err.NOT_FOUND, meta?.model_name);
+    }
+    if (code === "P2002") {
+      return send(Err.ALREADY_EXISTS, meta?.constraint);
+    }
+    if (code === "P2003") {
+      return send(Err.NOT_FOUND, meta?.field_name);
+    }
+    if (code === "P2025") {
+      return send(Err.NOT_FOUND, meta?.modelName);
+    }
+  }
+
+  const ctor = error.constructor.name;
+  if (isAdmin && ctor.startsWith("Prisma")) {
+    const lines = error.message.split(/\n/g);
+    const relevantLines = lines.filter(
+      (l, i, ls) =>
+        i < 5 ||
+        i < ls.length - 5 ||
+        /[~?]{2,}/.test(l) ||
+        /[~?]{2,}/.test(ls[i + 1] || ""),
+    );
+    const message = `${ctor}: ${relevantLines.join("\n")}`;
+    return send(Err.INTENAL_SERVER_ERROR, message);
+  }
+
+  return send(Err.INTENAL_SERVER_ERROR, isAdmin ? error.message : undefined);
+};
