@@ -56,5 +56,5 @@ export const appErrorHandler: ErrorHandler = (error, req, reply) => {
     return send(Err.INTENAL_SERVER_ERROR, message);
   }
 
-  return send(Err.INTENAL_SERVER_ERROR, isAdmin ? error.message : undefined);
+  return send(Err.INTENAL_SERVER_ERROR, error.message);
 };

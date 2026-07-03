@@ -11,7 +11,7 @@ export const patchApi = postRoute({
 async function patch() {
   const now = new Date();
   return prisma.user.updateMany({
-    where: { isAdmin: true, lastActive: { not: null } },
+    where: { isAdmin: true },
     data: { expiredAt: null, lastActive: now },
   });
 }

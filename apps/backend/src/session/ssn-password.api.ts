@@ -36,7 +36,7 @@ async function changePassword(req: Req): Promise<SessionPasswordResT> {
   );
   const userId = user.id;
 
-  const mfa = user.password?.mfaMode;
+  const mfa = user.mfaMode;
   if (mfa && mfa !== MfaMode.NONE) {
     const otp = req.body.otp;
     if (!otp) {
