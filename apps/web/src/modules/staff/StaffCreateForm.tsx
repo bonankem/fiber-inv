@@ -32,6 +32,15 @@ export default function StaffCreateForm(props: ModalStateProps) {
     props.state.close();
   });
 
+  const onFillEmail = (s: string) => {
+    const match = /^([\w'-]+)\.([\w'-]+)@mtn.com$/iu.exec(s);
+    if (!match || form.getFieldValue("name")) return;
+
+    const first = match[1].replace(/^\w/u, (w) => w.toUpperCase());
+    const last = match[2].replace(/^\w/u, (w) => w.toUpperCase());
+    form.setFieldValue("name", `${first} ${last}`);
+  };
+
   return (
     <FormModal
       form={form}
@@ -45,7 +54,11 @@ export default function StaffCreateForm(props: ModalStateProps) {
         required
         rules={[{ validator: (_, v) => checker(v) }]}
       >
-        <Input type="email" required />
+        <Input
+          type="email"
+          required
+          onChange={(e) => onFillEmail(e.target.value)}
+        />
       </Form.Item>
 
       <Form.Item name="name" label={m.name()} required>
