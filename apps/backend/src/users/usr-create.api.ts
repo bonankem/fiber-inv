@@ -4,7 +4,7 @@ import { bad, Err } from "schema/errors";
 import { type UserCreateT, userCreateZ, userS } from "schema/people";
 import { authLog } from "#/admin/adm-syslog.api";
 import { Allow } from "#/auth/guard";
-import { AuthAction, MfaMode, prisma } from "#/db";
+import { AuthAction, prisma } from "#/db";
 import { isDev } from "#/env";
 import { sendMail } from "#/mail";
 import { maybeConnect } from "#/utils/ids";
@@ -45,15 +45,7 @@ async function createUser(req: RequestWith<UserCreateT>) {
       isAdmin: isAdmin,
       staffRole: staffRole,
       vendor: maybeConnect(vendorId),
-      password: {
-        create: {
-          hashed,
-          history: [hashed],
-          mfaMode: MfaMode.UNDECIDED,
-          mfaVerified: false,
-          mustChange: true,
-        },
-      },
+      password: { create: { hashed, history: [hashed] } },
     },
     select: userS,
   });

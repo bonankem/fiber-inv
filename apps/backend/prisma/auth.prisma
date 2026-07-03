@@ -8,7 +8,7 @@ model Password {
 
     lastChange DateTime @default(now())
 
-    mustChange Boolean
+    mustChange Boolean @default(true)
 }
 
 enum MfaMode {
