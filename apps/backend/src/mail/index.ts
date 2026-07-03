@@ -82,7 +82,7 @@ function renderFields({ fields }: MailData) {
   const lines = fields.map(([k, v]) => {
     k = escapeHtml(k);
     v = escapeHtml(v);
-    return `<b>${k}<b>: ${v}</br>`;
+    return `<b>${k}</b>: ${v}</br>`;
   });
   const html = `<p class="line">${lines.join("")}</p>`;
   const text = fields
