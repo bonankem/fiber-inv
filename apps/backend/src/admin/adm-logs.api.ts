@@ -9,7 +9,7 @@ export const authLogsAoi = getRoute({
 });
 
 async function getAuthLogs(res: AnyReply) {
-  const since = dayjs().subtract(24, "hours").toDate();
+  const since = dayjs().subtract(14, "days").toDate();
   const logs = await prisma.authLog.findMany({
     where: { time: { gte: since } },
     orderBy: { time: "desc" },

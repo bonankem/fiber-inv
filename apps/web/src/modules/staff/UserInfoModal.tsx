@@ -10,7 +10,10 @@ export default function UserInfoModal(props: ModalStateProps) {
     const text = data.data;
     if (!text) return props.state.close();
 
-    const blob = new Blob([text], { type: "text/csv;charset=utf-8" });
+    const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+    const blob = new Blob([bom, text], {
+      type: "text/csv;charset=utf-8;",
+    });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
