@@ -55,6 +55,7 @@
   "error_same_password": "N'utilisez pas le même mot de passe",
   "existing_area": "Plaque existante",
   "expired_on": "Expiré le {date}",
+  "locked_until": "Verrouillé jusqu'au {date}",
   "export": "Exporter",
   "extension": "Extension",
   "fhc_form_finish": "Finir le connexion",

@@ -16,6 +16,10 @@ function statusOf(user: UserFullT) {
     const date = dayjs(user.expiredAt).format("DD MMM");
     return <span className="text-red-700">{m.expired_on({ date })}</span>;
   }
+  if (user.lockUntil) {
+    const date = dayjs(user.lockUntil).format("DD MMM");
+    return <span className="text-red-700">{m.locked_until({ date })}</span>;
+  }
   return m.active();
 }
 

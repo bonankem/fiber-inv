@@ -10,6 +10,7 @@ export const userFullS = {
   isAdmin: true,
   staffRole: true,
   expiredAt: true,
+  lockUntil: true,
   vendor: vendorP,
 } satisfies Prisma.UserSelect;
 
@@ -20,6 +21,7 @@ export const userFullZ = zObject("UserFullT", {
   phone: zStrNul("The user's phone number"),
   isAdmin: z.boolean().describe("Is this user an admin?"),
   expiredAt: zDateNul("The time that the account expired, or null"),
+  lockUntil: zDateNul(""),
   staffRole: z
     .enum(StaffRole)
     .nullable()

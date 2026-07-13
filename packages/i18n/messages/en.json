@@ -115,6 +115,7 @@
   "length": "Length",
   "light": "Light",
   "locality": "Locality",
+  "locked_until": "Locked until {date}",
   "log_out": "Log Out",
   "login": "Log in",
   "login_title": "Log in to ServiceX",
