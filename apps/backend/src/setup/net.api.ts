@@ -1,4 +1,5 @@
-import { BoxType, prisma } from "#/db";
+import { prisma } from "#/db";
+import { geoInitialize } from "#/geo/geo-initialize.api";
 import { makeKey } from "#/utils/queries";
 import { postRoute } from "#/utils/routing";
 
@@ -7,42 +8,22 @@ export const setupNetApi = postRoute({
   handler: setupNet,
 });
 async function setupNet() {
-  const oem = await prisma.oem.findFirstOrThrow({
-    where: { name: "Huawei" },
-  });
-
-  const olt = await prisma.olt.upsert({
-    where: { name: "CI00123-OLT" },
-    update: {},
-    create: {
-      site: "CI00123",
-      name: "CI00123-OLT",
-      key: makeKey("CI00123-OLT"),
-      oemId: oem.id,
-    },
-  });
-
-  const boxNames = [
-    "GAGNO-X01-H01",
-    "GAGNO-X01-H01-S01",
-    "GAGNO-X01-H01-S02",
-    "GAGNO-X01-H01-S03",
-    "GAGNO-X01-H01-E01",
-  ];
-
-  const boxes = await prisma.ftthBox.createMany({
-    data: boxNames.map((name) => ({
-      name,
-      oemId: oem.id,
-      oltId: olt.id,
-      type: name.includes("-E0")
-        ? BoxType.END
-        : name.includes("-S0")
-          ? BoxType.SUB
-          : BoxType.HUB,
-    })),
+  const deleted = await prisma.$transaction([
+    prisma.cable.deleteMany(),
+    prisma.ftthBox.deleteMany(),
+    prisma.olt.deleteMany(),
+    prisma.ftthArea.deleteMany(),
+    prisma.locality.deleteMany(),
+    prisma.district.deleteMany(),
+  ]);
+  const geo = await geoInitialize();
+  const oem = await prisma.oem.createMany({
+    data: [
+      { name: "Huawei", key: makeKey("Huawei") },
+      { name: "ZTE", key: makeKey("ZTE") },
+    ],
     skipDuplicates: true,
   });
 
-  return { oem, olt, boxes };
+  return { oem, geo, del: deleted.map((d) => d.count) };
 }
