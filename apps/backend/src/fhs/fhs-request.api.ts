@@ -78,17 +78,11 @@ async function nameCheck(name: string) {
 }
 
 function areaQuery(dto: FhsRequestT): FhsWorkInput["area"] {
-  const name = dto.name;
   const code = dto.areaCode;
   return {
     connectOrCreate: {
       where: { code },
-      create: {
-        code,
-        name,
-        key: makeKey(name),
-        locality: connectId(dto.localityId),
-      },
+      create: { code, locality: connectId(dto.localityId) },
     },
   };
 }
