@@ -1,8 +1,8 @@
 import { appPlugin } from "#/utils/routing";
-import { boxListApi } from "./net-box-list.api";
-import { oltListApi } from "./net-olt-list.api";
+import { boxesApi } from "./net-boxes.api";
+import { netListApi } from "./net-list";
 
 export default appPlugin((app) => {
-  app.register(oltListApi);
-  app.register(boxListApi);
+  app.register(boxesApi);
+  app.register(netListApi);
 });

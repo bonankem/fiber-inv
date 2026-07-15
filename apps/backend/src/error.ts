@@ -1,16 +1,23 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 import { ApiError, Err } from "schema/errors";
 import { ZodError } from "zod";
+import { isDev } from "./env";
 import type { App } from "./utils/routing";
 
 type ErrorHandler = Parameters<App["setErrorHandler"]>[0];
 
-export const appErrorHandler: ErrorHandler = (error, req, reply) => {
+export const appErrorHandler: ErrorHandler = function (
+  this,
+  error,
+  req,
+  reply,
+) {
   if (!(error instanceof Error)) {
     return reply.send(error);
   }
 
   if (error instanceof ApiError) {
+    if (isDev) this.log.error(`${error.key}: ${error.param}`);
     return reply.status(error.status).send({
       message: error.message,
       param: error.param,
@@ -53,8 +60,10 @@ export const appErrorHandler: ErrorHandler = (error, req, reply) => {
         /[~?]{2,}/.test(ls[i + 1] || ""),
     );
     const message = `${ctor}: ${relevantLines.join("\n")}`;
+    console.error(message);
     return send(Err.INTENAL_SERVER_ERROR, message);
   }
 
+  console.error(error.message);
   return send(Err.INTENAL_SERVER_ERROR, error.message);
 };

@@ -5,16 +5,12 @@ import { type Same, type z, zObject, zStr } from "../utils";
 export const areaS = {
   id: true,
   code: true,
-  name: true,
-  key: true,
   locality: localityP,
 } satisfies Prisma.FtthAreaSelect;
 
 export const areaZ = zObject("AreaT", {
   id: zStr("The area ID"),
   code: zStr("The five letter code of the area"),
-  name: zStr("The name of the area"),
-  key: zStr("Searchable key based on the name"),
   locality: localityZ.describe("The locality that contains this area"),
 } satisfies Record<keyof typeof areaS, object>);
 

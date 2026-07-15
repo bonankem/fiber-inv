@@ -22,6 +22,7 @@
   "nodemonConfig": {
     "watch": "src",
     "ext": "ts",
-    "exec": "pnpm turbo-build && pnpm refresh-dev"
+    "exec": "pnpm turbo-build && pnpm refresh-dev",
+    "delay": 0.5
   }
 }

@@ -1,4 +1,5 @@
 import { idKeyNameP, idKeyNameZ } from "#/common";
+import { localityP, localityZ } from "#/geo";
 import type { Prisma } from "../prisma";
 import { type Same, type z, zObject, zStr, zStrNul } from "../utils";
 
@@ -9,6 +10,7 @@ export const oltS = {
   site: true,
   ip: true,
   oem: idKeyNameP,
+  locality: localityP,
 } satisfies Prisma.OltSelect;
 
 export const oltZ = zObject("OltT", {
@@ -16,11 +18,14 @@ export const oltZ = zObject("OltT", {
   key: zStr("The unique searchable key"),
   name: zStr("The OLT name"),
   site: zStrNul("The site ID"),
-  oem: idKeyNameZ.describe("The OLT OEM"),
   ip: zStrNul("The OLT IP address, if known"),
+  oem: idKeyNameZ.nullable().describe("The OLT OEM"),
+  locality: localityZ.nullable(),
 } satisfies Record<keyof typeof oltS, object>);
 
-export const oltP = {
+export const oltP = { select: oltS };
+
+export const oltListP = {
   select: oltS,
   orderBy: { key: "asc" },
 } satisfies Prisma.OltFindManyArgs;

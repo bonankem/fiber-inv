@@ -55,15 +55,17 @@ async function extractExcel(file: MultipartFile) {
   const vals = Object.values(head).map(makeKeySpaced);
   const keyLike = (r: RegExp) => keys[vals.findIndex((v) => r.test(v))];
 
-  const tnKey = keyLike(/\b(tn)\b/);
-  const nameKey = keyLike(/\b(nom|name)\b/);
-  const contactKey = keyLike(/\b(contact)\b/);
-  const coordsKey = keyLike(/\b(coord)/);
+  const tnKey = keyLike(/\b(tn)\b/i);
+  const nameKey = keyLike(/\b(nom|name).*client/i);
+  const contactKey = keyLike(/contact.*client/i);
+  const coordsKey = keyLike(/\bcoord(inate|on)/i);
+  const latKey = keyLike(/latitude/i);
+  const lngKey = keyLike(/longitude/i);
 
   if (!tnKey) bad(Err.MISSING_COLUMN, "tn");
   if (!nameKey) bad(Err.MISSING_COLUMN, "name");
   if (!contactKey) bad(Err.MISSING_COLUMN, "contact");
-  if (!coordsKey) bad(Err.MISSING_COLUMN, "coords");
+  if (!coordsKey && !(latKey && lngKey)) bad(Err.MISSING_COLUMN, "coords");
 
   const localities = await prisma.locality.findMany({
     include: { boundary: true },
@@ -76,12 +78,18 @@ async function extractExcel(file: MultipartFile) {
     return found?.id;
   };
 
-  const clean = (s: Maybe<string>) => s?.replace(/\s+/g, " ")?.trim();
+  const clean = (s: Maybe<string>) =>
+    s?.toString()?.replace(/\s+/g, " ")?.trim();
+
   const items = rows.map((r) => {
     const tn = clean(r[tnKey]?.replace(/@mtn.+/, ""));
     const name = clean(r[nameKey]);
-    const phone = clean(r[contactKey]) || null;
-    const coords = parseCoords(clean(r[coordsKey]));
+    const phone =
+      clean(r[contactKey])?.replace(/^\+?(?:225)?0?(\d{9})$/, "+225 0$1") ||
+      null;
+    const coords = parseCoords(
+      clean(r[coordsKey]) || clean(`${r[latKey] ?? ""},${r[lngKey] ?? ""}`),
+    );
     const localityId = findLocality(coords);
     return { tn, name, phone, coords, localityId };
   });

@@ -212,7 +212,7 @@ export function makeKey(text: string) {
 }
 
 export function makeKeySpaced(text: string) {
-  const norm = text.normalize("NFKD").toLowerCase();
+  const norm = text?.toString().normalize("NFKD").toLowerCase();
   return norm.replace(/[\W_]+/g, " ").trim();
 }
 

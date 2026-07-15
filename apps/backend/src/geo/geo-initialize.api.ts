@@ -5,7 +5,7 @@ import { fatal } from "#/utils/errors";
 import { postRoute } from "#/utils/routing";
 import { makeKey } from "../utils/queries";
 import polygons from "./geo.json" with { type: "json" };
-import { geoNames } from "./geo.names";
+import { geoAbbrs, geoNames } from "./geo.names";
 import { ringWithBbox } from "./utils";
 
 export const geoInitializeApi = postRoute({
@@ -48,22 +48,29 @@ export async function geoInitialize() {
     });
   });
 
+  const noAbbr: string[] = [];
+
   const makeLocalities = geoNames.flatMap((g) => {
     const dKey = makeKey(g.name);
     return g.list.map((name) => {
       const key = makeKey(name);
       const bnd = boundaries[key] || fatal(`No polygon for ${name}`);
+      const abbr = geoAbbrs[key];
+      if (key && !abbr) noAbbr.push(key);
+
       return prisma.locality.upsert({
         where: { key },
         update: {
           boundary: { upsert: { update: bnd, create: bnd } },
           name,
+          abbr,
           key,
         },
         create: {
           district: { connect: { key: dKey } },
           boundary: { create: bnd },
           name,
+          abbr,
           key,
         },
         select: idKeyNameS,
@@ -73,7 +80,15 @@ export async function geoInitialize() {
 
   await prisma.$transaction([...makeDistricts, ...makeLocalities]);
 
-  return prisma.locality.findFirst({
-    select: { id: true, key: true, name: true, boundary: true },
+  const loc = await prisma.locality.findFirst({
+    select: {
+      id: true,
+      key: true,
+      abbr: true,
+      name: true,
+      boundary: true,
+    },
   });
+  noAbbr.sort();
+  return { loc, noAbbr };
 }

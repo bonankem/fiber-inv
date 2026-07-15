@@ -4,8 +4,6 @@ export const fhsCodesUrl = "/fhs/codes";
 
 export const fhsCodeZ = zObject("FhsCodeT", {
   code: z.string(),
-  name: z.string(),
-  key: z.string(),
   works: z.array(z.string()),
 });
 

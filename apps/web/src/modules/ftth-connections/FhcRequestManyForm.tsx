@@ -46,7 +46,7 @@ export default function FhcRequestManyForm(props: ModalStateProps) {
   return (
     <FormModal
       title={m.fhc_form_request()}
-      width={800}
+      width="calc(min(1200px,90vw))"
       state={props.state}
       onSubmit={onSubmit}
       submitting={load.isPending || send.isPending}
@@ -56,6 +56,7 @@ export default function FhcRequestManyForm(props: ModalStateProps) {
       {items.length ? (
         <DataTable
           data={items}
+          maxHeight="60vh"
           columns={[
             {
               key: "tn",
@@ -69,7 +70,7 @@ export default function FhcRequestManyForm(props: ModalStateProps) {
               render: (f) => (
                 <VendorSelect
                   showSearch={false}
-                  className="w-full pl-0!"
+                  className="w-full pl-0! min-w-[8em]!"
                   variant="borderless"
                   value={f.vendorId}
                   onChange={(v) =>
@@ -87,6 +88,7 @@ export default function FhcRequestManyForm(props: ModalStateProps) {
               key: "name",
               title: m.name(),
               render: (f) => f.name,
+              width: 300,
             },
             {
               key: "contact",
@@ -98,7 +100,7 @@ export default function FhcRequestManyForm(props: ModalStateProps) {
               key: "locality",
               title: m.locality(),
               render: (f) => locNames[f.localityId],
-              width: 150,
+              width: 120,
             },
             {
               key: "coords",

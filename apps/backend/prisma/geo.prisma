@@ -5,6 +5,8 @@ model Coords {
 
     works Work[]
 
+    olts Olt[]
+
     boxes FtthBox[]
 
     workDocs WorkDoc[]
@@ -53,9 +55,11 @@ model Locality {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
+    key String @unique
+
     name String @unique
 
-    key String @unique
+    abbr String? @unique
 
     district   District @relation(fields: [districtId], references: [id])
     districtId String   @db.Uuid
@@ -66,4 +70,6 @@ model Locality {
     works Work[]
 
     areas FtthArea[]
+
+    olts Olt[]
 }

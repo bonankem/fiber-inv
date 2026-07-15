@@ -16,6 +16,11 @@ export const idKeyNameZ = zObject("IdKeyNameT", {
 
 export const idKeyNameP = { select: idKeyNameS };
 
+export const idKeyNameListP = {
+  select: idKeyNameS,
+  orderBy: { key: "asc" },
+} satisfies Prisma.UserFindManyArgs;
+
 type IdKeyNameP = Prisma.UserGetPayload<typeof idKeyNameP>;
 type IdKeyNameZ = z.infer<typeof idKeyNameZ>;
 

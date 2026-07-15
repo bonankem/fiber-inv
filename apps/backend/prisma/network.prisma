@@ -6,10 +6,6 @@ model FtthArea {
 
     code String @unique
 
-    name String @unique
-
-    key String @unique
-
     locality   Locality @relation(fields: [localityId], references: [id])
     localityId String   @db.Uuid
 
@@ -18,7 +14,8 @@ model FtthArea {
 
     works Work[]
 
-    olts Olt[]
+    olts      Olt[]
+    ftthBoxes FtthBox[]
 }
 
 model Oem {
@@ -52,8 +49,14 @@ model Olt {
 
     site String?
 
-    oem   Oem    @relation(fields: [oemId], references: [id])
-    oemId String @db.Uuid
+    coords   Coords? @relation(fields: [coordsId], references: [id])
+    coordsId BigInt?
+
+    locality   Locality? @relation(fields: [localityId], references: [id])
+    localityId String?   @db.Uuid
+
+    oem   Oem?    @relation(fields: [oemId], references: [id])
+    oemId String? @db.Uuid
 
     areas FtthArea[]
 
@@ -83,11 +86,14 @@ model FtthBox {
 
     ports Int?
 
-    oem   Oem    @relation(fields: [oemId], references: [id])
-    oemId String @db.Uuid
+    oem   Oem?    @relation(fields: [oemId], references: [id])
+    oemId String? @db.Uuid
 
-    olt   Olt    @relation(fields: [oltId], references: [id])
-    oltId String @db.Uuid
+    olt   Olt?    @relation(fields: [oltId], references: [id])
+    oltId String? @db.Uuid
+
+    area   FtthArea @relation(fields: [areaId], references: [id])
+    areaId String   @db.Uuid
 
     coords   Coords? @relation(fields: [coordsId], references: [id])
     coordsId BigInt?

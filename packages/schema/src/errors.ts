@@ -16,6 +16,7 @@ export enum Err {
   INVALID_LOGIN = "INVALID_LOGIN",
   INVALID_TOKEN = "INVALID_TOKEN",
   INVALID_INPUT = "INVALID_INPUT",
+  INVALID_NAME = "INVALID_NAME",
   INCORRECT_OTP = "INCORRECT_OTP",
   LOGIN_REQUIRED = "LOGIN_REQUIRED",
   MFA_ALREADY_SET = "MFA_ALREADY_SET",
@@ -53,7 +54,7 @@ export class ApiError extends Error {
 
   constructor(
     readonly error: Err,
-    readonly param?: Primitive,
+    readonly param?: Omit<Param, symbol>,
   ) {
     super(Err[error]);
     this.key = Err[error];
@@ -62,13 +63,15 @@ export class ApiError extends Error {
   }
 }
 
-export function bad(error: Err, param?: Primitive): never {
+type Param = Omit<Primitive, symbol>;
+
+export function bad(error: Err, param?: Param): never {
   throw new ApiError(error, param);
 }
 
 export function mustHave<T>(
   value: Maybe<T>,
-  param?: Primitive,
+  param?: Omit<Param, symbol>,
   error: Err = Err.FIELD_REQUIRED,
 ): asserts value {
   if (!value) throw new ApiError(error, param);

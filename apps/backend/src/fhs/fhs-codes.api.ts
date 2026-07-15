@@ -16,8 +16,6 @@ async function fhsCodes(): Promise<FhsCodesT> {
         select: { sid: true },
       },
       code: true,
-      name: true,
-      key: true,
     },
     orderBy: { code: "asc" },
   });

@@ -21,8 +21,12 @@ export function maybeConnect(i: Maybe<HasId>) {
   return i ? connectId(i) : undefined;
 }
 
+export function idOrKey(i: string) {
+  return UUID_RE.test(i) ? { id: i } : { key: i };
+}
+
 export function connectIdOrKey(i: string) {
-  return { connect: UUID_RE.test(i) ? { id: i } : { key: i } };
+  return { connect: idOrKey(i) };
 }
 
 export function maybeIdOrKey(i: Maybe<string>) {

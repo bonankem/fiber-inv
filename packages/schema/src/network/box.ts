@@ -1,15 +1,14 @@
-import { idNameP, idNameZ } from "#/common";
 import { coordsP, coordsZ } from "#/geo";
 import { BoxType, type Prisma } from "../prisma";
-import { type Same, z, zObject, zStr } from "../utils";
+import { type Same, z, zObject, zStr, zStrNul } from "../utils";
 
 export const boxS = {
   id: true,
   name: true,
   type: true,
   coords: coordsP,
-  oem: idNameP,
-  olt: idNameP,
+  oemId: true,
+  oltId: true,
 } satisfies Prisma.FtthBoxSelect;
 
 export const boxZ = zObject("BoxT", {
@@ -17,8 +16,8 @@ export const boxZ = zObject("BoxT", {
   name: zStr(""),
   type: z.enum(BoxType),
   coords: coordsZ.nullable(),
-  oem: idNameZ,
-  olt: idNameZ,
+  oemId: zStrNul(""),
+  oltId: zStrNul(""),
 } satisfies Record<keyof typeof boxS, object>);
 
 export const boxP = { select: boxS };
