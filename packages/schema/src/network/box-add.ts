@@ -3,7 +3,7 @@ import { z, zObject } from "../utils";
 
 export const boxAddZ = zObject("BoxAddT", {
   name: z.string(),
-  coords: coordsZ,
+  coords: coordsZ.optional(),
   oemId: z.string().optional(),
   oltId: z.string().optional(),
 });

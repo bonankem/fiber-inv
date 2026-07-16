@@ -32,6 +32,7 @@ async function expireUsers(log: AppLog) {
 
   const users = await prisma.user.findMany({
     where: {
+      expiredAt: null,
       OR: [
         { isAdmin: false, lastActive: { lt: userLimit } },
         { isAdmin: true, lastActive: { lt: adminLimit } },

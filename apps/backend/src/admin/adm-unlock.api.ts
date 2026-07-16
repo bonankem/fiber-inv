@@ -13,6 +13,7 @@ async function unlock(id: string) {
     where: { id },
     data: {
       expiredAt: null,
+      lockUntil: null,
       lastActive: new Date(),
     },
   });

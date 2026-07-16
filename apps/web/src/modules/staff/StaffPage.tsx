@@ -26,7 +26,13 @@ function statusOf(user: UserFullT) {
 const actions = buildActions<UserFullT, unknown, unknown>(
   () => true,
   () => true,
-  [{ name: "Unlock", form: UnlockForm, onlyIf: (u) => !!u.expiredAt }],
+  [
+    {
+      name: "Unlock",
+      form: UnlockForm,
+      onlyIf: (u) => !!(u.expiredAt || u.lockUntil),
+    },
+  ],
 );
 
 export default function StaffPage() {

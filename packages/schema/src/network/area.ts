@@ -1,17 +1,16 @@
-import { localityP, localityZ } from "#/geo";
 import type { Prisma } from "../prisma";
 import { type Same, type z, zObject, zStr } from "../utils";
 
 export const areaS = {
   id: true,
   code: true,
-  locality: localityP,
+  localityId: true,
 } satisfies Prisma.FtthAreaSelect;
 
 export const areaZ = zObject("AreaT", {
   id: zStr("The area ID"),
   code: zStr("The five letter code of the area"),
-  locality: localityZ.describe("The locality that contains this area"),
+  localityId: zStr("The ID of the locality"),
 } satisfies Record<keyof typeof areaS, object>);
 
 export const areaP = { select: areaS };
