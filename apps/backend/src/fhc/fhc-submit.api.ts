@@ -2,8 +2,8 @@ import { bad, Err, mustHave } from "schema/errors";
 import { type FhcSubmitT, fhcSubmitZ, ftthConnectionS } from "schema/fhc";
 import type { UserFullT } from "schema/people";
 import { workFullP } from "schema/work";
-import { type Prisma, prisma, WorkAction, WorkStatus } from "#/db";
-import { connectIdOrKey, maybeConnect } from "#/utils/ids";
+import { prisma, WorkAction, WorkStatus } from "#/db";
+import { maybeConnect, maybeIdOrKey } from "#/utils/ids";
 import { postRoute } from "#/utils/routing";
 import { updateWork } from "#/utils/work";
 
@@ -29,7 +29,8 @@ async function fhcSubmit(dto: FhcSubmitT, from: UserFullT) {
     data: {
       olt: maybeConnect(dto.oltId),
       fat: maybeConnect(dto.fatId),
-      ont: ontUpdate(dto),
+      ontSerial: dto.ontSerial,
+      ontOem: maybeIdOrKey(dto.ontOem),
       oltPort: dto.oltPort || undefined,
       fatPort: dto.fatPort || undefined,
       cableLength: dto.cableLength || undefined,
@@ -42,20 +43,4 @@ async function fhcSubmit(dto: FhcSubmitT, from: UserFullT) {
       }),
     },
   });
-}
-
-function ontUpdate(dto: FhcSubmitT): Prisma.FtthConnectionUpdateInput["ont"] {
-  const { ontSerial: serial, ontModel: model, ontOem } = dto;
-  if (!serial) return undefined;
-  mustHave(model, "ontModel");
-  mustHave(ontOem, "ontOem");
-
-  const oem = connectIdOrKey(ontOem);
-  return {
-    upsert: {
-      where: { serial },
-      create: { serial, model, oem },
-      update: { serial, model, oem },
-    },
-  };
 }

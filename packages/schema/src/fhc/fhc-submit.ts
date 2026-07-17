@@ -9,7 +9,6 @@ const fhcImageTypes = Object.values(WorkDocType).filter((t) =>
 export const fhcSubmitZ = workUpdateDto("FhcUpdateT", {
   images: z.partialRecord(z.enum(fhcImageTypes), z.string()),
   ontSerial: z.string().optional(),
-  ontModel: z.string().optional(),
   ontOem: z.string().optional(),
   oltId: z.string().optional(),
   fatId: z.string().optional(),

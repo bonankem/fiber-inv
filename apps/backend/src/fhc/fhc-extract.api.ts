@@ -38,6 +38,24 @@ async function extractPdf(file: MultipartFile) {
 
   return lines;
 }
+
+function clean(s: Maybe<string>) {
+  return s?.toString()?.replace(/\s+/g, " ")?.trim();
+}
+
+async function localityPicker() {
+  const localities = await prisma.locality.findMany({
+    include: { boundary: true },
+  });
+  return (c: Maybe<CoordsT>) => {
+    if (!c) return undefined;
+    const found = localities.find(
+      (l) => l.boundary && isInsideRing(c, l.boundary?.ring),
+    );
+    return found?.id;
+  };
+}
+
 async function extractExcel(file: MultipartFile) {
   const book = XLSX.read(await file.toBuffer());
   const sheet = book.Sheets[book.SheetNames[0]];
@@ -61,38 +79,45 @@ async function extractExcel(file: MultipartFile) {
   const coordsKey = keyLike(/\bcoord(inate|on)/i);
   const latKey = keyLike(/latitude/i);
   const lngKey = keyLike(/longitude/i);
+  const ontKey = keyLike(/serial.?num/i);
 
   if (!tnKey) bad(Err.MISSING_COLUMN, "tn");
   if (!nameKey) bad(Err.MISSING_COLUMN, "name");
   if (!contactKey) bad(Err.MISSING_COLUMN, "contact");
   if (!coordsKey && !(latKey && lngKey)) bad(Err.MISSING_COLUMN, "coords");
 
-  const localities = await prisma.locality.findMany({
-    include: { boundary: true },
-  });
-  const findLocality = (c: Maybe<CoordsT>) => {
-    if (!c) return undefined;
-    const found = localities.find(
-      (l) => l.boundary && isInsideRing(c, l.boundary?.ring),
-    );
-    return found?.id;
-  };
-
-  const clean = (s: Maybe<string>) =>
-    s?.toString()?.replace(/\s+/g, " ")?.trim();
+  const findLocality = await localityPicker();
 
   const items = rows.map((r) => {
     const tn = clean(r[tnKey]?.replace(/@mtn.+/, ""));
     const name = clean(r[nameKey]);
-    const phone =
-      clean(r[contactKey])?.replace(/^\+?(?:225)?0?(\d{9})$/, "+225 0$1") ||
-      null;
+    const phone = properPhone(clean(r[contactKey])) || null;
     const coords = parseCoords(
       clean(r[coordsKey]) || clean(`${r[latKey] ?? ""},${r[lngKey] ?? ""}`),
     );
     const localityId = findLocality(coords);
-    return { tn, name, phone, coords, localityId };
+    const ontSerial = clean(r[ontKey])
+      ?.replace(/^SN|[\W_]|/g, "")
+      ?.toUpperCase();
+    const ontOem = !ontSerial
+      ? undefined
+      : (/^ZTE/.test(ontSerial) && "zte") ||
+        (/^HWTC|^48575443|^D461/.test(ontSerial) && "huawei") ||
+        undefined;
+    return {
+      tn,
+      name,
+      phone,
+      coords,
+      localityId,
+      ontOem,
+      ontSerial,
+    };
   });
 
   return items;
+}
+
+function properPhone(s: Maybe<string>) {
+  return s?.replace(/^\+?(?:225)?0?(\d{9})$/, "+225 0$1");
 }

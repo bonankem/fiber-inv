@@ -55,8 +55,8 @@ export default function FhcRequestManyForm(props: ModalStateProps) {
     >
       {items.length ? (
         <DataTable
+          inModal
           data={items}
-          maxHeight="60vh"
           columns={[
             {
               key: "tn",
@@ -101,6 +101,18 @@ export default function FhcRequestManyForm(props: ModalStateProps) {
               title: m.locality(),
               render: (f) => locNames[f.localityId],
               width: 120,
+            },
+            {
+              key: "ontSerial",
+              title: "ONT SN",
+              render: (f) => f.ontSerial,
+              width: 150,
+            },
+            {
+              key: "ontOem",
+              title: "ONT OEM",
+              render: (f) => f.ontOem?.toUpperCase(),
+              width: 100,
             },
             {
               key: "coords",

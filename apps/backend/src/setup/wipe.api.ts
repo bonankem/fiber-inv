@@ -42,7 +42,6 @@ async function wipeDb(q: WipeQueryT) {
     work && "work",
     work && "upload",
     net && "ftthBox",
-    net && "ont",
     net && "olt",
     geo && "boundary",
     geo && "coords",

@@ -201,7 +201,9 @@ function errorMessage(e: unknown) {
 }
 
 export function showAppError(e: unknown) {
-  message.error(errorMessage(e));
+  const m = errorMessage(e);
+  if (m.length < 100) message.error(m);
+  else message.error(m.slice(0, 100));
 }
 
 export function apiCall<I, O>(f: (i: I) => O | Promise<O>) {

@@ -7,6 +7,8 @@ export const fhcRequestZ = zObject("FhcRequestT", {
   coords: coordsZ.describe("Location coordinates"),
   vendorId: zStr("Vendor ID"),
   localityId: zStr("Locality ID"),
+  ontSerial: zStrOpt("ONT serial number"),
+  ontOem: zStrOpt("ONT OEM"),
   email: zStrOpt("Customer email address"),
   phone: zStrOpt("Customer phone number"),
   address: zStrOpt("Location address"),

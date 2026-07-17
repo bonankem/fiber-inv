@@ -14,7 +14,7 @@ async function fhcList(input: FhcFilterT, user: UserFullT) {
   return prisma.ftthConnection.findMany({
     where: { work: fhcWorkWhere(input, user) },
     select: ftthConnectionS,
-    orderBy: [{ createdAt: "desc" }],
+    orderBy: { work: { sid: "desc" } },
     take: input.count || 100,
   });
 }

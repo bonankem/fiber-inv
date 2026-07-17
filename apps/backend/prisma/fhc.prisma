@@ -19,14 +19,16 @@ model FtthConnection {
     fat   FtthBox? @relation(fields: [fatId], references: [id])
     fatId String?  @db.Uuid
 
-    ont   Ont?    @relation(fields: [ontId], references: [id])
-    ontId String? @unique @db.Uuid
-
     oltSlot Int?
 
     oltPort Int?
 
     fatPort Int?
+
+    ontOem   Oem?    @relation(fields: [ontOemId], references: [id])
+    ontOemId String? @db.Uuid
+
+    ontSerial String?
 
     cableLength Int?
 

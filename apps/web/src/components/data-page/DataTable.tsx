@@ -14,7 +14,10 @@ export default function DataTable<T extends { id: string } | { tn: string }>(
       size="small"
       dataSource={props.data ?? []}
       rowKey={(r) => ("id" in r ? r.id : r.tn)}
-      scroll={{ x: scrollX }}
+      scroll={{
+        x: scrollX,
+        y: props.inModal ? "calc(max(200px,40vh))" : "calc(max(400px,60vh))",
+      }}
       loading={props.loading}
       columns={columns}
       pagination={false}

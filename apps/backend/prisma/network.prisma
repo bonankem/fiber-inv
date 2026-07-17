@@ -10,9 +10,9 @@ model Oem {
 
     olts Olt[]
 
-    onts Ont[]
-
     boxes FtthBox[]
+
+    onts FtthConnection[]
 }
 
 model Olt {
@@ -105,20 +105,4 @@ model Cable {
 
     fromBox   FtthBox? @relation(fields: [fromBoxId], references: [id], name: "out")
     fromBoxId String?  @db.Uuid
-}
-
-model Ont {
-    id String @id @default(uuid(7)) @db.Uuid
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    serial String @unique
-
-    model String?
-
-    oem   Oem    @relation(fields: [oemId], references: [id])
-    oemId String @db.Uuid
-
-    fhc FtthConnection?
 }

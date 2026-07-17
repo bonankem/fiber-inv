@@ -1,7 +1,7 @@
 import { type FhcRequestT, fhcRequestZ, ftthConnectionS } from "schema/fhc";
 import type { UserFullT } from "schema/people";
 import { prisma, WorkAction, WorkStatus } from "#/db";
-import { connectId } from "#/utils/ids";
+import { connectId, maybeIdOrKey } from "#/utils/ids";
 import { addLog, create, makeKey, nextId, setCoords } from "#/utils/queries";
 import { postRoute } from "#/utils/routing";
 
@@ -24,9 +24,11 @@ async function fhcRequest(dto: FhcRequestT, from: UserFullT) {
         address: dto.address,
         email: dto.email,
         phone: dto.phone,
+        ontSerial: dto.ontSerial,
+        ontOem: maybeIdOrKey(dto.ontOem),
         work: create({
-          status,
           sid,
+          status,
           requestDate,
           name: dto.name,
           key: makeKey(dto.name),

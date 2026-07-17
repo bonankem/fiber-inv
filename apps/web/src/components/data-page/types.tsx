@@ -29,6 +29,7 @@ export type SubsetCardsProps<T> = {
 
 export type DataTableProps<T> = {
   data?: Maybe<T[]>;
+  inModal?: boolean;
   columns?: DtColumn<T>[];
   filters?: DtFilter[];
   // biome-ignore lint/suspicious/noExplicitAny: only first type param is relevant

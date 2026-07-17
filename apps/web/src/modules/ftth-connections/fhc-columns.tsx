@@ -8,13 +8,13 @@ export type fhcColumn = DtColumn<FtthConnectionT>;
 
 export const fhcColumns: fhcColumn[] = [
   {
-    key: "tn",
-    title: "TN",
+    key: "id",
+    title: "ID",
     width: 100,
     onClick: true,
     render: (p) => (
       <WithCaption
-        title={<span>{p.tn}</span>}
+        title={<span>{p.work.sid}</span>}
         caption={<span className="text-blue-400">Voir les détails</span>}
       />
     ),

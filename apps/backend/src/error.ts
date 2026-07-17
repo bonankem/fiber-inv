@@ -1,4 +1,5 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { unique } from "remeda";
 import { ApiError, Err } from "schema/errors";
 import { ZodError } from "zod";
 import { isDev } from "./env";
@@ -30,6 +31,23 @@ export const appErrorHandler: ErrorHandler = function (
 
   if (error instanceof ZodError) {
     return send(Err.INVALID_INPUT, error.issues[0].path?.[0]);
+  }
+
+  if (error.message.includes("Invalid input: ")) {
+    const issues = error.message.match(
+      /(\S+) Invalid input: (.+?)(?=, (body|params|query)|$)/g,
+    );
+
+    const uniqueIssues = unique(
+      (issues || []).map((i) =>
+        i
+          .replace(/^(body|params|query)\/|\/\d+|Invalid input: /gi, "")
+          .replace(/expected .+, received undefined/g, "required"),
+      ),
+    );
+    if (uniqueIssues.length) {
+      return send(Err.INVALID_INPUT, uniqueIssues[0]);
+    }
   }
 
   const isAdmin = req.maybeUser?.isAdmin;
@@ -64,6 +82,6 @@ export const appErrorHandler: ErrorHandler = function (
     return send(Err.INTENAL_SERVER_ERROR, message);
   }
 
-  console.error(error.message);
+  console.error(error.message.slice(0, 100));
   return send(Err.INTENAL_SERVER_ERROR, error.message);
 };
