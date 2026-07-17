@@ -4,7 +4,7 @@ import { z, zFormObject } from "../utils";
 export const ftthAreaCodeZ = z
   .string()
   .toUpperCase()
-  .regex(/^[A-Z]{5}$/, { error: "Invalid area code" })
+  .regex(/^[A-Z]{4,5}\d?$/, { error: "Invalid area code" })
   .describe("The five letter FTTH area code");
 
 export const fhsRequestZ = zFormObject("FhsRequestT", {
@@ -12,7 +12,7 @@ export const fhsRequestZ = zFormObject("FhsRequestT", {
   name: z.string(),
   localityId: z.string(),
   isNewArea: z.boolean().describe("Is this survey for a new area?"),
-  areaCode: z.string().describe("The 5 letter area code"),
+  area: z.string().min(5).max(6).describe("The FTTH area code"),
   managerId: z.string(),
   coords: coordsZ,
   contact: z.string(),

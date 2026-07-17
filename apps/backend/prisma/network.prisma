@@ -1,23 +1,3 @@
-model FtthArea {
-    id String @id @default(uuid(7)) @db.Uuid
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    code String @unique
-
-    locality   Locality @relation(fields: [localityId], references: [id])
-    localityId String   @db.Uuid
-
-    boundary   Boundary? @relation(fields: [boundaryId], references: [id])
-    boundaryId String?   @unique @db.Uuid
-
-    works Work[]
-
-    olts      Olt[]
-    ftthBoxes FtthBox[]
-}
-
 model Oem {
     id String @id @default(uuid(7)) @db.Uuid
 
@@ -58,8 +38,6 @@ model Olt {
     oem   Oem?    @relation(fields: [oemId], references: [id])
     oemId String? @db.Uuid
 
-    areas FtthArea[]
-
     boxes FtthBox[]
 
     homes FtthConnection[]
@@ -82,6 +60,8 @@ model FtthBox {
 
     name String @unique
 
+    area String
+
     serial String? @unique
 
     ports Int?
@@ -91,9 +71,6 @@ model FtthBox {
 
     olt   Olt?    @relation(fields: [oltId], references: [id])
     oltId String? @db.Uuid
-
-    area   FtthArea @relation(fields: [areaId], references: [id])
-    areaId String   @db.Uuid
 
     coords   Coords? @relation(fields: [coordsId], references: [id])
     coordsId BigInt?
@@ -106,6 +83,8 @@ model FtthBox {
     outCables Cable[] @relation("out")
 
     connections FtthConnection[]
+
+    @@index([area])
 }
 
 model Cable {

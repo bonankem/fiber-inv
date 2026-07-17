@@ -7,6 +7,7 @@ export const ftthSurveyS = {
   work: workP,
   contact: true,
   isNewArea: true,
+  area: true,
 } satisfies Prisma.FtthSurveySelect;
 
 export const ftthSurveyZ = zObject("FtthSurveyT", {
@@ -14,6 +15,7 @@ export const ftthSurveyZ = zObject("FtthSurveyT", {
   work: workZ,
   contact: zStrNul("The local contact information"),
   isNewArea: z.boolean("Does this survey add a new FTTH area code?"),
+  area: zStrNul("The FTTH area code"),
 } satisfies Record<keyof typeof ftthSurveyS, object>);
 
 export const ftthSurveyP = { select: ftthSurveyS };

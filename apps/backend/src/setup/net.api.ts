@@ -12,7 +12,6 @@ async function setupNet() {
     prisma.cable.deleteMany(),
     prisma.ftthBox.deleteMany(),
     prisma.olt.deleteMany(),
-    prisma.ftthArea.deleteMany(),
     prisma.locality.deleteMany(),
     prisma.district.deleteMany(),
   ]);

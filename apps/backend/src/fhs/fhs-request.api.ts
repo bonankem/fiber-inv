@@ -32,7 +32,7 @@ const status = WorkStatus.REQUESTED;
 const sendTo = StaffRole.PLANNING_MANAGER;
 
 async function fhsRequest(dto: FhsRequestT, from: UserT) {
-  const { name, contact, isNewArea } = dto;
+  const { name, contact, isNewArea, area } = dto;
   const key = await nameCheck(name);
   const boundary = await boundaryQuery(dto.PLAQUE_KMZ);
 
@@ -43,13 +43,13 @@ async function fhsRequest(dto: FhsRequestT, from: UserT) {
         boundary,
         contact,
         isNewArea,
+        area,
         work: create({
           sid,
           key,
           name,
           status,
           requestDate,
-          area: areaQuery(dto),
           locality: connectId(dto.localityId),
           coords: setCoords(dto.coords),
           docs: setDocsFrom(dto, WorkDocType.PLAQUE_KMZ),
@@ -63,7 +63,6 @@ async function fhsRequest(dto: FhsRequestT, from: UserT) {
 }
 
 type FhsInput = Prisma.FtthSurveyCreateInput;
-type FhsWorkInput = Prisma.WorkCreateWithoutFhsInput;
 
 async function nameCheck(name: string) {
   const key = makeKey(name);
@@ -75,16 +74,6 @@ async function nameCheck(name: string) {
     bad(Err.ALREADY_EXISTS, dup.name);
   }
   return key;
-}
-
-function areaQuery(dto: FhsRequestT): FhsWorkInput["area"] {
-  const code = dto.areaCode;
-  return {
-    connectOrCreate: {
-      where: { code },
-      create: { code, locality: connectId(dto.localityId) },
-    },
-  };
 }
 
 async function boundaryQuery(id: string): Promise<FhsInput["boundary"]> {

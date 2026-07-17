@@ -1,5 +1,5 @@
 import { idKeyNameListP } from "schema/common";
-import { areaListP, boxListP, oltListP } from "schema/network";
+import { boxListP, oltListP } from "schema/network";
 import { prisma } from "#/db";
 import { getRoute } from "#/utils/routing";
 
@@ -11,8 +11,7 @@ export const netListApi = getRoute({
 async function netList() {
   const oems = await prisma.oem.findMany(idKeyNameListP);
   const olts = await prisma.olt.findMany(oltListP);
-  const areas = await prisma.ftthArea.findMany(areaListP);
   const boxes = await prisma.ftthBox.findMany(boxListP);
 
-  return { oems, olts, areas, boxes };
+  return { oems, olts, boxes };
 }

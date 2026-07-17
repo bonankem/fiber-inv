@@ -41,7 +41,7 @@ export default function DownloadList(props: Props) {
       className={twJoin("flex flex-col gap-2 overflow-hidden", props.className)}
     >
       {uploads.map((up) => (
-        <li key={up.id} className="max-w-full">
+        <li key={up.id} className="max-w-full flex items-center">
           <Tooltip title={`${up.name} (${sizeText(up.size)})`} placement="left">
             <a
               href={downloadUrl(up)}

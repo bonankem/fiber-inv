@@ -1,5 +1,4 @@
 import z from "zod";
-import { areaP, areaZ } from "#/network/area";
 import { coordsP, coordsZ } from "../geo/coords";
 import { localityNestedP, localityNestedZ } from "../geo/locality-nested";
 import { vendorP, vendorZ } from "../people";
@@ -17,7 +16,6 @@ export const workS = {
   vendor: vendorP,
   workers: workerP,
   locality: localityNestedP,
-  area: areaP,
 } satisfies Prisma.WorkSelect;
 
 export const workZ = zObject("WorkT", {
@@ -30,7 +28,6 @@ export const workZ = zObject("WorkT", {
   vendor: vendorZ.nullable().describe("Vendor assigned to this work"),
   workers: z.array(workerZ).describe("Workers on this job"),
   locality: localityNestedZ.nullable(),
-  area: areaZ.nullable(),
 } satisfies Record<keyof typeof workS, object>);
 
 export const workP = { select: workS };

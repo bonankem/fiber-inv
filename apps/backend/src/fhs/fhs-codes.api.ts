@@ -1,7 +1,8 @@
+import { groupBy, mapValues, unique } from "remeda";
 import { type FhsCodesT, fhsCodesUrl } from "schema/fhs";
-import { prisma } from "#/db";
+import { filterTruthy } from "schema/utils";
+import { prisma, WorkStatus } from "#/db";
 import { getRoute } from "#/utils/routing";
-import { workStopped } from "./filter";
 
 export const fhsCodesApi = getRoute({
   url: fhsCodesUrl,
@@ -9,18 +10,29 @@ export const fhsCodesApi = getRoute({
 });
 
 async function fhsCodes(): Promise<FhsCodesT> {
-  const areas = await prisma.ftthArea.findMany({
-    select: {
-      works: {
-        where: { status: { notIn: workStopped } },
-        select: { sid: true },
-      },
-      code: true,
-    },
-    orderBy: { code: "asc" },
+  const boxes = await prisma.ftthBox.findMany({
+    distinct: ["area"],
+    select: { area: true },
   });
-  return areas.map((a) => ({
-    ...a,
-    works: a.works.map((w) => w.sid).sort(),
-  }));
+
+  const unconfirmed = [
+    WorkStatus.REQUESTED,
+    WorkStatus.DECLINED,
+    WorkStatus.CANCELLED,
+  ];
+  const surveys = await prisma.ftthSurvey.findMany({
+    select: { area: true, work: { select: { sid: true } } },
+    where: { work: { status: { notIn: unconfirmed } } },
+  });
+
+  const byCode = mapValues(
+    groupBy(surveys, (s) => s.area || ""),
+    (ss) => ss.map((s) => s.work.sid),
+  );
+  const codes = unique([
+    ...boxes.map((b) => b.area),
+    ...surveys.map((s) => s.area),
+  ]);
+  const sorted = filterTruthy(unique(codes)).sort();
+  return sorted.map((code) => ({ code, works: byCode[code] || "" }));
 }

@@ -42,7 +42,7 @@ export const appErrorHandler: ErrorHandler = function (
       return send(Err.ALREADY_EXISTS, meta?.constraint);
     }
     if (code === "P2003") {
-      return send(Err.NOT_FOUND, meta?.field_name);
+      return send(Err.NOT_FOUND, meta?.modelName);
     }
     if (code === "P2025") {
       return send(Err.NOT_FOUND, meta?.modelName);

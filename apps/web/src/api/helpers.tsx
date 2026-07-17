@@ -121,7 +121,10 @@ export async function postJson<I, O>(
   const data = await res.json();
   if (res.ok) return data as O;
 
-  const message = data.message || "API error";
+  const message =
+    data.message && data.param
+      ? `${data.message}: ${data.param}`
+      : data.message || "API error";
   throw new Error(message);
 }
 

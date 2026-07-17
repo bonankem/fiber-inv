@@ -41,7 +41,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
       coords: data.coords,
       localityId: data.localityId,
       contact: undefined,
-      areaCode: undefined,
+      area: undefined,
       isNewArea: undefined,
     });
     const toFocus = data.name ? "fhs-type" : "fhs-name";
@@ -119,7 +119,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
           <Select
             id="fhs-type"
             showAction={["focus"]}
-            onChange={() => form.resetFields(["areaCode"])}
+            onChange={() => form.resetFields(["area"])}
             options={[
               { value: true, label: m.new_area() },
               { value: false, label: m.extension() },
@@ -128,7 +128,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
         </Form.Item>
 
         <Form.Item
-          name="areaCode"
+          name="area"
           label={m.area_code()}
           rules={[...req.rules, { validator: validateCode }]}
         >
@@ -146,7 +146,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
               loading={codes.isLoading}
               options={codes.data?.map((a) => ({
                 value: a.code,
-                label: `${a.code} - ${a.name}`,
+                label: a.code,
               }))}
             />
           )}

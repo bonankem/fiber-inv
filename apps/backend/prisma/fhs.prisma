@@ -12,6 +12,8 @@ model FtthSurvey {
 
     isNewArea Boolean
 
+    area String?
+
     expectedHp Int?
 
     reportedHp Int?
