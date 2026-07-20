@@ -9,7 +9,7 @@ import { req } from "#/utils/form";
 import type { FhsFormProps } from "../fhs-types";
 
 export default function FhsAssignForm(props: FhsFormProps) {
-  const submitM = useApiPost<FhsAssignT, FtthSurveyT>("/fhs/assign", ["fhs"]);
+  const submitM = useApiPost<FhsAssignT, FtthSurveyT>("/fhs/assign");
 
   const onSubmit = apiCall(async (data: FhsAssignT) => {
     data.id = props.item.id;

@@ -18,7 +18,7 @@ import VendorSelect from "#/components/inputs/VendorSelect";
 import type { ModalStateProps } from "#/hooks/useModalViewer";
 
 export default function FhcRequestManyForm(props: ModalStateProps) {
-  const send = useApiPost<FhcRequestManyT>("/fhc/many", ["fhc"]);
+  const send = useApiPost<FhcRequestManyT>("/fhc/many");
   const load = useApiUpload<FhcRequestT[]>("/fhc/extract");
   const locs = useApiGet("/geo/localities", zArray(idNameZ));
   const [items, setItems] = useState<FhcRequestT[]>([]);
@@ -94,7 +94,7 @@ export default function FhcRequestManyForm(props: ModalStateProps) {
               key: "contact",
               title: m.client_contact(),
               render: (f) => f.phone,
-              width: 120,
+              width: 150,
             },
             {
               key: "locality",

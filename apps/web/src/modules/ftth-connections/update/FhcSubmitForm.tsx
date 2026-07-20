@@ -23,7 +23,7 @@ const fatTypes: BoxType[] = [BoxType.SUB, BoxType.END];
 export default function FhcSubmitForm({ item, state }: FhcFormProps) {
   const boxes = useApiGet("/network/boxes", zArray(boxZ));
 
-  const send = useApiPost<FhcSubmitT, FtthConnectionT>("/fhc/submit", ["fhp"]);
+  const send = useApiPost<FhcSubmitT, FtthConnectionT>("/fhc/submit");
 
   const [form] = Form.useForm<FhcSubmitT>();
 
@@ -50,7 +50,7 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
       form={form}
       state={state}
       width={720}
-      title={m.fhc_form_finish()}
+      title={m.fhc_form_submit()}
       subtitle={`${item.tn}: ${item.work.name}`}
       className="grid md:grid-cols-[2fr_1fr] gap-x-8"
       onSubmit={onSubmit}

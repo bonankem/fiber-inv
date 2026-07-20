@@ -14,7 +14,7 @@ async function validateDates(start: unknown, due: unknown) {
 }
 
 export default function FhpInitiateForm(props: FhpFormProps) {
-  const send = useApiPost<FhpInitiateT, FtthProjectT>("/fhp/initiate", ["fhp"]);
+  const send = useApiPost<FhpInitiateT, FtthProjectT>("/fhp/initiate");
 
   const onSubmit = apiCall(async (data: FhpInitiateT) => {
     data.id = props.item.id;

@@ -10,7 +10,7 @@ import type { ModalItemProps } from "#/hooks/useModalViewer";
 export default function SecurityForm(props: ModalItemProps<SecurityT>) {
   const [form] = Form.useForm<SecurityT>();
   const query = useApiGet<SecurityT>("/admin/security", securityZ);
-  const send = useApiPost<SecurityT>("/admin/security", ["admin"]);
+  const send = useApiPost<SecurityT>("/admin/security");
   const [ready, setReady] = useState(false);
 
   useEffect(() => {

@@ -22,7 +22,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
   const uploader = useUploader();
   const isUploading = uploader.isUploading(PLAQUE_KMZ);
   const placeholder = isUploading ? m.hint_reading_file() : undefined;
-  const send = useApiPost<FhsRequestT, FtthSurveyT>("/fhs", ["fhs"]);
+  const send = useApiPost<FhsRequestT, FtthSurveyT>("/fhs");
 
   const codes = useApiGet("/fhs/codes", fhsCodesZ);
 

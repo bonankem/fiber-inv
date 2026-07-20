@@ -64,23 +64,14 @@ export function useApiGetText(
 
 export type ApiPath = string | [string, ...string[]];
 
-export function useApiPost<I, O = unknown>(
-  path: ApiPath,
-  invalidate?: "all" | string[],
-) {
+export function useApiPost<I, O = unknown>(path: ApiPath) {
   const url = Array.isArray(path) ? path.join("/") : path;
   const token = useAuthToken();
   const query = useQueryClient();
 
   return useMutation({
     mutationFn: (body: I) => postJson<I, O>(url, body, token.value),
-    onSuccess: async () => {
-      if (invalidate === "all") {
-        query.invalidateQueries();
-      } else if (invalidate?.length) {
-        query.invalidateQueries({ queryKey: invalidate });
-      }
-    },
+    onSuccess: () => query.invalidateQueries(),
   });
 }
 

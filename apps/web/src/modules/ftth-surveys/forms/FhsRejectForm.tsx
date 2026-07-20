@@ -6,7 +6,7 @@ import { req } from "#/utils/form";
 import type { FhsFormProps } from "../fhs-types";
 
 export default function FhsRejectForm(props: FhsFormProps) {
-  const submitM = useApiPost<FhsReviewT, FtthSurveyT>("/fhs/review", ["fhs"]);
+  const submitM = useApiPost<FhsReviewT, FtthSurveyT>("/fhs/review");
 
   const onSubmit = apiCall(async (data: FhsReviewT) => {
     data.id = props.item.id;

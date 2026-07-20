@@ -8,7 +8,7 @@ import { req } from "#/utils/form";
 import type { FhsFormProps } from "../fhs-types";
 
 export default function FhsDeclineForm(props: FhsFormProps) {
-  const submitM = useApiPost<WorkUpdateT, FtthSurveyT>("/fhs/decline", ["fhs"]);
+  const submitM = useApiPost<WorkUpdateT, FtthSurveyT>("/fhs/decline");
 
   const onSubmit = apiCall(async (data: FhsAssignT) => {
     data.id = props.item.id;

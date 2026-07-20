@@ -6,7 +6,7 @@ import FormModal from "#/components/FormModal";
 import type { ModalItemProps } from "#/hooks/useModalViewer";
 
 export default function UnlockForm(props: ModalItemProps<UserT>) {
-  const send = useApiPost<{ id: string }>("/admin/unlock", ["users"]);
+  const send = useApiPost<{ id: string }>("/admin/unlock");
   const user = props.item;
 
   const onSubmit = apiCall(async () => {

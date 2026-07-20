@@ -85,7 +85,7 @@ export default function FhsSubmitForm(props: FhsFormProps) {
   const [coords, setCoords] = useState<UpFhsCoordsT>();
   const [kmz, setKmz] = useState<UpPlanKmzT>();
 
-  const submitM = useApiPost<FhsSubmitT, FtthSurveyT>("/fhs/submit", ["fhs"]);
+  const submitM = useApiPost<FhsSubmitT, FtthSurveyT>("/fhs/submit");
 
   const onSubmit = apiCall(async (data: FhsSubmitT) => {
     data.id = props.item.id;

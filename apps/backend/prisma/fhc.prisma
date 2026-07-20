@@ -28,9 +28,11 @@ model FtthConnection {
     ontOem   Oem?    @relation(fields: [ontOemId], references: [id])
     ontOemId String? @db.Uuid
 
-    ontSerial String?
+    ontSerial String? @unique
 
     cableLength Int?
+
+    newPole Boolean?
 
     @@unique([fatId, fatPort], name: "fatUniq")
 }

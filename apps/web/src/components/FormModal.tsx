@@ -73,7 +73,7 @@ export default function FormModal<T>(props: FormModalProps<T>) {
         <header>
           <h2>{props.title}</h2>
           {props.subtitle && (
-            <p className="font-normal text-base text-yellow-600">
+            <p className="font-normal text-sm text-yellow-600">
               {props.subtitle}
             </p>
           )}

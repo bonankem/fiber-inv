@@ -9,7 +9,7 @@ import { useAppTheme } from "#/theme";
 export type UserLayoutProps = ReturnType<typeof useUserLayout>;
 
 export function useUserLayout() {
-  const menuWidth = 240;
+  const menuWidth = 200;
   const contentClass = "w-full max-w-480 mx-auto h-full overflow-x-hidden";
   const user = useApiGet("session/user", userFullZ);
 

@@ -25,20 +25,20 @@ type NavGroup = {
 
 export const navigationData: NavGroup[] = [
   {
-    name: "FTTH",
+    name: "FTTx",
     list: [
       {
-        name: m.ftth_surveys(),
+        name: m.fttx_hp_planning(),
         path: "/ftth-surveys",
         icon: PencilRuler,
       },
       {
-        name: m.ftth_projects(),
+        name: m.fttx_hp_delivery(),
         path: "/ftth-projects",
         icon: BriefcaseBusiness,
       },
       {
-        name: m.ftth_connections(),
+        name: m.fttx_hc_delivery(),
         path: "/ftth-connections",
         icon: HousePlug,
       },
@@ -49,7 +49,7 @@ export const navigationData: NavGroup[] = [
     only: "admin",
     list: [
       {
-        name: m.mtn_staff(),
+        name: m.staff(),
         path: "/staff",
         icon: User,
       },
@@ -59,7 +59,7 @@ export const navigationData: NavGroup[] = [
         icon: Handshake,
       },
       {
-        name: m.sec_settings(),
+        name: m.security(),
         path: "/security",
         icon: Lock,
         only: "admin",

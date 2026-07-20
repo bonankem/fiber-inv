@@ -10,7 +10,7 @@ import type { ModalStateProps } from "#/hooks/useModalViewer";
 import { req } from "#/utils/form";
 
 export default function FhcRequestForm(props: ModalStateProps) {
-  const send = useApiPost<FhcRequestT, FtthConnectionT>("/fhc", ["fhc"]);
+  const send = useApiPost<FhcRequestT, FtthConnectionT>("/fhc");
 
   const onSubmit = apiCall(async (data: FhcRequestT) => {
     const result = await send.mutateAsync(data);

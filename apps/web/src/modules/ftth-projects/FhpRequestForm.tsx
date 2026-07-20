@@ -28,7 +28,7 @@ export default function FhpRequestForm(props: ModalStateProps) {
     });
   };
 
-  const send = useApiPost<FhpRequestT, FtthProjectT>("/fhp", ["fhp"]);
+  const send = useApiPost<FhpRequestT, FtthProjectT>("/fhp");
 
   const onSubmit = apiCall(async (data: FhpRequestT) => {
     const result = await send.mutateAsync(data);

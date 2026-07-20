@@ -1,8 +1,13 @@
-import { bad, Err, mustHave } from "schema/errors";
-import { type FhcSubmitT, fhcSubmitZ, ftthConnectionS } from "schema/fhc";
+import { bad, Err } from "schema/errors";
+import {
+  type FhcSubmitT,
+  fhcImageTypes,
+  fhcSubmitZ,
+  ftthConnectionS,
+} from "schema/fhc";
 import type { UserFullT } from "schema/people";
 import { workFullP } from "schema/work";
-import { prisma, WorkAction, WorkStatus } from "#/db";
+import { type Prisma, prisma, WorkAction, WorkStatus } from "#/db";
 import { maybeConnect, maybeIdOrKey } from "#/utils/ids";
 import { postRoute } from "#/utils/routing";
 import { updateWork } from "#/utils/work";
@@ -12,6 +17,7 @@ export const fhcUpdateApi = postRoute({
   schema: fhcSubmitZ,
   handler: (req) => fhcSubmit(req.body, req.authUser),
 });
+const db = prisma.ftthConnection;
 
 async function fhcSubmit(dto: FhcSubmitT, from: UserFullT) {
   const fhc = await prisma.ftthConnection.findUnique({
@@ -20,8 +26,14 @@ async function fhcSubmit(dto: FhcSubmitT, from: UserFullT) {
   });
   if (!fhc) bad(Err.NOT_FOUND);
 
-  mustHave(dto.fatId || fhc.fatId, "fatId");
-  //mustHave(dto.oltId || fhc.oltId, "oltId");
+  const { id, fatId, fatPort, ontSerial } = dto;
+  await mustNotExist(id, "FAT port", { fatUniq: { fatId, fatPort } });
+  await mustNotExist(id, "ONT serial", { ontSerial });
+
+  for (const key of fhcImageTypes) {
+    const required = key === "FHC_POLE" ? dto.newPole : true;
+    if (required && !dto.images[key]) bad(Err.FIELD_REQUIRED, key);
+  }
 
   return prisma.ftthConnection.update({
     select: ftthConnectionS,
@@ -29,18 +41,27 @@ async function fhcSubmit(dto: FhcSubmitT, from: UserFullT) {
     data: {
       olt: maybeConnect(dto.oltId),
       fat: maybeConnect(dto.fatId),
-      ontSerial: dto.ontSerial,
       ontOem: maybeIdOrKey(dto.ontOem),
+      ontSerial: dto.ontSerial,
+      fatPort: dto.fatPort,
       oltPort: dto.oltPort || undefined,
-      fatPort: dto.fatPort || undefined,
-      cableLength: dto.cableLength || undefined,
+      cableLength: dto.cableLength,
+      newPole: dto.newPole,
       work: updateWork({
         status: WorkStatus.REVIEW,
         action: WorkAction.SUBMIT_REPORT,
         old: fhc.work,
         dto,
         from,
+        docs: dto.images,
       }),
     },
   });
+}
+
+type Where = Prisma.FtthConnectionWhereUniqueInput;
+
+async function mustNotExist(id: string, param: string, where: Where) {
+  const found = await db.findUnique({ where, select: { id: true } });
+  if (found && found.id !== id) bad(Err.ALREADY_ASSIGNED, param);
 }

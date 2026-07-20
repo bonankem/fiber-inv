@@ -9,7 +9,7 @@ import { req } from "#/utils/form";
 import type { FhpFormProps } from "../fhp-types";
 
 export default function FhpImagesForm(props: FhpFormProps) {
-  const send = useApiPost<FhpAssignT, FtthProjectT>("/fhp/images", ["fhp"]);
+  const send = useApiPost<FhpAssignT, FtthProjectT>("/fhp/images");
 
   const onSubmit = apiCall(async (data: FhpAssignT) => {
     data.id = props.item.id;

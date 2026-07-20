@@ -16,7 +16,7 @@ function isWho() {
 
 export const fhcActions = buildActions(isWhen, isWho, [
   {
-    name: m.action_finish(),
+    name: m.action_submit(),
     icon: SendOutlined,
     form: FhcSubmitForm,
     when: [When.REQUESTED, When.ONGOING],

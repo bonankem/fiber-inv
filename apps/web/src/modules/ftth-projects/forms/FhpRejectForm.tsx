@@ -7,7 +7,7 @@ import { req } from "#/utils/form";
 import type { FhpFormProps } from "../fhp-types";
 
 export default function FhpRejectForm(props: FhpFormProps) {
-  const send = useApiPost<FhpReviewT, FtthProjectT>("/fhp/review", ["fhp"]);
+  const send = useApiPost<FhpReviewT, FtthProjectT>("/fhp/review");
 
   const onSubmit = apiCall(async (data: FhpReviewT) => {
     data.id = props.item.id;

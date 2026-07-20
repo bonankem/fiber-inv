@@ -50,7 +50,7 @@ const qtyInput = (
 export default function FhpSubmitForm(props: FhpFormProps) {
   const [form] = Form.useForm<FhpSendReportT>();
 
-  const send = useApiPost<FhpSendReportT, FtthProjectT>("/fhp/submit", ["fhp"]);
+  const send = useApiPost<FhpSendReportT, FtthProjectT>("/fhp/submit");
 
   const onSubmit = apiCall(async (data: FhpSendReportT) => {
     data.id = props.item.id;

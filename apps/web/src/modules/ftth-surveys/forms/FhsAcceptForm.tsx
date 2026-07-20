@@ -6,7 +6,7 @@ import FormModal from "#/components/FormModal";
 import type { FhsFormProps } from "../fhs-types";
 
 export default function FhsAcceptForm(props: FhsFormProps) {
-  const submitM = useApiPost<FhsReviewT, FtthSurveyT>("/fhs/review", ["fhs"]);
+  const submitM = useApiPost<FhsReviewT, FtthSurveyT>("/fhs/review");
 
   const onSubmit = apiCall(async (data: FhsReviewT) => {
     data.id = props.item.id;

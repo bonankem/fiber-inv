@@ -1,5 +1,6 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { Button, Spin, Upload } from "antd";
+import { Image } from "lucide-react";
 import { type MouseEvent, useEffect } from "react";
 import type { WorkDocType } from "schema/enums";
 import type { UploadParsedT } from "schema/uploads";
@@ -62,7 +63,8 @@ export default function ImageUpload<T extends WorkDocType>({
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="relative block"
+          className="relative block group"
+          title="Click to preview"
         >
           <img
             alt=""
@@ -73,7 +75,8 @@ export default function ImageUpload<T extends WorkDocType>({
             danger
             type="primary"
             size="small"
-            className="absolute! top-2 right-2"
+            title="Click to remove"
+            className="absolute! top-2 right-2 opacity-80"
             icon={<CloseOutlined />}
             onClick={(e) => onRemove(e)}
           />
@@ -89,11 +92,13 @@ export default function ImageUpload<T extends WorkDocType>({
             <button
               type="button"
               className={twJoin(
-                "w-full min-w-48 h-24! rounded-md border",
-                "focus:outline-none focus:ring-1 focus:ring-inset focus:ring-brand",
-                "bg-gray-100 dark:bg-gray-800",
+                "w-full min-w-48 h-24! rounded-md border flex items-center justify-center",
+                "focus:outline-none focus:ring-1 focus:ring-inset focus:ring-brand hover:border-brand!",
+                "bg-gray-100 dark:bg-gray-900 text-gray-400 dark:text-gray-600",
               )}
-            ></button>
+            >
+              <Image size={24} />
+            </button>
           </Upload>
           {required && !record && (
             <input
@@ -103,9 +108,6 @@ export default function ImageUpload<T extends WorkDocType>({
               value=""
               onChange={() => {}}
               title="Fichier requis"
-              onFocus={(e) =>
-                (e.target.previousSibling as HTMLElement)?.focus?.()
-              }
             />
           )}
         </div>

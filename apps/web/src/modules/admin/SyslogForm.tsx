@@ -10,7 +10,7 @@ import type { ModalStateProps } from "#/hooks/useModalViewer";
 export default function SyslogForm(props: ModalStateProps) {
   const [form] = Form.useForm<SyslogT>();
   const query = useApiGet<SyslogT>("/admin/syslog", syslogZ);
-  const send = useApiPost<SyslogT>("/admin/syslog", ["admin"]);
+  const send = useApiPost<SyslogT>("/admin/syslog");
   const [ready, setReady] = useState(false);
 
   useEffect(() => {

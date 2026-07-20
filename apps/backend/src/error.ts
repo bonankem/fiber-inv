@@ -57,7 +57,7 @@ export const appErrorHandler: ErrorHandler = function (
       return send(Err.NOT_FOUND, meta?.model_name);
     }
     if (code === "P2002") {
-      return send(Err.ALREADY_EXISTS, meta?.constraint);
+      return send(Err.ALREADY_EXISTS, meta);
     }
     if (code === "P2003") {
       return send(Err.NOT_FOUND, meta?.modelName);
