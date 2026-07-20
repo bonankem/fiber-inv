@@ -12,7 +12,7 @@ import { maybeConnect, maybeIdOrKey } from "#/utils/ids";
 import { postRoute } from "#/utils/routing";
 import { updateWork } from "#/utils/work";
 
-export const fhcUpdateApi = postRoute({
+export const fhcSubmitApi = postRoute({
   url: "/fhc/submit",
   schema: fhcSubmitZ,
   handler: (req) => fhcSubmit(req.body, req.authUser),

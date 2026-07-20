@@ -20,8 +20,14 @@ export default function StatusView(props: Props) {
   const work = props.work;
   const status = work.status;
   const pendingKey = props.pendingOn?.[status];
+
   const pendingOn =
-    pendingKey === "VENDOR" ? work.vendor?.name : worker(work, pendingKey);
+    pendingKey === "VENDOR"
+      ? work.vendor?.name
+      : worker(work, pendingKey) ||
+        pendingKey
+          ?.replace(/_/, " ")
+          ?.replace(/\B[A-Z]+/g, (w) => w.toLowerCase());
   const pendingName = shortName(pendingOn, 15);
 
   return (
@@ -51,7 +57,7 @@ function worker(work: WorkT, role: Maybe<StaffRole>) {
 
 const colors: Partial<Record<WorkStatus, TagProps["color"]>> = {
   CLOSED: "green",
-  REVIEW: "purple",
+  REVIEW: "blue",
   REVIEW_FAILED: "volcano",
   DECLINED: "red",
   CANCELLED: "red",

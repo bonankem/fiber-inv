@@ -9,7 +9,10 @@ import {
 import { useLocation } from "@tanstack/react-router";
 import { Button, Dropdown, Layout, theme } from "antd";
 import { m } from "i18n/messages";
+import { StaffRole } from "schema/enums";
+import { userFullZ } from "schema/people";
 import { twJoin } from "tailwind-merge";
+import { useApiGet } from "#/api/helpers";
 import { type ModalFC, useModalViewer } from "#/hooks/useModalViewer";
 import AuthLogsModal from "#/modules/admin/AuthLogsModal";
 import SyslogForm from "#/modules/admin/SyslogForm";
@@ -58,6 +61,11 @@ export default function UserHeader(props: UserLayoutProps) {
   const { pathname } = useLocation();
   const pathKey = pathname.split("/")[1].toLowerCase();
   const newForm = newForms[pathKey];
+  const userQ = useApiGet("session/user", userFullZ);
+  const user = userQ.data;
+
+  const canCreate =
+    user?.isAdmin || user?.staffRole === StaffRole.HOME_INTERNET;
 
   const onReport = () => {
     if (pathKey === "staff") {
@@ -105,16 +113,16 @@ export default function UserHeader(props: UserLayoutProps) {
           >
             {m.refresh()}
           </Button>
-          {
-            <Button
-              size="small"
-              icon={<FileExcelOutlined className="text-[0.8em]" />}
-              onClick={onReport}
-            >
-              {m.report()}
-            </Button>
-          }
-          {typeof newForm === "function" && (
+
+          <Button
+            size="small"
+            icon={<FileExcelOutlined className="text-[0.8em]" />}
+            onClick={onReport}
+          >
+            {m.report()}
+          </Button>
+
+          {canCreate && typeof newForm === "function" && (
             <Button
               size="small"
               type="primary"
