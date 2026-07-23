@@ -2,7 +2,7 @@ import { Subset } from "schema/common";
 import type { FhcFilterT } from "schema/fhc";
 import type { UserFullT } from "schema/people";
 import { type Maybe, whereNone } from "schema/utils";
-import { type Prisma, StaffRole, WorkStatus } from "#/db";
+import { type Prisma, WorkStatus } from "#/db";
 import { filterTruthy, qOr, qSidIs } from "../utils/queries";
 import { type WorkWhere, workIsOnVendor } from "../utils/work";
 import { workAccess } from "../work/filter";
@@ -11,18 +11,21 @@ type Who = UserFullT;
 type Where = Prisma.FtthSurveyWhereInput;
 type WhereWork = Where["work"];
 
-const R = StaffRole;
 const S = WorkStatus;
 
 export function fhcWherePendingOn(who: Maybe<Who | string>) {
   if (!who) return undefined;
   const vendorId = typeof who === "string" ? who : who.vendor?.id;
   return qOr<WorkWhere>([
-    workIsOnVendor(vendorId, S.REQUESTED, S.ONGOING, S.REVIEW_FAILED),
+    workIsOnVendor(vendorId, S.REQUESTED, S.SURVEY, S.INSTALLATION, S.FAILED),
   ]);
 }
 
-export const workStopped: WorkStatus[] = [S.CANCELLED, S.DECLINED];
+export const workStopped: WorkStatus[] = [
+  S.CANCELLED,
+  S.DECLINED,
+  S.DEPENDENCY,
+];
 export const workNotOpen: WorkStatus[] = [S.CLOSED, ...workStopped];
 export function fhcWhereSubset(s: Maybe<Subset>, who?: Who): WhereWork {
   if (s === Subset.TOTAL || !s) return undefined;

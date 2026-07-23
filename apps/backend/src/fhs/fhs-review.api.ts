@@ -29,7 +29,7 @@ async function fhsReview(dto: FhsReviewT, from: UserT) {
       work: updateWork({
         dto,
         old: s.work,
-        status: ok ? WorkStatus.CLOSED : WorkStatus.REVIEW_FAILED,
+        status: ok ? WorkStatus.CLOSED : WorkStatus.FAILED,
         action: ok ? WorkAction.PASS_REVIEW : WorkAction.FAIL_REVIEW,
         also: { closeDate: ok ? currentDate() : undefined },
         logTo: s.work?.vendor,

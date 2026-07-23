@@ -26,7 +26,7 @@ export const fhcActions = buildActions(isWhen, isWho, [
     name: m.action_submit(),
     icon: SendOutlined,
     form: FhcSubmitForm,
-    when: [When.REQUESTED, When.ONGOING, When.REVIEW_FAILED],
+    when: [When.INSTALLATION, When.FAILED],
     main: true,
   },
   {

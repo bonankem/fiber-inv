@@ -63,14 +63,14 @@ async function fhsSubmit(dto: FhsSubmitT, from: UserT) {
   } = dto;
   const { s } = await fhsCheck({
     workId: id,
-    status: [WorkStatus.ONGOING, WorkStatus.REVIEW_FAILED],
+    status: [WorkStatus.SURVEY, WorkStatus.FAILED],
   });
 
   const report = {
     ...fields,
     submitDate: currentDate(),
   } satisfies Prisma.FhsReportUpdateInput;
-  const resent = s.work.status !== WorkStatus.ONGOING;
+  const resent = s.work.status !== WorkStatus.SURVEY;
   const action = resent ? WorkAction.RESEND_REPORT : WorkAction.SUBMIT_REPORT;
   // const boxes = await getReportedBoxes(COORDINATES);
 

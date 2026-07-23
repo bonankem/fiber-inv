@@ -10,10 +10,6 @@ enum WorkStatus {
     REVIEW
     FAILED
     CLOSED
-
-    // deprecated
-    REVIEW_FAILED
-    ONGOING
 }
 
 enum WorkAction {

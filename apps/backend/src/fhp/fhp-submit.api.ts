@@ -15,14 +15,14 @@ async function fhpSubmit(dto: FhpSendReportT) {
   const { id, comment, uploads, AS_BUILT_BOQ, AS_BUILT_KMZ, ...fields } = dto;
   const { s } = await fhpCheck({
     workId: id,
-    status: [WorkStatus.ONGOING, WorkStatus.REVIEW_FAILED],
+    status: [WorkStatus.INSTALLATION, WorkStatus.FAILED],
   });
 
   const report = {
     ...fields,
     submitDate: currentDate(),
   } satisfies Prisma.FhpReportUpdateInput;
-  const resent = s.work.status !== WorkStatus.ONGOING;
+  const resent = s.work.status !== WorkStatus.INSTALLATION;
   const action = resent ? WorkAction.RESEND_REPORT : WorkAction.SUBMIT_REPORT;
 
   return prisma.ftthProject.update({

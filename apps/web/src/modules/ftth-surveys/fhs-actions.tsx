@@ -53,7 +53,7 @@ export const fhsActions = buildActions(isWhen, isWho, [
   {
     name: m.action_submit(),
     icon: SendOutlined,
-    when: [When.ONGOING],
+    when: [When.SURVEY],
     form: FhsSubmitForm,
     main: true,
   },

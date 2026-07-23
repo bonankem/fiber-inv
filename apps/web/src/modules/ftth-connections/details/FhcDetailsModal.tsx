@@ -10,7 +10,7 @@ import type { FhcTabProps } from "./types";
 
 const hasImages: WorkStatus[] = [
   WorkStatus.REVIEW,
-  WorkStatus.REVIEW_FAILED,
+  WorkStatus.FAILED,
   WorkStatus.CLOSED,
 ];
 

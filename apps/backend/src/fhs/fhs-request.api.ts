@@ -32,7 +32,7 @@ const status = WorkStatus.REQUESTED;
 const sendTo = StaffRole.PLANNING_MANAGER;
 
 async function fhsRequest(dto: FhsRequestT, from: UserT) {
-  const { name, contact, isNewArea, area } = dto;
+  const { name, isNewArea, area } = dto;
   const key = await nameCheck(name);
   const boundary = await boundaryQuery(dto.PLAQUE_KMZ);
 
@@ -41,7 +41,6 @@ async function fhsRequest(dto: FhsRequestT, from: UserT) {
     return tx.ftthSurvey.create({
       data: {
         boundary,
-        contact,
         isNewArea,
         area,
         work: create({

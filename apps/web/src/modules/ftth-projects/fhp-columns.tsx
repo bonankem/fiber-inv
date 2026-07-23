@@ -48,9 +48,9 @@ export const fhpColumns: FhpColumn[] = [
         pendingOn={{
           REQUESTED: "PROJECT_MANAGER",
           ASSIGNED: "PROJECT_ENGINEER",
-          ONGOING: "VENDOR",
+          INSTALLATION: "VENDOR",
           REVIEW: "PROJECT_ENGINEER",
-          REVIEW_FAILED: "VENDOR",
+          FAILED: "VENDOR",
         }}
       />
     ),

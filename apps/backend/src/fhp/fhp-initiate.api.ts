@@ -29,7 +29,7 @@ async function fhpInitiate(dto: FhpInitiateT) {
         old: s.work,
         vendor: vendorId,
         action: WorkAction.INITIATE,
-        status: WorkStatus.ONGOING,
+        status: WorkStatus.INSTALLATION,
         logTo: v,
         also: {
           startDate: dto.startDate,

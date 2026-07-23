@@ -41,7 +41,7 @@ export const fhcColumns: fhcColumn[] = [
         pendingOn={{
           REQUESTED: "VENDOR",
           REVIEW: "HOME_INTERNET",
-          REVIEW_FAILED: "VENDOR",
+          FAILED: "VENDOR",
         }}
       />
     ),

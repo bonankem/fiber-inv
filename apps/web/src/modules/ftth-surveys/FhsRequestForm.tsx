@@ -40,9 +40,8 @@ export default function FhsRequestForm(props: ModalStateProps) {
       name: data.name,
       coords: data.coords,
       localityId: data.localityId,
-      contact: undefined,
-      area: undefined,
       isNewArea: undefined,
+      area: undefined,
     });
     const toFocus = data.name ? "fhs-type" : "fhs-name";
     document.getElementById(toFocus)?.focus();
@@ -88,7 +87,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
           <CoordsInput placeholder={placeholder} required />
         </Form.Item>
 
-        <div className="grow mt-2.5 min-h-64 rounded-lg overflow-hidden border">
+        <div className="grow mt-2.5 min-h-48 rounded-lg overflow-hidden border">
           <GoogleMap
             defaultCenter={{ lat: 7.5, lng: -5.5 }}
             defaultZoom={5.5}
@@ -142,6 +141,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
             />
           ) : (
             <Select
+              showSearch
               placeholder={m.choose_existing_area()}
               loading={codes.isLoading}
               options={codes.data?.map((a) => ({
@@ -152,20 +152,12 @@ export default function FhsRequestForm(props: ModalStateProps) {
           )}
         </Form.Item>
 
-        <Form.Item name="contact" label={m.client_contact()} required>
-          <Input
-            required
-            id="fhs-contact"
-            placeholder={m.hint_name_and_phone()}
-          />
-        </Form.Item>
-
         <Form.Item name="managerId" label={m.manager()} required>
           <StaffSelect filter="PLANNING_MANAGER" />
         </Form.Item>
 
         <Form.Item name="comment" label={m.field_comment()}>
-          <Input.TextArea rows={4} className="resize-none!" />
+          <Input.TextArea rows={6} className="resize-none!" />
         </Form.Item>
       </section>
     </FormModal>

@@ -58,9 +58,12 @@ function worker(work: WorkT, role: Maybe<StaffRole>) {
 const colors: Partial<Record<WorkStatus, TagProps["color"]>> = {
   CLOSED: "green",
   REVIEW: "blue",
-  REVIEW_FAILED: "volcano",
+  SURVEY: "blue",
+  INSTALLATION: "blue",
+  FAILED: "volcano",
   DECLINED: "red",
   CANCELLED: "red",
+  DEPENDENCY: "orange",
   REQUESTED: "purple",
   ASSIGNED: "purple",
 };
@@ -69,9 +72,11 @@ const statusNames: Record<WorkStatus, string> = {
   REQUESTED: m.requested(),
   DECLINED: m.declined(),
   ASSIGNED: m.assigned(),
-  ONGOING: m.ongoing(),
+  SURVEY: m.survey(),
+  INSTALLATION: m.installation(),
+  DEPENDENCY: m.dependency(),
   REVIEW: m.review(),
-  REVIEW_FAILED: m.rejected(),
+  FAILED: m.failed(),
   CANCELLED: m.cancelled(),
   CLOSED: m.closed(),
 };

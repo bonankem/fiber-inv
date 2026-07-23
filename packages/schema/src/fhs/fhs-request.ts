@@ -15,7 +15,6 @@ export const fhsRequestZ = zFormObject("FhsRequestT", {
   area: z.string().min(5).max(6).describe("The FTTH area code"),
   managerId: z.string(),
   coords: coordsZ,
-  contact: z.string(),
   comment: z.string().optional(),
   uploads: z.array(z.uuid()).optional(),
 });

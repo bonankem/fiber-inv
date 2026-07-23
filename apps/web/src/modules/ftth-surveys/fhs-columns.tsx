@@ -47,9 +47,9 @@ export const fhsColumns: FhsColumn[] = [
         pendingOn={{
           REQUESTED: "PLANNING_MANAGER",
           ASSIGNED: "PLANNING_ENGINEER",
-          ONGOING: "VENDOR",
+          SURVEY: "VENDOR",
           REVIEW: "PLANNING_ENGINEER",
-          REVIEW_FAILED: "VENDOR",
+          FAILED: "VENDOR",
         }}
       />
     ),
