@@ -2,11 +2,18 @@ enum WorkStatus {
     REQUESTED
     DECLINED
     ASSIGNED
-    ONGOING
-    REVIEW
-    REVIEW_FAILED
+
+    SURVEY
+    INSTALLATION
+    DEPENDENCY
     CANCELLED
+    REVIEW
+    FAILED
     CLOSED
+
+    // deprecated
+    REVIEW_FAILED
+    ONGOING
 }
 
 enum WorkAction {
@@ -14,13 +21,25 @@ enum WorkAction {
     DECLINE
     ASSIGN
     INITIATE
+    COMMENT
+
+    FINISH_SURVEY
+    DEPENDENCY
+    RESUME
+
     UPDATE
     UPLOAD_IMAGES
     SUBMIT_REPORT
     RESEND_REPORT
+
     FAIL_REVIEW
     PASS_REVIEW
-    COMMENT
+}
+
+enum Dependency {
+    CUSTOMER
+    DESATURATION
+    BUILDING_CABLING
 }
 
 model Work {
@@ -38,6 +57,8 @@ model Work {
     status WorkStatus
 
     statusSince DateTime @default(now())
+
+    dependency Dependency?
 
     requestDate String
 
