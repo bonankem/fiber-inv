@@ -1,31 +1,36 @@
 import { Checkbox, Form, Input, message, Select } from "antd";
 import { m } from "i18n/messages";
+import { useMemo } from "react";
+import { indexBy } from "remeda";
 import { BoxType, WorkDocType as Doc } from "schema/enums";
 import type { FhcSubmitT, FtthConnectionT } from "schema/fhc";
 import { boxZ } from "schema/network";
 import { zArray } from "schema/utils";
+import { workDocZ } from "schema/work";
 import { apiCall, useApiGet, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import ImageUpload from "#/components/inputs/ImageUpload";
 import IntInput from "#/components/inputs/IntInput";
 import type { FhcFormProps } from "../fhc-types";
 
-function img(type: Doc & `FHC_${string}`, label: string, required = true) {
-  return (
-    <Form.Item name={["images", type]} label={label} required={required}>
-      <ImageUpload type={type} required={required} />
-    </Form.Item>
-  );
-}
-
 const fatTypes: BoxType[] = [BoxType.SUB, BoxType.END];
 
 export default function FhcSubmitForm({ item, state }: FhcFormProps) {
   const boxes = useApiGet("/network/boxes", zArray(boxZ));
-
   const send = useApiPost<FhcSubmitT, FtthConnectionT>("/fhc/submit");
-
   const [form] = Form.useForm<FhcSubmitT>();
+
+  const initialValues = useMemo(
+    (): Partial<FhcSubmitT> => ({
+      ontSerial: item.ontSerial || undefined,
+      ontOem: item.ontOem?.key,
+      fatId: item.fat?.id,
+      fatPort: item.fatPort || undefined,
+      cableLength: item.cableLength || undefined,
+      newPole: item.newPole || undefined,
+    }),
+    [item],
+  );
 
   const onSubmit = apiCall(async (data: FhcSubmitT) => {
     data.id = item.id;
@@ -45,6 +50,23 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
     console.log(form.getFieldValue("ontOem"));
   };
 
+  const docs = useApiGet(["work", item.id, "docs"], workDocZ.array());
+  const docsByType = useMemo(
+    () => indexBy(docs.data ?? [], (d) => d.type),
+    [docs.data],
+  );
+  function img(type: Doc & `FHC_${string}`, label: string, required = true) {
+    return (
+      <Form.Item name={["images", type]} label={label} required={required}>
+        <ImageUpload
+          type={type}
+          required={required}
+          previous={docsByType[type]?.upload}
+        />
+      </Form.Item>
+    );
+  }
+
   return (
     <FormModal
       form={form}
@@ -55,6 +77,7 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
       className="grid md:grid-cols-[2fr_1fr] gap-x-8"
       onSubmit={onSubmit}
       checkbox={false} // we have our own checkbox
+      initialValues={initialValues}
     >
       <section className="grid md:grid-cols-2 gap-x-2">
         {img(Doc.FHC_CABLE_AT_FAT, "Drop Cable at FAT")}

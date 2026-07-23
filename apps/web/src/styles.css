@@ -30,6 +30,12 @@ li {
   .one-line {
     @apply whitespace-nowrap text-ellipsis overflow-hidden;
   }
+
+  .big-gray-button {
+    @apply rounded-md border flex items-center justify-center focus:outline-none focus:ring-1;
+    @apply focus:ring-brand hover:border-brand! focus:ring-inset;
+    @apply bg-gray-100 dark:bg-gray-900 text-gray-400 dark:text-gray-600;
+  }
 }
 
 html,

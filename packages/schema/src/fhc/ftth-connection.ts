@@ -1,4 +1,4 @@
-import { idNameP, idNameZ } from "#/common";
+import { idKeyNameP, idKeyNameZ, idNameP, idNameZ } from "#/common";
 import { workP, workZ } from "#/work";
 import type { Prisma } from "../prisma";
 import { type Same, z, zObject, zStr, zStrNul } from "../utils";
@@ -12,7 +12,7 @@ export const ftthConnectionS = {
   address: true,
 
   ontSerial: true,
-  ontOem: idNameP,
+  ontOem: idKeyNameP,
   fat: idNameP,
   fatPort: true,
   cableLength: true,
@@ -28,7 +28,7 @@ export const ftthConnectionZ = zObject("FtthConnectionT", {
   address: zStrNul("The installation address"),
 
   ontSerial: zStrNul("The ONT serial number"),
-  ontOem: idNameZ.nullable(),
+  ontOem: idKeyNameZ.nullable(),
   fat: idNameZ.nullable(),
   fatPort: z.int().nullable(),
   cableLength: z.number().nullable(),
