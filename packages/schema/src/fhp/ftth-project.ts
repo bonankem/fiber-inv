@@ -43,7 +43,6 @@ export const ftthProjectS = {
   id: true,
   work: workP,
   surveyId: true,
-  contact: true,
   hp: true,
   report: fhpReportP,
 } satisfies Prisma.FtthProjectSelect;
@@ -52,7 +51,6 @@ export const ftthProjectZ = zObject("FtthProjectT", {
   id: zStr("The work entry UUID"),
   work: workZ,
   surveyId: zStrNul("The ID of the related survey"),
-  contact: zStrNul("Client contact information"),
   hp: z.int().describe("Reported HP"),
   report: fhpReportZ.nullable(),
 } satisfies Record<keyof typeof ftthProjectS, object>);

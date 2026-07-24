@@ -1,5 +1,7 @@
 import dayjs from "dayjs";
 import { m } from "i18n/messages";
+import { useMemo } from "react";
+import { sortBy } from "remeda";
 import { zArray } from "schema/utils";
 import { type WorkLogT, workLogZ } from "schema/work";
 import { useApiGet } from "#/api/helpers";
@@ -32,13 +34,23 @@ function DateTimeView(props: { value: dayjs.ConfigType }) {
 
 export default function WorkLogsTab({ id }: { id: string }) {
   const query = useApiGet(["work", id, "logs"], zArray(workLogZ));
+  const sorted = useMemo(
+    () => sortBy(query.data ?? [], [(l) => l.createdAt, "desc"]),
+    [query.data],
+  );
 
   return (
     <DataTable
       bordered
-      data={query.data}
+      data={sorted}
       loading={query.isLoading}
       columns={[
+        {
+          key: "time",
+          title: m.date_time(),
+          width: 120,
+          render: (l) => <DateTimeView value={l.createdAt} />,
+        },
         {
           key: "action",
           title: "Action",
@@ -46,12 +58,6 @@ export default function WorkLogsTab({ id }: { id: string }) {
           render: (l) => (
             <WithCaption title={l.action} caption={<LogCaption log={l} />} />
           ),
-        },
-        {
-          key: "time",
-          title: m.date_time(),
-          width: 120,
-          render: (l) => <DateTimeView value={l.createdAt} />,
         },
         {
           key: "comment",

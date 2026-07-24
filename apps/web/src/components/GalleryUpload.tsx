@@ -1,4 +1,9 @@
-import { CloseOutlined } from "@ant-design/icons";
+import {
+  CloseOutlined,
+  EditOutlined,
+  MinusCircleOutlined,
+  RollbackOutlined,
+} from "@ant-design/icons";
 import type { UseQueryResult } from "@tanstack/react-query";
 import {
   Button,
@@ -79,6 +84,7 @@ export default function GalleryUpload<T extends WorkDocType>(props: Props<T>) {
 
   const change = (item: GuItem<T>, file: File) => {
     const { id } = up.send(file, { type: props.tab });
+    if (item.newId) up.cancel([item.newId]);
     modify(item.key, () => ({
       ...item,
       key: item.old?.id || id,
@@ -89,11 +95,8 @@ export default function GalleryUpload<T extends WorkDocType>(props: Props<T>) {
 
   const revert = (item: GuItem<T>) => {
     if (!item.old) return;
-    modify(item.key, () => ({
-      ...item,
-      newId: undefined,
-      removed: false,
-    }));
+    if (item.newId) up.cancel([item.newId]);
+    modify(item.key, () => ({ ...item, newId: undefined, removed: false }));
   };
 
   const remove = (item: GuItem<T>) => {
@@ -126,8 +129,8 @@ export default function GalleryUpload<T extends WorkDocType>(props: Props<T>) {
         children: (
           <div
             className={twJoin(
-              "grid sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5",
-              "gap-2 *:h-48 max-h-[60vh] overflow-y-auto",
+              "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4",
+              "gap-2 *:h-36 sm:*:h-48 max-h-[60vh] overflow-y-auto",
             )}
           >
             {tabItems.map((item) => (
@@ -155,10 +158,15 @@ GalleryUpload.useState = <T,>(tabs: Tab<T>[]) => {
   return { value, onChange, tabs, tab, onTab };
 };
 
-function ItemButton({ title, ...props }: ButtonProps) {
+function ItemButton({
+  title,
+  danger,
+  type = danger ? "primary" : "default",
+  ...props
+}: ButtonProps) {
   return (
     <Tooltip title={title} placement="top">
-      <Button {...props} />
+      <Button danger={danger} type={type} {...props} />
     </Tooltip>
   );
 }
@@ -200,6 +208,12 @@ function ItemView<T>(props: {
               </Tooltip>
             </a>
           )}
+          {item.removed && (
+            <div className="bg-red-700/50 absolute inset-0 centered flex-col gap-2 text-white/80 px-8">
+              <MinusCircleOutlined className="text-3xl" />
+              <p className="text-balance">This image will be removed</p>
+            </div>
+          )}
           <Input
             required
             readOnly={!!item.old}
@@ -207,17 +221,51 @@ function ItemView<T>(props: {
             onChange={(e) => !item.old && props.onSetname(item, e.target.value)}
             className={twJoin(
               "w-full border-0! text-sm!",
-              item.old && "text-purple-600!",
+              item.old &&
+                (item.removed
+                  ? "text-red-600!"
+                  : item.newId
+                    ? "text-green-600!"
+                    : "text-purple-600!"),
             )}
             placeholder={m.name()}
           />
           <div className="absolute top-1 right-1 flex gap-1 opacity-75 hover:opacity-100">
+            {!item.removed && (
+              <Upload
+                accept="image/*"
+                fileList={[]}
+                beforeUpload={(file) => {
+                  props.onChange(item, file);
+                  return false;
+                }}
+              >
+                <ItemButton title="Change image" icon={<EditOutlined />} />
+              </Upload>
+            )}
+            {item.old && (item.removed || item.newId) && (
+              <ItemButton
+                danger={!!item.newId}
+                title="Restore old image"
+                icon={<RollbackOutlined />}
+                onClick={() => props.onRevert(item)}
+              />
+            )}
             {item.newId && !item.old && (
               <ItemButton
                 type="primary"
                 danger
                 title="Remove"
                 icon={<CloseOutlined />}
+                onClick={() => props.onRemove(item)}
+              />
+            )}
+            {item.old && !item.newId && !item.removed && (
+              <ItemButton
+                type="primary"
+                danger
+                title="Remove"
+                icon={<MinusCircleOutlined />}
                 onClick={() => props.onRemove(item)}
               />
             )}

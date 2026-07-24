@@ -1,4 +1,4 @@
-import { Checkbox, Form, Input } from "antd";
+import { Checkbox, Form, Input, message } from "antd";
 import { m } from "i18n/messages";
 import { useEffect, useState } from "react";
 import { countBy, groupBy } from "remeda";
@@ -76,12 +76,14 @@ export default function FhpImagesForm(props: FhpFormProps) {
         data.images.push({ type, name, uploadId: newId });
       }
     }
-    console.log(data);
+    const result = await send.mutateAsync(data);
+    message.success(`${result.work.sid} updated`);
+    props.state.close();
   });
 
   return (
     <FormModal
-      width="calc(min(1200px,90vw))"
+      width="calc(min(1000px,90vw))"
       title={m.fhp_form_images()}
       subtitle={props.item.work.name}
       state={props.state}
