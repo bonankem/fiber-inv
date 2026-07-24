@@ -1,5 +1,5 @@
 import { Map as GoogleMap, Polygon, useMap } from "@vis.gl/react-google-maps";
-import { Form, Input, message, Select } from "antd";
+import { AutoComplete, Checkbox, Form, Input, message } from "antd";
 import { m } from "i18n/messages";
 import { useState } from "react";
 import { WorkDocType } from "schema/enums";
@@ -23,24 +23,35 @@ export default function FhsRequestForm(props: ModalStateProps) {
   const isUploading = uploader.isUploading(PLAQUE_KMZ);
   const placeholder = isUploading ? m.hint_reading_file() : undefined;
   const send = useApiPost<FhsRequestT, FtthSurveyT>("/fhs");
+  const [form] = Form.useForm<FhsRequestT>();
 
-  const codes = useApiGet("/fhs/codes", fhsCodesZ);
+  const codesQ = useApiGet("/fhs/codes", fhsCodesZ);
+  const [codes, setCodes] = useState<{ value: string }[]>([]);
+
+  const searchCode = (code: string) => {
+    console.log("searchCode", code);
+    const all = codesQ.data;
+    if (!all?.length) return setCodes([]);
+
+    code = code.trim().toUpperCase();
+    if (!code) return setCodes([]);
+
+    const result = all.filter((c) => c.code.startsWith(code));
+    setCodes(result.map((c) => ({ value: c.code })));
+  };
 
   const map = useMap();
   const { isDark } = useAppTheme();
   const [parsed, setParsed] = useState<UpPlaqueKmzT>();
-  const [form] = Form.useForm<FhsRequestT>();
-  const isNew = Form.useWatch("isNewArea", form);
 
   const onParse = (data: UpPlaqueKmzT) => {
     setParsed(data);
-    map?.fitBounds(data.bbox, 50);
+    map?.fitBounds(data.bbox, 10);
 
     form.setFieldsValue({
       name: data.name,
       coords: data.coords,
       localityId: data.localityId,
-      isNewArea: undefined,
       area: undefined,
     });
     const toFocus = data.name ? "fhs-type" : "fhs-name";
@@ -53,21 +64,16 @@ export default function FhsRequestForm(props: ModalStateProps) {
     props.state.close();
   });
 
-  const validateCode = async (_: unknown, code: string) => {
-    if (isNew && codes.data?.some((c) => c.code === code)) {
-      throw new Error(m.area_already_exists({ code }));
-    }
-  };
-
   return (
     <FormModal
       form={form}
-      width={640}
+      width={600}
       title={m.fhs_form_request()}
       state={props.state}
       onSubmit={onSubmit}
       submitting={send.isPending}
-      className="grid sm:grid-cols-2 gap-2 sm:gap-6 *:flex *:flex-col *:gap-2"
+      className="grid sm:grid-cols-2 gap-2 *:flex *:flex-col *:gap-2"
+      checkbox={false}
     >
       <section>
         <Form.Item name={PLAQUE_KMZ} label={m.field_plaque_kmz()} required>
@@ -90,7 +96,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
         <div className="grow mt-2.5 min-h-48 rounded-lg overflow-hidden border">
           <GoogleMap
             defaultCenter={{ lat: 7.5, lng: -5.5 }}
-            defaultZoom={5.5}
+            defaultZoom={5}
             disableDefaultUI
             keyboardShortcuts={false}
             colorScheme={isDark ? "DARK" : "LIGHT"}
@@ -114,42 +120,26 @@ export default function FhsRequestForm(props: ModalStateProps) {
           <Input required id="fhs-name" placeholder={placeholder} />
         </Form.Item>
 
-        <Form.Item {...req} name="isNewArea" label={m.type()}>
-          <Select
-            id="fhs-type"
-            showAction={["focus"]}
-            onChange={() => form.resetFields(["area"])}
-            options={[
-              { value: true, label: m.new_area() },
-              { value: false, label: m.extension() },
-            ]}
-          />
-        </Form.Item>
-
         <Form.Item
           name="area"
           label={m.area_code()}
-          rules={[...req.rules, { validator: validateCode }]}
+          rules={[{ pattern: /^[A-Z]{4,5}\d?$/, message: m.area_code_hint() }]}
         >
-          {isNew ? (
+          <AutoComplete
+            id="fhs-type"
+            options={codes}
+            defaultActiveFirstOption
+            onChange={searchCode}
+            showSearch={{ onSearch: searchCode }}
+          >
             <Input
               required
               autoComplete="off"
+              pattern="^[A-Z]{4,5}\d?$"
               title={m.area_code_hint()}
               placeholder={m.area_code_hint()}
-              pattern="^[A-Z]{5}$"
             />
-          ) : (
-            <Select
-              showSearch
-              placeholder={m.choose_existing_area()}
-              loading={codes.isLoading}
-              options={codes.data?.map((a) => ({
-                value: a.code,
-                label: a.code,
-              }))}
-            />
-          )}
+          </AutoComplete>
         </Form.Item>
 
         <Form.Item name="managerId" label={m.manager()} required>
@@ -159,6 +149,10 @@ export default function FhsRequestForm(props: ModalStateProps) {
         <Form.Item name="comment" label={m.field_comment()}>
           <Input.TextArea rows={6} className="resize-none!" />
         </Form.Item>
+
+        <section className="mt-2 -mb-1">
+          <Checkbox required>{m.check_confirm()}</Checkbox>
+        </section>
       </section>
     </FormModal>
   );

@@ -5,8 +5,6 @@ model FtthProject {
 
     createdAt DateTime @default(now())
 
-    contact String?
-
     hp Int
 
     survey   FtthSurvey? @relation(fields: [surveyId], references: [id])

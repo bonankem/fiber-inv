@@ -32,6 +32,7 @@ export type FormModalProps<T> = {
   className?: string;
   checkbox?: boolean | string;
   maskCloseable?: boolean;
+  noDivider?: boolean;
   layout?: FormProps["layout"];
   initialValues?: Partial<T>;
 };
@@ -77,7 +78,7 @@ export default function FormModal<T>(props: FormModalProps<T>) {
               {props.subtitle}
             </p>
           )}
-          <Divider className="my-3!" />
+          {!props.noDivider && <Divider className="my-3!" />}
         </header>
       }
       style={{ top: 20 }}
@@ -116,7 +117,7 @@ export default function FormModal<T>(props: FormModalProps<T>) {
             <div
               className={twJoin(
                 "self-center grid gap-2",
-                props.hasOk !== false && "grid-cols-2 w-full max-w-md",
+                props.hasOk !== false && "grid-cols-2 w-full max-w-xs",
               )}
               style={{ backgroundColor: token.colorBgContainer }}
             >

@@ -10,8 +10,6 @@ model FtthSurvey {
 
     contact String?
 
-    isNewArea Boolean
-
     area String?
 
     expectedHp Int?

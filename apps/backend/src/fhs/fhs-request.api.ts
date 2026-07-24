@@ -32,8 +32,7 @@ const status = WorkStatus.REQUESTED;
 const sendTo = StaffRole.PLANNING_MANAGER;
 
 async function fhsRequest(dto: FhsRequestT, from: UserT) {
-  const { name, isNewArea, area } = dto;
-  const key = await nameCheck(name);
+  const key = await nameCheck(dto.name);
   const boundary = await boundaryQuery(dto.PLAQUE_KMZ);
 
   return prisma.$transaction(async (tx) => {
@@ -41,12 +40,11 @@ async function fhsRequest(dto: FhsRequestT, from: UserT) {
     return tx.ftthSurvey.create({
       data: {
         boundary,
-        isNewArea,
-        area,
+        area: dto.area,
         work: create({
-          sid,
+          name: dto.name,
           key,
-          name,
+          sid,
           status,
           requestDate,
           locality: connectId(dto.localityId),

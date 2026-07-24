@@ -64,6 +64,8 @@ export function useApiGetText(
 
 export type ApiPath = string | [string, ...string[]];
 
+const noRefreshNeeded = ["uploads/cleanup"];
+
 export function useApiPost<I, O = unknown>(path: ApiPath) {
   const url = Array.isArray(path) ? path.join("/") : path;
   const token = useAuthToken();
@@ -71,7 +73,10 @@ export function useApiPost<I, O = unknown>(path: ApiPath) {
 
   return useMutation({
     mutationFn: (body: I) => postJson<I, O>(url, body, token.value),
-    onSuccess: () => query.invalidateQueries(),
+    onSuccess: () => {
+      const noRefresh = noRefreshNeeded.includes(url.replace(/^\//, ""));
+      if (!noRefresh) query.invalidateQueries();
+    },
   });
 }
 

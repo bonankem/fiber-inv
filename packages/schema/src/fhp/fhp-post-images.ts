@@ -16,4 +16,5 @@ export const fhpPostImagesZ = workUpdateDto("FhpPostImagesT", {
   remove: z.array(z.string()).optional(),
 });
 
+export type FhpPostImageT = z.infer<typeof fhpPostImageZ>;
 export type FhpPostImagesT = z.infer<typeof fhpPostImagesZ>;

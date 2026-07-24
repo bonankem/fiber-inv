@@ -25,7 +25,6 @@ export default function FhpDetailsTab(props: FhpTabProps) {
           { label: localName, value: w.locality?.name },
           { label: "District", value: w.locality?.district?.name },
           { label: m.field_coords(), value: <CoordsLink coords={w.coords} /> },
-          { label: m.client_contact(), value: props.item.contact },
         ]}
       />
     </div>

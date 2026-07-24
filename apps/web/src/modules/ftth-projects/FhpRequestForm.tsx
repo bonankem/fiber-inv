@@ -23,7 +23,6 @@ export default function FhpRequestForm(props: ModalStateProps) {
     form.setFieldsValue({
       name: s.work.name,
       coords: s.work.coords || undefined,
-      contact: s.contact || undefined,
       localityId: s.work.localityId || undefined,
     });
   };
@@ -66,10 +65,6 @@ export default function FhpRequestForm(props: ModalStateProps) {
 
       <Form.Item name="name" label={m.name()} required>
         <Input required id="fhs-name" />
-      </Form.Item>
-
-      <Form.Item name="contact" label={m.client_contact()} required>
-        <Input required id="fhs-contact" />
       </Form.Item>
 
       <Form.Item name="managerId" label={m.manager()} {...req}>

@@ -27,7 +27,6 @@ async function fhpRequest(dto: FhpRequestT, from: UserFullT) {
     const { sid, requestDate } = await nextId(tx, ID);
     return tx.ftthProject.create({
       data: {
-        contact: dto.contact,
         work: create({
           status,
           sid,

@@ -8,7 +8,6 @@ export const fhpRequestZ = zObject("FhpRequestT", {
   managerId: z.string(),
   hp: z.int().optional(),
   coords: coordsZ,
-  contact: z.string(),
   comment: z.string().optional(),
   uploads: z.array(z.uuid()).optional(),
 });

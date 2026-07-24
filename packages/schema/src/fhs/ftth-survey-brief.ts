@@ -1,21 +1,19 @@
 import { workBriefP, workBriefZ } from "#/work";
 import type { Prisma } from "../prisma";
-import { type Same, z, zObject, zStr, zStrNul } from "../utils";
+import { type Same, z, zObject, zStr } from "../utils";
 
 export const ftthSurveyBriefS = {
   id: true,
   work: workBriefP,
-  contact: true,
-  isNewArea: true,
+  area: true,
   reportedHp: true,
 } satisfies Prisma.FtthSurveySelect;
 
 export const ftthSurveyBriefZ = zObject("FtthSurveyBriefT", {
   id: zStr("The survey ID"),
   work: workBriefZ.describe("Work details"),
-  contact: zStrNul("Client contact info"),
+  area: zStr("The FTTH area code").nullable(),
   reportedHp: z.int().nullable().describe("Reported HP"),
-  isNewArea: z.boolean("Does this survey add a new FTTH area code?"),
 } satisfies Record<keyof typeof ftthSurveyBriefS, object>);
 
 export const ftthSurveyBriefP = { select: ftthSurveyBriefS };

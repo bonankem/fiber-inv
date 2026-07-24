@@ -2,6 +2,7 @@ import {
   CalendarOutlined,
   CheckSquareOutlined,
   CloseOutlined,
+  FileImageOutlined,
   MessageOutlined,
   StopOutlined,
   UserOutlined,
@@ -14,6 +15,7 @@ import { buildActions } from "#/components/actions/types";
 import CommentForm from "../work/CommentForm";
 import FhpAcceptForm from "./forms/FhpAcceptForm";
 import FhpAssignForm from "./forms/FhpAssignForm";
+import FhpImagesForm from "./forms/FhpImagesForm";
 import FhpInitiateForm from "./forms/FhpInitiateForm";
 import FhpRejectForm from "./forms/FhpRejectForm";
 import FhpSubmitForm from "./forms/FhpSubmitForm";
@@ -46,6 +48,13 @@ export const fhpActions = buildActions(isWhen, isWho, [
     icon: CalendarOutlined,
     when: [When.ASSIGNED],
     form: FhpInitiateForm,
+    main: true,
+  },
+  {
+    name: m.action_images(),
+    icon: FileImageOutlined,
+    when: [When.INSTALLATION],
+    form: FhpImagesForm,
     main: true,
   },
   {
