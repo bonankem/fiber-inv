@@ -31,7 +31,10 @@ export default function FhpInitiateForm(props: FhpFormProps) {
       onSubmit={onSubmit}
       submitting={send.isPending}
       className="grid sm:grid-cols-2 gap-2"
-      initialValues={{ vendorId: props.item.work.vendor?.id }}
+      initialValues={{
+        vendorId: props.item.work.vendor?.id,
+        startDate: new Date().toISOString().slice(0, 10),
+      }}
     >
       <Form.Item
         name="vendorId"
