@@ -16,12 +16,13 @@ import {
 } from "antd";
 import { m } from "i18n/messages";
 import { ImageIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { countBy } from "remeda";
 import type { WorkDocType } from "schema/enums";
 import type { WorkDocT } from "schema/work";
 import { twJoin } from "tailwind-merge";
 import { downloadUrl } from "#/api/helpers";
+import useOnceReady from "#/hooks/useOnceReady";
 import { type Uploader, useUploader } from "#/hooks/useUploader";
 
 export type GuItem<T> = {
@@ -51,20 +52,16 @@ export default function GalleryUpload<T extends WorkDocType>(props: Props<T>) {
   const { value, onChange, initial } = props;
   const up = useUploader();
 
-  const [ready, setReady] = useState(false);
-  useEffect(() => {
-    const data = initial.data;
-    if (ready || !data) return;
-    setReady(true);
-    onChange(
-      data.map((d) => ({
-        key: d.id,
-        old: d,
-        type: d.type as T,
-        name: d.key,
-      })),
-    );
-  }, [initial.data, ready, onChange]);
+  // set the old uploads as the initial value
+  const old = useMemo(() => {
+    return initial.data?.map((d) => ({
+      key: d.id,
+      old: d,
+      type: d.type as T,
+      name: d.key,
+    }));
+  }, [initial.data]);
+  useOnceReady(old, onChange);
 
   const tabItems = useMemo(() => {
     return value.filter((i) => i.type === props.tab);
@@ -78,43 +75,42 @@ export default function GalleryUpload<T extends WorkDocType>(props: Props<T>) {
     onChange([...value, ...newItems]);
   };
 
-  const modify = (key: string, item: () => GuItem<T>) => {
-    onChange(value.map((i) => (i.key === key ? item() : i)));
+  const modify = ({ key }: GuItem<T>, mod: Partial<GuItem<T>>) => {
+    const newValue = value.map((older) => {
+      if (older.key !== key) return older;
+      const newer = { ...older, ...mod };
+      if (newer.newId !== older.newId) {
+        up.maybeCancel(older.newId);
+      }
+      return newer;
+    });
+    onChange(newValue);
   };
 
   const change = (item: GuItem<T>, file: File) => {
     const { id } = up.send(file, { type: props.tab });
-    if (item.newId) up.cancel([item.newId]);
-    modify(item.key, () => ({
-      ...item,
-      key: item.old?.id || id,
-      newId: id,
-      removed: false,
-    }));
+    modify(item, { newId: id, removed: false });
   };
 
   const revert = (item: GuItem<T>) => {
-    if (!item.old) return;
-    if (item.newId) up.cancel([item.newId]);
-    modify(item.key, () => ({ ...item, newId: undefined, removed: false }));
+    modify(item, { newId: undefined, removed: false });
   };
 
   const remove = (item: GuItem<T>) => {
-    if (item.newId) {
-      up.cancel([item.newId]);
-    }
     if (item.old) {
-      modify(item.key, () => ({ ...item, newId: undefined, removed: true }));
+      modify(item, { newId: undefined, removed: true });
     } else {
+      up.maybeCancel(item.newId);
       onChange(value.filter((i) => i.key !== item.key));
     }
   };
 
-  const setname = (item: GuItem<T>, name: string) => {
-    // can only rename items that were not already submitted
-    if (!item.old) modify(item.key, () => ({ ...item, name }));
+  const setName = (item: GuItem<T>, name: string) => {
+    // cannot rename old items that were already submitted
+    if (!item.old) modify(item, { name });
   };
 
+  // count items under each tab, excluding removed items
   const counts = countBy(value, (i) => (i.removed ? "" : i.type));
 
   return (
@@ -134,17 +130,17 @@ export default function GalleryUpload<T extends WorkDocType>(props: Props<T>) {
             )}
           >
             {tabItems.map((item) => (
-              <ItemView
+              <GuItemView
+                key={item.key}
                 up={up}
                 item={item}
-                key={item.key}
                 onRevert={revert}
                 onRemove={remove}
                 onChange={change}
-                onSetname={setname}
+                onRename={setName}
               />
             ))}
-            <AddButton type={type} onAdd={add} />
+            <GuAddButton type={type} onAdd={add} />
           </div>
         ),
       }))}
@@ -158,7 +154,7 @@ GalleryUpload.useState = <T,>(tabs: Tab<T>[]) => {
   return { value, onChange, tabs, tab, onTab };
 };
 
-function ItemButton({
+function GuItemButton({
   title,
   danger,
   type = danger ? "primary" : "default",
@@ -171,13 +167,39 @@ function ItemButton({
   );
 }
 
-function ItemView<T>(props: {
+function GuRemovedOverlay() {
+  return (
+    <div className="bg-red-700/50 absolute inset-0 centered flex-col gap-2 text-white px-8">
+      <MinusCircleOutlined className="text-3xl" />
+      <p className="text-balance">{m.image_will_be_removed()}</p>
+    </div>
+  );
+}
+
+function GuImageTile({ url }: { url: string }) {
+  return (
+    <a href={url} target="_blank" rel="noopener" className="block min-h-0 grow">
+      <Tooltip title="View Image" placement="top">
+        <img className="size-full object-cover" alt="" src={url} />
+      </Tooltip>
+    </a>
+  );
+}
+
+function guNameColor(item: GuItem<unknown>) {
+  if (!item.old) return undefined;
+  if (item.removed) return "text-red-600!";
+  if (item.newId) return "text-green-600!";
+  return "text-purple-600!";
+}
+
+function GuItemView<T>(props: {
   item: GuItem<T>;
   up: Uploader;
   onRevert: (i: GuItem<T>) => void;
   onRemove: (i: GuItem<T>) => void;
   onChange: (i: GuItem<T>, f: File) => void;
-  onSetname: (i: GuItem<T>, s: string) => void;
+  onRename: (i: GuItem<T>, s: string) => void;
 }) {
   const { item, up } = props;
 
@@ -186,86 +208,55 @@ function ItemView<T>(props: {
   const show = newUp?.done ? newUp : oldUp;
   const url = show && downloadUrl(show);
 
+  const removed = item.removed;
+  const swapped = !!(item.old && item.newId);
+
   return (
-    <div
-      className={twJoin("gray-panel flex flex-col size-full overflow-hidden")}
-    >
+    <div className="gray-panel flex flex-col size-full overflow-hidden">
       <Spin
         spinning={newUp?.done === false}
-        className="h-full!"
         classNames={{ container: "h-full!" }}
+        className="h-full!"
       >
         <div className="flex flex-col size-full relative">
-          {url && (
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener"
-              className="block min-h-0 grow"
-            >
-              <Tooltip title="View Image" placement="top">
-                <img className="size-full object-cover" alt="" src={url} />
-              </Tooltip>
-            </a>
-          )}
-          {item.removed && (
-            <div className="bg-red-700/50 absolute inset-0 centered flex-col gap-2 text-white/80 px-8">
-              <MinusCircleOutlined className="text-3xl" />
-              <p className="text-balance">This image will be removed</p>
-            </div>
-          )}
+          {url && <GuImageTile url={url} />}
+
+          {removed && <GuRemovedOverlay />}
+
           <Input
             required
             readOnly={!!item.old}
             value={item.name}
-            onChange={(e) => !item.old && props.onSetname(item, e.target.value)}
-            className={twJoin(
-              "w-full border-0! text-sm!",
-              item.old &&
-                (item.removed
-                  ? "text-red-600!"
-                  : item.newId
-                    ? "text-green-600!"
-                    : "text-purple-600!"),
-            )}
+            onChange={(e) => !item.old && props.onRename(item, e.target.value)}
+            className={twJoin("w-full border-0! text-sm!", guNameColor(item))}
             placeholder={m.name()}
           />
+
           <div className="absolute top-1 right-1 flex gap-1 opacity-75 hover:opacity-100">
-            {!item.removed && (
-              <Upload
-                accept="image/*"
-                fileList={[]}
-                beforeUpload={(file) => {
-                  props.onChange(item, file);
-                  return false;
-                }}
-              >
-                <ItemButton title="Change image" icon={<EditOutlined />} />
-              </Upload>
-            )}
-            {item.old && (item.removed || item.newId) && (
-              <ItemButton
+            <Upload
+              accept="image/*"
+              fileList={[]}
+              beforeUpload={(file) => {
+                props.onChange(item, file);
+                return false;
+              }}
+            >
+              <GuItemButton title={m.change_image()} icon={<EditOutlined />} />
+            </Upload>
+
+            {swapped || removed ? (
+              <GuItemButton
                 danger={!!item.newId}
-                title="Restore old image"
+                title={m.restore_old_image()}
                 icon={<RollbackOutlined />}
                 onClick={() => props.onRevert(item)}
               />
-            )}
-            {item.newId && !item.old && (
-              <ItemButton
+            ) : (
+              <GuItemButton
                 type="primary"
                 danger
-                title="Remove"
-                icon={<CloseOutlined />}
-                onClick={() => props.onRemove(item)}
-              />
-            )}
-            {item.old && !item.newId && !item.removed && (
-              <ItemButton
-                type="primary"
-                danger
-                title="Remove"
-                icon={<MinusCircleOutlined />}
+                title={m.remove()}
+                icon={item.old ? <MinusCircleOutlined /> : <CloseOutlined />}
                 onClick={() => props.onRemove(item)}
               />
             )}
@@ -276,7 +267,7 @@ function ItemView<T>(props: {
   );
 }
 
-function AddButton<T>(props: {
+function GuAddButton<T>(props: {
   type: T;
   onAdd?: (type: T, files: File[]) => void;
 }) {
@@ -297,7 +288,7 @@ function AddButton<T>(props: {
         className="big-gray-button size-full centered flex-col gap-2 text-xs!"
       >
         <ImageIcon size={24} />
-        <div>Upload Image</div>
+        <div>{m.upload_images()}</div>
       </button>
     </Upload>
   );

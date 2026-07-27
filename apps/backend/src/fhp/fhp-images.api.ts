@@ -1,7 +1,6 @@
 import { WorkAction, WorkDocType, WorkStatus } from "schema/enums";
 import { type FhpPostImagesT, fhpPostImagesZ, ftthProjectS } from "schema/fhp";
-import { prisma } from "#/db";
-import { connectId } from "#/utils/ids";
+import { type Prisma, prisma } from "#/db";
 import { postRoute } from "#/utils/routing";
 import { updateWork } from "../utils/work";
 import { fhpCheck } from "./utils";
@@ -13,19 +12,28 @@ export const fhpImagesApi = postRoute({
 });
 
 async function fhpImages(dto: FhpPostImagesT) {
+  const { id: workId, images, remove } = dto;
   const { s } = await fhpCheck({
-    workId: dto.id,
+    workId,
     status: [WorkStatus.INSTALLATION, WorkStatus.FAILED],
   });
 
-  for (const i of dto.images) {
+  for (const i of images) {
     i.name = i.name.toUpperCase();
     if (i.type === WorkDocType.FHP_BOX) {
       i.name = i.name.replace(/[-_ /]+/g, "-");
     }
   }
 
-  const remove = { in: dto.remove ?? [] };
+  const docs = {
+    deleteMany: remove?.length ? { id: { in: remove } } : undefined,
+    upsert: images.map(({ type, name: key, uploadId }) => ({
+      where: { uniq: { workId, type, key } },
+      create: { type, key, uploadId },
+      update: { type, key, uploadId },
+    })),
+  } satisfies Prisma.WorkDocUpdateManyWithoutWorkNestedInput;
+
   return prisma.ftthProject.update({
     select: ftthProjectS,
     where: { id: dto.id },
@@ -34,16 +42,7 @@ async function fhpImages(dto: FhpPostImagesT) {
         dto,
         old: s.work,
         action: WorkAction.UPLOAD_IMAGES,
-        also: {
-          docs: {
-            deleteMany: { id: remove },
-            upsert: dto.images.map(({ type, name: key, uploadId }) => ({
-              where: { uniq: { workId: dto.id, key, type } },
-              create: { type, key, upload: connectId(uploadId) },
-              update: { type, key },
-            })),
-          },
-        },
+        also: { docs },
       }),
     },
   });

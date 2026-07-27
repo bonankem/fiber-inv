@@ -231,5 +231,10 @@
   "view_details": "View Details",
   "view_on_google_maps": "View on Google Maps",
   "welcome": "Welcome, {name}!",
-  "zzzzzzz": "This is just here so we can sort lines without worrying about the commas getting messed up"
+  "zzzzzzz": "This is just here so we can sort lines without worrying about the commas getting messed up",
+  "restore_old_image": "Restore old image",
+  "remove": "Remove",
+  "change_image": "Change image",
+  "image_will_be_removed": "This image will be removed",
+  "upload_images": "Upload Images"
 }

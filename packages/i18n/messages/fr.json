@@ -26,6 +26,7 @@
   "boxes": "Boitiers",
   "cables": "Câbles",
   "cancelled": "Annulée",
+  "change_image": "Changer l'image",
   "change_password": "Changer le mot de passe",
   "check_confirm": "Je valide cette action",
   "choose_existing_area": "Choisissez la plaque existante",
@@ -170,6 +171,7 @@
   "read_from_file": "Lire à partir d'un fichier",
   "refresh": "Actualiser",
   "rejected": "Rejetée",
+  "remove": "Supprimer",
   "report": "Rapport",
   "report_boxes_hint": "Les boitiers sont lues à partir des fichiers KMZ et coordonnées",
   "report_cables_hint": "Les câbles sont lues à partir des fichiers KMZ et longueurs des câbles",
@@ -180,6 +182,7 @@
   "reset_link_sent": "Un lien de réinitialisation a été envoyé par courriel.",
   "reset_password": "Réinitialiser le mot de passe",
   "reset_pw_caption": "Saisissez l'adresse e-mail de votre compte",
+  "restore_old_image": "Restaurer l'ancienne image",
   "retry": "Réessayer",
   "review": "En revue",
   "role": "Rôle",
@@ -229,5 +232,6 @@
   "view_details": "Voir les détails",
   "view_on_google_maps": "Afficher sur Google Maps",
   "welcome": "Bienvenue, {name}!",
-  "zzzzzzz": "Ceci sert simplement à pouvoir trier les lignes sans se soucier des problèmes de virgules."
+  "image_will_be_removed": "Cette image sera supprimée",
+  "upload_images": "Télécharger des images"
 }

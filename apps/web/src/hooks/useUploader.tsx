@@ -2,7 +2,7 @@ import { createContext, use, useCallback, useMemo, useState } from "react";
 import { omit } from "remeda";
 import type { WorkDocType } from "schema/enums";
 import { type UploadParsedT, uploadFullZ } from "schema/uploads";
-import { jsonResponse } from "schema/utils";
+import { jsonResponse, type Maybe } from "schema/utils";
 import { uuidv7 } from "uuidv7";
 import AuthProvider from "#/api/AuthProvider";
 import { apiUrl, showAppError, useApiPost } from "#/api/helpers";
@@ -26,8 +26,9 @@ type SendArgs = {
 export type Uploader = {
   find(id: string): UploadRecord | undefined;
   send(file: File, args?: SendArgs): UploadRecord;
-  cancel(ids: string[]): void;
   cleanup(): void;
+  cancel(ids: string | string[]): void;
+  maybeCancel(id: Maybe<string>): void;
   isUploading(type?: WorkDocType): boolean;
 };
 
@@ -36,8 +37,9 @@ export const UploaderContext = createContext<Uploader>({
     throw new Error("No Uploader context");
   },
   find: () => undefined,
-  cancel: () => undefined,
+  cancel: () => {},
   cleanup: () => {},
+  maybeCancel: () => {},
   isUploading: () => false,
 });
 
@@ -140,6 +142,10 @@ export function useUploaderImpl(): Uploader {
       setRecords((rs) => omit(rs, ids));
     };
 
+    const maybeCancel = (id: Maybe<string>) => {
+      if (id) cancel(id);
+    };
+
     const cleanup = () => {
       Object.values(pending).forEach((p) => p.abort());
       const ids = Object.values(records).map((r) => r.id);
@@ -154,6 +160,6 @@ export function useUploaderImpl(): Uploader {
       return rs.some((r) => r.type === type && !r.done);
     };
 
-    return { find, send, cancel, cleanup, isUploading };
+    return { find, send, cancel, cleanup, maybeCancel, isUploading };
   }, [pending, records, clean.mutate, send]);
 }
