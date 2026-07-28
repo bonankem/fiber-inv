@@ -178,7 +178,13 @@ function GuRemovedOverlay() {
 
 function GuImageTile({ url }: { url: string }) {
   return (
-    <a href={url} target="_blank" rel="noopener" className="block min-h-0 grow">
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener"
+      className="block min-h-0 grow"
+      tabIndex={-1}
+    >
       <Tooltip title="View Image" placement="top">
         <img className="size-full object-cover" alt="" src={url} />
       </Tooltip>

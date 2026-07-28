@@ -4,5 +4,5 @@ export * from "./fhp-initiate";
 export * from "./fhp-post-images";
 export * from "./fhp-request";
 export * from "./fhp-review";
-export * from "./fhp-send-report";
+export * from "./fhp-submit";
 export * from "./ftth-project";

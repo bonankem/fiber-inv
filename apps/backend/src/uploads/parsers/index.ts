@@ -1,14 +1,14 @@
 import type { WorkDocType } from "#/db";
+import { parseUpAreaKmz } from "./up-area-kmz";
 import { parseUpFhsCoords } from "./up-fhs-coords";
-import { parseUpPlanKmz } from "./up-plan-kmz";
-import { parseUpPlaqueKmz } from "./up-plaque-kmz";
+import { parseUpOdnKmz } from "./up-odn-kmz";
 import type { ParserFunc, ParserInput } from "./utils";
 
 type Parsers = { [t in WorkDocType]?: ParserFunc };
 
 const parsers: Parsers = {
-  PLAQUE_KMZ: parseUpPlaqueKmz,
-  PLAN_KMZ: parseUpPlanKmz,
+  AREA_KMZ: parseUpAreaKmz,
+  ODN_KMZ: parseUpOdnKmz,
   COORDINATES: parseUpFhsCoords,
 };
 

@@ -1,15 +1,15 @@
 import {
-  PlanKmzIssue,
-  type UpPlanKmzIssueT,
-  type UpPlanKmzT,
+  OdnKmzIssue,
+  type UpOdnKmzIssueT,
+  type UpOdnKmzT,
 } from "schema/uploads";
 import { BoxType, WorkDocType } from "#/db";
 import { filterPlacemarks, type KmzPlacemark, parseSimpleKmz } from "./kmz";
 import type { ParserInput } from "./utils";
 
-export async function parseUpPlanKmz({
+export async function parseUpOdnKmz({
   data,
-}: ParserInput): Promise<UpPlanKmzT | null> {
+}: ParserInput): Promise<UpOdnKmzT | null> {
   const kmz = await parseSimpleKmz(data);
   if (!kmz) return null;
 
@@ -47,14 +47,16 @@ export async function parseUpPlanKmz({
   const trcRe = /^(\w+)\/T\d+\/TR\/\d+\/\d+$/;
   const boxRe = /^(\w+)-X\d+(-H\d+(-[SE]\d+)?)?$/;
 
-  const issues: UpPlanKmzIssueT[] = [];
+  const issues: UpOdnKmzIssueT[] = [];
 
   for (const box of boxes) {
+    box.name = box.name.replace(/_/g, "-");
+
     const name = box.name;
     if (boxRe.test(name)) continue;
     const match = dicRe.exec(name);
     if (!match) {
-      issues.push({ type: PlanKmzIssue.INCORRECT_BOX_NAME, name });
+      issues.push({ type: OdnKmzIssue.INCORRECT_BOX_NAME, name });
       continue;
     }
     const newName = box.name
@@ -69,7 +71,7 @@ export async function parseUpPlanKmz({
   for (const cable of cables) {
     const name = cable.name;
     if (!dicRe.test(name) && !trcRe.test(name)) {
-      issues.push({ type: PlanKmzIssue.INCORRECT_BOX_NAME, name });
+      issues.push({ type: OdnKmzIssue.INCORRECT_BOX_NAME, name });
     }
   }
 
@@ -79,7 +81,7 @@ export async function parseUpPlanKmz({
   concretePoles.sort(nameSort);
 
   return {
-    type: WorkDocType.PLAN_KMZ,
+    type: WorkDocType.ODN_KMZ,
     boxes: boxes.map((b) => ({
       name: b.name,
       type: getBoxType(b),
@@ -93,11 +95,11 @@ export async function parseUpPlanKmz({
 }
 
 function getBoxType(b: KmzPlacemark) {
-  if (/-E\d+$/.test(b.name)) return BoxType.END;
-  if (/-S\d+$/.test(b.name)) return BoxType.SUB;
+  if (/-E\d+$/.test(b.name)) return BoxType.FAT;
+  if (/-S\d+$/.test(b.name)) return BoxType.FAT;
   if (/-H\d+$/.test(b.name)) return BoxType.HUB;
   if (/-X\d+$/.test(b.name)) return BoxType.X;
-  return BoxType.END;
+  return BoxType.FAT;
 }
 
 function nameSort(a: { name: string }, b: { name: string }) {

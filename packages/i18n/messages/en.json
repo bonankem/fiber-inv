@@ -87,13 +87,13 @@
   "field_expected_hp": "Expected HP",
   "field_hp": "HP",
   "field_hp_summary": "HP Summary",
-  "field_hub_boxes": "Hub Boxes",
+  "field_hub_boxes": "FDT/Hub",
   "field_manholes": "Manholes",
   "field_metal_poles": "Metal Poles",
   "field_olt_cards": "OLT Cards",
   "field_olt_code": "OLT code",
   "field_plan_diag": "Plan (DWG)",
-  "field_plaque_kmz": "Area boundary KMZ",
+  "area_kmz": "Area boundary KMZ",
   "field_start_date": "Start date",
   "field_sub_boxes": "Sub Boxes",
   "field_synoptic_diag": "Synoptic (DWG)",
@@ -236,5 +236,6 @@
   "remove": "Remove",
   "change_image": "Change image",
   "image_will_be_removed": "This image will be removed",
-  "upload_images": "Upload Images"
+  "upload_images": "Upload Images",
+  "fat_pbo": "FAT/PBO"
 }

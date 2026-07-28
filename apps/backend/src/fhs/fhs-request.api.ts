@@ -33,7 +33,7 @@ const sendTo = StaffRole.PLANNING_MANAGER;
 
 async function fhsRequest(dto: FhsRequestT, from: UserT) {
   const key = await nameCheck(dto.name);
-  const boundary = await boundaryQuery(dto.PLAQUE_KMZ);
+  const boundary = await boundaryQuery(dto.AREA_KMZ);
 
   return prisma.$transaction(async (tx) => {
     const { sid, requestDate } = await nextId(tx, "FHS");
@@ -49,7 +49,7 @@ async function fhsRequest(dto: FhsRequestT, from: UserT) {
           requestDate,
           locality: connectId(dto.localityId),
           coords: setCoords(dto.coords),
-          docs: setDocsFrom(dto, WorkDocType.PLAQUE_KMZ),
+          docs: setDocsFrom(dto, WorkDocType.AREA_KMZ),
           logs: addLog(dto, action, from, status),
           workers: create({ userId: dto.managerId, role: sendTo }),
         }),
@@ -75,6 +75,6 @@ async function nameCheck(name: string) {
 
 async function boundaryQuery(id: string): Promise<FhsInput["boundary"]> {
   const up = await prisma.upload.findUnique({ where: { id } });
-  if (up?.parsed?.type !== WorkDocType.PLAQUE_KMZ) return undefined;
+  if (up?.parsed?.type !== WorkDocType.AREA_KMZ) return undefined;
   return { create: ringWithBbox(up.parsed.boundary) };
 }

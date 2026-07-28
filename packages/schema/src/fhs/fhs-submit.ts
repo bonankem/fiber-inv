@@ -4,12 +4,10 @@ import { workUpdateDto } from "../work/work-update";
 
 export const fhsSubmitZ = workUpdateDto("FhsSubmitT", {
   hp: z.int("Number of HPs/ELs"),
-  olts: z.int("Number of new OLTs"),
   oltCards: z.int("Number of olt cards"),
   xBoxes: z.int("Number of X boxes"),
   hubBoxes: z.int("Number of hub boxes"),
-  subBoxes: z.int("Number of sub boxes"),
-  endBoxes: z.int("Number of end boxes"),
+  fats: z.int("Number of FATs"),
   manholes: z.int("Number of new manholes"),
   closures: z.int("Number of closures"),
   metalPoles: z.int("Number of metal poles"),
@@ -17,8 +15,8 @@ export const fhsSubmitZ = workUpdateDto("FhsSubmitT", {
   transportLength: z.int("Total transport cable length in metres"),
   distLength: z.int("Total distribution cable length in metres"),
 
-  [Doc.PLAN_KMZ]: zStr("KMZ upload ID"),
-  [Doc.PLAN_BOQ]: zStr("BOQ upload ID"),
+  [Doc.ODN_KMZ]: zStr("KMZ upload ID"),
+  [Doc.BOQ]: zStr("BOQ upload ID"),
   [Doc.PLAN_DIAGRAM]: zStr("plan diagram upload ID"),
   [Doc.SYNOPTIC_TABLE]: zStr("synoptic table upload ID"),
   [Doc.SYNOPTIC_DIAGRAM]: zStr("synoptic diagram upload ID "),

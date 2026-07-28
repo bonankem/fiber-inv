@@ -9,7 +9,7 @@ function boxType(name: string) {
   if (!re) return null;
   if (!re[2]) return BoxType.X;
   if (!re[3]) return BoxType.HUB;
-  return re[4] === "S" ? BoxType.SUB : BoxType.END;
+  return BoxType.FAT;
 }
 
 export async function parseUpFhsCoords({
@@ -50,7 +50,6 @@ export async function parseUpFhsCoords({
     if (!name) return undefined;
 
     const type = boxType(name);
-    console.log({ name, type });
     if (!type) return undefined;
 
     const h = Number(r[hpKey]);

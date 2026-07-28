@@ -88,13 +88,13 @@
   "field_expected_hp": "HP prévu",
   "field_hp": "EL",
   "field_hp_summary": "Récapitulatif des ELs",
-  "field_hub_boxes": "Hub Boxes",
+  "field_hub_boxes": "FDT/Hub",
   "field_manholes": "Chambres",
   "field_metal_poles": "Poteaux métalliques",
   "field_olt_cards": "Cartes OLT",
   "field_olt_code": "Code OLT",
   "field_plan_diag": "Plan (DWG)",
-  "field_plaque_kmz": "Fichier KMZ de la plaque",
+  "area_kmz": "Fichier KMZ de la plaque",
   "field_start_date": "Date de début",
   "field_sub_boxes": "Sub Boxes",
   "field_synoptic_diag": "Synoptique (DWG)",
@@ -233,5 +233,6 @@
   "view_on_google_maps": "Afficher sur Google Maps",
   "welcome": "Bienvenue, {name}!",
   "image_will_be_removed": "Cette image sera supprimée",
-  "upload_images": "Télécharger des images"
+  "upload_images": "Télécharger des images",
+  "fat_pbo": "FAT/PBO"
 }

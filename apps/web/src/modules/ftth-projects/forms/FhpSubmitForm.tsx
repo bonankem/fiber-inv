@@ -1,7 +1,9 @@
 import { Form, message } from "antd";
 import { m } from "i18n/messages";
+import { countBy } from "remeda";
 import type { WorkDocType } from "schema/enums";
-import type { FhpSendReportT, FtthProjectT } from "schema/fhp";
+import type { FhpSubmitT, FtthProjectT } from "schema/fhp";
+import type { UpFhsBoxT, UpOdnKmzT } from "schema/uploads";
 import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import FileUpload, { type Parsed } from "#/components/inputs/FileUpload";
@@ -25,11 +27,7 @@ const fileInput = <T extends WorkDocType & string>(
   </Form.Item>
 );
 
-const qtyInput = (
-  name: keyof FhpSendReportT,
-  label: string,
-  length = false,
-) => (
+const qtyInput = (name: keyof FhpSubmitT, label: string, length = false) => (
   <Form.Item
     name={name}
     label={label}
@@ -48,16 +46,33 @@ const qtyInput = (
 );
 
 export default function FhpSubmitForm(props: FhpFormProps) {
-  const [form] = Form.useForm<FhpSendReportT>();
+  const [form] = Form.useForm<FhpSubmitT>();
 
-  const send = useApiPost<FhpSendReportT, FtthProjectT>("/fhp/submit");
+  const send = useApiPost<FhpSubmitT, FtthProjectT>("/fhp/submit");
 
-  const onSubmit = apiCall(async (data: FhpSendReportT) => {
+  const onSubmit = apiCall(async (data: FhpSubmitT) => {
     data.id = props.item.id;
     const result = await send.mutateAsync(data);
     message.success(`Submitted ${result.work.sid}`);
     props.state.close();
   });
+
+  const boxCounts = (boxes: UpFhsBoxT[]) => {
+    const count = countBy(boxes, (b) => b.type ?? "");
+    return {
+      xBoxes: count.X,
+      hubBoxes: count.HUB,
+      fats: count.FAT,
+    };
+  };
+
+  const onParseKmz = (up: UpOdnKmzT) => {
+    form.setFieldsValue({
+      ...boxCounts(up.boxes),
+      metalPoles: up.metalPoles.length,
+      concretePoles: up.concretePoles.length,
+    });
+  };
 
   return (
     <FormModal
@@ -72,14 +87,13 @@ export default function FhpSubmitForm(props: FhpFormProps) {
     >
       <div className="flex flex-col gap-2">
         <h2 className="font-medium">{m.files()}</h2>
-        {fileInput("AS_BUILT_KMZ", "As-Built KMZ")}
-        {fileInput("AS_BUILT_BOQ", "As-Built BOQ")}
+        {fileInput("ODN_KMZ", "As-Built KMZ", onParseKmz)}
+        {fileInput("BOQ", "As-Built BOQ")}
 
         <h2 className="font-medium">{m.quantities()}</h2>
         {qtyInput("xBoxes", m.field_x_boxes())}
         {qtyInput("hubBoxes", m.field_hub_boxes())}
-        {qtyInput("subBoxes", m.field_sub_boxes())}
-        {qtyInput("endBoxes", m.field_end_boxes())}
+        {qtyInput("fats", m.fat_pbo())}
         {qtyInput("concretePoles", m.field_concrete_poles())}
         {qtyInput("metalPoles", m.field_metal_poles())}
         {qtyInput("closures", m.field_closures())}

@@ -18,12 +18,10 @@ export default function FhsReportTab(props: FhsTabProps) {
         title="Nouvelles quantités"
         items={[
           { label: "HP", value: rep.hp },
-          { label: m.new_olts(), value: rep.oltCards },
           { label: m.field_olt_cards(), value: rep.oltCards },
           { label: m.field_x_boxes(), value: rep.xBoxes },
           { label: m.field_hub_boxes(), value: rep.hubBoxes },
-          { label: m.field_sub_boxes(), value: rep.subBoxes },
-          { label: m.field_end_boxes(), value: rep.endBoxes },
+          { label: m.fat_pbo(), value: rep.fats },
           { label: m.field_closures(), value: rep.closures },
           { label: m.field_manholes(), value: rep.manholes },
           { label: m.field_concrete_poles(), value: rep.metalPoles },

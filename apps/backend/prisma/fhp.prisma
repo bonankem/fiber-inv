@@ -26,11 +26,9 @@ model FhpReport {
 
     xBoxes Int
 
-    hubBoxes Int
+    hubBoxes Int @default(0)
 
-    subBoxes Int
-
-    endBoxes Int
+    fats Int @default(0)
 
     manholes Int
 

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { countBy, sumBy } from "remeda";
 import { BoxType, type WorkDocType } from "schema/enums";
 import type { FhsSubmitT, FtthSurveyT } from "schema/fhs";
-import type { UpFhsBoxT, UpFhsCoordsT, UpPlanKmzT } from "schema/uploads";
+import type { UpFhsBoxT, UpFhsCoordsT, UpOdnKmzT } from "schema/uploads";
 import { filterTruthy, type Maybe } from "schema/utils";
 import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
@@ -83,7 +83,7 @@ export default function FhsSubmitForm(props: FhsFormProps) {
   const [form] = Form.useForm<FhsSubmitT>();
   const mobile = !Grid.useBreakpoint().md;
   const [coords, setCoords] = useState<UpFhsCoordsT>();
-  const [kmz, setKmz] = useState<UpPlanKmzT>();
+  const [kmz, setKmz] = useState<UpOdnKmzT>();
 
   const submitM = useApiPost<FhsSubmitT, FtthSurveyT>("/fhs/submit");
 
@@ -97,14 +97,13 @@ export default function FhsSubmitForm(props: FhsFormProps) {
   const boxCounts = (boxes: UpFhsBoxT[]) => {
     const count = countBy(boxes, (b) => b.type ?? "");
     return {
-      xBoxes: count.X ?? 0,
+      xBoxes: count.X,
       hubBoxes: count.HUB,
-      subBoxes: count.SUB,
-      endBoxes: count.END,
+      fats: count.FAT,
     };
   };
 
-  const onParseKmz = (up: UpPlanKmzT) => {
+  const onParseKmz = (up: UpOdnKmzT) => {
     form.setFieldsValue({
       ...boxCounts(up.boxes),
       metalPoles: up.metalPoles.length,
@@ -114,14 +113,10 @@ export default function FhsSubmitForm(props: FhsFormProps) {
   };
 
   const onParseCoords = (up: UpFhsCoordsT) => {
-    const fatTypes: Maybe<BoxType>[] = [BoxType.SUB, BoxType.END];
-    const fats = up.boxes.filter((b) => fatTypes.includes(b.type));
+    const fats = up.boxes.filter((b) => b.type === BoxType.FAT);
     const hp = sumBy(fats, (b) => b.hp || 0);
-    form.setFieldsValue({
-      hp,
-      oltCards: Math.ceil(hp / 512),
-      ...boxCounts(up.boxes),
-    });
+    const oltCards = Math.ceil(hp / 512);
+    form.setFieldsValue({ hp, oltCards, ...boxCounts(up.boxes) });
     setCoords(up);
   };
 
@@ -138,8 +133,8 @@ export default function FhsSubmitForm(props: FhsFormProps) {
       <div className="flex flex-col gap-2">
         <h2 className="font-medium">Documents</h2>
 
-        {fileInput("PLAN_KMZ", "KMZ", onParseKmz)}
-        {fileInput("PLAN_BOQ", "BOQ")}
+        {fileInput("ODN_KMZ", "KMZ", onParseKmz)}
+        {fileInput("BOQ", "BOQ")}
         {fileInput("COORDINATES", m.field_coords(), onParseCoords)}
         {fileInput("PLAN_DIAGRAM", m.field_plan_diag())}
         {fileInput("SYNOPTIC_DIAGRAM", m.field_synoptic_diag())}
@@ -152,12 +147,10 @@ export default function FhsSubmitForm(props: FhsFormProps) {
         <h2 className="font-medium">Nouvelles quantités</h2>
 
         {qtyInput("hp", m.field_hp())}
-        {qtyInput("olts", m.new_olts())}
         {qtyInput("oltCards", m.field_olt_cards())}
         {qtyInput("xBoxes", m.field_x_boxes())}
         {qtyInput("hubBoxes", m.field_hub_boxes())}
-        {qtyInput("subBoxes", m.field_sub_boxes())}
-        {qtyInput("endBoxes", m.field_end_boxes())}
+        {qtyInput("fats", m.fat_pbo())}
         {qtyInput("concretePoles", m.field_concrete_poles())}
         {qtyInput("metalPoles", m.field_metal_poles())}
         {qtyInput("closures", m.field_closures())}
@@ -205,20 +198,6 @@ export default function FhsSubmitForm(props: FhsFormProps) {
                   items={kmz?.cables}
                   whenEmpty={m.no_cables()}
                   whenNull={m.report_cables_hint()}
-                  showOldNames
-                />
-              ),
-            },
-            {
-              key: "poles",
-              label: m.poles(),
-              children: (
-                <ItemList
-                  items={
-                    kmz ? [...kmz.metalPoles, ...kmz.concretePoles] : undefined
-                  }
-                  whenEmpty={m.no_poles()}
-                  whenNull={m.report_poles_hint()}
                   showOldNames
                 />
               ),

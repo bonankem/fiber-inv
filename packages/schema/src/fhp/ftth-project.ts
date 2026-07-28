@@ -5,8 +5,7 @@ import { type Same, z, zObject, zStr, zStrNul } from "../utils";
 const fhpReportS = {
   xBoxes: true,
   hubBoxes: true,
-  subBoxes: true,
-  endBoxes: true,
+  fats: true,
   manholes: true,
   closures: true,
   metalPoles: true,
@@ -18,8 +17,7 @@ const fhpReportS = {
 const fhpReportZ = zObject("FhpReportT", {
   xBoxes: z.int(),
   hubBoxes: z.int(),
-  subBoxes: z.int(),
-  endBoxes: z.int(),
+  fats: z.int(),
   manholes: z.int(),
   closures: z.int(),
   metalPoles: z.int(),

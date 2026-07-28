@@ -46,6 +46,7 @@ model Olt {
 enum BoxType {
     X
     HUB
+    FAT
     SUB
     END
 }

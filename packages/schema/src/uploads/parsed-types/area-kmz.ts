@@ -3,8 +3,8 @@ import { boundingBoxZ, coordsZ, linearRingZ } from "#/geo";
 import { WorkDocType } from "#/prisma";
 import { zObject } from "#/utils";
 
-export const upPlaqueKmzZ = zObject("UpPlaqueKmzT", {
-  type: z.literal(WorkDocType.PLAQUE_KMZ),
+export const upAreaKmzZ = zObject("UpAreaKmzT", {
+  type: z.literal(WorkDocType.AREA_KMZ),
   localityId: z.uuid().optional(),
   name: z.string().optional(),
   coords: coordsZ,
@@ -12,4 +12,4 @@ export const upPlaqueKmzZ = zObject("UpPlaqueKmzT", {
   bbox: boundingBoxZ,
 });
 
-export type UpPlaqueKmzT = z.infer<typeof upPlaqueKmzZ>;
+export type UpPlaqueKmzT = z.infer<typeof upAreaKmzZ>;

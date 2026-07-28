@@ -34,17 +34,13 @@ model FhsReport {
 
     hp Int
 
-    olts Int
-
     oltCards Int
 
     xBoxes Int
 
-    hubBoxes Int
+    hubBoxes Int @default(0)
 
-    subBoxes Int
-
-    endBoxes Int
+    fats Int @default(0)
 
     closures Int
 

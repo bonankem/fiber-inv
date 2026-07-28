@@ -21,17 +21,16 @@ type Props<T> = {
 };
 
 const defaultAccept: { [key in WorkDocType]?: string } = {
-  PLAQUE_KMZ: ".kml,.kmz",
-  PLAN_KMZ: ".kml,.kmz",
-  PLAN_BOQ: ".xlsx,.xls",
+  AREA_KMZ: ".kml,.kmz",
+  ODN_KMZ: ".kml,.kmz",
+  BOQ: ".xlsx,.xls",
   PLAN_DIAGRAM: ".dwg",
   SYNOPTIC_DIAGRAM: ".dwg",
   SYNOPTIC_TABLE: ".xlsx,.xls",
+  SURVEY_REPORT: ".xlsx,.xls",
   COORDINATES: ".xlsx,.xls",
   CABLE_LENGTHS: ".xlsx,.xls",
   HP_SUMMARY: ".xlsx,.xls",
-  AS_BUILT_KMZ: ".kml,.kmz",
-  AS_BUILT_BOQ: ".xlsx,.xls",
 };
 
 export default function FileUpload<T extends WorkDocType>({

@@ -127,18 +127,14 @@ model WorkLog {
 }
 
 enum WorkDocType {
-    PLAQUE_KMZ
-    PLAN_KMZ
-    PLAN_BOQ
+    AREA_KMZ
+    ODN_KMZ
+    BOQ
+
     PLAN_DIAGRAM
     SYNOPTIC_DIAGRAM
-    SYNOPTIC_TABLE
+    SURVEY_REPORT
     COORDINATES
-    CABLE_LENGTHS
-    HP_SUMMARY
-
-    AS_BUILT_KMZ
-    AS_BUILT_BOQ
 
     FHP_ODF
     FHP_TRENCHING
@@ -156,6 +152,16 @@ enum WorkDocType {
     FHC_ONT_NAMEPLATE
     FHC_SPEED_TEST
     FHC_POLE
+
+    // deprecated
+    PLAQUE_KMZ
+    PLAN_KMZ
+    PLAN_BOQ
+    AS_BUILT_KMZ
+    AS_BUILT_BOQ
+    CABLE_LENGTHS
+    SYNOPTIC_TABLE
+    HP_SUMMARY
 }
 
 model WorkDoc {

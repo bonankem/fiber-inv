@@ -14,7 +14,7 @@ const coordsRe = /<coordinates.*?<\/coordinates>/i;
 const lngLatRe = /(?<!,\d)(-?\d+\.?\d*),(-?\d+\.?\d*)/g;
 const placeNameRe = /<placemark>.*?<name>([^<]+)/i;
 
-export async function parseUpPlaqueKmz({
+export async function parseUpAreaKmz({
   data,
 }: ParserInput): Promise<UpPlaqueKmzT | null> {
   const input = await maybeUnzip(data);
@@ -54,7 +54,7 @@ export async function parseUpPlaqueKmz({
   const match = boundaries.find((b) => isInsideRing(coords, b.ring));
 
   return {
-    type: WorkDocType.PLAQUE_KMZ,
+    type: WorkDocType.AREA_KMZ,
     name,
     bbox,
     coords,

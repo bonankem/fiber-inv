@@ -16,11 +16,11 @@ import { useUploader } from "#/hooks/useUploader";
 import { useAppTheme } from "#/theme";
 import { req } from "#/utils/form";
 
-const { PLAQUE_KMZ } = WorkDocType;
+const { AREA_KMZ } = WorkDocType;
 
 export default function FhsRequestForm(props: ModalStateProps) {
   const uploader = useUploader();
-  const isUploading = uploader.isUploading(PLAQUE_KMZ);
+  const isUploading = uploader.isUploading(AREA_KMZ);
   const placeholder = isUploading ? m.hint_reading_file() : undefined;
   const send = useApiPost<FhsRequestT, FtthSurveyT>("/fhs");
   const [form] = Form.useForm<FhsRequestT>();
@@ -76,10 +76,10 @@ export default function FhsRequestForm(props: ModalStateProps) {
       checkbox={false}
     >
       <section>
-        <Form.Item name={PLAQUE_KMZ} label={m.field_plaque_kmz()} required>
+        <Form.Item name={AREA_KMZ} label={m.area_kmz()} required>
           <FileUpload
             required
-            type={PLAQUE_KMZ}
+            type={AREA_KMZ}
             onParsed={onParse}
             placeholder={m.hint_choose_kmz()}
           />
