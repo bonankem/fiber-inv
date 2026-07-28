@@ -154,11 +154,6 @@ enum WorkDocType {
     FHC_POLE
 
     // deprecated
-    PLAQUE_KMZ
-    PLAN_KMZ
-    PLAN_BOQ
-    AS_BUILT_KMZ
-    AS_BUILT_BOQ
     CABLE_LENGTHS
     SYNOPTIC_TABLE
     HP_SUMMARY
