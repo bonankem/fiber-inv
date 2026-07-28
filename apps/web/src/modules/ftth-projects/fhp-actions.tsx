@@ -60,7 +60,7 @@ export const fhpActions = buildActions(isWhen, isWho, [
   {
     name: m.action_finish(),
     icon: CheckSquareOutlined,
-    when: [When.INSTALLATION],
+    when: [When.INSTALLATION, When.FAILED],
     form: FhpSubmitForm,
     main: true,
   },

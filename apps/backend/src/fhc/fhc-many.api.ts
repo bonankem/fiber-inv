@@ -13,7 +13,7 @@ export const fhcRequestManyApi = postRoute({
 });
 
 async function fhcRequestMany({ items }: FhcRequestManyT, from: UserFullT) {
-  const status = WorkStatus.REQUESTED;
+  const status = WorkStatus.SURVEY;
   const action = WorkAction.REQUEST;
 
   const uuids = items.map(() => randomUUID());

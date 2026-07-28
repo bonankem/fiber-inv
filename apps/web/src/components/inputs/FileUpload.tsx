@@ -2,7 +2,7 @@ import { LoadingOutlined, PaperClipOutlined } from "@ant-design/icons";
 import { Button, Input, Space, Upload, type UploadProps } from "antd";
 import { useEffect } from "react";
 import type { WorkDocType } from "schema/enums";
-import type { UploadParsedT } from "schema/uploads";
+import type { UploadParsedT, UploadT } from "schema/uploads";
 import { twJoin } from "tailwind-merge";
 import { useUploader } from "#/hooks/useUploader";
 
@@ -12,6 +12,7 @@ type Props<T> = {
   type: T;
   value?: string;
   required?: boolean;
+  previous?: UploadT;
   inputClassName?: string;
   onChange?: (id: string | undefined) => void;
   onParsed?: (p: Parsed<T>) => void;
@@ -37,6 +38,7 @@ export default function FileUpload<T extends WorkDocType>({
   type,
   value,
   required,
+  previous,
   onChange,
   onParsed,
   placeholder,
@@ -45,7 +47,9 @@ export default function FileUpload<T extends WorkDocType>({
   accept = defaultAccept[type],
 }: Props<T>) {
   const uploader = useUploader();
-  const record = uploader.find(value || "");
+
+  const usingOld = !!value && value === previous?.id;
+  const record = value && !usingOld ? uploader.find(value) : undefined;
   const sending = record?.done === false;
 
   const onUpload = (file: File) => {
@@ -60,8 +64,21 @@ export default function FileUpload<T extends WorkDocType>({
   };
 
   useEffect(() => {
-    if (value && !record?.id) onChange?.(undefined);
-  }, [onChange, value, record?.id]);
+    const oldId = previous?.id;
+    const newId = record?.id;
+    if (value === oldId) return;
+    // use the previous ID as the initial value
+    else if (oldId && !value) onChange?.(oldId);
+    // if record is undefined, then the upload failed, so clear the value
+    else if (value && !newId) onChange?.(oldId);
+  }, [onChange, value, record?.id, previous?.id]);
+
+  const needsValue = required && !record && !previous;
+  const textColor = !previous
+    ? undefined
+    : usingOld
+      ? "text-purple-800!"
+      : "text-green-600!";
 
   return (
     <Upload
@@ -74,13 +91,17 @@ export default function FileUpload<T extends WorkDocType>({
         <Input
           readOnly
           size="small"
-          value={record?.name}
+          value={record?.name || previous?.name}
           tabIndex={-1} // tab goes straight to the button
-          className={twJoin("cursor-pointer w-full text-sm!", inputClassName)}
+          className={twJoin(
+            "cursor-pointer w-full text-sm!",
+            inputClassName,
+            textColor,
+          )}
           onKeyUp={(e) => e.key === " " && (e.target as HTMLElement)?.click?.()}
           placeholder={placeholder}
         />
-        {required && !record && (
+        {needsValue && (
           <Input
             className="absolute! w-0! h-0! min-w-0! border-0! p-0! opacity-0 bottom-0 left-0"
             tabIndex={-1}
@@ -94,8 +115,8 @@ export default function FileUpload<T extends WorkDocType>({
         )}
         <Button
           size="small"
-          className={twJoin("w-10! text-sm!")}
           type="default"
+          className={twJoin("w-10! text-sm!")}
           icon={sending ? <LoadingOutlined spin /> : <PaperClipOutlined />}
         />
       </Space.Compact>

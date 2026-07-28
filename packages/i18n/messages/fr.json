@@ -234,5 +234,6 @@
   "welcome": "Bienvenue, {name}!",
   "image_will_be_removed": "Cette image sera supprimée",
   "upload_images": "Télécharger des images",
-  "fat_pbo": "FAT/PBO"
+  "fat_pbo": "FAT/PBO",
+  "finish_survey": "Finir le Survey"
 }

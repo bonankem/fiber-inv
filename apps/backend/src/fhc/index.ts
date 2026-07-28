@@ -6,6 +6,7 @@ import { fhcRequestManyApi } from "./fhc-many.api";
 import { fhcRequestApi } from "./fhc-request.api";
 import { fhcReviewApi } from "./fhc-review.api";
 import { fhcSubmitApi } from "./fhc-submit.api";
+import { fhcSurveyApi } from "./fhc-survey.api";
 
 export default appPlugin((app) => {
   app.register(fhcCountApi);
@@ -13,6 +14,7 @@ export default appPlugin((app) => {
   app.register(fhcListApi);
   app.register(fhcRequestApi);
   app.register(fhcRequestManyApi);
-  app.register(fhcSubmitApi);
   app.register(fhcReviewApi);
+  app.register(fhcSubmitApi);
+  app.register(fhcSurveyApi);
 });

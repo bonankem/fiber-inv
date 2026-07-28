@@ -2,32 +2,22 @@ import { Card, Empty, Form, Grid, List, message, Tabs } from "antd";
 import { m } from "i18n/messages";
 import { useState } from "react";
 import { countBy, sumBy } from "remeda";
-import { BoxType, type WorkDocType } from "schema/enums";
-import type { FhsSubmitT, FtthSurveyT } from "schema/fhs";
-import type { UpFhsBoxT, UpFhsCoordsT, UpOdnKmzT } from "schema/uploads";
-import { filterTruthy, type Maybe } from "schema/utils";
-import { apiCall, useApiPost } from "#/api/helpers";
+import { BoxType, WorkDocType } from "schema/enums";
+import { type FhsSubmitT, type FtthSurveyT, ftthSurveyFullZ } from "schema/fhs";
+import type {
+  UpFhsBoxT,
+  UpFhsCoordsT,
+  UploadT,
+  UpOdnKmzT,
+} from "schema/uploads";
+import { assoc, filterTruthy, type Maybe } from "schema/utils";
+import { apiCall, useApiGet, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import FileUpload, { type Parsed } from "#/components/inputs/FileUpload";
 import IntInput from "#/components/inputs/IntInput";
+import useOnceReady from "#/hooks/useOnceReady";
 import { req } from "#/utils/form";
 import type { FhsFormProps } from "../fhs-types";
-
-const fileInput = <T extends WorkDocType & string>(
-  type: T,
-  label: string,
-  onParsed?: (p: Parsed<T>) => void,
-) => (
-  <Form.Item name={type as string} {...req}>
-    <FileUpload
-      required
-      type={type}
-      placeholder={label}
-      onParsed={onParsed}
-      inputClassName="placeholder:text-gray-400!"
-    />
-  </Form.Item>
-);
 
 const qtyInput = (name: keyof FhsSubmitT, label: string, length = false) => (
   <Form.Item name={name} noStyle>
@@ -85,6 +75,40 @@ export default function FhsSubmitForm(props: FhsFormProps) {
   const [coords, setCoords] = useState<UpFhsCoordsT>();
   const [kmz, setKmz] = useState<UpOdnKmzT>();
 
+  const full = useApiGet(["fhs", props.item.id], ftthSurveyFullZ);
+  const [oldDocs, setOldDocs] = useState<Record<string, UploadT>>();
+
+  useOnceReady(full.data, (full) => {
+    const docs = assoc(
+      full.work.docs,
+      (d) => d.type,
+      (d) => d.upload,
+    );
+    setOldDocs(docs);
+
+    const kmz = docs[WorkDocType.ODN_KMZ];
+    const coords = docs[WorkDocType.COORDINATES];
+    setKmz(kmz?.parsed as UpOdnKmzT);
+    setCoords(coords?.parsed as UpFhsCoordsT);
+
+    const rep = full.report;
+    if (rep) {
+      form.setFieldsValue({
+        hp: rep.hp,
+        oltCards: rep.oltCards,
+        xBoxes: rep.xBoxes,
+        hubBoxes: rep.hubBoxes,
+        fats: rep.fats,
+        manholes: rep.manholes,
+        closures: rep.closures,
+        metalPoles: rep.metalPoles,
+        concretePoles: rep.concretePoles,
+        transportLength: rep.transportLength,
+        distLength: rep.distLength,
+      });
+    }
+  });
+
   const submitM = useApiPost<FhsSubmitT, FtthSurveyT>("/fhs/submit");
 
   const onSubmit = apiCall(async (data: FhsSubmitT) => {
@@ -120,6 +144,23 @@ export default function FhsSubmitForm(props: FhsFormProps) {
     setCoords(up);
   };
 
+  const fileInput = <T extends WorkDocType & string>(
+    type: T,
+    label: string,
+    onParsed?: (p: Parsed<T>) => void,
+  ) => (
+    <Form.Item name={type as string} {...req}>
+      <FileUpload
+        required
+        type={type}
+        placeholder={label}
+        onParsed={onParsed}
+        previous={oldDocs?.[type]}
+        inputClassName="placeholder:text-gray-400!"
+      />
+    </Form.Item>
+  );
+
   return (
     <FormModal
       form={form}
@@ -129,6 +170,7 @@ export default function FhsSubmitForm(props: FhsFormProps) {
       subtitle={props.item.work.name}
       className="grid gap-4 grid-cols-1 md:grid-cols-3"
       onSubmit={onSubmit}
+      preparing={full.isLoading}
     >
       <div className="flex flex-col gap-2">
         <h2 className="font-medium">Documents</h2>

@@ -236,6 +236,7 @@ function GuItemView<T>(props: {
             onChange={(e) => !item.old && props.onRename(item, e.target.value)}
             className={twJoin("w-full border-0! text-sm!", guNameColor(item))}
             placeholder={m.name()}
+            data-1p-ignore
           />
 
           <div className="absolute top-1 right-1 flex gap-1 opacity-75 hover:opacity-100">

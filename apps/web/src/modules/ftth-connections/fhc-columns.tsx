@@ -39,7 +39,8 @@ export const fhcColumns: fhcColumn[] = [
       <StatusView
         work={t.work}
         pendingOn={{
-          REQUESTED: "VENDOR",
+          SURVEY: "VENDOR",
+          INSTALLATION: "VENDOR",
           REVIEW: "HOME_INTERNET",
           FAILED: "VENDOR",
         }}

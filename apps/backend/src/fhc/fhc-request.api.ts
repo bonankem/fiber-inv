@@ -12,7 +12,7 @@ export const fhcRequestApi = postRoute({
 });
 
 async function fhcRequest(dto: FhcRequestT, from: UserFullT) {
-  const status = WorkStatus.REQUESTED;
+  const status = WorkStatus.SURVEY;
   const action = WorkAction.REQUEST;
 
   return prisma.$transaction(async (tx) => {

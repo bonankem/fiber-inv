@@ -10,8 +10,9 @@ import type { FtthConnectionT as What } from "schema/fhc";
 import { buildActions } from "#/components/actions/types";
 import CommentForm from "../work/CommentForm";
 import FhcAcceptForm from "./forms/FhcAcceptForm";
+import FhcRejectForm from "./forms/FhcRejectForm";
 import FhcSubmitForm from "./forms/FhcSubmitForm";
-import FhcRejectForm from "./forms/FhsRejectForm";
+import FhcSurveyForm from "./forms/FhcSurveyForm";
 
 function isWhen(what: What, when: When) {
   return what.work.status === when;
@@ -23,7 +24,14 @@ function isWho() {
 
 export const fhcActions = buildActions(isWhen, isWho, [
   {
-    name: m.action_submit(),
+    name: m.finish_survey(),
+    icon: SendOutlined,
+    when: [When.SURVEY],
+    form: FhcSurveyForm,
+    main: true,
+  },
+  {
+    name: m.action_finish(),
     icon: SendOutlined,
     form: FhcSubmitForm,
     when: [When.INSTALLATION, When.FAILED],
