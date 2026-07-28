@@ -7,8 +7,7 @@ import {
 import { m } from "i18n/messages";
 import { StaffRole, WorkStatus as When } from "schema/enums";
 import type { FtthConnectionT as What } from "schema/fhc";
-import type { UserFullT } from "schema/people";
-import { buildActions } from "#/components/actions/types";
+import { buildActions, isWhom, VENDOR } from "#/components/actions/types";
 import CommentForm from "../work/CommentForm";
 import FhcAcceptForm from "./forms/FhcAcceptForm";
 import FhcRejectForm from "./forms/FhcRejectForm";
@@ -19,21 +18,9 @@ function isWhen(what: What, when: When) {
   return what.work.status === when;
 }
 
-function isWho(what: What, whom: StaffRole | "vendor", user: UserFullT) {
-  if (user.isAdmin) return true;
-
-  const work = what.work;
-  if (whom === "vendor") {
-    const vendorId = work.vendor?.id;
-    return !!vendorId && vendorId === user.vendor?.id;
-  }
-  return user.staffRole === whom;
-}
-
 const { HOME_INTERNET } = StaffRole;
-const VENDOR = "vendor";
 
-export const fhcActions = buildActions(isWhen, isWho, [
+export const fhcActions = buildActions(isWhen, isWhom<What>, [
   {
     name: m.finish_survey(),
     icon: SendOutlined,
@@ -47,7 +34,7 @@ export const fhcActions = buildActions(isWhen, isWho, [
     icon: SendOutlined,
     form: FhcSubmitForm,
     when: [When.INSTALLATION, When.FAILED],
-    whom: [VENDOR],
+    whom: [HOME_INTERNET],
     main: true,
   },
   {

@@ -2,14 +2,33 @@ import type { UserOutlined } from "@ant-design/icons";
 import type { ThumbsUp } from "lucide-react";
 import { useMemo } from "react";
 import { filter, map, pipe } from "remeda";
+import type { StaffRole } from "schema/enums";
 import { type UserFullT, userFullZ } from "schema/people";
 import type { Maybe } from "schema/utils";
+import type { WorkT } from "schema/work";
 import { useApiGet } from "#/api/helpers";
 import type { ModalItemFC } from "#/hooks/useModalViewer";
 
 type Icon = typeof UserOutlined | typeof ThumbsUp;
 type Func<I, O> = (t: I) => O;
 type MaybeFunc<I, O> = O | ((t: I) => O);
+
+export const VENDOR = "vendor";
+export type VENDOR = typeof VENDOR;
+
+export function isWhom<T extends { work: WorkT }>(
+  what: T,
+  whom: StaffRole | VENDOR,
+  user: UserFullT,
+) {
+  if (user.isAdmin) return true;
+  const work = what.work;
+  if (whom === VENDOR) {
+    const vendorId = work.vendor?.id;
+    return !!vendorId && vendorId === user.vendor?.id;
+  }
+  return user.staffRole === whom;
+}
 
 function callFunc<I, O>(f: MaybeFunc<I, O> | undefined, i: I) {
   return typeof f === "function" ? (f as Func<I, O>)(i) : (f ?? undefined);
@@ -65,6 +84,7 @@ function resolve<T, When, Who>(
     acts.actions,
     filter((a) => {
       if (some(a.when, item, acts.isWhen) === false) return false;
+      if (some(a.whom, item, acts.isWhom) === false) return false;
       if (some(a.notWhen, item, acts.isWhen) === true) return false;
       if (a.onlyIf?.(item) === false) return false;
       if (a.notIf?.(item) === true) return false;

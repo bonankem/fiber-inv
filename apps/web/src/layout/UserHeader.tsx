@@ -9,7 +9,6 @@ import {
 import { useLocation } from "@tanstack/react-router";
 import { Button, Dropdown, Layout, theme } from "antd";
 import { m } from "i18n/messages";
-import { StaffRole } from "schema/enums";
 import { userFullZ } from "schema/people";
 import { twJoin } from "tailwind-merge";
 import { useApiGet } from "#/api/helpers";
@@ -64,8 +63,7 @@ export default function UserHeader(props: UserLayoutProps) {
   const userQ = useApiGet("session/user", userFullZ);
   const user = userQ.data;
 
-  const canCreate =
-    user?.isAdmin || user?.staffRole === StaffRole.HOME_INTERNET;
+  const canCreate = !!(user?.isAdmin || user?.staffRole);
 
   const onReport = () => {
     if (pathKey === "staff") {
@@ -132,7 +130,7 @@ export default function UserHeader(props: UserLayoutProps) {
             </Button>
           )}
 
-          {Array.isArray(newForm) && (
+          {canCreate && Array.isArray(newForm) && (
             <Dropdown
               trigger={["click"]}
               placement="bottomRight"
