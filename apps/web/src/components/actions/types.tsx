@@ -15,12 +15,12 @@ function callFunc<I, O>(f: MaybeFunc<I, O> | undefined, i: I) {
   return typeof f === "function" ? (f as Func<I, O>)(i) : (f ?? undefined);
 }
 
-export type DataAction<T, When, Who> = {
+export type DataAction<T, When, Whom> = {
   name: string;
   key?: string;
   form?: ModalItemFC<T>;
   icon?: Icon;
-  who?: Who[];
+  whom?: Whom[];
   when?: When[];
   notWhen?: When[];
   onlyIf?: Func<T, boolean>;
@@ -31,10 +31,10 @@ export type DataAction<T, When, Who> = {
 
 type Matcher<T, W> = (t: T, w: W, u: UserFullT) => boolean;
 
-export type Actions<T, When, Who> = {
-  actions: DataAction<T, When, Who>[];
+export type Actions<T, When, Whom> = {
+  actions: DataAction<T, When, Whom>[];
   isWhen?: Matcher<T, When>;
-  isWho?: Matcher<T, Who>;
+  isWhom?: Matcher<T, Whom>;
 };
 
 // biome-ignore lint/suspicious/noExplicitAny: only need the first param
@@ -45,7 +45,7 @@ export function buildActions<T, When, Who>(
   isWho: Matcher<T, Who>,
   actions: DataAction<T, When, Who>[],
 ): Actions<T, When, Who> {
-  return { actions, isWhen, isWho };
+  return { actions, isWhen, isWhom: isWho };
 }
 
 function resolve<T, When, Who>(

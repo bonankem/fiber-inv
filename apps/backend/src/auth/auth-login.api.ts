@@ -55,19 +55,18 @@ async function maybeLockout(user: LoginUserT, req: AnyRequest, time: Date) {
   const sec = await prisma.security.findFirst();
   if (!sec) return;
 
-  const attempts = await prisma.authLog.findMany({
+  const max = sec.lockoutAttempts;
+  const logs = await prisma.authLog.findMany({
     where: {
       email: user.email,
       action: { in: [PASSWORD_FAILED, LOGIN_SUCCESS, UNLOCKED_BY_ADMIN] },
     },
-    take: sec.lockoutAttempts,
+    take: max,
     select: { action: true },
     orderBy: { time: "desc" },
   });
 
-  // if the last N access actions are PASSWORD_FAILED, lock the account
-  // N = security.lockoutAttempts
-  if (attempts.every((a) => a.action === PASSWORD_FAILED)) {
+  if (logs.length >= max && logs.every((a) => a.action === PASSWORD_FAILED)) {
     const lockUntil = dayjs(time).add(sec.lockoutMinutes, "minutes").toDate();
     await prisma.user.update({ where: { id: user.id }, data: { lockUntil } });
     await authLog(AuthAction.LOCKOUT, req, user.email);

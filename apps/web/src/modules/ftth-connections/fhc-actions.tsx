@@ -5,8 +5,9 @@ import {
   SendOutlined,
 } from "@ant-design/icons";
 import { m } from "i18n/messages";
-import { WorkStatus as When } from "schema/enums";
+import { StaffRole, WorkStatus as When } from "schema/enums";
 import type { FtthConnectionT as What } from "schema/fhc";
+import type { UserFullT } from "schema/people";
 import { buildActions } from "#/components/actions/types";
 import CommentForm from "../work/CommentForm";
 import FhcAcceptForm from "./forms/FhcAcceptForm";
@@ -18,9 +19,19 @@ function isWhen(what: What, when: When) {
   return what.work.status === when;
 }
 
-function isWho() {
-  return true;
+function isWho(what: What, whom: StaffRole | "vendor", user: UserFullT) {
+  if (user.isAdmin) return true;
+
+  const work = what.work;
+  if (whom === "vendor") {
+    const vendorId = work.vendor?.id;
+    return !!vendorId && vendorId === user.vendor?.id;
+  }
+  return user.staffRole === whom;
 }
+
+const { HOME_INTERNET } = StaffRole;
+const VENDOR = "vendor";
 
 export const fhcActions = buildActions(isWhen, isWho, [
   {
@@ -28,6 +39,7 @@ export const fhcActions = buildActions(isWhen, isWho, [
     icon: SendOutlined,
     when: [When.SURVEY],
     form: FhcSurveyForm,
+    whom: [VENDOR],
     main: true,
   },
   {
@@ -35,22 +47,25 @@ export const fhcActions = buildActions(isWhen, isWho, [
     icon: SendOutlined,
     form: FhcSubmitForm,
     when: [When.INSTALLATION, When.FAILED],
+    whom: [VENDOR],
     main: true,
   },
   {
     name: m.action_accept(),
     icon: CheckOutlined,
-    main: true,
-    when: [When.REVIEW],
     form: FhcAcceptForm,
+    when: [When.REVIEW],
+    whom: [HOME_INTERNET],
+    main: true,
   },
   {
     name: m.action_reject(),
     icon: CloseOutlined,
+    form: FhcRejectForm,
+    when: [When.REVIEW],
+    whom: [HOME_INTERNET],
     main: true,
     red: true,
-    when: [When.REVIEW],
-    form: FhcRejectForm,
   },
   {
     name: m.action_comment(),
