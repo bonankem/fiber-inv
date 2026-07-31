@@ -6,7 +6,6 @@ import type { UserT } from "schema/people";
 import { workFullP } from "schema/work";
 import { prisma } from "#/db";
 import { postRoute } from "#/utils/routing";
-import { currentDate } from "#/utils/time";
 import { updateWork } from "../utils/work";
 
 export const fhcReviewApi = postRoute({
@@ -34,7 +33,6 @@ async function fhcReview(dto: FhsReviewT, from: UserT) {
         old: fhc.work,
         status: ok ? WorkStatus.CONFIGURATION : WorkStatus.FAILED_REVIEW,
         action: ok ? WorkAction.PASS_REVIEW : WorkAction.FAIL_REVIEW,
-        also: { closeDate: ok ? currentDate() : undefined },
         logTo: fhc.work?.vendor,
         from,
       }),
