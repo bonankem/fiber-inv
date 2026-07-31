@@ -50,7 +50,7 @@ export const fhpColumns: FhpColumn[] = [
           ASSIGNED: "PROJECT_ENGINEER",
           INSTALLATION: "VENDOR",
           REVIEW: "PROJECT_ENGINEER",
-          FAILED: "VENDOR",
+          FAILED_REVIEW: "VENDOR",
         }}
       />
     ),

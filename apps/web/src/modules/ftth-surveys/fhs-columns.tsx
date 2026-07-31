@@ -49,7 +49,7 @@ export const fhsColumns: FhsColumn[] = [
           ASSIGNED: "PLANNING_ENGINEER",
           SURVEY: "VENDOR",
           REVIEW: "PLANNING_ENGINEER",
-          FAILED: "VENDOR",
+          FAILED_REVIEW: "VENDOR",
         }}
       />
     ),

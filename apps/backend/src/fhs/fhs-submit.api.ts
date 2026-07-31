@@ -29,7 +29,7 @@ async function fhsSubmit(dto: FhsSubmitT, from: UserT) {
   } = dto;
   const { s } = await fhsCheck({
     workId: id,
-    status: [WorkStatus.SURVEY, WorkStatus.FAILED],
+    status: [WorkStatus.SURVEY, WorkStatus.FAILED_REVIEW],
   });
 
   const report = {

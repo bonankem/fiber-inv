@@ -7,10 +7,12 @@ enum WorkStatus {
     INSTALLATION
     DESATURATION
     BUILDING_CABLING
-
-    CANCELLED
     REVIEW
-    FAILED
+    CONFIGURATION
+    FIELD_ATP
+    FAILED_REVIEW
+    FAILED_FIELD_ATP
+    CANCELLED
     CLOSED
 }
 
@@ -30,6 +32,10 @@ enum WorkAction {
 
     FAIL_REVIEW
     PASS_REVIEW
+
+    CONFIGURATION
+    PASS_FIELD_ATP
+    FAIL_FIELD_ATP
 }
 
 model Work {

@@ -17,7 +17,13 @@ export function fhcWherePendingOn(who: Maybe<Who | string>) {
   if (!who) return undefined;
   const vendorId = typeof who === "string" ? who : who.vendor?.id;
   return qOr<WorkWhere>([
-    workIsOnVendor(vendorId, S.REQUESTED, S.SURVEY, S.INSTALLATION, S.FAILED),
+    workIsOnVendor(
+      vendorId,
+      S.REQUESTED,
+      S.SURVEY,
+      S.INSTALLATION,
+      S.FAILED_REVIEW,
+    ),
   ]);
 }
 

@@ -15,7 +15,7 @@ async function fhpImages(dto: FhpPostImagesT) {
   const { id: workId, images, remove } = dto;
   const { s } = await fhpCheck({
     workId,
-    status: [WorkStatus.INSTALLATION, WorkStatus.FAILED],
+    status: [WorkStatus.INSTALLATION, WorkStatus.FAILED_REVIEW],
   });
 
   for (const i of images) {

@@ -15,7 +15,7 @@ async function fhpSubmit(dto: FhpSubmitT) {
   const { id, comment, uploads, BOQ, ODN_KMZ, ...fields } = dto;
   const { s } = await fhpCheck({
     workId: id,
-    status: [WorkStatus.INSTALLATION, WorkStatus.FAILED],
+    status: [WorkStatus.INSTALLATION, WorkStatus.FAILED_REVIEW],
   });
 
   const report = {

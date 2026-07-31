@@ -21,7 +21,7 @@ export function fhsWherePendingOn(who: Maybe<Who | string>) {
   const userId = typeof who === "string" ? who : who.id;
   const vendorId = typeof who === "string" ? who : who.vendor?.id;
   return qOr<WorkWhere>([
-    workIsOnVendor(vendorId, S.SURVEY, S.FAILED),
+    workIsOnVendor(vendorId, S.SURVEY, S.FAILED_REVIEW),
     workIsOnUser(S.REQUESTED, MANAGER, userId),
     workIsOnUser(S.ASSIGNED, ENGINEER, userId),
     workIsOnUser(S.REVIEW, ENGINEER, userId),

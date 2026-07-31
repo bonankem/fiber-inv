@@ -49,7 +49,7 @@ export const fhcColumns: fhcColumn[] = [
           SURVEY: "VENDOR",
           INSTALLATION: "VENDOR",
           REVIEW: "HOME_INTERNET",
-          FAILED: "VENDOR",
+          FAILED_REVIEW: "VENDOR",
         }}
       />
     ),
