@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import fastifyCors from "@fastify/cors";
 import fastifyFormbody from "@fastify/formbody";
+import fastifyHelmet from "@fastify/helmet";
 import fastifyJwt from "@fastify/jwt";
 import fastifyMultipart from "@fastify/multipart";
 import fastifySchedule from "@fastify/schedule";
@@ -16,7 +17,7 @@ import {
 } from "fastify-zod-openapi";
 import { initSyslogServer } from "./admin/adm-syslog.api";
 import api from "./api";
-import { appEnv } from "./env";
+import { appEnv, corsOrigin } from "./env";
 import { appErrorHandler } from "./error";
 import { verifyMail } from "./mail";
 import { appSocket } from "./socket";
@@ -36,7 +37,8 @@ function getJwtSecret() {
   return randomBytes(24).toString("base64");
 }
 
-app.register(fastifyCors);
+app.register(fastifyCors, { origin: corsOrigin });
+app.register(fastifyHelmet);
 app.register(fastifyFormbody);
 app.register(fastifyMultipart);
 app.register(fastifySensible);

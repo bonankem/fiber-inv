@@ -11,6 +11,7 @@ const schema = z.object({
   PORT: z.preprocess((s) => s && Number(s), z.int().default(3000)),
   NODE_ENV: z.string().optional(),
   FRONTEND_URL: z.url().optional(),
+  CORS_ANY: z.string().optional(),
   TRUST_PROXY: z
     .union([z.ipv4(), z.cidrv4(), z.literal("false").transform(() => false)])
     .default("127.0.0.1"),
@@ -34,3 +35,6 @@ export const appEnv = await schema.parseAsync(process.env).catch((e) => {
 });
 
 export const isDev = appEnv.NODE_ENV !== "production";
+
+const corsAny = isDev || isTrue(appEnv.CORS_ANY);
+export const corsOrigin = corsAny ? "*" : appEnv.FRONTEND_URL || "*";

@@ -36,3 +36,30 @@ model FtthConnection {
 
     @@unique([fatId, fatPort], name: "fatUniq")
 }
+
+model FhcCostRule {
+    id String @id @db.Uuid
+
+    key String @unique
+
+    minCableLength Int?
+
+    maxCableLength Int?
+
+    newPole Boolean?
+
+    lines FhcCostLine[]
+}
+
+model FhcCostLine {
+    id String @id @db.Uuid
+
+    nameFr String @unique @db.Citext
+
+    nameEn String? @unique @db.Citext
+
+    ref String? @unique
+
+    /// the cost line applies if *any* of the rules match
+    rules FhcCostRule[]
+}
