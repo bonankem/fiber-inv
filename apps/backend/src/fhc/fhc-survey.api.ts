@@ -1,4 +1,4 @@
-import { WorkAction, WorkStatus } from "schema/enums";
+import { WorkAction } from "schema/enums";
 import { bad, Err } from "schema/errors";
 import { type FhcSurveyT, fhcSurveyZ, ftthConnectionS } from "schema/fhc";
 import type { UserT } from "schema/people";
@@ -25,10 +25,11 @@ async function fhcSurvey(dto: FhcSurveyT, from: UserT) {
     select: ftthConnectionS,
     where: { id },
     data: {
+      newPole: dto.newPole,
       work: updateWork({
         dto,
         old: fhc.work,
-        status: WorkStatus.INSTALLATION,
+        status: dto.nextPhase,
         action: WorkAction.FINISH_SURVEY,
         docs: { SURVEY_REPORT },
         from,

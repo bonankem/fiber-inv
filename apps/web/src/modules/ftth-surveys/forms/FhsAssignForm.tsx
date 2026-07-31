@@ -25,7 +25,7 @@ export default function FhsAssignForm(props: FhsFormProps) {
       state={props.state}
       onSubmit={onSubmit}
     >
-      <Form.Item name="userId" label={m.field_assignee()} {...req}>
+      <Form.Item name="userId" label={m.assignee()} {...req}>
         <StaffSelect filter="PLANNING_ENGINEER" />
       </Form.Item>
 

@@ -177,28 +177,28 @@ export default function FhsSubmitForm(props: FhsFormProps) {
 
         {fileInput("ODN_KMZ", "KMZ", onParseKmz)}
         {fileInput("BOQ", "BOQ")}
-        {fileInput("COORDINATES", m.field_coords(), onParseCoords)}
-        {fileInput("PLAN_DIAGRAM", m.field_plan_diag())}
+        {fileInput("COORDINATES", m.coords(), onParseCoords)}
+        {fileInput("PLAN_DIAGRAM", m.plan_diag())}
         {fileInput("SYNOPTIC_DIAGRAM", m.field_synoptic_diag())}
         {fileInput("SYNOPTIC_TABLE", m.field_synoptic_table())}
-        {fileInput("CABLE_LENGTHS", m.field_cable_lengths())}
-        {fileInput("HP_SUMMARY", m.field_hp_summary())}
+        {fileInput("CABLE_LENGTHS", m.cable_lengths())}
+        {fileInput("HP_SUMMARY", m.hp_summary())}
       </div>
 
       <div className="flex flex-col gap-2">
         <h2 className="font-medium">Nouvelles quantités</h2>
 
-        {qtyInput("hp", m.field_hp())}
-        {qtyInput("oltCards", m.field_olt_cards())}
+        {qtyInput("hp", m.hp())}
+        {qtyInput("oltCards", m.olt_cards())}
         {qtyInput("xBoxes", m.field_x_boxes())}
-        {qtyInput("hubBoxes", m.field_hub_boxes())}
+        {qtyInput("hubBoxes", m.hub_boxes())}
         {qtyInput("fats", m.fat_pbo())}
-        {qtyInput("concretePoles", m.field_concrete_poles())}
-        {qtyInput("metalPoles", m.field_metal_poles())}
-        {qtyInput("closures", m.field_closures())}
-        {qtyInput("manholes", m.field_manholes())}
+        {qtyInput("concretePoles", m.concrete_poles())}
+        {qtyInput("metalPoles", m.metal_poles())}
+        {qtyInput("closures", m.closures())}
+        {qtyInput("manholes", m.manholes())}
         {qtyInput("transportLength", m.field_tran_cables(), true)}
-        {qtyInput("distLength", m.field_dist_cables(), true)}
+        {qtyInput("distLength", m.dist_cables(), true)}
       </div>
 
       <Card classNames={{ body: "p-0!" }}>

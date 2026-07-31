@@ -17,7 +17,7 @@ const ENGINEER = R.PROJECT_ENGINEER;
 export const workStopped: WorkStatus[] = [S.CANCELLED, S.DECLINED];
 export const workNotOpen: WorkStatus[] = [S.CLOSED, ...workStopped];
 
-export function fhsWherePendingOn(who: Maybe<Who | string>) {
+export function fhpWherePendingOn(who: Maybe<Who | string>) {
   if (!who) return undefined;
   const userId = typeof who === "string" ? who : who.id;
   const vendorId = typeof who === "string" ? who : who.vendor?.id;
@@ -45,7 +45,7 @@ export function workWhere(input: FhpFilterT): WhereWork {
     requestDate: input.requested,
     workers: qWorkerIs(input.worker),
     AND: filterTruthy([
-      fhsWherePendingOn(input.pending),
+      fhpWherePendingOn(input.pending),
       fhpWhereSubset(input.subset),
     ]),
   };

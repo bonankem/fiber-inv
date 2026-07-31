@@ -5,7 +5,12 @@ import type { UserFullT } from "schema/people";
 import { assoc } from "schema/utils";
 import { prisma, WorkStatus as S } from "#/db";
 import { getRoute } from "#/utils/routing";
-import { fhsWorkWhere, workNotOpen, workStopped } from "./filter";
+import {
+  fhsWherePendingOn,
+  fhsWorkWhere,
+  workNotOpen,
+  workStopped,
+} from "./filter";
 
 export const fhsCountApi = getRoute({
   url: "/fhs/count",
@@ -18,11 +23,11 @@ async function fhsCount(
   user: UserFullT,
 ): Promise<SubsetCounts> {
   delete input.subset;
-  const byStatus = await prisma.work.groupBy({
-    where: {
-      fhs: { isNot: null },
-      AND: fhsWorkWhere(input, user),
-    },
+
+  const db = prisma.work;
+  const fhs = { isNot: null };
+  const byStatus = await db.groupBy({
+    where: { fhs, AND: fhsWorkWhere(input, user) },
     by: ["status"],
     _count: true,
   });
@@ -31,6 +36,9 @@ async function fhsCount(
     (s) => s.status,
     (s) => s._count,
   );
+  const mine = await prisma.work.count({
+    where: { fhs, AND: fhsWherePendingOn(user) },
+  });
   const countOf = (statuses: S[]) => {
     return sumBy(statuses, (s) => counts[s] || 0);
   };
@@ -38,7 +46,7 @@ async function fhsCount(
   const total = sumBy(byStatus, (s) => s._count);
   return {
     TOTAL: total,
-    MY_PENDING: 0,
+    MY_PENDING: mine,
     OPEN: total - countOf(workNotOpen),
     STOPPED: countOf(workStopped),
     CLOSED: countOf([S.CLOSED]),

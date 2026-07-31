@@ -55,7 +55,7 @@ export default function FhpRequestForm(props: ModalStateProps) {
         />
       </Form.Item>
 
-      <Form.Item name="coords" label={m.field_coords()} {...req}>
+      <Form.Item name="coords" label={m.coords()} {...req}>
         <CoordsInput />
       </Form.Item>
 
@@ -71,7 +71,7 @@ export default function FhpRequestForm(props: ModalStateProps) {
         <StaffSelect filter="PROJECT_MANAGER" />
       </Form.Item>
 
-      <Form.Item name="comment" label={m.field_comment()}>
+      <Form.Item name="comment" label={m.comment()}>
         <Input.TextArea rows={3} className="resize-none!" />
       </Form.Item>
     </FormModal>

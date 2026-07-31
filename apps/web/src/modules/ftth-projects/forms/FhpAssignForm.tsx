@@ -26,7 +26,7 @@ export default function FhpAssignForm(props: FhpFormProps) {
       onSubmit={onSubmit}
       submitting={send.isPending}
     >
-      <Form.Item name="userId" label={m.field_assignee()} {...req}>
+      <Form.Item name="userId" label={m.assignee()} {...req}>
         <StaffSelect filter="PROJECT_ENGINEER" />
       </Form.Item>
 

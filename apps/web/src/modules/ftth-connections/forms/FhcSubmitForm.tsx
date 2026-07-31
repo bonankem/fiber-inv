@@ -19,6 +19,7 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
   const boxes = useApiGet("/network/boxes", zArray(boxZ));
   const send = useApiPost<FhcSubmitT, FtthConnectionT>("/fhc/submit");
   const [form] = Form.useForm<FhcSubmitT>();
+  const newPole = Form.useWatch("newPole", form);
 
   const initialValues = useMemo(
     (): Partial<FhcSubmitT> => ({
@@ -87,19 +88,15 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
         {img(Doc.FHC_ONT_INDICATORS, "ONT Indicators")}
         {img(Doc.FHC_ONT_NAMEPLATE, "ONT Nameplate")}
         {img(Doc.FHC_SPEED_TEST, "Speed Test")}
-        {img(Doc.FHC_POLE, "Pole", false)}
+        {img(Doc.FHC_POLE, "Pole", newPole)}
       </section>
 
       <section className="flex flex-col">
-        <Form.Item name="cableLength" label="Cable Length" required>
-          <IntInput required suffix="m" controls={false} />
-        </Form.Item>
-
         <Form.Item name="newPole" label="New Pole" required>
           <Select
             options={[
-              { value: true, label: "Yes" },
-              { value: false, label: "No" },
+              { value: true, label: m.yes() },
+              { value: false, label: m.no() },
             ]}
           />
         </Form.Item>
@@ -115,6 +112,10 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
 
         <Form.Item name="fatPort" label="FAT Port" required>
           <IntInput required controls={false} min={1} max={8} />
+        </Form.Item>
+
+        <Form.Item name="cableLength" label="Cable Length" required>
+          <IntInput required suffix="m" controls={false} />
         </Form.Item>
 
         <Form.Item name="ontSerial" label="ONT Serial Number" required>

@@ -7,6 +7,7 @@ import WithCaption from "#/components/WithCaption";
 import { shortName } from "#/utils/names";
 import DataTable from "./data-page/DataTable";
 import type { DtColumn } from "./data-page/types";
+import StatusBadge from "./StatusBadge";
 
 export default function WorkLogsTab({ id }: { id: string }) {
   const query = useApiGet(["work", id, "logs"], zArray(workLogZ));
@@ -25,21 +26,27 @@ const workLogColumns: DtColumn<WorkLogT>[] = [
   {
     key: "time",
     title: m.date_time(),
-    width: 120,
+    width: 100,
     render: (l) => <DateTimeView value={l.createdAt} />,
   },
   {
     key: "action",
     title: "Action",
-    width: 240,
+    width: 250,
     render: (l) => (
       <WithCaption title={l.action} caption={<LogCaption log={l} />} />
     ),
   },
   {
+    key: "status",
+    title: m.status(),
+    width: 150,
+    render: (l) => l.newStatus && <StatusBadge smaller status={l.newStatus} />,
+  },
+  {
     key: "comment",
     title: m.comments_attachments(),
-    width: 320,
+    width: 250,
     render: (l) => l.comment,
   },
 ];

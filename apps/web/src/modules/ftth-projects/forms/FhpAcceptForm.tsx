@@ -24,7 +24,7 @@ export default function FhpAcceptForm(props: FhpFormProps) {
       onSubmit={onSubmit}
       submitting={send.isPending}
     >
-      <Form.Item name="comment" label={m.field_comment()}>
+      <Form.Item name="comment" label={m.comment()}>
         <Input.TextArea
           rows={3}
           className="resize-none!"

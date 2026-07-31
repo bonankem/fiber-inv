@@ -1,9 +1,12 @@
 import { WorkDocType } from "#/prisma";
 import { workUpdateDto } from "#/work";
-import { type z, zStr } from "../utils";
+import { z, zStr } from "../utils";
+import { fhcNextPhases } from "./fhc-status";
 
 export const fhcSurveyZ = workUpdateDto("FhcSurveyT", {
   [WorkDocType.SURVEY_REPORT]: zStr("Survey report upload ID"),
+  nextPhase: z.enum(fhcNextPhases),
+  newPole: z.boolean(),
 });
 
 export type FhcSurveyT = z.infer<typeof fhcSurveyZ>;

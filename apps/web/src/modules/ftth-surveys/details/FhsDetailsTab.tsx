@@ -22,12 +22,12 @@ export default function FhsDetailsTab(props: FhsTabProps) {
           { label: m.name(), value: w.name },
           { label: m.id(), value: w.sid },
           { label: m.status(), value: <StatusView work={w} smaller /> },
-          { label: m.field_assignee(), value: workerOf(w, ENGINEER)?.name },
+          { label: m.assignee(), value: workerOf(w, ENGINEER)?.name },
           { label: m.field_vendor(), value: w.vendor?.name },
           { label: m.area(), value: s.area },
           { label: localName, value: w.locality?.name },
           { label: "District", value: w.locality?.district?.name },
-          { label: m.field_coords(), value: <CoordsLink coords={w.coords} /> },
+          { label: m.coords(), value: <CoordsLink coords={w.coords} /> },
         ]}
       />
       <DetailsCard

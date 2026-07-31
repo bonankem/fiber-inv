@@ -92,14 +92,14 @@ export default function FhpSubmitForm(props: FhpFormProps) {
 
         <h2 className="font-medium">{m.quantities()}</h2>
         {qtyInput("xBoxes", m.field_x_boxes())}
-        {qtyInput("hubBoxes", m.field_hub_boxes())}
+        {qtyInput("hubBoxes", m.hub_boxes())}
         {qtyInput("fats", m.fat_pbo())}
-        {qtyInput("concretePoles", m.field_concrete_poles())}
-        {qtyInput("metalPoles", m.field_metal_poles())}
-        {qtyInput("closures", m.field_closures())}
-        {qtyInput("manholes", m.field_manholes())}
+        {qtyInput("concretePoles", m.concrete_poles())}
+        {qtyInput("metalPoles", m.metal_poles())}
+        {qtyInput("closures", m.closures())}
+        {qtyInput("manholes", m.manholes())}
         {qtyInput("transportMetres", m.field_tran_cables(), true)}
-        {qtyInput("distMetres", m.field_dist_cables(), true)}
+        {qtyInput("distMetres", m.dist_cables(), true)}
       </div>
     </FormModal>
   );

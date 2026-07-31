@@ -18,14 +18,14 @@ export default function FhsReportTab(props: FhpTabProps) {
         title="Nouvelles quantités"
         items={[
           { label: m.field_x_boxes(), value: rep.xBoxes },
-          { label: m.field_hub_boxes(), value: rep.hubBoxes },
+          { label: m.hub_boxes(), value: rep.hubBoxes },
           { label: m.fat_pbo(), value: rep.fats },
-          { label: m.field_closures(), value: rep.closures },
-          { label: m.field_manholes(), value: rep.manholes },
-          { label: m.field_concrete_poles(), value: rep.metalPoles },
-          { label: m.field_metal_poles(), value: rep.concretePoles },
+          { label: m.closures(), value: rep.closures },
+          { label: m.manholes(), value: rep.manholes },
+          { label: m.concrete_poles(), value: rep.metalPoles },
+          { label: m.metal_poles(), value: rep.concretePoles },
           { label: m.field_tran_cables(), value: `${rep.transportMetres} m` },
-          { label: m.field_dist_cables(), value: `${rep.distMetres} m` },
+          { label: m.dist_cables(), value: `${rep.distMetres} m` },
         ]}
       />
       <section className="flex flex-col gap-2">

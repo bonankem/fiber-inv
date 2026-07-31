@@ -17,6 +17,7 @@ import { useAppTheme } from "#/theme";
 import { req } from "#/utils/form";
 
 const { AREA_KMZ } = WorkDocType;
+const validCode = /^[A-Z]{4,5}\d?$/;
 
 export default function FhsRequestForm(props: ModalStateProps) {
   const uploader = useUploader();
@@ -30,14 +31,17 @@ export default function FhsRequestForm(props: ModalStateProps) {
 
   const searchCode = (code: string) => {
     console.log("searchCode", code);
-    const all = codesQ.data;
+    const all = codesQ.data?.map((c) => c.code);
     if (!all?.length) return setCodes([]);
 
     code = code.trim().toUpperCase();
     if (!code) return setCodes([]);
 
-    const result = all.filter((c) => c.code.startsWith(code));
-    setCodes(result.map((c) => ({ value: c.code })));
+    const result = all.filter((c) => c.startsWith(code));
+    if (validCode.test(code) && !result.includes(code)) {
+      result.push(code);
+    }
+    setCodes(result.map((c) => ({ value: c })));
   };
 
   const map = useMap();
@@ -89,7 +93,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
           <LocalitySelect placeholder={placeholder} />
         </Form.Item>
 
-        <Form.Item name="coords" label={m.field_coords()} required>
+        <Form.Item name="coords" label={m.coords()} required>
           <CoordsInput placeholder={placeholder} required />
         </Form.Item>
 
@@ -123,19 +127,19 @@ export default function FhsRequestForm(props: ModalStateProps) {
         <Form.Item
           name="area"
           label={m.area_code()}
-          rules={[{ pattern: /^[A-Z]{4,5}\d?$/, message: m.area_code_hint() }]}
+          validateTrigger="onBlur"
+          rules={[{ pattern: validCode, message: m.area_code_hint() }]}
         >
           <AutoComplete
             id="fhs-type"
             options={codes}
-            defaultActiveFirstOption
             onChange={searchCode}
             showSearch={{ onSearch: searchCode }}
           >
             <Input
               required
               autoComplete="off"
-              pattern="^[A-Z]{4,5}\d?$"
+              pattern={validCode.source}
               title={m.area_code_hint()}
               placeholder={m.area_code_hint()}
             />
@@ -146,7 +150,7 @@ export default function FhsRequestForm(props: ModalStateProps) {
           <StaffSelect filter="PLANNING_MANAGER" />
         </Form.Item>
 
-        <Form.Item name="comment" label={m.field_comment()}>
+        <Form.Item name="comment" label={m.comment()}>
           <Input.TextArea rows={6} className="resize-none!" />
         </Form.Item>
 

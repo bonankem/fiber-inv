@@ -1,12 +1,23 @@
-import { Form, Input, message } from "antd";
+import { Form, Input, message, Select } from "antd";
 import { m } from "i18n/messages";
-import { WorkDocType } from "schema/enums";
+import { WorkDocType, WorkStatus } from "schema/enums";
 import type { FhcSurveyT, FtthConnectionT } from "schema/fhc";
 import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import FileUpload from "#/components/inputs/FileUpload";
 import { req } from "#/utils/form";
 import type { FhcFormProps } from "../fhc-types";
+
+const { SURVEY_REPORT } = WorkDocType;
+const yesNo = [
+  { value: true, label: m.yes() },
+  { value: false, label: m.no() },
+];
+const nextPhases = [
+  { value: WorkStatus.INSTALLATION, label: m.start_installation() },
+  { value: WorkStatus.DESATURATION, label: m.pending_desaturation() },
+  { value: WorkStatus.BUILDING_CABLING, label: m.pending_building_cabling() },
+];
 
 export default function FhcSurveyForm(props: FhcFormProps) {
   const submitM = useApiPost<FhcSurveyT, FtthConnectionT>("/fhc/survey");
@@ -20,16 +31,25 @@ export default function FhcSurveyForm(props: FhcFormProps) {
 
   return (
     <FormModal
+      width={320}
       title={m.finish_survey()}
       subtitle={props.item.work.name}
       state={props.state}
       onSubmit={onSubmit}
     >
-      <Form.Item name={WorkDocType.SURVEY_REPORT} label={m.report()} {...req}>
-        <FileUpload required type="SURVEY_REPORT" />
+      <Form.Item name={SURVEY_REPORT} label={m.report()} {...req}>
+        <FileUpload required type={SURVEY_REPORT} />
       </Form.Item>
 
-      <Form.Item name="comment" label={m.field_comment()} required>
+      <Form.Item name="newPole" label={m.new_pole()} {...req}>
+        <Select options={yesNo} />
+      </Form.Item>
+
+      <Form.Item name="nextPhase" label={m.next_phase()} {...req}>
+        <Select options={nextPhases} />
+      </Form.Item>
+
+      <Form.Item name="comment" label={m.comment()} required>
         <Input.TextArea rows={3} className="resize-none!" required />
       </Form.Item>
     </FormModal>

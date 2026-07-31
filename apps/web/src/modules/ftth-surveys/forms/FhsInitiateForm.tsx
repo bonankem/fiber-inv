@@ -45,7 +45,7 @@ export default function FhsInitiateForm(props: FhsFormProps) {
         <VendorSelect />
       </Form.Item>
 
-      <Form.Item name="expectedHp" label={m.field_expected_hp()} {...req}>
+      <Form.Item name="expectedHp" label={m.expected_hp()} {...req}>
         <InputNumber className="w-full!" min={0} required />
       </Form.Item>
 
@@ -55,18 +55,14 @@ export default function FhsInitiateForm(props: FhsFormProps) {
 
       <Form.Item
         name="dueDate"
-        label={m.field_due_date()}
+        label={m.due_date()}
         required
         rules={[...req.rules, { validator: checkDueDate }]}
       >
         <DateInput minDate={start} />
       </Form.Item>
 
-      <Form.Item
-        name="comment"
-        label={m.field_comment()}
-        className="col-span-full"
-      >
+      <Form.Item name="comment" label={m.comment()} className="col-span-full">
         <Input.TextArea rows={3} className="resize-none!" />
       </Form.Item>
     </FormModal>

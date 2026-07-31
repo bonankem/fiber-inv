@@ -1,23 +1,15 @@
 import { m } from "i18n/messages";
-import type { Maybe } from "schema/utils";
 import CoordsLink from "#/components/CoordsLink";
 import DetailsCard from "#/components/DetailsCard";
 import StatusView from "#/components/StatusView";
+import { metres, yesNo } from "#/utils/details";
 import type { FhcTabProps } from "./types";
-
-function metres(m: Maybe<number>) {
-  return m ? `${m} m` : null;
-}
-
-function yesNo(b: Maybe<boolean>) {
-  return b === null ? null : b ? "Yes" : "No";
-}
 
 export default function FhcDetailsTab(props: FhcTabProps) {
   const i = props.item;
   const w = i.work;
   const isAbidjan = w.locality?.district?.name === "Abidjan";
-  const localName = isAbidjan ? "Commune" : m.department();
+  const localName = isAbidjan ? m.commune() : m.department();
 
   return (
     <div className="grid md:grid-cols-2 gap-4">
@@ -37,15 +29,15 @@ export default function FhcDetailsTab(props: FhcTabProps) {
       <DetailsCard
         missing="dash"
         items={[
+          { label: m.district(), value: w.locality?.district?.name },
           { label: localName, value: w.locality?.name },
-          { label: "District", value: w.locality?.district?.name },
-          { label: m.field_coords(), value: <CoordsLink coords={w.coords} /> },
-          { label: "FAT", value: i.fat?.name },
-          { label: "FAT Port", value: i.fatPort },
-          { label: "ONT OEM", value: i.ontOem?.name },
-          { label: "ONT Serial Number", value: i.ontSerial },
-          { label: "Cable Length", value: metres(i.cableLength) },
-          { label: "New Pole", value: yesNo(i.newPole), missing: "hide" },
+          { label: m.coords(), value: <CoordsLink coords={w.coords} /> },
+          { label: m.fat(), value: i.fat?.name },
+          { label: m.fat_port(), value: i.fatPort },
+          { label: m.ont_oem(), value: i.ontOem?.name },
+          { label: m.ont_serial_number(), value: i.ontSerial },
+          { label: m.cable_length(), value: metres(i.cableLength) },
+          { label: m.new_pole(), value: yesNo(i.newPole), missing: "hide" },
         ]}
       />
     </div>

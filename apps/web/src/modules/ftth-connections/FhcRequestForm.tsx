@@ -49,7 +49,7 @@ export default function FhcRequestForm(props: ModalStateProps) {
         <LocalitySelect />
       </Form.Item>
 
-      <Form.Item name="coords" label={m.field_coords()} {...req}>
+      <Form.Item name="coords" label={m.coords()} {...req}>
         <CoordsInput />
       </Form.Item>
 
@@ -69,11 +69,7 @@ export default function FhcRequestForm(props: ModalStateProps) {
         <Input type="email" />
       </Form.Item>
 
-      <Form.Item
-        name="comment"
-        label={m.field_comment()}
-        className="col-span-full"
-      >
+      <Form.Item name="comment" label={m.comment()} className="col-span-full">
         <Input.TextArea rows={3} className="resize-none!" />
       </Form.Item>
     </FormModal>

@@ -21,11 +21,7 @@ export function fhcWherePendingOn(who: Maybe<Who | string>) {
   ]);
 }
 
-export const workStopped: WorkStatus[] = [
-  S.CANCELLED,
-  S.DECLINED,
-  S.DEPENDENCY,
-];
+export const workStopped: WorkStatus[] = [S.CANCELLED, S.DECLINED];
 export const workNotOpen: WorkStatus[] = [S.CLOSED, ...workStopped];
 export function fhcWhereSubset(s: Maybe<Subset>, who?: Who): WhereWork {
   if (s === Subset.TOTAL || !s) return undefined;

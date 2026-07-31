@@ -97,7 +97,7 @@ export default function FhpImagesForm(props: FhpFormProps) {
       <section className="flex flex-col gap-2 items-start">
         <Form.Item
           name="comment"
-          label={m.field_comment()}
+          label={m.comment()}
           required
           className="self-start w-full max-w-lg"
         >

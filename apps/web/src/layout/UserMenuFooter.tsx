@@ -103,7 +103,7 @@ export default function UserMenuFooter({ user, collapsed }: Props) {
           </Avatar>
 
           {!collapsed && user && (
-            <div className="py-2 pl-3 pr-4 grow">
+            <div className="py-2 pl-3 pr-4 w-0 grow">
               <div className="one-line">{shortName(user.name, 25)}</div>
               <div className="one-line text-xs">{roleName(user)}</div>
             </div>

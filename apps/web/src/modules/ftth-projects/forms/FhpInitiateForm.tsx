@@ -62,17 +62,13 @@ export default function FhpInitiateForm(props: FhpFormProps) {
             <DateInput />
           </Form.Item>
 
-          <Form.Item name="dueDate" label={m.field_due_date()} {...req}>
+          <Form.Item name="dueDate" label={m.due_date()} {...req}>
             <DateInput />
           </Form.Item>
         </div>
       </Form.Item>
 
-      <Form.Item
-        name="comment"
-        label={m.field_comment()}
-        className="col-span-full"
-      >
+      <Form.Item name="comment" label={m.comment()} className="col-span-full">
         <Input.TextArea rows={3} className="resize-none!" />
       </Form.Item>
     </FormModal>

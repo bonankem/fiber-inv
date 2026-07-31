@@ -6,11 +6,16 @@ import WithCaption from "#/components/WithCaption";
 
 export type fhcColumn = DtColumn<FtthConnectionT>;
 
+function caption(f: FtthConnectionT) {
+  const l = f.work.locality;
+  return l ? [l.district.name, l.name] : null;
+}
+
 export const fhcColumns: fhcColumn[] = [
   {
     key: "id",
     title: "ID",
-    width: 100,
+    width: 140,
     onClick: true,
     render: (p) => (
       <WithCaption
@@ -22,19 +27,21 @@ export const fhcColumns: fhcColumn[] = [
   {
     key: "name",
     title: m.name(),
-    width: 200,
+    width: 250,
     onClick: true,
-    render: (p) => (
-      <WithCaption
-        title={p.work.name}
-        caption={[p.work.locality?.district?.name, p.work.locality?.name]}
-      />
-    ),
+    render: (p) => <WithCaption title={p.work.name} caption={caption(p)} />,
+  },
+  {
+    key: "tn",
+    title: `TN / ${m.fat()}`,
+    width: 150,
+    onClick: true,
+    render: (p) => <WithCaption title={p.tn} caption={p.fat?.name} />,
   },
   {
     key: "status",
     title: m.status_pending_on(),
-    width: 150,
+    width: 200,
     render: (t) => (
       <StatusView
         work={t.work}
@@ -50,7 +57,13 @@ export const fhcColumns: fhcColumn[] = [
   {
     key: "vendor",
     title: m.field_vendor(),
-    width: 150,
+    width: 120,
     render: (t) => t.work.vendor?.name,
+  },
+  {
+    key: "newPole",
+    title: m.pole(),
+    width: 80,
+    render: (t) => (t.newPole == null ? null : t.newPole ? m.yes() : m.no()),
   },
 ];

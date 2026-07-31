@@ -1,5 +1,6 @@
 import {
   CheckOutlined,
+  ClockCircleOutlined,
   CloseOutlined,
   MessageOutlined,
   SendOutlined,
@@ -11,6 +12,7 @@ import { buildActions, isWhom, VENDOR } from "#/components/actions/types";
 import CommentForm from "../work/CommentForm";
 import FhcAcceptForm from "./forms/FhcAcceptForm";
 import FhcRejectForm from "./forms/FhcRejectForm";
+import FhcStatusForm from "./forms/FhcStatusForm";
 import FhcSubmitForm from "./forms/FhcSubmitForm";
 import FhcSurveyForm from "./forms/FhcSurveyForm";
 
@@ -26,6 +28,14 @@ export const fhcActions = buildActions(isWhen, isWhom<What>, [
     icon: SendOutlined,
     when: [When.SURVEY],
     form: FhcSurveyForm,
+    whom: [VENDOR],
+    main: true,
+  },
+  {
+    name: "Update Status",
+    icon: ClockCircleOutlined,
+    form: FhcStatusForm,
+    when: [When.DESATURATION, When.BUILDING_CABLING],
     whom: [VENDOR],
     main: true,
   },

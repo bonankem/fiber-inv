@@ -25,7 +25,7 @@ export default function FhpRejectForm(props: FhpFormProps) {
       onSubmit={onSubmit}
       submitting={send.isPending}
     >
-      <Form.Item name="comment" label={m.field_comment()} {...req}>
+      <Form.Item name="comment" label={m.comment()} {...req}>
         <Input.TextArea
           rows={3}
           required

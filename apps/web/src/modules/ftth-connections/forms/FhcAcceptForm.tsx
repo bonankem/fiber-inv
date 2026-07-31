@@ -24,7 +24,7 @@ export default function FhcAcceptForm(props: FhcFormProps) {
       state={props.state}
       onSubmit={onSubmit}
     >
-      <Form.Item name="comment" label={m.field_comment()}>
+      <Form.Item name="comment" label={m.comment()}>
         <Input.TextArea
           rows={3}
           className="resize-none!"

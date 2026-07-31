@@ -5,7 +5,9 @@ enum WorkStatus {
 
     SURVEY
     INSTALLATION
-    DEPENDENCY
+    DESATURATION
+    BUILDING_CABLING
+
     CANCELLED
     REVIEW
     FAILED
@@ -18,24 +20,16 @@ enum WorkAction {
     ASSIGN
     INITIATE
     COMMENT
+    UPDATE
 
     FINISH_SURVEY
-    DEPENDENCY
-    RESUME
-
-    UPDATE
+    UPDATE_STATUS
     UPLOAD_IMAGES
     SUBMIT_REPORT
     RESEND_REPORT
 
     FAIL_REVIEW
     PASS_REVIEW
-}
-
-enum Dependency {
-    CUSTOMER
-    DESATURATION
-    BUILDING_CABLING
 }
 
 model Work {
@@ -53,8 +47,6 @@ model Work {
     status WorkStatus
 
     statusSince DateTime @default(now())
-
-    dependency Dependency?
 
     requestDate String
 

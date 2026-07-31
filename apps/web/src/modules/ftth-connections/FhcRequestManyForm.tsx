@@ -116,7 +116,7 @@ export default function FhcRequestManyForm(props: ModalStateProps) {
             },
             {
               key: "coords",
-              title: m.field_coords(),
+              title: m.coords(),
               render: (f) => <CoordsLink coords={f.coords} />,
               width: 150,
             },

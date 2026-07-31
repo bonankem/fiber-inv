@@ -24,7 +24,7 @@ export default function FhsDeclineForm(props: FhsFormProps) {
       state={props.state}
       onSubmit={onSubmit}
     >
-      <Form.Item name="comment" label={m.field_comment()} {...req}>
+      <Form.Item name="comment" label={m.comment()} {...req}>
         <Input.TextArea
           rows={3}
           required
