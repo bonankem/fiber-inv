@@ -9,56 +9,46 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UserRouteRouteImport } from './routes/_user/route'
-import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as UserVendorsRouteImport } from './routes/_user/vendors'
-import { Route as UserStaffRouteImport } from './routes/_user/staff'
-import { Route as UserSecurityRouteImport } from './routes/_user/security'
-import { Route as UserOverviewRouteImport } from './routes/_user/overview'
-import { Route as UserFtthSurveysRouteImport } from './routes/_user/ftth-surveys'
-import { Route as UserFtthProjectsRouteImport } from './routes/_user/ftth-projects'
-import { Route as UserFtthConnectionsRouteImport } from './routes/_user/ftth-connections'
-import { Route as AuthLoginRouteImport } from './routes/_auth/login'
+import { Route as AuthRouteRouteImport } from './routes/_auth/route'
+import { Route as UserRouteRouteImport } from './routes/_user/route'
 import { Route as AuthForgotRouteImport } from './routes/_auth/forgot'
+import { Route as AuthLoginRouteImport } from './routes/_auth/login'
+import { Route as UserFtthConnectionsRouteImport } from './routes/_user/ftth-connections'
+import { Route as UserFtthProjectsRouteImport } from './routes/_user/ftth-projects'
+import { Route as UserFtthSurveysRouteImport } from './routes/_user/ftth-surveys'
+import { Route as UserOverviewRouteImport } from './routes/_user/overview'
+import { Route as UserSecurityRouteImport } from './routes/_user/security'
+import { Route as UserStaffRouteImport } from './routes/_user/staff'
+import { Route as UserVendorsRouteImport } from './routes/_user/vendors'
 import { Route as AuthResetCodeRouteImport } from './routes/_auth/reset.$code'
 
-const UserRouteRoute = UserRouteRouteImport.update({
-  id: '/_user',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRouteRoute = AuthRouteRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const UserRouteRoute = UserRouteRouteImport.update({
+  id: '/_user',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UserVendorsRoute = UserVendorsRouteImport.update({
-  id: '/vendors',
-  path: '/vendors',
-  getParentRoute: () => UserRouteRoute,
+const AuthForgotRoute = AuthForgotRouteImport.update({
+  id: '/forgot',
+  path: '/forgot',
+  getParentRoute: () => AuthRouteRoute,
 } as any)
-const UserStaffRoute = UserStaffRouteImport.update({
-  id: '/staff',
-  path: '/staff',
-  getParentRoute: () => UserRouteRoute,
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AuthRouteRoute,
 } as any)
-const UserSecurityRoute = UserSecurityRouteImport.update({
-  id: '/security',
-  path: '/security',
-  getParentRoute: () => UserRouteRoute,
-} as any)
-const UserOverviewRoute = UserOverviewRouteImport.update({
-  id: '/overview',
-  path: '/overview',
-  getParentRoute: () => UserRouteRoute,
-} as any)
-const UserFtthSurveysRoute = UserFtthSurveysRouteImport.update({
-  id: '/ftth-surveys',
-  path: '/ftth-surveys',
+const UserFtthConnectionsRoute = UserFtthConnectionsRouteImport.update({
+  id: '/ftth-connections',
+  path: '/ftth-connections',
   getParentRoute: () => UserRouteRoute,
 } as any)
 const UserFtthProjectsRoute = UserFtthProjectsRouteImport.update({
@@ -66,20 +56,30 @@ const UserFtthProjectsRoute = UserFtthProjectsRouteImport.update({
   path: '/ftth-projects',
   getParentRoute: () => UserRouteRoute,
 } as any)
-const UserFtthConnectionsRoute = UserFtthConnectionsRouteImport.update({
-  id: '/ftth-connections',
-  path: '/ftth-connections',
+const UserFtthSurveysRoute = UserFtthSurveysRouteImport.update({
+  id: '/ftth-surveys',
+  path: '/ftth-surveys',
   getParentRoute: () => UserRouteRoute,
 } as any)
-const AuthLoginRoute = AuthLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => AuthRouteRoute,
+const UserOverviewRoute = UserOverviewRouteImport.update({
+  id: '/overview',
+  path: '/overview',
+  getParentRoute: () => UserRouteRoute,
 } as any)
-const AuthForgotRoute = AuthForgotRouteImport.update({
-  id: '/forgot',
-  path: '/forgot',
-  getParentRoute: () => AuthRouteRoute,
+const UserSecurityRoute = UserSecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => UserRouteRoute,
+} as any)
+const UserStaffRoute = UserStaffRouteImport.update({
+  id: '/staff',
+  path: '/staff',
+  getParentRoute: () => UserRouteRoute,
+} as any)
+const UserVendorsRoute = UserVendorsRouteImport.update({
+  id: '/vendors',
+  path: '/vendors',
+  getParentRoute: () => UserRouteRoute,
 } as any)
 const AuthResetCodeRoute = AuthResetCodeRouteImport.update({
   id: '/reset/$code',
@@ -181,11 +181,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_user': {
-      id: '/_user'
-      path: ''
+    '/': {
+      id: '/'
+      path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof UserRouteRouteImport
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth': {
@@ -195,46 +195,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
+    '/_user': {
+      id: '/_user'
+      path: ''
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof UserRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_user/vendors': {
-      id: '/_user/vendors'
-      path: '/vendors'
-      fullPath: '/vendors'
-      preLoaderRoute: typeof UserVendorsRouteImport
-      parentRoute: typeof UserRouteRoute
+    '/_auth/forgot': {
+      id: '/_auth/forgot'
+      path: '/forgot'
+      fullPath: '/forgot'
+      preLoaderRoute: typeof AuthForgotRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
-    '/_user/staff': {
-      id: '/_user/staff'
-      path: '/staff'
-      fullPath: '/staff'
-      preLoaderRoute: typeof UserStaffRouteImport
-      parentRoute: typeof UserRouteRoute
+    '/_auth/login': {
+      id: '/_auth/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
-    '/_user/security': {
-      id: '/_user/security'
-      path: '/security'
-      fullPath: '/security'
-      preLoaderRoute: typeof UserSecurityRouteImport
-      parentRoute: typeof UserRouteRoute
-    }
-    '/_user/overview': {
-      id: '/_user/overview'
-      path: '/overview'
-      fullPath: '/overview'
-      preLoaderRoute: typeof UserOverviewRouteImport
-      parentRoute: typeof UserRouteRoute
-    }
-    '/_user/ftth-surveys': {
-      id: '/_user/ftth-surveys'
-      path: '/ftth-surveys'
-      fullPath: '/ftth-surveys'
-      preLoaderRoute: typeof UserFtthSurveysRouteImport
+    '/_user/ftth-connections': {
+      id: '/_user/ftth-connections'
+      path: '/ftth-connections'
+      fullPath: '/ftth-connections'
+      preLoaderRoute: typeof UserFtthConnectionsRouteImport
       parentRoute: typeof UserRouteRoute
     }
     '/_user/ftth-projects': {
@@ -244,26 +230,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserFtthProjectsRouteImport
       parentRoute: typeof UserRouteRoute
     }
-    '/_user/ftth-connections': {
-      id: '/_user/ftth-connections'
-      path: '/ftth-connections'
-      fullPath: '/ftth-connections'
-      preLoaderRoute: typeof UserFtthConnectionsRouteImport
+    '/_user/ftth-surveys': {
+      id: '/_user/ftth-surveys'
+      path: '/ftth-surveys'
+      fullPath: '/ftth-surveys'
+      preLoaderRoute: typeof UserFtthSurveysRouteImport
       parentRoute: typeof UserRouteRoute
     }
-    '/_auth/login': {
-      id: '/_auth/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof AuthLoginRouteImport
-      parentRoute: typeof AuthRouteRoute
+    '/_user/overview': {
+      id: '/_user/overview'
+      path: '/overview'
+      fullPath: '/overview'
+      preLoaderRoute: typeof UserOverviewRouteImport
+      parentRoute: typeof UserRouteRoute
     }
-    '/_auth/forgot': {
-      id: '/_auth/forgot'
-      path: '/forgot'
-      fullPath: '/forgot'
-      preLoaderRoute: typeof AuthForgotRouteImport
-      parentRoute: typeof AuthRouteRoute
+    '/_user/security': {
+      id: '/_user/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof UserSecurityRouteImport
+      parentRoute: typeof UserRouteRoute
+    }
+    '/_user/staff': {
+      id: '/_user/staff'
+      path: '/staff'
+      fullPath: '/staff'
+      preLoaderRoute: typeof UserStaffRouteImport
+      parentRoute: typeof UserRouteRoute
+    }
+    '/_user/vendors': {
+      id: '/_user/vendors'
+      path: '/vendors'
+      fullPath: '/vendors'
+      preLoaderRoute: typeof UserVendorsRouteImport
+      parentRoute: typeof UserRouteRoute
     }
     '/_auth/reset/$code': {
       id: '/_auth/reset/$code'
