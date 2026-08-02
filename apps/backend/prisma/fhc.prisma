@@ -38,28 +38,62 @@ model FtthConnection {
 }
 
 model FhcCostRule {
-    id String @id @db.Uuid
+    id String @id @default(uuid(7)) @db.Uuid
 
-    key String @unique
+    /// the name used to identify this rule
+    name String @unique
 
-    minCableLength Int?
+    /// cable length > this
+    minCable Int
 
-    maxCableLength Int?
+    /// cable length <= this (0 means no limit)
+    maxCable Int
 
-    newPole Boolean?
+    /// 0=without pole, 1=with pole, 2=both cases
+    usesPole Int
 
+    /// cost lines that use this rule
     lines FhcCostLine[]
+
+    @@unique([minCable, maxCable, usesPole], name: "uniq")
 }
 
 model FhcCostLine {
-    id String @id @db.Uuid
+    id String @id @default(uuid(7)) @db.Uuid
 
+    /// the name in Français
     nameFr String @unique @db.Citext
 
+    /// the name in English
     nameEn String? @unique @db.Citext
 
+    /// the unique ref that MTN uses to identify this line
     ref String? @unique
 
-    /// the cost line applies if *any* of the rules match
+    /// the ordered position of this line
+    ord Int @default(0)
+
+    /// the cost line applies if any of these rules match
     rules FhcCostRule[]
+
+    /// the price to apply if a vendor does not have their own price
+    defaultPrice Float?
+
+    /// the price of this line for each vendor
+    vendorPrices FhcVendorPrice[]
+}
+
+model FhcVendorPrice {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    /// the cost line that carries this price
+    line   FhcCostLine @relation(fields: [lineId], references: [id])
+    lineId String      @db.Uuid
+
+    /// the vendor to which this price applies
+    vendor   Vendor @relation(fields: [vendorId], references: [id])
+    vendorId String @db.Uuid
+
+    /// the price to apply
+    price Float
 }
