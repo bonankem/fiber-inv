@@ -1,4 +1,4 @@
-import { MfaMode } from "../prisma";
+import { MfaMode } from "../db";
 import { z, zObject, zStr } from "../utils";
 import { AuthStatus } from "./auth-status";
 

@@ -14,7 +14,6 @@ export default appPlugin((app) => {
     const code = reply.statusCode;
     if (!user || code === 401) return;
 
-    app.log.info(`Activity for ${user.name}`);
     prisma.user
       .update({
         where: { id: user.id },

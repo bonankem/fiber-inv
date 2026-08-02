@@ -38,7 +38,7 @@ function getJwtSecret() {
 }
 
 app.register(fastifyCors, { origin: corsOrigin });
-app.register(fastifyHelmet);
+app.register(fastifyHelmet, { crossOriginResourcePolicy: false });
 app.register(fastifyFormbody);
 app.register(fastifyMultipart);
 app.register(fastifySensible);

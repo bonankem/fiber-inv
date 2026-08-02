@@ -1,4 +1,4 @@
-import type { Prisma } from "../prisma";
+import type { Prisma } from "../db";
 import type { z } from "../utils";
 import { type Same, zObject, zStr } from "../utils";
 import { localityListP, localityZ } from "./locality";

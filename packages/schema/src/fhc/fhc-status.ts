@@ -1,4 +1,4 @@
-import { WorkStatus } from "#/prisma";
+import { WorkStatus } from "#/db";
 import { workUpdateDto } from "#/work";
 import { z } from "../utils";
 

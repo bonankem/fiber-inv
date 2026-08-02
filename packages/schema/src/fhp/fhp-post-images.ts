@@ -1,4 +1,4 @@
-import { WorkDocType } from "#/prisma";
+import { WorkDocType } from "#/db";
 import { workUpdateDto } from "#/work";
 import { enumWithPrefix, z, zStr } from "../utils";
 

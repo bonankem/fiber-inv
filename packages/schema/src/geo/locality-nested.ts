@@ -1,5 +1,5 @@
 import { idKeyNameP, idKeyNameZ } from "../common";
-import type { Prisma } from "../prisma";
+import type { Prisma } from "../db";
 import { type Same, type z, zObject, zStr } from "../utils";
 
 export const localityNestedS = {

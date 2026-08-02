@@ -1,4 +1,4 @@
-import { WorkDocType as Doc } from "../prisma";
+import { WorkDocType as Doc } from "../db";
 import { z, zStr } from "../utils";
 import { workUpdateDto } from "../work/work-update";
 

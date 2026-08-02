@@ -1,5 +1,5 @@
 import { workUpdateDto } from "#/work";
-import { WorkDocType as Doc } from "../prisma";
+import { WorkDocType as Doc } from "../db";
 import { z, zStr } from "../utils";
 
 export const fhpSubmitZ = workUpdateDto("FhpSubmitT", {

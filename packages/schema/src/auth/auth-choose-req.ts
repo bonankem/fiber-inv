@@ -1,5 +1,5 @@
 import z from "zod";
-import { MfaMode } from "../prisma";
+import { MfaMode } from "../db";
 import { zObject, zStr } from "../utils";
 
 const { NONE, UNDECIDED, ...modes } = MfaMode;

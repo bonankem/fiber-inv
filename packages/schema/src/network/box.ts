@@ -1,5 +1,5 @@
 import { coordsP, coordsZ } from "#/geo";
-import { BoxType, type Prisma } from "../prisma";
+import { BoxType, type Prisma } from "../db";
 import { type Same, z, zObject, zStr, zStrNul } from "../utils";
 
 export const boxS = {

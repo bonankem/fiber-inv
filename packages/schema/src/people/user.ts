@@ -1,4 +1,4 @@
-import { type Prisma, StaffRole } from "../prisma";
+import { type Prisma, StaffRole } from "../db";
 import { type Same, z, zObject, zStr, zStrNul } from "../utils";
 import { vendorP, vendorZ } from "./vendor";
 

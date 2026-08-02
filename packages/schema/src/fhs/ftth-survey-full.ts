@@ -1,5 +1,5 @@
 import { workFullP, workFullZ } from "#/work/work-full";
-import type { Prisma } from "../prisma";
+import type { Prisma } from "../db";
 import { type Same, type z, zObject, zStr } from "../utils";
 import { fhsReportP, fhsReportZ } from "./fhs-report";
 

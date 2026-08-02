@@ -1,6 +1,6 @@
 import z from "zod";
+import { type Prisma, WorkStatus } from "../db";
 import { coordsP, coordsZ } from "../geo/coords";
-import { type Prisma, WorkStatus } from "../prisma";
 import { type Same, zObject, zStr, zStrNul } from "../utils";
 
 export const workBriefS = {

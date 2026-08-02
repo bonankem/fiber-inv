@@ -1,6 +1,6 @@
 import z from "zod";
+import { BoxType, WorkDocType } from "#/db";
 import { coordsZ } from "#/geo";
-import { BoxType, WorkDocType } from "#/prisma";
 import { zObject, zStr } from "#/utils";
 
 export const upFhsBoxZ = z.object({

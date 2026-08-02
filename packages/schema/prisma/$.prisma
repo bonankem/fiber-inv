@@ -1,6 +1,6 @@
 generator schema {
   provider        = "prisma-client"
-  output          = "../../../packages/schema/src/prisma/generated"
+  output          = "../src/db/generated"
   previewFeatures = ["postgresqlExtensions"]
 }
 
@@ -10,5 +10,5 @@ generator json {
 
 datasource db {
   provider   = "postgresql"
-  extensions = [citext, postgis]
+  extensions = [citext]
 }

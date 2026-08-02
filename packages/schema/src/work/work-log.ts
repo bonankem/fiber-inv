@@ -1,5 +1,5 @@
 import { idNameP, idNameZ } from "../common";
-import { type Prisma, WorkAction, WorkStatus } from "../prisma";
+import { type Prisma, WorkAction, WorkStatus } from "../db";
 import { type Same, z, zDate, zObject, zStr, zStrNul } from "../utils";
 
 export const workLogS = {

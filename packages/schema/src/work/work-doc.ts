@@ -1,6 +1,6 @@
 import { coordsP, coordsZ } from "#/geo";
 import { uploadFullP, uploadFullZ } from "#/uploads";
-import { type Prisma, WorkDocType } from "../prisma";
+import { type Prisma, WorkDocType } from "../db";
 import { type Same, z, zObject, zStr } from "../utils";
 
 export const workDocS = {

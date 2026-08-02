@@ -1,4 +1,4 @@
-import { WorkDocType } from "#/prisma";
+import { WorkDocType } from "#/db";
 import { workUpdateDto } from "#/work";
 import { z, zStr } from "../utils";
 import { fhcNextPhases } from "./fhc-status";

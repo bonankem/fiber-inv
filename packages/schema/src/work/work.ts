@@ -1,8 +1,8 @@
 import z from "zod";
+import { type Prisma, type StaffRole, WorkStatus } from "../db";
 import { coordsP, coordsZ } from "../geo/coords";
 import { localityNestedP, localityNestedZ } from "../geo/locality-nested";
 import { vendorP, vendorZ } from "../people";
-import { type Prisma, type StaffRole, WorkStatus } from "../prisma";
 import { type Same, zObject, zStr } from "../utils";
 import { workerP, workerZ } from "./worker";
 

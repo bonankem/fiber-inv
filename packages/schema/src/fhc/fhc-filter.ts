@@ -1,5 +1,5 @@
 import { Subset } from "../common";
-import { WorkStatus } from "../prisma";
+import { WorkStatus } from "../db";
 import { z, zEnumUpper, zFormObject } from "../utils";
 
 export const fhcFilterZ = zFormObject("FhcFilterT", {

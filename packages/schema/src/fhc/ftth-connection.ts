@@ -1,6 +1,6 @@
 import { idKeyNameP, idKeyNameZ, idNameP, idNameZ } from "#/common";
 import { workP, workZ } from "#/work";
-import type { Prisma } from "../prisma";
+import type { Prisma } from "../db";
 import { type Same, z, zObject, zStr, zStrNul } from "../utils";
 
 export const ftthConnectionS = {

@@ -1,6 +1,6 @@
 import z from "zod";
+import { WorkDocType } from "#/db";
 import { boundingBoxZ, coordsZ, linearRingZ } from "#/geo";
-import { WorkDocType } from "#/prisma";
 import { zObject } from "#/utils";
 
 export const upAreaKmzZ = zObject("UpAreaKmzT", {

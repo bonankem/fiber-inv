@@ -1,4 +1,4 @@
-import { MfaMode } from "#/prisma";
+import { MfaMode } from "#/db";
 import { z, zObject } from "../utils";
 
 export const sessionPasswordReqZ = zObject("SessionPasswordReqT", {

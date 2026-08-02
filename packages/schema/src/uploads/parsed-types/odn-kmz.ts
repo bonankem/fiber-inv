@@ -1,5 +1,5 @@
+import { WorkDocType } from "#/db";
 import { coordsZ } from "#/geo";
-import { WorkDocType } from "#/prisma";
 import { z, zArray, zObject } from "#/utils";
 import { upFhsBoxZ } from "./fhs-coords";
 

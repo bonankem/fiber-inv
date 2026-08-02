@@ -1,5 +1,5 @@
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "schema/prisma.client";
+import { PrismaClient } from "schema/db/client";
 import { appEnv } from "#/env";
 
 function dbUrl() {
@@ -16,4 +16,4 @@ export const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: dbUrl() }),
 });
 
-export * from "schema/prisma";
+export * from "schema/db";

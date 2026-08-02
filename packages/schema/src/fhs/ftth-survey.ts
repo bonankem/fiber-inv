@@ -1,4 +1,4 @@
-import type { Prisma } from "../prisma";
+import type { Prisma } from "../db";
 import { type Same, type z, zObject, zStr, zStrNul } from "../utils";
 import { workP, workZ } from "../work/work";
 

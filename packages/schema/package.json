@@ -2,8 +2,8 @@
   "name": "schema",
   "type": "module",
   "exports": {
-    "./enums": "./dist/prisma/generated/enums.js",
-    "./prisma.client": "./dist/prisma.client.js",
+    "./db/client": "./dist/db/client.js",
+    "./enums": "./dist/db/generated/enums.js",
     "./errors": "./dist/errors.js",
     "./utils": "./dist/utils.js",
     "./*": "./dist/*/index.js"
