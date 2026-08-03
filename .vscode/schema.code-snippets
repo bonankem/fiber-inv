@@ -16,7 +16,7 @@
     "prefix": "zpsc",
     "include": ["**/*.ts"],
     "body": [
-      "import type { Prisma } from \"../prisma\";",
+      "import type { Prisma } from \"../db\";",
       "import { z, zObject, zStr } from \"../utils\";",
       "",
       "export const ${1:${TM_FILENAME_BASE/-([a-z])/${1:/upcase}/g}}S = {",

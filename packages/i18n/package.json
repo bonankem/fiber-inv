@@ -13,8 +13,8 @@
     "machine-translate": "inlang machine translate --project project.inlang"
   },
   "devDependencies": {
-    "@inlang/paraglide-js": "^2.18.1",
-    "@inlang/cli": "^3.0.0"
+    "@inlang/cli": "^3.3.0",
+    "@inlang/paraglide-js": "^2.23.0"
   },
   "nodemonConfig": {
     "watch": "messages",

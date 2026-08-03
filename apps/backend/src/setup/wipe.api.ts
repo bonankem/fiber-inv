@@ -1,5 +1,4 @@
-import type { PrismaPromise } from "@prisma/client/runtime/client";
-import type { PrismaClient } from "schema/db/client";
+import type { PrismaClient, PrismaPromise } from "schema/db/client";
 import { zFormObject } from "schema/utils";
 import z from "zod";
 import { prisma } from "#/db";

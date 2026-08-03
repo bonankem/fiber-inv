@@ -1,5 +1,5 @@
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 import { unique } from "remeda";
+import { PrismaClientKnownRequestError } from "schema/db/client";
 import { ApiError, Err } from "schema/errors";
 import { ZodError } from "zod";
 import { isDev } from "./env";
