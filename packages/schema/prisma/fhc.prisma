@@ -37,17 +37,17 @@ model FtthConnection {
     @@unique([fatId, fatPort], name: "fatUniq")
 }
 
-model FhcCostRule {
+model FhcCostCondition {
     id String @id @default(uuid(7)) @db.Uuid
 
     /// the name used to identify this rule
     name String @unique
 
-    /// cable length > this
-    minCable Int
+    /// cable length > this (0 means no minimum)
+    minDistance Int
 
     /// cable length <= this (0 means no limit)
-    maxCable Int
+    maxDistance Int
 
     /// 0=without pole, 1=with pole, 2=both cases
     usesPole Int
@@ -55,26 +55,27 @@ model FhcCostRule {
     /// cost lines that use this rule
     lines FhcCostLine[]
 
-    @@unique([minCable, maxCable, usesPole], name: "uniq")
+    @@unique([minDistance, maxDistance, usesPole], name: "uniq")
 }
 
 model FhcCostLine {
     id String @id @default(uuid(7)) @db.Uuid
 
+    /// the unique ref used to identify this line
+    ref String @unique
+
     /// the name in Français
     nameFr String @unique @db.Citext
 
     /// the name in English
-    nameEn String? @unique @db.Citext
-
-    /// the unique ref that MTN uses to identify this line
-    ref String? @unique
+    nameEn String @unique @db.Citext
 
     /// the ordered position of this line
     ord Int @default(0)
 
     /// the cost line applies if any of these rules match
-    rules FhcCostRule[]
+    condition   FhcCostCondition? @relation(fields: [conditionId], references: [id])
+    conditionId String?           @db.Uuid
 
     /// the price to apply if a vendor does not have their own price
     defaultPrice Float?

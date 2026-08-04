@@ -25,6 +25,10 @@ export function idOrKey(i: string) {
   return UUID_RE.test(i) ? { id: i } : { key: i };
 }
 
+export function idOrName(i: string) {
+  return UUID_RE.test(i) ? { id: i } : { name: i };
+}
+
 export function connectIdOrKey(i: string) {
   return { connect: idOrKey(i) };
 }

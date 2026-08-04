@@ -2,6 +2,7 @@ import { appPlugin } from "#/utils/routing";
 import { fhcAtpFailApi } from "./fhc-atp-fail.api";
 import { fhcAtpPassApi } from "./fhc-atp-pass.api";
 import { fhcConfigApi } from "./fhc-config.api";
+import { fhcCostApi } from "./fhc-cost.api";
 import { fhcCountApi } from "./fhc-count.api";
 import { fhcExtractApi } from "./fhc-extract.api";
 import { fhcListApi } from "./fhc-list.api";
@@ -16,6 +17,7 @@ export default appPlugin((app) => {
   app.register(fhcAtpFailApi);
   app.register(fhcAtpPassApi);
   app.register(fhcConfigApi);
+  app.register(fhcCostApi);
   app.register(fhcCountApi);
   app.register(fhcExtractApi);
   app.register(fhcListApi);
