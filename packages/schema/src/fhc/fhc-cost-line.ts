@@ -1,5 +1,5 @@
 import type { Prisma } from "../db";
-import { type Same, type z, zObject, zStr, zStrOpt } from "../utils";
+import { type Same, z, zObject, zStr, zStrOpt } from "../utils";
 import { fhcCostConditionP, fhcCostConditionZ } from "./fhc-cost-condition";
 
 export const fhcCostLineS = {
@@ -33,7 +33,7 @@ export const fhcAddCostLineZ = zObject("FhcAddCostLineT", {
   ref: zStr(""),
   nameEn: zStrOpt(""),
   nameFr: zStrOpt(""),
-  conditionId: zStrOpt(""),
+  conditionId: z.string().nullable().optional(),
 });
 
 export const fhcAddCostLinesZ = zObject("FhcAddCostLinesT", {

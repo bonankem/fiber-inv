@@ -40,7 +40,7 @@ export const fhcActions = buildActions(isWhen, isWhom<What>, [
     main: true,
   },
   {
-    name: m.action_finish(),
+    name: m.action_submit(),
     icon: SendOutlined,
     form: FhcSubmitForm,
     when: [When.INSTALLATION, When.FAILED_REVIEW],

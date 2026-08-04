@@ -12,19 +12,22 @@ import {
   theme,
 } from "antd";
 import { m } from "i18n/messages";
-import type { ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 import { twJoin } from "tailwind-merge";
 import type { ModalState } from "#/hooks/useModalViewer";
 import { useUploader } from "#/hooks/useUploader";
 
 export type FormModalProps<T> = {
   form?: FormInstance<T>;
+  preserve?: boolean;
   state: ModalState;
   title: ReactNode;
   width?: number | string;
   subtitle?: ReactNode;
   children?: ReactNode;
   onSubmit?: (data: T) => void;
+  // return true if the modal should stay open
+  onBack?: () => boolean;
   okText?: string;
   hasOk?: boolean;
   submitting?: boolean;
@@ -62,8 +65,11 @@ export default function FormModal<T>(props: FormModalProps<T>) {
   const { isOpen, close } = props.state;
   const { token } = theme.useToken();
   const uploader = useUploader();
+  const [confirmed, setConfirmed] = useState(false);
 
   const onClose = () => {
+    setConfirmed(false);
+    if (props.onBack?.()) return;
     uploader.cleanup();
     close();
   };
@@ -94,6 +100,7 @@ export default function FormModal<T>(props: FormModalProps<T>) {
         <ConfigProvider theme={themeConfig}>
           <Form
             form={props.form}
+            preserve={props.preserve}
             size="small"
             layout={props.layout ?? "vertical"}
             className="flex flex-col gap-4"
@@ -110,7 +117,13 @@ export default function FormModal<T>(props: FormModalProps<T>) {
 
             {props.checkbox !== false && (
               <section>
-                <Checkbox required>{checkboxText(props.checkbox)}</Checkbox>
+                <Checkbox
+                  required
+                  checked={confirmed}
+                  onChange={(e) => setConfirmed(e.target.checked)}
+                >
+                  {checkboxText(props.checkbox)}
+                </Checkbox>
               </section>
             )}
 
@@ -121,7 +134,7 @@ export default function FormModal<T>(props: FormModalProps<T>) {
               )}
               style={{ backgroundColor: token.colorBgContainer }}
             >
-              <Button onClick={close}>{m.back()}</Button>
+              <Button onClick={onClose}>{m.back()}</Button>
 
               {props.hasOk !== false && (
                 <Button

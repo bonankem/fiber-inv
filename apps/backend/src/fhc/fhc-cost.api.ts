@@ -48,7 +48,7 @@ const fhcCostLinesAddApi = postRoute({
     const lastOrd = lastLine?.ord || 0;
     const data = req.body.items;
 
-    const done = await lineDb.updateMany({
+    const done = await lineDb.createMany({
       data: data.map((l, i) => ({
         ref: l.ref,
         ord: lastOrd + i + 1,
