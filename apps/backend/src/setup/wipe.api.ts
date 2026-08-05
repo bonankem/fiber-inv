@@ -31,6 +31,7 @@ async function wipeDb(q: WipeQueryT) {
   const p = prisma;
   const user = /user/.test(q.what);
   const work = /work/.test(q.what);
+  const cost = /cost/.test(q.what);
   const net = /net/.test(q.what);
   const geo = /geo/.test(q.what);
 
@@ -40,6 +41,8 @@ async function wipeDb(q: WipeQueryT) {
     work && "ftthSurvey",
     work && "work",
     work && "upload",
+    cost && "fhcCostLine",
+    cost && "fhcCostCondition",
     net && "ftthBox",
     net && "olt",
     geo && "boundary",
