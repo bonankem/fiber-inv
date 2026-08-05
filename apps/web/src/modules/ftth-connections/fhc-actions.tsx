@@ -4,6 +4,7 @@ import {
   CloseOutlined,
   MessageOutlined,
   SendOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import { m } from "i18n/messages";
 import { StaffRole, WorkStatus as When } from "schema/enums";
@@ -11,6 +12,8 @@ import type { FtthConnectionT as What } from "schema/fhc";
 import { buildActions, isWhom, VENDOR } from "#/components/actions/types";
 import CommentForm from "../work/CommentForm";
 import FhcAcceptForm from "./forms/FhcAcceptForm";
+import { FhcAtpFailForm, FhcAtpPassForm } from "./forms/FhcAtpForm";
+import FhcConfigForm from "./forms/FhcConfigForm";
 import FhcRejectForm from "./forms/FhcRejectForm";
 import FhcStatusForm from "./forms/FhcStatusForm";
 import FhcSubmitForm from "./forms/FhcSubmitForm";
@@ -60,6 +63,31 @@ export const fhcActions = buildActions(isWhen, isWhom<What>, [
     icon: CloseOutlined,
     form: FhcRejectForm,
     when: [When.REVIEW],
+    whom: [HOME_INTERNET],
+    main: true,
+    red: true,
+  },
+  {
+    name: "Set Configuration",
+    icon: SettingOutlined,
+    form: FhcConfigForm,
+    when: [When.CONFIGURATION],
+    whom: [HOME_INTERNET],
+    main: true,
+  },
+  {
+    name: "Pass ATP",
+    icon: CheckOutlined,
+    form: FhcAtpPassForm,
+    when: [When.FIELD_ATP],
+    whom: [HOME_INTERNET],
+    main: true,
+  },
+  {
+    name: "Fail ATP",
+    icon: CloseOutlined,
+    form: FhcAtpFailForm,
+    when: [When.FIELD_ATP],
     whom: [HOME_INTERNET],
     main: true,
     red: true,

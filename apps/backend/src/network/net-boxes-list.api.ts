@@ -2,11 +2,11 @@ import { boxListP } from "schema/network";
 import { prisma } from "#/db";
 import { getRoute } from "#/utils/routing";
 
-export const boxesApi = getRoute({
+export const netBoxesListApi = getRoute({
   url: "/network/boxes",
-  handler: listBoxes,
+  handler: netBoxesList,
 });
 
-async function listBoxes() {
+async function netBoxesList() {
   return prisma.ftthBox.findMany(boxListP);
 }

@@ -29,6 +29,7 @@ export type FormModalProps<T> = {
   // return true if the modal should stay open
   onBack?: () => boolean;
   okText?: string;
+  backText?: string;
   hasOk?: boolean;
   submitting?: boolean;
   preparing?: boolean;
