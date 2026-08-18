@@ -10,7 +10,7 @@ import { selectProps } from "#/utils/select";
 import type { FhcFormProps } from "../fhc-types";
 
 export default function FhcConfigForm(props: FhcFormProps) {
-  const oltsQ = useApiGet("/network/olts", oltZ.array());
+  const oltsQ = useApiGet("/network/olt", oltZ.array());
   const sendM = useApiPost<FhcConfigT, FtthConnectionT>("/fhc/config");
 
   const onSubmit = apiCall(async (data: FhcConfigT) => {

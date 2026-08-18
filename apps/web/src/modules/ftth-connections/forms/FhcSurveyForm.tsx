@@ -1,6 +1,6 @@
 import { Form, Input, message, Select } from "antd";
 import { m } from "i18n/messages";
-import { WorkDocType, WorkStatus } from "schema/enums";
+import { FhcMethod, WorkDocType, WorkStatus } from "schema/enums";
 import type { FhcSurveyT, FtthConnectionT } from "schema/fhc";
 import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
@@ -41,7 +41,17 @@ export default function FhcSurveyForm(props: FhcFormProps) {
         <FileUpload required type={SURVEY_REPORT} />
       </Form.Item>
 
-      <Form.Item name="newPole" label={m.new_pole()} {...req}>
+      <Form.Item name="method" label={m.cabling_method()} {...req}>
+        <Select
+          options={[
+            { value: FhcMethod.CABLED_BUILDING, label: "Cabled Building" },
+            { value: FhcMethod.PRECONNECTORIZED, label: "Preconnectorized" },
+            { value: FhcMethod.TRADITIONAL, label: "Traditional" },
+          ]}
+        />
+      </Form.Item>
+
+      <Form.Item name="withPole" label={m.with_pole()} {...req}>
         <Select options={yesNo} />
       </Form.Item>
 

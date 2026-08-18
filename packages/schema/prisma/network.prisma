@@ -10,8 +10,6 @@ model Oem {
 
     olts Olt[]
 
-    boxes FtthBox[]
-
     onts FtthConnection[]
 }
 
@@ -38,9 +36,9 @@ model Olt {
     oem   Oem?    @relation(fields: [oemId], references: [id])
     oemId String? @db.Uuid
 
-    boxes FtthBox[]
+    fats Fat[]
 
-    homes FtthConnection[]
+    connections FtthConnection[]
 }
 
 enum BoxType {
@@ -51,24 +49,19 @@ enum BoxType {
     END
 }
 
-model FtthBox {
+model Fat {
     id String @id @default(uuid(7)) @db.Uuid
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    type BoxType
-
     name String @unique
-
-    area String
 
     serial String? @unique
 
     ports Int?
 
-    oem   Oem?    @relation(fields: [oemId], references: [id])
-    oemId String? @db.Uuid
+    area String?
 
     olt   Olt?    @relation(fields: [oltId], references: [id])
     oltId String? @db.Uuid
@@ -79,31 +72,5 @@ model FtthBox {
     boundary   Boundary? @relation(fields: [boundaryId], references: [id])
     boundaryId String?   @db.Uuid
 
-    inCable Cable? @relation("in")
-
-    outCables Cable[] @relation("out")
-
     connections FtthConnection[]
-
-    @@index([area])
-}
-
-model Cable {
-    id String @id @default(uuid(7)) @db.Uuid
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    name String? @unique
-
-    /// [CoordsArray]
-    line Json?
-
-    length Int?
-
-    toBox   FtthBox @relation(fields: [toBoxId], references: [id], name: "in")
-    toBoxId String  @unique @db.Uuid
-
-    fromBox   FtthBox? @relation(fields: [fromBoxId], references: [id], name: "out")
-    fromBoxId String?  @db.Uuid
 }

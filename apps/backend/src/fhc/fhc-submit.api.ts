@@ -27,11 +27,11 @@ async function fhcSubmit(dto: FhcSubmitT, from: UserFullT) {
   if (!fhc) bad(Err.NOT_FOUND);
 
   const { id, fatId, fatPort, ontSerial } = dto;
-  await mustNotExist(id, "FAT port", { fatUniq: { fatId, fatPort } });
+  // await mustNotExist(id, "FAT port", { fatUniq: { fatId, fatPort } });
   await mustNotExist(id, "ONT serial", { ontSerial });
 
   for (const key of fhcImageTypes) {
-    const required = key === "FHC_POLE" ? dto.newPole : true;
+    const required = key === "FHC_POLE" ? dto.withPole : true;
     if (required && !dto.images[key]) bad(Err.FIELD_REQUIRED, key);
   }
 
@@ -45,8 +45,8 @@ async function fhcSubmit(dto: FhcSubmitT, from: UserFullT) {
       ontSerial: dto.ontSerial,
       fatPort: dto.fatPort,
       oltPort: dto.oltPort || undefined,
-      cableLength: dto.cableLength,
-      newPole: dto.newPole,
+      distance: dto.distance,
+      withPole: dto.withPole,
       work: updateWork({
         status: WorkStatus.REVIEW,
         action: WorkAction.SUBMIT_REPORT,

@@ -30,6 +30,7 @@
   "cable_length": "Cable Length",
   "cable_lengths": "Cable Lengths",
   "cables": "Cables",
+  "cabling_method": "Cabling Method",
   "cancelled": "Cancelled",
   "change_image": "Change image",
   "change_password": "Change Password",
@@ -58,6 +59,7 @@
   "details": "Details",
   "disabled": "Disabled",
   "dist_cables": "Distribution cables",
+  "distance": "Distance",
   "district": "District",
   "download": "Download",
   "due_date": "Due date",
@@ -162,7 +164,6 @@
   "new_olts": "New OLTs",
   "new_password": "New password",
   "new_password_hint": "Choose a new password",
-  "new_pole": "New Pole",
   "new_request": "New Request",
   "next_phase": "Next Phase",
   "no": "No",
@@ -257,5 +258,6 @@
   "view_details": "View Details",
   "view_on_google_maps": "View on Google Maps",
   "welcome": "Welcome, {name}!",
+  "with_pole": "With Pole",
   "yes": "Yes"
 }

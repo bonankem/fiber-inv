@@ -97,8 +97,12 @@ export function createCoords(c: CoordsT) {
   return { id: getLatLngId(lat, lng), lat, lng };
 }
 
-export function createManyCoords(cs: Maybe<CoordsT>[]) {
-  return filterTruthy(cs).map(createCoords);
+export function createManyCoords(
+  coords: Maybe<CoordsT | { coords?: Maybe<CoordsT> }>[],
+) {
+  const cs = coords.map((d) => (d && "lat" in d ? d : d?.coords));
+  const data = filterTruthy(cs).map(createCoords);
+  return { data, skipDuplicates: true } satisfies Prisma.CoordsCreateManyArgs;
 }
 
 export function setCoords(

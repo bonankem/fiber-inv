@@ -16,8 +16,8 @@ model FtthConnection {
     olt   Olt?    @relation(fields: [oltId], references: [id])
     oltId String? @db.Uuid
 
-    fat   FtthBox? @relation(fields: [fatId], references: [id])
-    fatId String?  @db.Uuid
+    fat   Fat?    @relation(fields: [fatId], references: [id])
+    fatId String? @db.Uuid
 
     oltSlot Int?
 
@@ -30,71 +30,107 @@ model FtthConnection {
 
     ontSerial String? @unique
 
-    cableLength Int?
+    method FhcMethod?
 
-    newPole Boolean?
+    withPole Boolean?
 
-    @@unique([fatId, fatPort], name: "fatUniq")
+    distance Int?
+
+    costCategory FhcCostCategory?
+
+    totalCost Float?
+
+    costItems FhcCostItem[]
 }
 
-model FhcCostCondition {
-    id String @id @default(uuid(7)) @db.Uuid
-
-    /// the name used to identify this rule
-    name String @unique
-
-    /// cable length > this (0 means no minimum)
-    minDistance Int
-
-    /// cable length <= this (0 means no limit)
-    maxDistance Int
-
-    /// 0=without pole, 1=with pole, 2=both cases
-    usesPole Int
-
-    /// cost lines that use this rule
-    lines FhcCostLine[]
-
-    @@unique([minDistance, maxDistance, usesPole], name: "uniq")
+enum FhcMethod {
+    CABLED_BUILDING
+    PRECONNECTORIZED
+    TRADITIONAL
 }
 
-model FhcCostLine {
+/// The different cost categories, determined by connection method and distance.
+/// For `PRICE_BOOK`, the cost is determined by the selected cost items (`FhcCostItem`).
+/// For other categories, there is a fixed price per vendor (`FhcFixedPrice`).
+enum FhcCostCategory {
+    /// cabled building
+    CABLED_BUILDING
+    /// traditional, distance ≤ 100m, no pole
+    TRAD_100
+    /// traditional, distance > 100m ≤ 300m, no pole
+    TRAD_300
+    /// preconnectorized, distance ≤ 100m, no pole
+    PRECON_100
+    /// preconnectorized, distance > 100m ≤ 300m, no pole
+    PRECON_300
+    /// distance > 300m, or with pole
+    PRICE_BOOK
+}
+
+/// A cost item for a home connection that falls under `FhcCostCategory.PRICE_BOOK`.
+/// Each cost item is associated with a line in the price book (`FhcPbLine`), and
+/// the cost is determined by the price for the vendor (`FhcLinePrice`).
+model FhcCostItem {
     id String @id @default(uuid(7)) @db.Uuid
 
-    /// the unique ref used to identify this line
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    work   FtthConnection @relation(fields: [workId], references: [id])
+    workId String         @db.Uuid
+
+    line   FhcPbLine @relation(fields: [lineId], references: [id])
+    lineId String    @db.Uuid
+
+    cost Float
+}
+
+/// The fixed price per vendor for home connections that
+/// do not fall under `FhcCostCategory.PRICE_BOOK`.
+model FhcFixedPrice {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    category FhcCostCategory
+
+    vendor   Vendor @relation(fields: [vendorId], references: [id])
+    vendorId String @db.Uuid
+}
+
+/// A line in the price book that can be included in home connection costs.
+model FhcPbLine {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now()) @updatedAt
+
     ref String @unique
 
-    /// the name in Français
-    nameFr String @unique @db.Citext
-
-    /// the name in English
-    nameEn String @unique @db.Citext
-
-    /// the ordered position of this line
     ord Int @default(0)
 
-    /// the cost line applies if any of these rules match
-    condition   FhcCostCondition? @relation(fields: [conditionId], references: [id])
-    conditionId String?           @db.Uuid
+    nameFr String @unique
 
-    /// the price to apply if a vendor does not have their own price
-    defaultPrice Float?
+    nameEn String @unique
 
-    /// the price of this line for each vendor
-    vendorPrices FhcVendorPrice[]
+    prices FhcLinePrice[]
+
+    items FhcCostItem[]
 }
 
-model FhcVendorPrice {
+/// The price of a line in the price book for a specific vendor.
+model FhcLinePrice {
     id String @id @default(uuid(7)) @db.Uuid
 
-    /// the cost line that carries this price
-    line   FhcCostLine @relation(fields: [lineId], references: [id])
-    lineId String      @db.Uuid
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-    /// the vendor to which this price applies
+    line   FhcPbLine @relation(fields: [lineId], references: [id])
+    lineId String    @db.Uuid
+
     vendor   Vendor @relation(fields: [vendorId], references: [id])
     vendorId String @db.Uuid
 
-    /// the price to apply
     price Float
 }

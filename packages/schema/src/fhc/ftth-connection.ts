@@ -15,8 +15,8 @@ export const ftthConnectionS = {
   ontOem: idKeyNameP,
   fat: idNameP,
   fatPort: true,
-  cableLength: true,
-  newPole: true,
+  distance: true,
+  withPole: true,
 } satisfies Prisma.FtthConnectionSelect;
 
 export const ftthConnectionZ = zObject("FtthConnectionT", {
@@ -31,8 +31,8 @@ export const ftthConnectionZ = zObject("FtthConnectionT", {
   ontOem: idKeyNameZ.nullable(),
   fat: idNameZ.nullable(),
   fatPort: z.int().nullable(),
-  cableLength: z.number().nullable(),
-  newPole: z.boolean().nullable(),
+  distance: z.number().nullable(),
+  withPole: z.boolean().nullable(),
 } satisfies Record<keyof typeof ftthConnectionS, object>);
 
 export const ftthConnectionP = { select: ftthConnectionS };

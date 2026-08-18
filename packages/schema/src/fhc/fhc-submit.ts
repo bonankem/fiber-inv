@@ -14,8 +14,8 @@ export const fhcSubmitZ = workUpdateDto("FhcUpdateT", {
   fatPort: z.int(),
   oltId: z.string().optional(),
   oltPort: z.int().optional(),
-  cableLength: z.int().optional(),
-  newPole: z.boolean().optional(),
+  distance: z.int().optional(),
+  withPole: z.boolean().optional(),
 });
 
 export type FhcSubmitT = z.infer<typeof fhcSubmitZ>;

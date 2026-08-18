@@ -12,5 +12,7 @@ model Vendor {
 
     works Work[]
 
-    fhcPrices FhcVendorPrice[]
+    fhcFixedPrices FhcFixedPrice[]
+
+    fhcLinePrices FhcLinePrice[]
 }

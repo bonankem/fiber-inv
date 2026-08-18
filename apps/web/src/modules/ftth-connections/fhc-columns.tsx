@@ -3,6 +3,7 @@ import type { FtthConnectionT } from "schema/fhc";
 import type { DtColumn } from "#/components/data-page/types";
 import StatusView from "#/components/StatusView";
 import WithCaption from "#/components/WithCaption";
+import { yesNo } from "#/utils/details";
 
 export type fhcColumn = DtColumn<FtthConnectionT>;
 
@@ -61,9 +62,9 @@ export const fhcColumns: fhcColumn[] = [
     render: (t) => t.work.vendor?.name,
   },
   {
-    key: "newPole",
+    key: "withPole",
     title: m.pole(),
     width: 80,
-    render: (t) => (t.newPole == null ? null : t.newPole ? m.yes() : m.no()),
+    render: (t) => yesNo(t.withPole),
   },
 ];

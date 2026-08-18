@@ -36,8 +36,8 @@ export default function FhcDetailsTab(props: FhcTabProps) {
           { label: m.fat_port(), value: i.fatPort },
           { label: m.ont_oem(), value: i.ontOem?.name },
           { label: m.ont_serial_number(), value: i.ontSerial },
-          { label: m.cable_length(), value: metres(i.cableLength) },
-          { label: m.new_pole(), value: yesNo(i.newPole), missing: "hide" },
+          { label: m.distance(), value: metres(i.distance) },
+          { label: m.with_pole(), value: yesNo(i.withPole), missing: "hide" },
         ]}
       />
     </div>

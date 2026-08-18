@@ -9,8 +9,7 @@ export const setupNetApi = postRoute({
 });
 async function setupNet() {
   const deleted = await prisma.$transaction([
-    prisma.cable.deleteMany(),
-    prisma.ftthBox.deleteMany(),
+    prisma.fat.deleteMany(),
     prisma.olt.deleteMany(),
     prisma.locality.deleteMany(),
     prisma.district.deleteMany(),

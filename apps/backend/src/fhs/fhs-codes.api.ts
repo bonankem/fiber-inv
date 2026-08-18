@@ -10,11 +10,6 @@ export const fhsCodesApi = getRoute({
 });
 
 async function fhsCodes(): Promise<FhsCodesT> {
-  const boxes = await prisma.ftthBox.findMany({
-    distinct: ["area"],
-    select: { area: true },
-  });
-
   const unconfirmed = [
     WorkStatus.REQUESTED,
     WorkStatus.DECLINED,
@@ -24,15 +19,17 @@ async function fhsCodes(): Promise<FhsCodesT> {
     select: { area: true, work: { select: { sid: true } } },
     where: { work: { status: { notIn: unconfirmed } } },
   });
+  const fats = await prisma.fat.findMany({
+    distinct: ["area"],
+    select: { area: true },
+    where: { area: { not: null } },
+  });
 
   const byCode = mapValues(
     groupBy(surveys, (s) => s.area || ""),
     (ss) => ss.map((s) => s.work.sid),
   );
-  const codes = unique([
-    ...boxes.map((b) => b.area),
-    ...surveys.map((s) => s.area),
-  ]);
+  const codes = [...fats, ...surveys].map((f) => f.area);
   const sorted = filterTruthy(unique(codes)).sort();
-  return sorted.map((code) => ({ code, works: byCode[code] || "" }));
+  return sorted.map((code) => ({ code, works: byCode[code] || [] }));
 }

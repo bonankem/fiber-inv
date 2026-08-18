@@ -1,15 +1,16 @@
 model Coords {
-    id  BigInt @id
+    id BigInt @id
+
     lat Float
     lng Float
 
     works Work[]
 
+    workDocs WorkDoc[]
+
     olts Olt[]
 
-    boxes FtthBox[]
-
-    workDocs WorkDoc[]
+    fats Fat[]
 }
 
 model Boundary {
@@ -31,7 +32,7 @@ model Boundary {
 
     survey FtthSurvey?
 
-    boxes FtthBox[]
+    fats Fat[]
 }
 
 model District {
