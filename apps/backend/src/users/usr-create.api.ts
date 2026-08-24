@@ -56,8 +56,11 @@ async function createUser(req: RequestWith<UserCreateT>) {
     subject: "Welcome to ServiceX",
     to: [user.email],
     lines: [
+      "Un compte a été créé pour vous sur MTN CI ServiceX.",
+      "Vos identifiants de connexion sont indiqués ci-dessous. Vous devrez changer votre mot de passe après vous être connecté.",
+      "-",
       "An account has been created for you on MTNCI ServiceX.",
-      "Your login details are shown below. You will need to change you password after logging in.",
+      "Your login details are shown below. You will need to change your password after logging in.",
     ],
     fields: [
       ["Name", user.name],

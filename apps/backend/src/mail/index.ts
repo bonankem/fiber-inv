@@ -166,7 +166,9 @@ export function sendMail(mail: Maybe<MailData>) {
   if (!mailer || !mail?.to?.length) return;
 
   const { to, subject, lines } = mail;
-  const htmlLines = lines.map((s) => `<p class="line">${escapeHtml(s)}</p>`);
+  const htmlLines = lines.map((s) =>
+    s === "-" ? "<hr/>" : `<p class="line">${escapeHtml(s)}</p>`,
+  );
   const textLines = lines.map((s) => cleanText(s));
   const fields = renderFields(mail);
   const button = renderButton(mail);

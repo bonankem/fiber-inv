@@ -1,8 +1,12 @@
 import { Alert, Form, Input, message, Select } from "antd";
 import { m } from "i18n/messages";
 import { StaffRole } from "schema/enums";
-import { type UserCreateT, type UserFullT, userZ } from "schema/people";
-import { zArray } from "schema/utils";
+import {
+  type UserCreateT,
+  type UserFullT,
+  userZ,
+  vendorZ,
+} from "schema/people";
 import { apiCall, useApiGet, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import type { ModalStateProps } from "#/hooks/useModalViewer";
@@ -12,7 +16,8 @@ import { staffRoleName } from "./utils";
 type Data = UserCreateT & { type: string };
 
 export default function StaffCreateForm(props: ModalStateProps) {
-  const usersQ = useApiGet("/users", zArray(userZ));
+  const vendorsQ = useApiGet("/vendors", vendorZ.array());
+  const usersQ = useApiGet("/users", userZ.array());
   const emails = usersQ.data?.map((u) => u.email.toLowerCase()) ?? [];
   const checker = async (email: string) => {
     if (emails.includes(email.toLowerCase().trim())) {
@@ -22,7 +27,7 @@ export default function StaffCreateForm(props: ModalStateProps) {
 
   const [form] = Form.useForm<Data>();
   const type = Form.useWatch("type", form);
-  const send = useApiPost<UserCreateT, UserFullT>("/users", "all");
+  const send = useApiPost<UserCreateT, UserFullT>("/users");
 
   const onSubmit = apiCall(async (data: Data) => {
     const { type, ...out } = data;
@@ -76,6 +81,20 @@ export default function StaffCreateForm(props: ModalStateProps) {
               label: staffRoleName(value),
               value,
             }))}
+          />
+        </Form.Item>
+      )}
+
+      {type === "Vendor" && (
+        <Form.Item label={m.field_vendor()} name="vendorId">
+          <Select
+            loading={vendorsQ.isLoading}
+            options={
+              vendorsQ.data?.map((v) => ({
+                label: v.name,
+                value: v.id,
+              })) ?? []
+            }
           />
         </Form.Item>
       )}

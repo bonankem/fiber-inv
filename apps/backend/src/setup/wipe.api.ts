@@ -29,11 +29,12 @@ async function wipeDb(q: WipeQueryT) {
   if (!q?.commit) return { commit: false };
 
   const p = prisma;
-  const user = /user/.test(q.what);
-  const work = /work/.test(q.what);
-  const cost = /cost/.test(q.what);
-  const net = /net/.test(q.what);
-  const geo = /geo/.test(q.what);
+  const all = q.what === "all";
+  const user = all || /user/.test(q.what);
+  const work = all || /work/.test(q.what);
+  const cost = all || /cost/.test(q.what);
+  const net = all || /net/.test(q.what);
+  const geo = all || /geo/.test(q.what);
 
   const tables = filterTruthy<DelName>([
     work && "ftthConnection",

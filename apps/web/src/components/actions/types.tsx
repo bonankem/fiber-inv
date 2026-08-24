@@ -77,15 +77,19 @@ function resolve<T, When, Who>(
     t: T,
     f: Maybe<(t: T, w: W, u: UserFullT) => boolean>,
   ) {
-    return a?.length && f ? a.some((w) => f(t, w, user)) : null;
+    if (!a?.length || !f) return null;
+    const result = a.some((w) => f(t, w, user));
+    console.log("some", a, result);
+    return result;
   }
 
+  const { isWhen, isWhom } = acts;
   return pipe(
     acts.actions,
     filter((a) => {
-      if (some(a.when, item, acts.isWhen) === false) return false;
-      if (some(a.whom, item, acts.isWhom) === false) return false;
-      if (some(a.notWhen, item, acts.isWhen) === true) return false;
+      if (some(a.whom, item, isWhom) === false && !user.isAdmin) return false;
+      if (some(a.when, item, isWhen) === false) return false;
+      if (some(a.notWhen, item, isWhen) === true) return false;
       if (a.onlyIf?.(item) === false) return false;
       if (a.notIf?.(item) === true) return false;
       return true;

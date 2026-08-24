@@ -8,8 +8,9 @@ import {
 } from "@ant-design/icons";
 import { m } from "i18n/messages";
 import { ThumbsUp } from "lucide-react";
-import { WorkStatus as When } from "schema/enums";
+import { StaffRole, WorkStatus as When } from "schema/enums";
 import type { FtthSurveyT as What } from "schema/fhs";
+import type { UserFullT } from "schema/people";
 import { buildActions } from "#/components/actions/types";
 import CommentForm from "../work/CommentForm";
 import FhsAcceptForm from "./forms/FhsAcceptForm";
@@ -19,19 +20,40 @@ import FhsInitiateForm from "./forms/FhsInitiateForm";
 import FhsRejectForm from "./forms/FhsRejectForm";
 import FhsSubmitForm from "./forms/FhsSubmitForm";
 
+enum Whom {
+  MANAGER = "manager",
+  HANDLER = "handler",
+  VENDOR = "vendor",
+  ANY = "any",
+}
+
 function isWhen(what: What, when: When) {
   return what.work.status === when;
 }
 
-function isWho() {
-  return true;
+function isVendor(what: What, user: UserFullT) {
+  const v = user.vendor?.id;
+  return !!v && what.work.vendor?.id === v;
 }
 
-export const fhsActions = buildActions(isWhen, isWho, [
+function isWhom(what: What, whom: Whom, user: UserFullT) {
+  const isMe = (role: StaffRole) => {
+    const worker = what.work.workers.find((w) => w.role === role);
+    return !!worker && worker.user.id === user.id;
+  };
+  if (whom === Whom.ANY) return true;
+  if (whom === Whom.MANAGER) return isMe(StaffRole.PLANNING_MANAGER);
+  if (whom === Whom.HANDLER) return isMe(StaffRole.PLANNING_ENGINEER);
+  if (whom === Whom.VENDOR) return isVendor(what, user);
+  return false;
+}
+
+export const fhsActions = buildActions(isWhen, isWhom, [
   {
     name: m.action_assign(),
     icon: UserOutlined,
     when: [When.REQUESTED],
+    whom: [Whom.MANAGER],
     form: FhsAssignForm,
     main: true,
   },
@@ -39,6 +61,7 @@ export const fhsActions = buildActions(isWhen, isWho, [
     name: m.action_decline(),
     icon: StopOutlined,
     when: [When.REQUESTED],
+    whom: [Whom.MANAGER],
     form: FhsDeclineForm,
     main: true,
     red: true,
@@ -47,6 +70,7 @@ export const fhsActions = buildActions(isWhen, isWho, [
     name: m.action_initiate(),
     icon: CalendarOutlined,
     when: [When.ASSIGNED],
+    whom: [Whom.HANDLER],
     form: FhsInitiateForm,
     main: true,
   },
@@ -54,6 +78,7 @@ export const fhsActions = buildActions(isWhen, isWho, [
     name: m.action_submit(),
     icon: SendOutlined,
     when: [When.SURVEY, When.FAILED_REVIEW],
+    whom: [Whom.VENDOR],
     form: FhsSubmitForm,
     main: true,
   },
