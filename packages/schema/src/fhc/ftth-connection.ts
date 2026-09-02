@@ -1,6 +1,6 @@
 import { idKeyNameP, idKeyNameZ, idNameP, idNameZ } from "#/common";
 import { workP, workZ } from "#/work";
-import type { Prisma } from "../db";
+import { FhcMode, type Prisma } from "../db";
 import { type Same, z, zObject, zStr, zStrNul } from "../utils";
 
 export const ftthConnectionS = {
@@ -9,12 +9,12 @@ export const ftthConnectionS = {
   tn: true,
   phone: true,
   email: true,
-  address: true,
 
-  ontSerial: true,
-  ontOem: idKeyNameP,
   fat: idNameP,
   fatPort: true,
+  ontSerial: true,
+  ontOem: idKeyNameP,
+  mode: true,
   distance: true,
   withPole: true,
 } satisfies Prisma.FtthConnectionSelect;
@@ -25,12 +25,12 @@ export const ftthConnectionZ = zObject("FtthConnectionT", {
   work: workZ.describe("The work instance"),
   phone: zStrNul("The customer's phone number"),
   email: zStrNul("The customer's email address"),
-  address: zStrNul("The installation address"),
 
-  ontSerial: zStrNul("The ONT serial number"),
-  ontOem: idKeyNameZ.nullable(),
   fat: idNameZ.nullable(),
   fatPort: z.int().nullable(),
+  ontSerial: zStrNul("The ONT serial number"),
+  ontOem: idKeyNameZ.nullable(),
+  mode: z.enum(FhcMode).nullable(),
   distance: z.number().nullable(),
   withPole: z.boolean().nullable(),
 } satisfies Record<keyof typeof ftthConnectionS, object>);

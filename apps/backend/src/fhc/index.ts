@@ -6,6 +6,11 @@ import { fhcCountApi } from "./fhc-count.api";
 import { fhcExtractApi } from "./fhc-extract.api";
 import { fhcListApi } from "./fhc-list.api";
 import { fhcRequestManyApi } from "./fhc-many.api";
+import {
+  fhcPbDeleteApi,
+  fhcPbListApi,
+  fhcPbUpdateApi,
+} from "./fhc-pricebook.api";
 import { fhcRequestApi } from "./fhc-request.api";
 import { fhcReviewApi } from "./fhc-review.api";
 import { fhcStatusApi } from "./fhc-status-api";
@@ -19,6 +24,9 @@ export default appPlugin((app) => {
   app.register(fhcCountApi);
   app.register(fhcExtractApi);
   app.register(fhcListApi);
+  app.register(fhcPbDeleteApi);
+  app.register(fhcPbListApi);
+  app.register(fhcPbUpdateApi);
   app.register(fhcRequestApi);
   app.register(fhcRequestManyApi);
   app.register(fhcReviewApi);

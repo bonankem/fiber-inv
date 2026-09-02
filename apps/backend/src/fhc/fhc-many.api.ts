@@ -48,7 +48,6 @@ async function fhcRequestMany({ items }: FhcRequestManyT, from: UserFullT) {
         tn: dto.tn,
         email: dto.email,
         phone: dto.phone,
-        address: dto.address,
       })),
     });
     const addLogs = tx.workLog.createMany({

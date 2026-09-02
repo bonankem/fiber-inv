@@ -25,6 +25,7 @@ async function fhcSurvey(dto: FhcSurveyT, from: UserT) {
     select: ftthConnectionS,
     where: { id },
     data: {
+      mode: dto.mode,
       withPole: dto.withPole,
       work: updateWork({
         dto,

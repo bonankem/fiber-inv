@@ -11,7 +11,6 @@ export const fhcRequestZ = zObject("FhcRequestT", {
   ontOem: zStrOpt("ONT OEM"),
   email: zStrOpt("Customer email address"),
   phone: zStrOpt("Customer phone number"),
-  address: zStrOpt("Location address"),
   startDate: zStrOpt("Scheduled date"),
   comment: zStrOpt("Added comment"),
   uploads: z.array(z.string()).optional(),

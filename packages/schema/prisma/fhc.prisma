@@ -7,11 +7,15 @@ model FtthConnection {
 
     tn String
 
-    address String?
-
     email String?
 
     phone String?
+
+    mode FhcMode?
+
+    withPole Boolean?
+
+    distance Int?
 
     olt   Olt?    @relation(fields: [oltId], references: [id])
     oltId String? @db.Uuid
@@ -30,12 +34,6 @@ model FtthConnection {
 
     ontSerial String? @unique
 
-    method FhcMethod?
-
-    withPole Boolean?
-
-    distance Int?
-
     costCategory FhcCostCategory?
 
     totalCost Float?
@@ -43,13 +41,13 @@ model FtthConnection {
     costItems FhcCostItem[]
 }
 
-enum FhcMethod {
+enum FhcMode {
     CABLED_BUILDING
     PRECONNECTORIZED
     TRADITIONAL
 }
 
-/// The different cost categories, determined by connection method and distance.
+/// The different cost categories, determined by mode of cabling and distance.
 /// For `PRICE_BOOK`, the cost is determined by the selected cost items (`FhcCostItem`).
 /// For other categories, there is a fixed price per vendor (`FhcFixedPrice`).
 enum FhcCostCategory {
@@ -108,11 +106,9 @@ model FhcPbLine {
 
     ref String @unique
 
-    ord Int @default(0)
+    nameFr String @unique @db.Citext
 
-    nameFr String @unique
-
-    nameEn String @unique
+    nameEn String @unique @db.Citext
 
     prices FhcLinePrice[]
 

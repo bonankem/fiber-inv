@@ -1,4 +1,5 @@
 import { Pagination, Table } from "antd";
+import { twJoin } from "tailwind-merge";
 import ExportButton from "./ExportButton";
 import type { DataTableProps } from "./types";
 import { useResolvedColumns } from "./utils";
@@ -8,10 +9,12 @@ export default function DataTable<T extends { id: string } | { tn: string }>(
 ) {
   const { columns, scrollX, maxHeight } = useResolvedColumns(props);
   const hasFooter = props.onExport;
+  const textClass = props.smallerText ? "text-xs!" : "text-sm!";
 
   return (
     <Table
       size="small"
+      virtual={props.virtual}
       dataSource={props.data ?? []}
       rowKey={(r) => ("id" in r ? r.id : r.tn)}
       scroll={{
@@ -22,8 +25,8 @@ export default function DataTable<T extends { id: string } | { tn: string }>(
       columns={columns}
       pagination={false}
       classNames={{
-        body: { cell: "text-sm one-line" },
-        header: { cell: "text-sm", wrapper: "sticky top-0 z-100" },
+        body: { cell: twJoin(textClass, "one-line", props.cellClassName) },
+        header: { cell: textClass, wrapper: "sticky top-0 z-100" },
       }}
       bordered={props.bordered}
       styles={{ content: { maxHeight, overflowY: "auto" } }}

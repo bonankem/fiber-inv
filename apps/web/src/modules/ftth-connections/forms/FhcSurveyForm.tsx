@@ -1,18 +1,14 @@
 import { Form, Input, message, Select } from "antd";
 import { m } from "i18n/messages";
-import { FhcMethod, WorkDocType, WorkStatus } from "schema/enums";
+import { WorkDocType, WorkStatus } from "schema/enums";
 import type { FhcSurveyT, FtthConnectionT } from "schema/fhc";
 import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import FileUpload from "#/components/inputs/FileUpload";
 import { req } from "#/utils/form";
-import type { FhcFormProps } from "../fhc-types";
+import { type FhcFormProps, fhcModeSelect, yesNoSelect } from "../fhc-types";
 
 const { SURVEY_REPORT } = WorkDocType;
-const yesNo = [
-  { value: true, label: m.yes() },
-  { value: false, label: m.no() },
-];
 const nextPhases = [
   { value: WorkStatus.INSTALLATION, label: m.start_installation() },
   { value: WorkStatus.DESATURATION, label: m.pending_desaturation() },
@@ -31,7 +27,6 @@ export default function FhcSurveyForm(props: FhcFormProps) {
 
   return (
     <FormModal
-      width={320}
       title={m.finish_survey()}
       subtitle={props.item.work.name}
       state={props.state}
@@ -41,23 +36,19 @@ export default function FhcSurveyForm(props: FhcFormProps) {
         <FileUpload required type={SURVEY_REPORT} />
       </Form.Item>
 
-      <Form.Item name="method" label={m.cabling_method()} {...req}>
-        <Select
-          options={[
-            { value: FhcMethod.CABLED_BUILDING, label: "Cabled Building" },
-            { value: FhcMethod.PRECONNECTORIZED, label: "Preconnectorized" },
-            { value: FhcMethod.TRADITIONAL, label: "Traditional" },
-          ]}
-        />
-      </Form.Item>
-
-      <Form.Item name="withPole" label={m.with_pole()} {...req}>
-        <Select options={yesNo} />
-      </Form.Item>
-
       <Form.Item name="nextPhase" label={m.next_phase()} {...req}>
         <Select options={nextPhases} />
       </Form.Item>
+
+      <div className="grid grid-cols-2 gap-2">
+        <Form.Item name="mode" label={m.mode_of_cabling()} {...req}>
+          <Select options={fhcModeSelect} />
+        </Form.Item>
+
+        <Form.Item name="withPole" label={m.with_pole()} {...req}>
+          <Select options={yesNoSelect} />
+        </Form.Item>
+      </div>
 
       <Form.Item name="comment" label={m.comment()} required>
         <Input.TextArea rows={3} className="resize-none!" required />

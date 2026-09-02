@@ -1,9 +1,25 @@
-import { Form, Input, InputNumber, message, Select } from "antd";
+import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Select,
+  Space,
+  Tooltip,
+} from "antd";
 import { m } from "i18n/messages";
-import { useMemo, useState } from "react";
+import { getLocale } from "i18n/runtime";
+import { useEffect, useMemo, useState } from "react";
 import { indexBy } from "remeda";
-import { WorkDocType as Doc } from "schema/enums";
-import type { FhcSubmitT, FtthConnectionT } from "schema/fhc";
+import { WorkDocType as Doc, FhcCostCategory, FhcMode } from "schema/enums";
+import {
+  type FhcSubmitT,
+  type FtthConnectionT,
+  fhcCostCategoryOf,
+  fhcPbLineZ,
+} from "schema/fhc";
 import { fatZ } from "schema/network";
 import { workDocZ } from "schema/work";
 import { twMerge } from "tailwind-merge";
@@ -12,14 +28,26 @@ import DataTable from "#/components/data-page/DataTable";
 import FormModal from "#/components/FormModal";
 import ImageUpload from "#/components/inputs/ImageUpload";
 import IntInput from "#/components/inputs/IntInput";
-import type { FhcFormProps } from "../fhc-types";
+import { req } from "#/utils/form";
+import { type FhcFormProps, fhcModeSelect, yesNoSelect } from "../fhc-types";
+
+const isEnglish = getLocale() === "en";
 
 export default function FhcSubmitForm({ item, state }: FhcFormProps) {
+  const pricebookQ = useApiGet("/fhc/pricebook", fhcPbLineZ.array());
+
   const fatQ = useApiGet("/network/fat", fatZ.array());
   const send = useApiPost<FhcSubmitT, FtthConnectionT>("/fhc/submit");
 
   const [form] = Form.useForm<FhcSubmitT>();
   const [onCost, setOnCost] = useState(false);
+
+  const mode = Form.useWatch("mode", form);
+  const distance = Form.useWatch("distance", form);
+  const withPole = Form.useWatch("withPole", form);
+  const category = fhcCostCategoryOf({ mode, distance, withPole });
+  const isPricebook = category === FhcCostCategory.PRICE_BOOK;
+  const willSubmit = onCost || !isPricebook;
 
   const initialValues = useMemo(
     (): Partial<FhcSubmitT> => ({
@@ -29,9 +57,27 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
       fatPort: item.fatPort || undefined,
       distance: item.distance || undefined,
       withPole: item.withPole || undefined,
+      mode: item.mode || undefined,
     }),
     [item],
   );
+
+  const onBack = () => {
+    if (!onCost) return false;
+    setOnCost(false);
+    return true;
+  };
+
+  const goToCost = async (data: FhcSubmitT) => {
+    const cat = fhcCostCategoryOf(data);
+    if (cat === FhcCostCategory.PRICE_BOOK) {
+      form.setFieldValue("priceBook", {});
+      setOnCost(true);
+    } else {
+      console.log(cat);
+      await onSubmit(data);
+    }
+  };
 
   const onSubmit = apiCall(async (data: FhcSubmitT) => {
     data.id = item.id;
@@ -40,16 +86,14 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
     state.close();
   });
 
-  const onNext = (data: FhcSubmitT) => {
-    if (onCost) return onSubmit(data);
-    else setOnCost(true);
-  };
-
-  const onBack = () => {
-    if (!onCost) return false;
-    setOnCost(false);
-    return true;
-  };
+  const isCabledBuilding = mode === FhcMode.CABLED_BUILDING;
+  useEffect(() => {
+    if (isCabledBuilding) {
+      form.setFieldsValue({ distance: 0, withPole: false });
+    } else {
+      form.setFieldsValue({ distance: undefined, withPole: undefined });
+    }
+  }, [form, isCabledBuilding]);
 
   const guessOem = (sn: string) => {
     console.log("Guess", sn);
@@ -67,6 +111,7 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
     () => indexBy(docs.data ?? [], (d) => d.type),
     [docs.data],
   );
+
   function img(type: Doc & `FHC_${string}`, label: string, required = true) {
     return (
       <Form.Item name={["images", type]} label={label} required={required}>
@@ -83,19 +128,20 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
     <FormModal
       form={form}
       state={state}
-      width={onCost ? 800 : 640}
+      width={onCost ? 800 : 720}
       title={m.fhc_form_submit()}
       subtitle={`${item.tn}: ${item.work.name}`}
       onBack={onBack}
-      onSubmit={onNext}
-      okText={onCost ? m.send() : m.continue()}
-      checkbox={onCost}
+      onSubmit={onCost ? onSubmit : goToCost}
+      okText={willSubmit ? m.send() : "Price book →"}
+      submitting={send.isPending}
+      checkbox={willSubmit}
       initialValues={initialValues}
     >
       <section
         id="submit-part-1"
         className={twMerge(
-          "grid md:grid-cols-[3fr_2fr] gap-x-8",
+          "grid md:grid-cols-[3fr_2fr] gap-x-6",
           onCost && "hidden",
         )}
       >
@@ -111,16 +157,7 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
         </section>
 
         <section className="flex flex-col">
-          <Form.Item name="withPole" label={m.with_pole()} required>
-            <Select
-              options={[
-                { value: true, label: m.yes() },
-                { value: false, label: m.no() },
-              ]}
-            />
-          </Form.Item>
-
-          <Form.Item name="fatId" label={m.fat_pbo()} required>
+          <Form.Item name="fatId" label={m.fat()} {...req}>
             <Select
               showSearch={{ optionFilterProp: "label" }}
               options={fatQ.data?.map((o) => ({ value: o.id, label: o.name }))}
@@ -131,9 +168,24 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
             <IntInput required controls={false} min={1} max={8} />
           </Form.Item>
 
-          <Form.Item name="distance" label={m.distance()} required>
-            <IntInput required suffix="m" controls={false} />
+          <Form.Item name="mode" label={m.mode_of_cabling()} {...req}>
+            <Select options={fhcModeSelect} />
           </Form.Item>
+
+          <div className="grid grid-cols-2 gap-x-2">
+            <Form.Item name="withPole" label={m.with_pole()} required>
+              <Select options={yesNoSelect} disabled={isCabledBuilding} />
+            </Form.Item>
+
+            <Form.Item name="distance" label={m.distance()} required>
+              <IntInput
+                required
+                suffix="m"
+                controls={false}
+                disabled={isCabledBuilding}
+              />
+            </Form.Item>
+          </div>
 
           <Form.Item name="ontSerial" label={m.ont_serial_number()} required>
             <Input
@@ -156,17 +208,84 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
 
       <section id="submit-part-1" className={twMerge(!onCost && "hidden")}>
         <DataTable
-          data={[]}
+          data={pricebookQ.data}
+          smallerText
+          cellClassName="my-0! py-0!"
           columns={[
             {
+              key: "ref",
+              title: "Ref",
+              render: (p) => p.ref,
+              width: 120,
+            },
+            {
               key: "quantity",
-              title: "Qty",
-              render: () => <InputNumber />,
-              width: 100,
+              title: m.qty(),
+              render: ({ ref }) => (
+                <Form.Item name={["priceBook", ref]} noStyle>
+                  <PbQtyInput />
+                </Form.Item>
+              ),
+              className: "flex! items-center!",
+              width: 120,
+            },
+            {
+              key: "name",
+              title: m.name(),
+              render: (p) => <PbNameView item={p} />,
+              width: 500,
             },
           ]}
         />
       </section>
     </FormModal>
+  );
+}
+
+function PbQtyInput(props: {
+  value?: number | null;
+  onChange?: (value: number | null) => void;
+}) {
+  return (
+    <Space.Compact>
+      <Button
+        className="h-6! *:text-xs!"
+        size="small"
+        tabIndex={-1}
+        onClick={() => props.onChange?.(props.value ? null : 1)}
+        icon={
+          props.value ? (
+            <CloseOutlined className="text-red-700!" />
+          ) : (
+            <PlusOutlined />
+          )
+        }
+      />
+      <InputNumber
+        controls={false}
+        value={props.value}
+        onChange={props.onChange}
+        className="text-xs! h-6!"
+        classNames={{ input: "text-right! pr-3!" }}
+        size="small"
+        min={0}
+        precision={0}
+      />
+    </Space.Compact>
+  );
+}
+
+function PbNameView(props: { item: { nameEn: string; nameFr: string } }) {
+  const name = isEnglish ? props.item.nameEn : props.item.nameFr;
+
+  return (
+    <Tooltip
+      title={name}
+      placement="bottomLeft"
+      className="w-fit"
+      classNames={{ container: "whitespace-pre-line" }}
+    >
+      <span className="overflow-x-hidden max-w-full text-ellipsis">{name}</span>
+    </Tooltip>
   );
 }

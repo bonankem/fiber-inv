@@ -40,4 +40,8 @@ export type DataTableProps<T> = {
   maxHeight?: string | number;
   modal?: ModalItemFC<T>;
   bordered?: boolean;
+
+  virtual?: boolean;
+  smallerText?: boolean;
+  cellClassName?: string;
 };

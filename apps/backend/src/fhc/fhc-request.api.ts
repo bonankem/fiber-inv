@@ -21,7 +21,6 @@ async function fhcRequest(dto: FhcRequestT, from: UserFullT) {
       select: ftthConnectionS,
       data: {
         tn: dto.tn,
-        address: dto.address,
         email: dto.email,
         phone: dto.phone,
         ontSerial: dto.ontSerial,

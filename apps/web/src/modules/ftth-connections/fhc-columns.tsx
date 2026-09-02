@@ -3,16 +3,15 @@ import type { FtthConnectionT } from "schema/fhc";
 import type { DtColumn } from "#/components/data-page/types";
 import StatusView from "#/components/StatusView";
 import WithCaption from "#/components/WithCaption";
-import { yesNo } from "#/utils/details";
 
-export type fhcColumn = DtColumn<FtthConnectionT>;
+export type FhcColumn = DtColumn<FtthConnectionT>;
 
 function caption(f: FtthConnectionT) {
   const l = f.work.locality;
   return l ? [l.district.name, l.name] : null;
 }
 
-export const fhcColumns: fhcColumn[] = [
+export const fhcColumns: FhcColumn[] = [
   {
     key: "id",
     title: "ID",
@@ -26,18 +25,18 @@ export const fhcColumns: fhcColumn[] = [
     ),
   },
   {
+    key: "tn",
+    title: `TN`,
+    width: 140,
+    onClick: true,
+    render: (p) => <WithCaption title={p.tn} caption={p.fat?.name || "-"} />,
+  },
+  {
     key: "name",
     title: m.name(),
     width: 250,
     onClick: true,
     render: (p) => <WithCaption title={p.work.name} caption={caption(p)} />,
-  },
-  {
-    key: "tn",
-    title: `TN / ${m.fat()}`,
-    width: 150,
-    onClick: true,
-    render: (p) => <WithCaption title={p.tn} caption={p.fat?.name} />,
   },
   {
     key: "status",
@@ -60,11 +59,5 @@ export const fhcColumns: fhcColumn[] = [
     title: m.field_vendor(),
     width: 120,
     render: (t) => t.work.vendor?.name,
-  },
-  {
-    key: "withPole",
-    title: m.pole(),
-    width: 80,
-    render: (t) => yesNo(t.withPole),
   },
 ];

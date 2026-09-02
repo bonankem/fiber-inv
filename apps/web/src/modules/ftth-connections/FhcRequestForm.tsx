@@ -36,13 +36,12 @@ export default function FhcRequestForm(props: ModalStateProps) {
         <Input required id="fhs-name" />
       </Form.Item>
 
-      <Form.Item
-        name="address"
-        label={m.address()}
-        required
-        className="col-span-full"
-      >
-        <Input required id="fhs-name" />
+      <Form.Item name="tn" label="TN" required>
+        <Input required />
+      </Form.Item>
+
+      <Form.Item name="vendorId" label={m.field_vendor()} required>
+        <VendorSelect />
       </Form.Item>
 
       <Form.Item name="localityId" label={m.locality()} {...req}>
@@ -51,14 +50,6 @@ export default function FhcRequestForm(props: ModalStateProps) {
 
       <Form.Item name="coords" label={m.coords()} {...req}>
         <CoordsInput />
-      </Form.Item>
-
-      <Form.Item name="tn" label="TN" required>
-        <Input required />
-      </Form.Item>
-
-      <Form.Item name="vendorId" label={m.field_vendor()} required>
-        <VendorSelect />
       </Form.Item>
 
       <Form.Item name="phone" label={m.phone()}>

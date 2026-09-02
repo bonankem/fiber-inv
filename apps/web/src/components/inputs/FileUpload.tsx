@@ -28,7 +28,6 @@ const defaultAccept: { [key in WorkDocType]?: string } = {
   PLAN_DIAGRAM: ".dwg",
   SYNOPTIC_DIAGRAM: ".dwg",
   SYNOPTIC_TABLE: ".xlsx,.xls",
-  SURVEY_REPORT: ".xlsx,.xls",
   COORDINATES: ".xlsx,.xls",
   CABLE_LENGTHS: ".xlsx,.xls",
   HP_SUMMARY: ".xlsx,.xls",
