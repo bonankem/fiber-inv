@@ -1,16 +1,6 @@
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Form,
-  Input,
-  InputNumber,
-  message,
-  Select,
-  Space,
-  Tooltip,
-} from "antd";
+import { Button, Form, Input, InputNumber, message, Select, Space } from "antd";
 import { m } from "i18n/messages";
-import { getLocale } from "i18n/runtime";
 import { useEffect, useMemo, useState } from "react";
 import { indexBy } from "remeda";
 import { WorkDocType as Doc, FhcCostCategory, FhcMode } from "schema/enums";
@@ -18,7 +8,7 @@ import {
   type FhcSubmitT,
   type FtthConnectionT,
   fhcCostCategoryOf,
-  fhcPbLineZ,
+  fhcPbItemZ,
 } from "schema/fhc";
 import { fatZ } from "schema/network";
 import { workDocZ } from "schema/work";
@@ -29,12 +19,11 @@ import FormModal from "#/components/FormModal";
 import ImageUpload from "#/components/inputs/ImageUpload";
 import IntInput from "#/components/inputs/IntInput";
 import { req } from "#/utils/form";
+import FhcPbNameView from "../components/FchPbNameView";
 import { type FhcFormProps, fhcModeSelect, yesNoSelect } from "../fhc-types";
 
-const isEnglish = getLocale() === "en";
-
 export default function FhcSubmitForm({ item, state }: FhcFormProps) {
-  const pricebookQ = useApiGet("/fhc/pricebook", fhcPbLineZ.array());
+  const pricebookQ = useApiGet("/fhc/pricebook", fhcPbItemZ.array());
 
   const fatQ = useApiGet("/network/fat", fatZ.array());
   const send = useApiPost<FhcSubmitT, FtthConnectionT>("/fhc/submit");
@@ -71,7 +60,7 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
   const goToCost = async (data: FhcSubmitT) => {
     const cat = fhcCostCategoryOf(data);
     if (cat === FhcCostCategory.PRICE_BOOK) {
-      form.setFieldValue("priceBook", {});
+      form.setFieldValue("quantities", {});
       setOnCost(true);
     } else {
       console.log(cat);
@@ -222,7 +211,7 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
               key: "quantity",
               title: m.qty(),
               render: ({ ref }) => (
-                <Form.Item name={["priceBook", ref]} noStyle>
+                <Form.Item name={["quantities", ref]} noStyle>
                   <PbQtyInput />
                 </Form.Item>
               ),
@@ -232,7 +221,7 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
             {
               key: "name",
               title: m.name(),
-              render: (p) => <PbNameView item={p} />,
+              render: (p) => <FhcPbNameView item={p} />,
               width: 500,
             },
           ]}
@@ -272,20 +261,5 @@ function PbQtyInput(props: {
         precision={0}
       />
     </Space.Compact>
-  );
-}
-
-function PbNameView(props: { item: { nameEn: string; nameFr: string } }) {
-  const name = isEnglish ? props.item.nameEn : props.item.nameFr;
-
-  return (
-    <Tooltip
-      title={name}
-      placement="bottomLeft"
-      className="w-fit"
-      classNames={{ container: "whitespace-pre-line" }}
-    >
-      <span className="overflow-x-hidden max-w-full text-ellipsis">{name}</span>
-    </Tooltip>
   );
 }

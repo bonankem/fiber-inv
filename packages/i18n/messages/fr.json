@@ -172,6 +172,7 @@
   "no_poles": "Pas de poteaux",
   "olt_cards": "Cartes OLT",
   "olt_code": "Code OLT",
+  "olt_slot_port": "Slot/Port OLT",
   "ont_oem": "ONT OEM",
   "ont_serial_number": "Numéro de série ONT",
   "optional": "Facultatif",

@@ -173,6 +173,7 @@
   "no_poles": "No poles",
   "olt_cards": "OLT Cards",
   "olt_code": "OLT code",
+  "olt_slot_port": "OLT Slot/Port",
   "ont_oem": "ONT OEM",
   "ont_serial_number": "ONT Serial Number",
   "optional": "Optional",

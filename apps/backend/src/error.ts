@@ -53,17 +53,18 @@ export const appErrorHandler: ErrorHandler = function (
   const isAdmin = req.maybeUser?.isAdmin;
   if (error instanceof PrismaClientKnownRequestError) {
     const { code, meta } = error;
+    console.error(meta);
     if (code === "P2001") {
-      return send(Err.NOT_FOUND, meta?.model_name);
+      return send(Err.NOT_FOUND, meta?.model);
     }
     if (code === "P2002") {
       return send(Err.ALREADY_EXISTS, meta);
     }
     if (code === "P2003") {
-      return send(Err.NOT_FOUND, meta?.modelName);
+      return send(Err.NOT_FOUND, meta?.model);
     }
     if (code === "P2025") {
-      return send(Err.NOT_FOUND, meta?.modelName);
+      return send(Err.NOT_FOUND, meta?.model);
     }
   }
 

@@ -23,7 +23,7 @@ export const fhcSubmitZ = workUpdateDto("FhcUpdateT", {
   oltPort: z.int().optional(),
   distance: z.int(),
   withPole: z.boolean(),
-  priceBook: z.record(z.string(), z.number().nullable()).optional(),
+  quantities: z.record(z.string(), z.number().nullable()).optional(),
 });
 
 export type FhcSubmitT = z.infer<typeof fhcSubmitZ>;

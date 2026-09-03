@@ -1,17 +1,17 @@
 import { countBy } from "remeda";
 import { OnConflict } from "schema/common";
 import { bad, Err } from "schema/errors";
-import { type FhcPbUpdateT, fhcPbLineListP, fhcPbUpdateZ } from "schema/fhc";
+import { type FhcPbUpdateT, fhcPbItemListP, fhcPbUpdateZ } from "schema/fhc";
 import { filterTruthy } from "schema/utils";
 import { Allow } from "#/auth/guard";
 import { prisma } from "#/db";
 import { getRoute, postRoute } from "#/utils/routing";
 
-const db = prisma.fhcPbLine;
+const db = prisma.fhcPbItem;
 
 export const fhcPbListApi = getRoute({
   url: "/fhc/pricebook",
-  handler: () => db.findMany(fhcPbLineListP),
+  handler: () => db.findMany(fhcPbItemListP),
 });
 
 export const fhcPbUpdateApi = postRoute({

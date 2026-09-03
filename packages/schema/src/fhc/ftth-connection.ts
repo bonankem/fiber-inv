@@ -10,7 +10,10 @@ export const ftthConnectionS = {
   phone: true,
   email: true,
 
+  olt: idNameP,
   fat: idNameP,
+  oltSlot: true,
+  oltPort: true,
   fatPort: true,
   ontSerial: true,
   ontOem: idKeyNameP,
@@ -26,7 +29,10 @@ export const ftthConnectionZ = zObject("FtthConnectionT", {
   phone: zStrNul("The customer's phone number"),
   email: zStrNul("The customer's email address"),
 
+  olt: idNameZ.nullable(),
   fat: idNameZ.nullable(),
+  oltSlot: z.int().nullable(),
+  oltPort: z.int().nullable(),
   fatPort: z.int().nullable(),
   ontSerial: zStrNul("The ONT serial number"),
   ontOem: idKeyNameZ.nullable(),

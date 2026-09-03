@@ -38,7 +38,9 @@ model FtthConnection {
 
     totalCost Float?
 
-    costItems FhcCostItem[]
+    quantities FhcQuantity[]
+
+    @@unique([fatId, fatPort], name: "fatUniq")
 }
 
 enum FhcMode {
@@ -48,7 +50,7 @@ enum FhcMode {
 }
 
 /// The different cost categories, determined by mode of cabling and distance.
-/// For `PRICE_BOOK`, the cost is determined by the selected cost items (`FhcCostItem`).
+/// For `PRICE_BOOK`, the cost is determined by the quantities (`FhcQuantity`).
 /// For other categories, there is a fixed price per vendor (`FhcFixedPrice`).
 enum FhcCostCategory {
     /// cabled building
@@ -65,22 +67,26 @@ enum FhcCostCategory {
     PRICE_BOOK
 }
 
-/// A cost item for a home connection that falls under `FhcCostCategory.PRICE_BOOK`.
-/// Each cost item is associated with a line in the price book (`FhcPbLine`), and
+/// A quantity of a price book line item used for a home connection.
+/// Each quantity is associated with a item in the price book (`FhcPbItem`), and
 /// the cost is determined by the price for the vendor (`FhcLinePrice`).
-model FhcCostItem {
+model FhcQuantity {
     id String @id @default(uuid(7)) @db.Uuid
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    work   FtthConnection @relation(fields: [workId], references: [id])
+    work   FtthConnection @relation(fields: [workId], references: [id], onDelete: Cascade)
     workId String         @db.Uuid
 
-    line   FhcPbLine @relation(fields: [lineId], references: [id])
-    lineId String    @db.Uuid
+    item   FhcPbItem @relation(fields: [itemId], references: [id])
+    itemId String    @db.Uuid
 
-    cost Float
+    quantity Int
+
+    cost Float?
+
+    @@unique([workId, itemId], name: "uniq")
 }
 
 /// The fixed price per vendor for home connections that
@@ -97,8 +103,8 @@ model FhcFixedPrice {
     vendorId String @db.Uuid
 }
 
-/// A line in the price book that can be included in home connection costs.
-model FhcPbLine {
+/// A line item in the price book that can be included in home connection costs.
+model FhcPbItem {
     id String @id @default(uuid(7)) @db.Uuid
 
     createdAt DateTime @default(now())
@@ -110,20 +116,20 @@ model FhcPbLine {
 
     nameEn String @unique @db.Citext
 
-    prices FhcLinePrice[]
+    prices FhcItemPrice[]
 
-    items FhcCostItem[]
+    items FhcQuantity[]
 }
 
-/// The price of a line in the price book for a specific vendor.
-model FhcLinePrice {
+/// The price of a line item in the price book for a specific vendor.
+model FhcItemPrice {
     id String @id @default(uuid(7)) @db.Uuid
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    line   FhcPbLine @relation(fields: [lineId], references: [id])
-    lineId String    @db.Uuid
+    item   FhcPbItem @relation(fields: [itemId], references: [id])
+    itemId String    @db.Uuid
 
     vendor   Vendor @relation(fields: [vendorId], references: [id])
     vendorId String @db.Uuid
