@@ -46,7 +46,7 @@ async function wipeDb(q: WipeQueryT) {
     net && "olt",
     cost && "fhcQuantity",
     cost && "fhcFixedPrice",
-    cost && "fhcLinePrice",
+    cost && "fhcItemPrice",
     cost && "fhcPbItem",
     geo && "boundary",
     geo && "coords",

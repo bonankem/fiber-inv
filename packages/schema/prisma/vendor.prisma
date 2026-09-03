@@ -14,5 +14,5 @@ model Vendor {
 
     fhcFixedPrices FhcFixedPrice[]
 
-    fhcLinePrices FhcLinePrice[]
+    fhcItemPrices FhcItemPrice[]
 }
