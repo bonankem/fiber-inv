@@ -81,6 +81,29 @@ export function useApiPost<I, O = unknown>(path: ApiPath) {
   });
 }
 
+export function useApiReport(url: string) {
+  const token = useAuthToken().value;
+  return useMutation({ mutationFn: () => report(url, token) });
+}
+
+async function report(url: string, token?: Maybe<string>) {
+  const headers: HeadersInit = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+  const res = await fetch(apiUrl(url), {
+    method: "GET",
+    headers,
+  });
+
+  if (res.ok) return res.text();
+
+  const data = await res.json();
+  const message =
+    data.message && data.param
+      ? `${data.message}: ${data.param}`
+      : data.message || "API error";
+  throw new Error(message);
+}
+
 export function useApiUpload<O>(path: ApiPath) {
   const url = Array.isArray(path) ? path.join("/") : path;
   const token = useAuthToken();

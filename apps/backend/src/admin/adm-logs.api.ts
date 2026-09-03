@@ -3,7 +3,7 @@ import { prisma } from "#/db";
 import { sendCsv } from "#/utils/csv";
 import { type AnyReply, getRoute } from "#/utils/routing";
 
-export const authLogsAoi = getRoute({
+export const authLogsApi = getRoute({
   url: "/admin/auth-logs",
   handler: (_, __, res) => getAuthLogs(res),
 });
@@ -14,10 +14,10 @@ async function getAuthLogs(res: AnyReply) {
     where: { time: { gte: since } },
     orderBy: { time: "desc" },
   });
-  return sendCsv(res, logs, {
-    action: (l) => l.action,
-    time: (l) => l.time,
-    userid: (l) => l.email,
-    ip: (l) => l.ipAddress,
-  });
+  return sendCsv(res, logs, [
+    { title: "action", value: (l) => l.action },
+    { title: "time", value: (l) => l.time },
+    { title: "userid", value: (l) => l.email },
+    { title: "ip", value: (l) => l.ipAddress },
+  ]);
 }

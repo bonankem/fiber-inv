@@ -1,6 +1,5 @@
 import {
   EditOutlined,
-  FileExcelOutlined,
   MenuOutlined,
   PlusOutlined,
   ReloadOutlined,
@@ -22,6 +21,7 @@ import FhsRequestForm from "#/modules/ftth-surveys/FhsRequestForm";
 import StaffCreateForm from "#/modules/staff/StaffCreateForm";
 import UserInfoModal from "#/modules/staff/UserInfoModal";
 import NotificationBell from "./NotificationBell";
+import ReportButton from "./ReportButton";
 import type { UserLayoutProps } from "./useUserLayout";
 
 type MultiForm = {
@@ -65,14 +65,15 @@ export default function UserHeader(props: UserLayoutProps) {
 
   const canCreate = !!(user?.isAdmin || user?.staffRole);
 
-  const onReport = () => {
-    if (pathKey === "staff") {
-      modal.open(UserInfoModal);
-    }
-    if (pathKey === "security") {
-      modal.open(AuthLogsModal);
-    }
+  const reports: Record<
+    string,
+    { path: string; name?: string; action?: () => void }
+  > = {
+    "ftth-connections": { path: "/fhc/report", name: "fhc" },
+    staff: { path: "", action: () => modal.open(UserInfoModal) },
+    security: { path: "", action: () => modal.open(AuthLogsModal) },
   };
+  const report = reports[pathKey];
 
   return (
     <Layout.Header
@@ -112,13 +113,7 @@ export default function UserHeader(props: UserLayoutProps) {
             {m.refresh()}
           </Button>
 
-          <Button
-            size="small"
-            icon={<FileExcelOutlined className="text-[0.8em]" />}
-            onClick={onReport}
-          >
-            {m.report()}
-          </Button>
+          {report && <ReportButton {...report} />}
 
           {canCreate && typeof newForm === "function" && (
             <Button
