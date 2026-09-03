@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { type ChangeEvent, useCallback, useState } from "react";
 import type { ZodType } from "schema/utils";
 import { useApiGet } from "#/api/helpers";
 
@@ -23,22 +23,36 @@ export function useApiQuery<I extends InputBase, O>(args: {
   );
   const query = useApiGet(args.url, args.output, dto);
 
-  const update = (up: Partial<I>) => {
+  const update = useCallback((up: Partial<I>) => {
     setDto((dto) => ({ ...dto, ...up }));
-  };
+  }, []);
 
-  const setter = <K extends keyof I>(key: K) => {
+  const setter = useCallback(<K extends keyof I>(key: K) => {
     return (value: I[K]) => {
-      if (hasChanged(dto[key], value)) {
-        setDto((dto) => ({ ...dto, page: 1, [key]: value }));
-      }
+      setDto((dto) => {
+        return hasChanged(dto[key], value)
+          ? { ...dto, page: 1, [key]: value }
+          : dto;
+      });
     };
-  };
+  }, []);
+
+  const onChange = useCallback(<K extends keyof I>(key: K) => {
+    return (event: ChangeEvent<HTMLInputElement>) => {
+      const value = (event.target.value as I[K]) || undefined;
+      setDto((dto) => {
+        return hasChanged(dto[key], value)
+          ? { ...dto, page: 1, [key]: value }
+          : dto;
+      });
+    };
+  }, []);
 
   return {
     dto,
     query,
     update,
     setter,
+    onChange,
   };
 }

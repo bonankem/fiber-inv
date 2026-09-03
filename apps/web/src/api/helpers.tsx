@@ -41,6 +41,7 @@ export function useApiGet<O, I extends Query = Query>(
     ...options,
     queryFn: () => getJson(url, output, query, token.value),
     queryKey: query ? [...key, query] : key,
+    placeholderData: (prev) => prev,
   });
 }
 

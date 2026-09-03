@@ -8,7 +8,7 @@ import { type WorkWhere, workIsOnVendor } from "../utils/work";
 import { workAccess } from "../work/filter";
 
 type Who = UserFullT;
-type Where = Prisma.FtthSurveyWhereInput;
+type Where = Prisma.FtthConnectionWhereInput;
 type WhereWork = Where["work"];
 
 const S = WorkStatus;
@@ -41,6 +41,9 @@ export function fhcWhereSubset(s: Maybe<Subset>, who?: Who): WhereWork {
 export function fhcWorkWhere(input: FhcFilterT, who?: Who): WhereWork {
   return {
     sid: qSidIs(input.sid),
+    name: input.name
+      ? { contains: input.name, mode: "insensitive" }
+      : undefined,
     status: input.status,
     vendorId: input.vendor,
     requestDate: input.requested,
@@ -50,4 +53,8 @@ export function fhcWorkWhere(input: FhcFilterT, who?: Who): WhereWork {
       workAccess(who),
     ]),
   };
+}
+
+export function fhcWhere(input: FhcFilterT, who?: Who): Where {
+  return { work: fhcWorkWhere(input, who) };
 }
