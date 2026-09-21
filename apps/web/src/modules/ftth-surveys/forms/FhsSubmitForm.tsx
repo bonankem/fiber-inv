@@ -176,12 +176,12 @@ export default function FhsSubmitForm(props: FhsFormProps) {
         <h2 className="font-medium">Documents</h2>
 
         {fileInput("ODN_KMZ", "KMZ", onParseKmz)}
-        {fileInput("BOQ", "BOQ")}
+        {/* {fileInput("BOQ", "BOQ")} */}
         {fileInput("COORDINATES", m.coords(), onParseCoords)}
         {fileInput("PLAN_DIAGRAM", m.plan_diag())}
         {fileInput("SYNOPTIC_DIAGRAM", m.field_synoptic_diag())}
         {fileInput("SYNOPTIC_TABLE", m.field_synoptic_table())}
-        {fileInput("CABLE_LENGTHS", m.cable_lengths())}
+        {/* {fileInput("CABLE_LENGTHS", m.cable_lengths())} */}
         {fileInput("HP_SUMMARY", m.hp_summary())}
       </div>
 

@@ -4,7 +4,7 @@ import { workUpdateDto } from "../work/work-update";
 
 export const fhsSubmitZ = workUpdateDto("FhsSubmitT", {
   hp: z.int("Number of HPs/ELs"),
-  oltCards: z.int("Number of olt cards"),
+  oltCards: z.int("Number of OLT cards"),
   xBoxes: z.int("Number of X boxes"),
   hubBoxes: z.int("Number of hub boxes"),
   fats: z.int("Number of FATs"),
@@ -16,12 +16,12 @@ export const fhsSubmitZ = workUpdateDto("FhsSubmitT", {
   distLength: z.int("Total distribution cable length in metres"),
 
   [Doc.ODN_KMZ]: zStr("KMZ upload ID"),
-  [Doc.BOQ]: zStr("BOQ upload ID"),
-  [Doc.PLAN_DIAGRAM]: zStr("plan diagram upload ID"),
-  [Doc.SYNOPTIC_TABLE]: zStr("synoptic table upload ID"),
-  [Doc.SYNOPTIC_DIAGRAM]: zStr("synoptic diagram upload ID "),
-  [Doc.COORDINATES]: zStr("Box coordinates upload ID"),
-  [Doc.CABLE_LENGTHS]: zStr("Cable lengths upload ID"),
+  // [Doc.BOQ]: zStr("BOQ upload ID"),
+  [Doc.PLAN_DIAGRAM]: zStr("Plan diagram upload ID"),
+  [Doc.SYNOPTIC_TABLE]: zStr("Synoptic table upload ID"),
+  [Doc.SYNOPTIC_DIAGRAM]: zStr("Synoptic diagram upload ID"),
+  [Doc.COORDINATES]: zStr("Coordinates table upload ID"),
+  // [Doc.CABLE_LENGTHS]: zStr("Cable lengths upload ID"),
   [Doc.HP_SUMMARY]: zStr("Summary of HP distribution"),
 });
 
