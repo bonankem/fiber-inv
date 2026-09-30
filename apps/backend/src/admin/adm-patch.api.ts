@@ -1,5 +1,5 @@
 import { Allow } from "#/auth/guard";
-import { MfaMode, prisma } from "#/db";
+import { prisma } from "#/db";
 import { postRoute } from "#/utils/routing";
 
 export const patchApi = postRoute({
@@ -9,17 +9,16 @@ export const patchApi = postRoute({
 });
 
 async function patch() {
-  const now = new Date();
-  const unexpired = await prisma.user.updateMany({
-    where: { isAdmin: true },
-    data: { expiredAt: null, lastActive: now },
+  const corrected = await prisma.work.updateMany({
+    where: { fhs: { isNot: null }, status: "SURVEY" },
+    data: { status: "TALLYING" },
   });
-  const mfaReset = await prisma.user.updateMany({
-    where: { mfaMode: MfaMode.EMAIL },
-    data: { mfaMode: MfaMode.UNDECIDED, mfaVerified: false },
+  const logs = await prisma.workLog.updateMany({
+    where: { work: { fhs: { isNot: null } }, newStatus: "SURVEY" },
+    data: { newStatus: "TALLYING" },
   });
   return {
-    unexpired: unexpired.count,
-    mfaReset: mfaReset.count,
+    corrected: corrected.count,
+    logs: logs.count,
   };
 }
