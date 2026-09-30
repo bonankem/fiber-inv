@@ -7,7 +7,7 @@ import { BoxType, WorkDocType } from "#/db";
 import { filterPlacemarks, type KmzPlacemark, parseSimpleKmz } from "./kmz";
 import type { ParserInput } from "./utils";
 
-export async function parseUpOdnKmz({
+export async function parseUpFhsSizingKmz({
   data,
 }: ParserInput): Promise<UpOdnKmzT | null> {
   const kmz = await parseSimpleKmz(data);
@@ -81,7 +81,7 @@ export async function parseUpOdnKmz({
   concretePoles.sort(nameSort);
 
   return {
-    type: WorkDocType.ODN_KMZ,
+    type: WorkDocType.FHS_SIZING_KMZ,
     boxes: boxes.map((b) => ({
       name: b.name,
       type: getBoxType(b),
