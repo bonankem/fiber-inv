@@ -27,7 +27,8 @@ export const fatAddApi = postRoute({
   },
 });
 
-const VALID_BOX = /^(\w{5,6})_X\d+(_H\d+(?:_([SE])\d+)?)?$|^\w+.?PBO?.?\d+/;
+const VALID_BOX =
+  /^(\w{5,6})[-_]X\d+([-_]H\d+(?:[-_]([SE])\d+)?)?$|^\w+.?(PBO?|AB|BCI?).?\d+/;
 function checkFatName(name: string) {
   return VALID_BOX.exec(name) ?? bad(Err.INVALID_NAME, name);
 }
