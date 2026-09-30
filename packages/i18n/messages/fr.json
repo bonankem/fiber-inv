@@ -282,5 +282,8 @@
   "bom_rejected": "BOM rejeté",
   "clusters": "Clusters",
   "number_of_clusters": "Nombre de clusters",
-  "parting_kmz": "Fichier KMZ du découpage"
+  "parting_kmz": "Fichier KMZ du découpage",
+  "fhs_tally_excel": "Fichier Excel du pointage",
+  "total_hp": "Total des EL",
+  "fhs_tally_kmz": "Fichier KMZ du pointage"
 }

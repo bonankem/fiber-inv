@@ -33,7 +33,7 @@ async function fhsInitiate(dto: FhsInitiateT, user: UserT) {
         work: s.work,
         vendor: dto.vendorId,
         action: WorkAction.INITIATE,
-        status: WorkStatus.SURVEY,
+        status: WorkStatus.TALLYING,
         logTo: vendor,
         sender: user,
         also: {

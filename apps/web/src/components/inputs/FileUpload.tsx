@@ -22,16 +22,20 @@ type Props<T> = {
 };
 
 const defaultAccept: { [key in WorkDocType]?: string } = {
-  AREA_KMZ: ".kml,.kmz",
-  ODN_KMZ: ".kml,.kmz",
   BOQ: ".xlsx,.xls",
-  PLAN_DIAGRAM: ".dwg",
-  SYNOPTIC_DIAGRAM: ".dwg",
-  SYNOPTIC_TABLE: ".xlsx,.xls",
-  COORDINATES: ".xlsx,.xls",
-  CABLE_LENGTHS: ".xlsx,.xls",
-  HP_SUMMARY: ".xlsx,.xls",
+  BOM: ".xlsx,.xls",
+  FHS_COORDINATES: ".xlsx,.xls",
 };
+
+function getDefaultAccept(type: WorkDocType) {
+  const accept = defaultAccept[type];
+  if (accept) return accept;
+
+  if (/KMZ/.test(type)) return ".kml,.kmz";
+  if (/EXCEL|TABLE/.test(type)) return ".xlsx,.xls";
+  if (/DIAGRAM/.test(type)) return ".dwg,.pdf";
+  return undefined;
+}
 
 export default function FileUpload<T extends WorkDocType>({
   type,
@@ -43,7 +47,7 @@ export default function FileUpload<T extends WorkDocType>({
   placeholder,
   inputClassName,
   formId = "",
-  accept = defaultAccept[type],
+  accept = getDefaultAccept(type),
 }: Props<T>) {
   const uploader = useUploader();
 

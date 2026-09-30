@@ -284,5 +284,8 @@
   "bom_rejected": "BOM Rejected",
   "number_of_clusters": "Number of clusters",
   "parting_kmz": "Cluster Partitioning KMZ file",
-  "clusters": "Clusters"
+  "clusters": "Clusters",
+  "fhs_tally_excel": "HP Tally Table",
+  "fhs_tally_kmz": "HP Tally KMZ",
+  "total_hp": "Total HP"
 }

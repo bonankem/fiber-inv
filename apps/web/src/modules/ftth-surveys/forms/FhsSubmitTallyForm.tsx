@@ -1,5 +1,6 @@
 import { Form, InputNumber } from "antd";
 import { m } from "i18n/messages";
+import { WorkDocType } from "schema/db";
 import { type FhsSubmitTallyT, ftthSurveyFullZ } from "schema/fhs";
 import { useApiGet } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
@@ -20,14 +21,23 @@ export default function FhsSubmitTallyForm(props: FhsFormProps) {
     <FormModal
       {...up}
       form={form}
+      width={320}
       title={m.fhs_submit_tally()}
       state={props.state}
       subtitle={props.item.work.name}
     >
-      <WorkDocInput type="FHS_TALLY_KMZ" label="KMZ" old={full} />
-      <WorkDocInput type="FHS_TALLY_TABLE" label="Table" old={full} />
+      <WorkDocInput
+        type={WorkDocType.FHS_TALLY_KMZ}
+        label={m.fhs_tally_kmz()}
+        old={full}
+      />
+      <WorkDocInput
+        type={WorkDocType.FHS_TALLY_TABLE}
+        label={m.fhs_tally_excel()}
+        old={full}
+      />
 
-      <Form.Item name="hp" label={m.hp()} {...req}>
+      <Form.Item name="hp" label={m.total_hp()} {...req}>
         <InputNumber className="w-full!" min={0} required />
       </Form.Item>
     </FormModal>
