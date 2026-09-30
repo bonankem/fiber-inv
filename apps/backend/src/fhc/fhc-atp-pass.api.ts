@@ -27,11 +27,11 @@ async function fhcAtpPass(dto: WorkUpdateT, from: UserT) {
     data: {
       work: updateWork({
         dto,
-        old: fhc.work,
+        work: fhc.work,
         status: WorkStatus.CLOSED,
         action: WorkAction.PASS_FIELD_ATP,
         logTo: fhc.work?.vendor,
-        from,
+        sender: from,
       }),
     },
   });

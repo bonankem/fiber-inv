@@ -8,8 +8,11 @@ import { shortName } from "#/utils/names";
 
 export type FhsColumn = DtColumn<FtthSurveyT>;
 
-const assigneeRole = StaffRole.PLANNING_ENGINEER;
-export function worker(i: FtthSurveyT, role: StaffRole = assigneeRole) {
+const VENDOR = "VENDOR" as const;
+const MANAGER = StaffRole.PLANNING_MANAGER;
+const ASSIGNEE = StaffRole.PLANNING_ENGINEER;
+
+export function worker(i: FtthSurveyT, role: StaffRole = ASSIGNEE) {
   return i.work.workers.find((w) => w.role === role)?.user;
 }
 export const fhsColumns: FhsColumn[] = [
@@ -40,16 +43,32 @@ export const fhsColumns: FhsColumn[] = [
   {
     title: m.status_pending_on(),
     key: "status",
-    width: 150,
+    width: 200,
     render: (t) => (
       <StatusView
         work={t.work}
         pendingOn={{
-          REQUESTED: "PLANNING_MANAGER",
-          ASSIGNED: "PLANNING_ENGINEER",
-          SURVEY: "VENDOR",
-          REVIEW: "PLANNING_ENGINEER",
-          FAILED_REVIEW: "VENDOR",
+          REQUESTED: MANAGER,
+          ASSIGNED: ASSIGNEE,
+          SURVEY: VENDOR,
+
+          TALLYING: VENDOR,
+          PARTING: VENDOR,
+          SIZING: VENDOR,
+          BOM: VENDOR,
+
+          TALLYING_VALIDATION: ASSIGNEE,
+          PARTING_VALIDATION: ASSIGNEE,
+          SIZING_VALIDATION: ASSIGNEE,
+          BOM_VALIDATION: ASSIGNEE,
+
+          TALLYING_REJECTED: VENDOR,
+          PARTING_REJECTED: VENDOR,
+          SIZING_REJECTED: VENDOR,
+          BOM_REJECTED: VENDOR,
+
+          REVIEW: ASSIGNEE,
+          FAILED_REVIEW: VENDOR,
         }}
       />
     ),

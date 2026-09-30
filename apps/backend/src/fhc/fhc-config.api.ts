@@ -31,10 +31,10 @@ async function fhcConfig(dto: FhcConfigT, from: UserT) {
       oltPort: dto.oltPort,
       work: updateWork({
         dto,
-        old: fhc.work,
+        work: fhc.work,
         status: WorkStatus.FIELD_ATP,
         action: WorkAction.CONFIGURATION,
-        from,
+        sender: from,
       }),
     },
   });

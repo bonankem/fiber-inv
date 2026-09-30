@@ -36,6 +36,21 @@ const colors: Partial<Record<WorkStatus, TagProps["color"]>> = {
   REQUESTED: "cyan",
   REVIEW: "cyan",
   SURVEY: "blue",
+
+  TALLYING: "blue",
+  PARTING: "blue",
+  SIZING: "blue",
+  BOM: "blue",
+
+  TALLYING_VALIDATION: "cyan",
+  PARTING_VALIDATION: "cyan",
+  SIZING_VALIDATION: "cyan",
+  BOM_VALIDATION: "cyan",
+
+  TALLYING_REJECTED: "volcano",
+  PARTING_REJECTED: "volcano",
+  SIZING_REJECTED: "volcano",
+  BOM_REJECTED: "volcano",
 };
 
 const statusNames: Record<WorkStatus, string> = {
@@ -53,4 +68,19 @@ const statusNames: Record<WorkStatus, string> = {
   REQUESTED: m.requested(),
   REVIEW: m.review(),
   SURVEY: m.survey(),
+
+  TALLYING: m.tallying(),
+  PARTING: m.parting(),
+  SIZING: m.sizing(),
+  BOM: m.bom(),
+
+  TALLYING_VALIDATION: m.tallying_validation(),
+  PARTING_VALIDATION: m.parting_validation(),
+  SIZING_VALIDATION: m.sizing_validation(),
+  BOM_VALIDATION: m.bom_validation(),
+
+  TALLYING_REJECTED: m.tallying_rejected(),
+  PARTING_REJECTED: m.parting_rejected(),
+  SIZING_REJECTED: m.sizing_rejected(),
+  BOM_REJECTED: m.bom_rejected(),
 };

@@ -3,6 +3,21 @@ enum WorkStatus {
     DECLINED
     ASSIGNED
 
+    TALLYING
+    PARTING
+    SIZING
+    BOM
+
+    TALLYING_VALIDATION
+    PARTING_VALIDATION
+    SIZING_VALIDATION
+    BOM_VALIDATION
+
+    TALLYING_REJECTED
+    PARTING_REJECTED
+    SIZING_REJECTED
+    BOM_REJECTED
+
     SURVEY
     INSTALLATION
     DESATURATION
@@ -17,10 +32,23 @@ enum WorkStatus {
 }
 
 enum WorkAction {
+    // initial stages
     REQUEST
     DECLINE
     ASSIGN
     INITIATE
+
+    // survey specific
+    SUBMIT_TALLYING
+    SUBMIT_PARTING
+    SUBMIT_SIZING
+    SUBMIT_BOM
+
+    // validation
+    VALIDATE
+    REJECT
+
+    // general
     COMMENT
     UPDATE
 
@@ -125,14 +153,19 @@ model WorkLog {
 }
 
 enum WorkDocType {
-    AREA_KMZ
-    ODN_KMZ
     BOQ
+    BOM
 
-    PLAN_DIAGRAM
-    SYNOPTIC_DIAGRAM
-    SURVEY_REPORT
-    COORDINATES
+    FHS_AREA_KMZ
+    FHS_TALLY_KMZ
+    FHS_TALLY_TABLE
+    FHS_PARTING_KMZ
+
+    FHS_SIZING_KMZ
+    FHS_COORDINATES
+    FHS_SYNOPTIC_TABLE
+    FHS_SYNOPTIC_DIAGRAM
+    FHS_PLAN_DIAGRAM
 
     FHP_ODF
     FHP_TRENCHING
@@ -141,6 +174,7 @@ enum WorkDocType {
     FHP_MANHOLE
     FHP_POLE
     FHP_BOX
+    FHP_ODN_KMZ
 
     FHC_CABLE_AT_FAT
     FHC_CABLE_AT_CUSTOMER
@@ -152,9 +186,14 @@ enum WorkDocType {
     FHC_POLE
 
     // deprecated
+    AREA_KMZ
     CABLE_LENGTHS
     SYNOPTIC_TABLE
     HP_SUMMARY
+    PLAN_DIAGRAM
+    SYNOPTIC_DIAGRAM
+    SURVEY_REPORT
+    COORDINATES
 }
 
 model WorkDoc {

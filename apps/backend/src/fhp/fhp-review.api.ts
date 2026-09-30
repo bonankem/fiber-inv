@@ -27,7 +27,7 @@ async function fhpReview(dto: FhpReviewT) {
     data: {
       work: updateWork({
         dto,
-        old: s.work,
+        work: s.work,
         status: ok ? WorkStatus.CLOSED : WorkStatus.FAILED_REVIEW,
         action: ok ? WorkAction.PASS_REVIEW : WorkAction.FAIL_REVIEW,
         also: { closeDate: ok ? currentDate() : undefined },

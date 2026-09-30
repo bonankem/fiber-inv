@@ -30,11 +30,11 @@ async function fhcReview(dto: FhsReviewT, from: UserT) {
     data: {
       work: updateWork({
         dto,
-        old: fhc.work,
+        work: fhc.work,
         status: ok ? WorkStatus.CONFIGURATION : WorkStatus.FAILED_REVIEW,
         action: ok ? WorkAction.PASS_REVIEW : WorkAction.FAIL_REVIEW,
         logTo: fhc.work?.vendor,
-        from,
+        sender: from,
       }),
     },
   });

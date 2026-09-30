@@ -86,7 +86,7 @@ export default function FhsSubmitForm(props: FhsFormProps) {
     );
     setOldDocs(docs);
 
-    const kmz = docs[WorkDocType.ODN_KMZ];
+    const kmz = docs[WorkDocType.FHS_SIZING_KMZ];
     const coords = docs[WorkDocType.COORDINATES];
     setKmz(kmz?.parsed as UpOdnKmzT);
     setCoords(coords?.parsed as UpFhsCoordsT);
@@ -175,7 +175,7 @@ export default function FhsSubmitForm(props: FhsFormProps) {
       <div className="flex flex-col gap-2">
         <h2 className="font-medium">Documents</h2>
 
-        {fileInput("ODN_KMZ", "KMZ", onParseKmz)}
+        {fileInput("FHS_SIZING_KMZ", "KMZ", onParseKmz)}
         {/* {fileInput("BOQ", "BOQ")} */}
         {fileInput("COORDINATES", m.coords(), onParseCoords)}
         {fileInput("PLAN_DIAGRAM", m.plan_diag())}

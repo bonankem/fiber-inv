@@ -92,9 +92,9 @@ async function fhcSubmit(dto: FhcSubmitT, from: UserFullT) {
       work: updateWork({
         status: WorkStatus.REVIEW,
         action: WorkAction.SUBMIT_REPORT,
-        old: fhc.work,
+        work: fhc.work,
         dto,
-        from,
+        sender: from,
         docs: dto.images,
       }),
     },

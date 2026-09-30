@@ -40,7 +40,7 @@ async function fhpImages(dto: FhpPostImagesT) {
     data: {
       work: updateWork({
         dto,
-        old: s.work,
+        work: s.work,
         action: WorkAction.UPLOAD_IMAGES,
         also: { docs },
       }),

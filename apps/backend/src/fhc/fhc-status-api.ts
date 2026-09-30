@@ -39,10 +39,10 @@ async function fhcStatus(dto: FhcStatusT, from: UserT) {
     data: {
       work: updateWork({
         dto,
-        old: fhc.work,
+        work: fhc.work,
         status: dto.nextPhase,
         action: WorkAction.UPDATE_STATUS,
-        from,
+        sender: from,
       }),
     },
   });

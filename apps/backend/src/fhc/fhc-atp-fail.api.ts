@@ -27,11 +27,11 @@ async function fhcAtpFail(dto: WorkUpdateT, from: UserT) {
     data: {
       work: updateWork({
         dto,
-        old: fhc.work,
+        work: fhc.work,
         status: WorkStatus.FAILED_FIELD_ATP,
         action: WorkAction.FAIL_FIELD_ATP,
         logTo: fhc.work?.vendor,
-        from,
+        sender: from,
       }),
     },
   });

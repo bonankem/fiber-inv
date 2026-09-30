@@ -22,10 +22,10 @@ async function fhsDecline(dto: WorkUpdateT, from: UserT) {
     data: {
       work: updateWork({
         dto,
-        old: s.work,
+        work: s.work,
         action: WorkAction.DECLINE,
         status: WorkStatus.DECLINED,
-        from,
+        sender: from,
       }),
     },
     select: ftthSurveyS,

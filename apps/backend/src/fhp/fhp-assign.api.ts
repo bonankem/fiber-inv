@@ -24,7 +24,7 @@ async function fhpAssign(dto: FhpAssignT) {
     data: {
       work: updateWork({
         dto,
-        old: s.work,
+        work: s.work,
         action: WorkAction.ASSIGN,
         status: WorkStatus.ASSIGNED,
         vendor: vendorId,

@@ -115,8 +115,8 @@ export function updateDocs<T extends WorkDocType>(
 
 type WorkUpdateQuery = {
   dto: WorkUpdateT;
-  old: WorkT;
-  from?: Maybe<IdNameT>;
+  work: WorkT;
+  sender?: Maybe<IdNameT>;
   action: WorkAction;
   status?: WorkStatus;
   logTo?: Maybe<HasName> | Maybe<HasName>[];
@@ -129,7 +129,7 @@ type WorkUpdateQuery = {
 
 export function updateWork(q: WorkUpdateQuery) {
   const now = q.now || new Date();
-  const changed = q.status && q.status !== q.old.status;
+  const changed = q.status && q.status !== q.work.status;
   const logTo = Array.isArray(q.logTo) ? q.logTo : [q.logTo];
   return {
     update: {
@@ -138,7 +138,7 @@ export function updateWork(q: WorkUpdateQuery) {
       statusSince: changed ? now : undefined,
       workers: setWorkers(q.dto.id, q.workers),
       vendor: maybeConnect(q.vendor),
-      logs: addLog(q.dto, q.action, q.status, q.from, logTo),
+      logs: addLog(q.dto, q.action, q.status, q.sender, logTo),
       docs: updateDocs(q.dto.id, q.docs) ?? q.also?.docs,
     } satisfies Prisma.WorkUpdateInput,
   };

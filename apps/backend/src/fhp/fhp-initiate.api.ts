@@ -26,7 +26,7 @@ async function fhpInitiate(dto: FhpInitiateT) {
     data: {
       work: updateWork({
         dto,
-        old: s.work,
+        work: s.work,
         vendor: vendorId,
         action: WorkAction.INITIATE,
         status: WorkStatus.INSTALLATION,

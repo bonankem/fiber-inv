@@ -29,11 +29,11 @@ async function fhcSurvey(dto: FhcSurveyT, from: UserT) {
       withPole: dto.withPole,
       work: updateWork({
         dto,
-        old: fhc.work,
+        work: fhc.work,
         status: dto.nextPhase,
         action: WorkAction.FINISH_SURVEY,
         docs: { SURVEY_REPORT },
-        from,
+        sender: from,
       }),
     },
   });

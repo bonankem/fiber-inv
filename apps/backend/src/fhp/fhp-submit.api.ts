@@ -32,7 +32,7 @@ async function fhpSubmit(dto: FhpSubmitT) {
       report: { upsert: { create: report, update: report } },
       work: updateWork({
         dto,
-        old: s.work,
+        work: s.work,
         action,
         status: WorkStatus.REVIEW,
         logTo: fhpWorker(s)?.name,

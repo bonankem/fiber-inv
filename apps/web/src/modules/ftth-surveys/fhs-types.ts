@@ -6,8 +6,8 @@ import type { ModalItemProps } from "#/hooks/useModalViewer";
 
 export type FhsFormProps = ModalItemProps<FtthSurveyT>;
 
-export function useFhsPost<I, O = FtthSurveyT>(path: ApiPath, tag = ["fhs"]) {
-  return useApiPost<I, O>(path, tag);
+export function useFhsPost<I, O = FtthSurveyT>(path: ApiPath) {
+  return useApiPost<I, O>(path);
 }
 
 export function useFhsUpdate<I extends { id: string }>(
@@ -16,7 +16,8 @@ export function useFhsUpdate<I extends { id: string }>(
   toast?: (a: { id: string }) => string,
   precheck?: (data: I) => boolean | string,
 ) {
-  const send = useApiPost<I, FtthSurveyT>(path, ["fhs"]);
+  const send = useApiPost<I, FtthSurveyT>(path);
+
   const onSubmit = apiCall(async (data: I) => {
     data.id = props.item.id;
     if (precheck) {

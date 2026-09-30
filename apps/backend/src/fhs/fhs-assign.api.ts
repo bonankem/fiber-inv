@@ -24,12 +24,12 @@ async function fhsAssign(dto: FhsAssignT, from: UserT) {
     data: {
       work: updateWork({
         dto,
-        old: s.work,
+        work: s.work,
         action: WorkAction.ASSIGN,
         status: WorkStatus.ASSIGNED,
         vendor: vendorId,
         workers: [{ userId, role: StaffRole.PLANNING_ENGINEER }],
-        from,
+        sender: from,
         logTo: [u, v],
       }),
     },

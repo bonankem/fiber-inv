@@ -11,7 +11,9 @@ import { fhsListApi } from "./fhs-list.api";
 import { fhsLogsApi } from "./fhs-logs.api";
 import { fhsRequestApi } from "./fhs-request.api";
 import { fhsReviewApi } from "./fhs-review.api";
-import { fhsSubmitApi } from "./fhs-submit.api";
+import { fhsSubmitPartingApi } from "./fhs-submit-parting.api";
+import { fhsSubmitSizingApi } from "./fhs-submit-sizing.api";
+import { fhsSubmitTallyApi } from "./fhs-submit-tally.api";
 
 export default appPlugin((app) => {
   app.register(fhsAssignApi);
@@ -26,5 +28,7 @@ export default appPlugin((app) => {
   app.register(fhsLogsApi);
   app.register(fhsRequestApi);
   app.register(fhsReviewApi);
-  app.register(fhsSubmitApi);
+  app.register(fhsSubmitSizingApi);
+  app.register(fhsSubmitPartingApi);
+  app.register(fhsSubmitTallyApi);
 });

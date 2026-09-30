@@ -15,7 +15,7 @@ export const fhsSubmitZ = workUpdateDto("FhsSubmitT", {
   transportLength: z.int("Total transport cable length in metres"),
   distLength: z.int("Total distribution cable length in metres"),
 
-  [Doc.ODN_KMZ]: zStr("KMZ upload ID"),
+  // [Doc.ODN_KMZ]: zStr("KMZ upload ID"),
   // [Doc.BOQ]: zStr("BOQ upload ID"),
   [Doc.PLAN_DIAGRAM]: zStr("Plan diagram upload ID"),
   [Doc.SYNOPTIC_TABLE]: zStr("Synoptic table upload ID"),

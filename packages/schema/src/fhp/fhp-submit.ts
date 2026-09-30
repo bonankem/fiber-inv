@@ -13,7 +13,7 @@ export const fhpSubmitZ = workUpdateDto("FhpSubmitT", {
   transportMetres: z.int("Total transport cable length in metres"),
   distMetres: z.int("Total distribution cable length in metres"),
 
-  [Doc.ODN_KMZ]: zStr("KMZ upload ID"),
+  [Doc.FHP_ODN_KMZ]: zStr("KMZ upload ID"),
   [Doc.BOQ]: zStr("BOQ upload ID"),
 });
 

@@ -19,7 +19,7 @@ export default function FhsDetailsModal(props: FhsFormProps) {
 
   return (
     <Modal
-      width={800}
+      width={900}
       open={props.state.isOpen}
       onCancel={props.state.close}
       mask={{ blur: true, closable: true }}

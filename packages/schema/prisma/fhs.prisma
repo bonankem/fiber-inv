@@ -16,9 +16,43 @@ model FtthSurvey {
 
     reportedHp Int?
 
+    hp Int?
+
+    clusters Int?
+
     report FhsReport?
 
+    quantity FhsQuantity?
+
     projects FtthProject[]
+}
+
+model FhsQuantity {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    survey   FtthSurvey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+    surveyId String     @unique @db.Uuid
+
+    xBoxes Int
+
+    hubBoxes Int
+
+    fats Int
+
+    closures Int
+
+    manholes Int
+
+    metalPoles Int
+
+    concretePoles Int
+
+    transportLength Int
+
+    distLength Int
 }
 
 model FhsReport {

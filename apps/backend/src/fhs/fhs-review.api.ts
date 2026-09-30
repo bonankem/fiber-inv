@@ -8,6 +8,16 @@ import { currentDate } from "#/utils/time";
 import { updateWork } from "../utils/work";
 import { fhsCheck } from "./utils";
 
+const S = WorkStatus;
+const next = {
+  [S.TALLYING_VALIDATION]: [S.PARTING, S.TALLYING_REJECTED],
+  [S.PARTING_VALIDATION]: [S.SIZING, S.PARTING_REJECTED],
+  [S.SIZING_VALIDATION]: [S.BOM, S.SIZING_REJECTED],
+  [S.BOM_VALIDATION]: [S.CLOSED, S.BOM_REJECTED],
+} as const;
+type Reviewable = keyof typeof next;
+const reviewable = Object.keys(next) as Reviewable[];
+
 export const fhsReviewApi = postRoute({
   url: "/fhs/review",
   schema: fhsReviewZ,
@@ -17,7 +27,7 @@ export const fhsReviewApi = postRoute({
 async function fhsReview(dto: FhsReviewT, from: UserT) {
   const { s } = await fhsCheck({
     workId: dto.id,
-    status: WorkStatus.REVIEW,
+    status: reviewable,
   });
   const ok = dto.passed;
   if (!ok) mustHaveFields(dto, "comment");
@@ -28,12 +38,12 @@ async function fhsReview(dto: FhsReviewT, from: UserT) {
     data: {
       work: updateWork({
         dto,
-        old: s.work,
-        status: ok ? WorkStatus.CLOSED : WorkStatus.FAILED_REVIEW,
-        action: ok ? WorkAction.PASS_REVIEW : WorkAction.FAIL_REVIEW,
+        work: s.work,
+        sender: from,
+        status: next[s.work.status as Reviewable][ok ? 0 : 1],
+        action: ok ? WorkAction.VALIDATE : WorkAction.REJECT,
         also: { closeDate: ok ? currentDate() : undefined },
         logTo: s.work?.vendor,
-        from,
       }),
     },
   });

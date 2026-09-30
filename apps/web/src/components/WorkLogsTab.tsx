@@ -40,13 +40,13 @@ const workLogColumns: DtColumn<WorkLogT>[] = [
   {
     key: "status",
     title: m.status(),
-    width: 150,
+    width: 200,
     render: (l) => l.newStatus && <StatusBadge smaller status={l.newStatus} />,
   },
   {
     key: "comment",
     title: m.comments_attachments(),
-    width: 250,
+    width: 200,
     render: (l) => l.comment,
   },
 ];
@@ -69,7 +69,7 @@ function LogCaption(props: { log: WorkLogT }) {
 function DateTimeView(props: { value: dayjs.ConfigType }) {
   const day = dayjs(props.value);
   const date = day.format("DD MMM YYYY");
-  const time = day.format("hh:mm");
+  const time = day.format("HH:mm");
 
   return <WithCaption title={date} caption={time} />;
 }

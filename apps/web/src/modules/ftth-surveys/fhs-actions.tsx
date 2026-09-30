@@ -19,6 +19,8 @@ import FhsDeclineForm from "./forms/FhsDeclineForm";
 import FhsInitiateForm from "./forms/FhsInitiateForm";
 import FhsRejectForm from "./forms/FhsRejectForm";
 import FhsSubmitForm from "./forms/FhsSubmitForm";
+import FhsSubmitPartingForm from "./forms/FhsSubmitPartingForm";
+import FhsSubmitTallyForm from "./forms/FhsSubmitTallyForm";
 
 enum Whom {
   MANAGER = "manager",
@@ -77,6 +79,22 @@ export const fhsActions = buildActions(isWhen, isWhom, [
   {
     name: m.action_submit(),
     icon: SendOutlined,
+    when: [When.TALLYING, When.TALLYING_REJECTED],
+    whom: [Whom.VENDOR],
+    form: FhsSubmitTallyForm,
+    main: true,
+  },
+  {
+    name: m.action_submit(),
+    icon: SendOutlined,
+    when: [When.PARTING, When.PARTING_REJECTED],
+    whom: [Whom.VENDOR],
+    form: FhsSubmitPartingForm,
+    main: true,
+  },
+  {
+    name: m.action_submit(),
+    icon: SendOutlined,
     when: [When.SURVEY, When.FAILED_REVIEW],
     whom: [Whom.VENDOR],
     form: FhsSubmitForm,
@@ -85,14 +103,26 @@ export const fhsActions = buildActions(isWhen, isWhom, [
   {
     name: m.action_accept(),
     icon: ThumbsUp,
-    when: [When.REVIEW],
+    when: [
+      When.TALLYING_VALIDATION,
+      When.PARTING_VALIDATION,
+      When.SIZING_VALIDATION,
+      When.BOM_VALIDATION,
+    ],
+    whom: [Whom.HANDLER],
     form: FhsAcceptForm,
     main: true,
   },
   {
     name: m.action_reject(),
     icon: CloseOutlined,
-    when: [When.REVIEW],
+    when: [
+      When.TALLYING_VALIDATION,
+      When.PARTING_VALIDATION,
+      When.SIZING_VALIDATION,
+      When.BOM_VALIDATION,
+    ],
+    whom: [Whom.HANDLER],
     form: FhsRejectForm,
     main: true,
     red: true,
