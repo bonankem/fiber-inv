@@ -2,6 +2,7 @@ import { Allow } from "#/auth/guard";
 import { appPlugin, rbac } from "#/utils/routing";
 import { authLogsApi } from "./adm-logs.api";
 import { patchApi } from "./adm-patch.api";
+import { reauthApi } from "./adm-reauth.api";
 import { getSecurityApi, setSecurityApi } from "./adm-security.api";
 import { getSyslogApi, setSyslogApi } from "./adm-syslog.api";
 import { unlockApi } from "./adm-unlock.api";
@@ -18,4 +19,5 @@ export default appPlugin((app) => {
   app.register(setSyslogApi);
   app.register(unlockApi);
   app.register(userInfoApi);
+  app.register(reauthApi);
 });
