@@ -6,6 +6,12 @@
     "source.organizeImports.biome": "explicit"
   },
   "js/ts.preferences.autoImportSpecifierExcludeRegexes": ["(\\.\\./){2}"],
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/.turbo": true
+  },
   "files.watcherExclude": {
     "**/routeTree.gen.ts": true
   },
