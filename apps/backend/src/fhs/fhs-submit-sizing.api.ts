@@ -18,7 +18,6 @@ export const fhsSubmitSizingApi = postRoute({
 async function fhsSubmitSizing(dto: FhsSubmitSizingT, from: UserT) {
   const {
     id,
-    hp,
     comment,
     uploads,
     FHS_SIZING_KMZ,
@@ -26,6 +25,7 @@ async function fhsSubmitSizing(dto: FhsSubmitSizingT, from: UserT) {
     FHS_SYNOPTIC_TABLE,
     FHS_SYNOPTIC_DIAGRAM,
     FHS_PLAN_DIAGRAM,
+    FHS_CABLE_LENGTHS,
     ...fields
   } = dto;
   const { s } = await fhsCheck({
@@ -37,7 +37,6 @@ async function fhsSubmitSizing(dto: FhsSubmitSizingT, from: UserT) {
     select: ftthSurveyS,
     where: { id },
     data: {
-      hp,
       quantity: { upsert: { create: fields, update: fields } },
       work: updateWork({
         dto,
@@ -52,6 +51,7 @@ async function fhsSubmitSizing(dto: FhsSubmitSizingT, from: UserT) {
           FHS_SYNOPTIC_TABLE,
           FHS_SYNOPTIC_DIAGRAM,
           FHS_PLAN_DIAGRAM,
+          FHS_CABLE_LENGTHS,
         },
       }),
     },

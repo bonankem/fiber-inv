@@ -2,7 +2,7 @@ export * from "./fhs-assign";
 export * from "./fhs-codes";
 export * from "./fhs-filter";
 export * from "./fhs-initiate";
-export * from "./fhs-report";
+export * from "./fhs-quantity";
 export * from "./fhs-request";
 export * from "./fhs-review";
 export * from "./fhs-submit";

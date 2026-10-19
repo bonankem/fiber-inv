@@ -50,5 +50,7 @@
   "[tailwindcss]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
-  "prettier.requireConfig": true
+  "prettier.requireConfig": true,
+  "exportall.config.relExclusion": ["/packages/schema/src/fhs/index.ts"],
+  "exportall.config.folderListener": ["/packages/schema/src/fhs"]
 }

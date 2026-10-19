@@ -4,6 +4,7 @@ import { zArray } from "schema/utils";
 import { type WorkLogT, workLogZ } from "schema/work";
 import { useApiGet } from "#/api/helpers";
 import WithCaption from "#/components/WithCaption";
+import { workLogTitles } from "#/utils/labels";
 import { shortName } from "#/utils/names";
 import DataTable from "./data-page/DataTable";
 import type { DtColumn } from "./data-page/types";
@@ -34,7 +35,10 @@ const workLogColumns: DtColumn<WorkLogT>[] = [
     title: "Action",
     width: 250,
     render: (l) => (
-      <WithCaption title={l.action} caption={<LogCaption log={l} />} />
+      <WithCaption
+        title={workLogTitles[l.action]}
+        caption={<LogCaption log={l} />}
+      />
     ),
   },
   {

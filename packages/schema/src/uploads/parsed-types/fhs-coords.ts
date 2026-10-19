@@ -13,7 +13,7 @@ export const upFhsBoxZ = z.object({
 export type UpFhsBoxT = z.infer<typeof upFhsBoxZ>;
 
 export const upFhsCoordsZ = zObject("UpFhsCoordsT", {
-  type: z.literal(WorkDocType.COORDINATES),
+  type: z.literal(WorkDocType.FHS_COORDINATES),
   boxes: z.array(upFhsBoxZ),
 });
 

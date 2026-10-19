@@ -20,7 +20,7 @@ export const fhsSubmitZ = workUpdateDto("FhsSubmitT", {
   [Doc.PLAN_DIAGRAM]: zStr("Plan diagram upload ID"),
   [Doc.SYNOPTIC_TABLE]: zStr("Synoptic table upload ID"),
   [Doc.SYNOPTIC_DIAGRAM]: zStr("Synoptic diagram upload ID"),
-  [Doc.COORDINATES]: zStr("Coordinates table upload ID"),
+  [Doc.FHS_COORDINATES]: zStr("Coordinates table upload ID"),
   // [Doc.CABLE_LENGTHS]: zStr("Cable lengths upload ID"),
   [Doc.HP_SUMMARY]: zStr("Summary of HP distribution"),
 });

@@ -6,11 +6,12 @@ import { useApiGet } from "#/api/helpers";
 import WorkLogsTab from "../../../components/WorkLogsTab";
 import type { FhsFormProps } from "../fhs-types";
 import FhsDetailsTab from "./FhsDetailsTab";
-import FhsReportTab from "./FhsReportTab";
+import FhsQuantityTab from "./FhsQuantityTab";
 import type { FhsTabProps } from "./types";
 
 export default function FhsDetailsModal(props: FhsFormProps) {
-  const fullQuery = useApiGet(["fhs", props.item.id], ftthSurveyFullZ);
+  const id = props.item.id;
+  const fullQuery = useApiGet(["fhs", id], ftthSurveyFullZ);
   const tabProps: FhsTabProps = {
     item: props.item,
     full: fullQuery.data,
@@ -35,15 +36,15 @@ export default function FhsDetailsModal(props: FhsFormProps) {
             label: m.details(),
             children: <FhsDetailsTab {...tabProps} />,
           },
-          fullQuery.data?.report && {
+          fullQuery.data?.quantity && {
             key: "report",
             label: m.report(),
-            children: <FhsReportTab {...tabProps} />,
+            children: <FhsQuantityTab {...tabProps} />,
           },
           {
             key: "logs",
             label: m.logs(),
-            children: <WorkLogsTab id={props.item.id} />,
+            children: <WorkLogsTab id={id} />,
           },
         ])}
       />

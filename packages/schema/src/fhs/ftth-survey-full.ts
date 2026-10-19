@@ -1,20 +1,26 @@
 import { workFullP, workFullZ } from "#/work/work-full";
 import type { Prisma } from "../db";
-import { type Same, type z, zObject, zStr } from "../utils";
-import { fhsReportP, fhsReportZ } from "./fhs-report";
+import { type Same, z, zObject, zStr } from "../utils";
+import { fhsQuantityP, fhsQuantityZ } from "./fhs-quantity";
 
 export const ftthSurveyFullS = {
   id: true,
   work: workFullP,
   area: true,
-  report: fhsReportP,
+  quantity: fhsQuantityP,
+  clusters: true,
+  expectedHp: true,
+  reportedHp: true,
 } satisfies Prisma.FtthSurveySelect;
 
 export const ftthSurveyFullZ = zObject("FtthSurveyFullT", {
   id: zStr("The survey ID"),
   work: workFullZ,
   area: zStr("The FTTH area code").nullable(),
-  report: fhsReportZ.nullable(),
+  quantity: fhsQuantityZ.nullable(),
+  clusters: z.int().nullable().describe("The number of clusters"),
+  expectedHp: z.int().nullable().describe("The expected HP pre-survey"),
+  reportedHp: z.int().nullable().describe("The reported HP post-survey"),
 } satisfies Record<keyof typeof ftthSurveyFullS, object>);
 
 export const ftthSurveyFullP = { select: ftthSurveyFullS };

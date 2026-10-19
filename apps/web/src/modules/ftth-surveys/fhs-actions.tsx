@@ -18,8 +18,8 @@ import FhsAssignForm from "./forms/FhsAssignForm";
 import FhsDeclineForm from "./forms/FhsDeclineForm";
 import FhsInitiateForm from "./forms/FhsInitiateForm";
 import FhsRejectForm from "./forms/FhsRejectForm";
-import FhsSubmitForm from "./forms/FhsSubmitForm";
 import FhsSubmitPartingForm from "./forms/FhsSubmitPartingForm";
+import FhsSubmitSizingForm from "./forms/FhsSubmitSizingForm";
 import FhsSubmitTallyForm from "./forms/FhsSubmitTallyForm";
 
 enum Whom {
@@ -95,9 +95,9 @@ export const fhsActions = buildActions(isWhen, isWhom, [
   {
     name: m.action_submit(),
     icon: SendOutlined,
-    when: [When.SURVEY, When.FAILED_REVIEW],
+    when: [When.SIZING, When.SIZING_REJECTED],
     whom: [Whom.VENDOR],
-    form: FhsSubmitForm,
+    form: FhsSubmitSizingForm,
     main: true,
   },
   {

@@ -8,7 +8,7 @@ export const fhsSubmitSizingZ = workUpdateDto("FhsSubmitSizingT", {
   [WorkDocType.FHS_SYNOPTIC_TABLE]: z.string(),
   [WorkDocType.FHS_SYNOPTIC_DIAGRAM]: z.string(),
   [WorkDocType.FHS_PLAN_DIAGRAM]: z.string(),
-  hp: z.int("Number of HPs/ELs"),
+  [WorkDocType.FHS_CABLE_LENGTHS]: z.string(),
   fats: z.int("Number of FATs"),
   xBoxes: z.int("Number of X boxes"),
   hubBoxes: z.int("Number of hub boxes"),

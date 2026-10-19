@@ -9,7 +9,7 @@ type Parsers = { [t in WorkDocType]?: ParserFunc };
 const parsers: Parsers = {
   AREA_KMZ: parseUpAreaKmz,
   FHS_SIZING_KMZ: parseUpFhsSizingKmz,
-  COORDINATES: parseUpFhsCoords,
+  FHS_COORDINATES: parseUpFhsCoords,
 };
 
 export async function maybeParse(input: ParserInput, key?: WorkDocType | null) {

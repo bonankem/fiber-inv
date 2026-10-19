@@ -177,7 +177,7 @@ export default function FhsSubmitForm(props: FhsFormProps) {
 
         {fileInput("FHS_SIZING_KMZ", "KMZ", onParseKmz)}
         {/* {fileInput("BOQ", "BOQ")} */}
-        {fileInput("COORDINATES", m.coords(), onParseCoords)}
+        {fileInput("FHS_COORDINATES", m.coords(), onParseCoords)}
         {fileInput("PLAN_DIAGRAM", m.plan_diag())}
         {fileInput("SYNOPTIC_DIAGRAM", m.field_synoptic_diag())}
         {fileInput("SYNOPTIC_TABLE", m.field_synoptic_table())}

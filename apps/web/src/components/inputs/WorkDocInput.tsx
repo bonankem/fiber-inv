@@ -3,12 +3,13 @@ import type { WorkDocType } from "schema/enums";
 import type { UploadFullT } from "schema/uploads";
 import type { WorkDocT, WorkFullT } from "schema/work";
 import { req } from "#/utils/form";
-import FileUpload from "./FileUpload";
+import FileUpload, { type Parsed } from "./FileUpload";
 
 type Props<T> = {
   type: T;
   label: string;
   old?: WorkDocT[] | WorkFullT | { data?: { work: WorkFullT } };
+  onParsed?: (p: Parsed<T>) => void;
 };
 
 function getDocs(old: Props<unknown>["old"]) {
@@ -33,6 +34,7 @@ export default function WorkDocInput<T extends WorkDocType>(props: Props<T>) {
         required
         type={props.type}
         previous={getDoc(props)}
+        onParsed={props.onParsed}
         inputClassName="placeholder:text-gray-400!"
       />
     </Form.Item>

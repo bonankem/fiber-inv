@@ -41,7 +41,7 @@ export async function parseUpFhsCoords({
   });
 
   return {
-    type: WorkDocType.COORDINATES,
+    type: WorkDocType.FHS_COORDINATES,
     boxes: filterTruthy(items),
   };
 }
