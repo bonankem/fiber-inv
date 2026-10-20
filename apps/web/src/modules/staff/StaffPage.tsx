@@ -9,7 +9,7 @@ import { useApiGet } from "#/api/helpers";
 import { buildActions } from "#/components/actions/types";
 import DataPage from "#/components/data-page/DataPage";
 import UnlockForm from "./UnlockForm";
-import { roleName } from "./utils";
+import { userGroup, userRole } from "./utils";
 
 function statusOf(user: UserFullT) {
   if (user.expiredAt) {
@@ -56,10 +56,40 @@ export default function StaffPage() {
         data: query.data,
         actions,
         columns: [
-          { key: "name", title: m.name(), render: (u) => u.name },
-          { key: "email", title: m.email(), render: (u) => u.email },
-          { key: "role", title: m.role(), render: (u) => roleName(u) },
-          { key: "status", title: m.status(), render: (u) => statusOf(u) },
+          {
+            key: "name",
+            title: m.name(),
+            render: (u) => u.name,
+            sorter: (u) => u.name,
+            width: 250,
+          },
+          {
+            key: "email",
+            title: m.email(),
+            render: (u) => u.email,
+            sorter: (u) => u.email,
+            width: 250,
+          },
+          {
+            key: "type",
+            title: m.type(),
+            render: (u) => userRole(u),
+            sorter: (u) => userRole(u),
+            width: 100,
+          },
+          {
+            key: "group",
+            title: m.group(),
+            render: (u) => userGroup(u),
+            sorter: (u) => userGroup(u),
+            width: 150,
+          },
+          {
+            key: "status",
+            title: m.status(),
+            render: (u) => statusOf(u),
+            width: 150,
+          },
         ],
       }}
     />

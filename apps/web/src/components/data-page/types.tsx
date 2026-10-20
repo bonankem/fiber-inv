@@ -7,6 +7,7 @@ export type DtColumn<T> = {
   key: string;
   title: ReactNode;
   render: (t: T) => ReactNode;
+  sorter?: (t: T) => string | number | undefined;
   width?: string | number;
   onClick?: ((t: T, m: ModalViewer) => void) | boolean;
   screen?: "mobile" | "normal" | "large" | "all";

@@ -1,5 +1,6 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
+  "access": "Accès",
   "action": "Action",
   "action_accept": "Valider",
   "action_assign": "Assigner",
@@ -126,6 +127,7 @@
   "fttx_hc_delivery": "Livraison HC",
   "fttx_hp_delivery": "Livraison HP",
   "fttx_hp_planning": "Planning HP",
+  "group": "Groupe",
   "hint_choose_kmz": "Choisir un fichier KMZ ou KML",
   "hint_name_and_phone": "Nom et téléphone",
   "hint_reading_file": "Lecture du fichier...",

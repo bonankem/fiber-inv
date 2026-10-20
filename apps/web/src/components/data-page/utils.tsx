@@ -53,8 +53,25 @@ export function useResolvedColumns<T>(props: DataTableProps<T>) {
         width: col.width,
         title: col.title,
         className: col.className,
-        render: (_, t) => col.render(t),
         onCell: onRow(col.onClick),
+        render: (_, t) => col.render(t),
+        sorter:
+          col.sorter &&
+          ((a, b) => {
+            const va = col.sorter?.(a);
+            const vb = col.sorter?.(b);
+            if (!vb) return -1;
+            if (!va) return +1;
+            if (typeof va === "string" || typeof vb === "string") {
+              const sa = va.toString();
+              const sb = vb.toString();
+              return sa.localeCompare(sb, undefined, {
+                numeric: true,
+                sensitivity: "base",
+              });
+            }
+            return va - vb;
+          }),
       })),
       ...(actionCol ? [actionCol] : []),
     ];
