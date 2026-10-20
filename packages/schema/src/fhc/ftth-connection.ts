@@ -1,7 +1,7 @@
-import { idKeyNameP, idKeyNameZ, idNameP, idNameZ } from "#/common";
-import { workP, workZ } from "#/work";
+import { idKeyNameP, idKeyNameZ, idNameP, idNameZ } from "../common";
 import { FhcMode, type Prisma } from "../db";
 import { type Same, z, zObject, zStr, zStrNul } from "../utils";
+import { workP, workZ } from "../work";
 
 export const ftthConnectionS = {
   id: true,

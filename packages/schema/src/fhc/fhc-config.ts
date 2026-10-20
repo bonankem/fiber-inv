@@ -1,5 +1,5 @@
-import { workUpdateDto } from "#/work";
 import { z } from "../utils";
+import { workUpdateDto } from "../work";
 
 export const fhcConfigZ = workUpdateDto("FhcConfigT", {
   oltId: z.string(),

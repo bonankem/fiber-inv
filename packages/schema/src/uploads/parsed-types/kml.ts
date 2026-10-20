@@ -1,6 +1,6 @@
 import type z from "zod";
-import { lineStringZ } from "#/geo";
-import { zObject, zStr } from "#/utils";
+import { lineStringZ } from "../../geo";
+import { zObject, zStr } from "../../utils";
 
 export const kmlItemZ = zObject("KmlItemT", {
   name: zStr("The placemark name"),

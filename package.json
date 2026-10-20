@@ -17,12 +17,12 @@
   },
   "scripts": {
     "build": "turbo build",
-    "clean": "rm -rf */dist",
+    "clean": "rm -rf apps/*/dist packages/*/dist",
     "prisma": "pnpm -F backend exec prisma",
-    "prisma:sync": "pnpm prisma generate && pnpm prisma db push && pnpm build --filter schema --force",
+    "prisma:sync": "pnpm prisma generate && pnpm prisma db push",
     "build:schema": "turbo --filter schema build",
-    "dev": "pnpm build:schema && turbo dev --ui tui",
-    "dev:expose": "pnpm build:schema && turbo dev:expose --ui tui",
+    "dev": "turbo dev --ui tui",
+    "dev:expose": "turbo dev:expose --ui tui",
     "heroku-db": "pnpm prisma generate",
     "heroku-postbuild": "pnpm heroku-db && turbo build --filter backend --force"
   }

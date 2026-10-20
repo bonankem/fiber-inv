@@ -1,6 +1,6 @@
-import { WorkDocType } from "#/db";
-import { coordsZ } from "#/geo";
-import { z, zArray, zObject } from "#/utils";
+import { WorkDocType } from "../../db";
+import { coordsZ } from "../../geo";
+import { z, zArray, zObject } from "../../utils";
 import { upFhsBoxZ } from "./fhs-coords";
 
 export const upOdnKmzItemZ = z.object({

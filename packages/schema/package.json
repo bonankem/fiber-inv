@@ -1,28 +1,44 @@
 {
   "name": "schema",
   "type": "module",
+  "imports": {
+    "#/*": {
+      "development": "./src/*",
+      "default": "./dist/*"
+    }
+  },
   "exports": {
-    "./db/client": "./dist/db/client.js",
-    "./enums": "./dist/db/generated/enums.js",
-    "./errors": "./dist/errors.js",
-    "./utils": "./dist/utils.js",
-    "./*": "./dist/*/index.js"
+    "./db/client": {
+      "development": "./src/db/client.ts",
+      "default": "./dist/db/client.js",
+      "types": "./dist/db/client.d.ts"
+    },
+    "./enums": {
+      "development": "./src/db/generated/enums.ts",
+      "default": "./dist/db/generated/enums.js",
+      "types": "./dist/db/generated/enums.d.ts"
+    },
+    "./errors": {
+      "development": "./src/errors.ts",
+      "default": "./dist/errors.js",
+      "types": "./dist/errors.d.ts"
+    },
+    "./utils": {
+      "development": "./src/utils.ts",
+      "default": "./dist/utils.js",
+      "types": "./dist/utils.d.ts"
+    },
+    "./*": {
+      "development": "./src/*/index.ts",
+      "default": "./dist/*/index.js",
+      "types": "./dist/*/index.d.ts"
+    }
   },
   "scripts": {
-    "dev": "nodemon",
-    "dev:expose": "nodemon",
-    "build": "node ../../scripts/build.mjs",
-    "turbo-build": "pnpm -w build:schema",
-    "refresh-dev": "cd ../../apps && touch backend/src/main.ts web/src/main.tsx"
+    "build": "node ../../scripts/build.mjs"
   },
   "dependencies": {
     "@prisma/client": "^7.9.1",
     "zod": "^4.4.3"
-  },
-  "nodemonConfig": {
-    "watch": "src",
-    "ext": "ts",
-    "exec": "pnpm turbo-build && pnpm refresh-dev",
-    "delay": 0.5
   }
 }

@@ -1,5 +1,5 @@
-import type { Prisma } from "#/db";
-import { type Same, z, zObject, zStr } from "#/utils";
+import type { Prisma } from "../db";
+import { type Same, z, zObject, zStr } from "../utils";
 import { fhcPbItemP, fhcPbItemZ } from "./fhc-pricebook";
 
 export const fhcQuantityS = {

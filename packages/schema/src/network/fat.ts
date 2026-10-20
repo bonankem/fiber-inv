@@ -1,5 +1,5 @@
-import { coordsP, coordsZ } from "#/geo";
 import type { Prisma } from "../db";
+import { coordsP, coordsZ } from "../geo";
 import { type Same, type z, zObject, zStr, zStrNul } from "../utils";
 
 export const fatS = {

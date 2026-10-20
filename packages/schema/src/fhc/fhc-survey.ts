@@ -1,6 +1,6 @@
-import { FhcMode, WorkDocType } from "#/db";
-import { workUpdateDto } from "#/work";
+import { FhcMode, WorkDocType } from "../db";
 import { z, zStr } from "../utils";
+import { workUpdateDto } from "../work";
 import { fhcNextPhases } from "./fhc-status";
 
 export const fhcSurveyZ = workUpdateDto("FhcSurveyT", {

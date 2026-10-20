@@ -1,6 +1,6 @@
-import { WorkDocType } from "#/db";
-import { workUpdateDto } from "#/work";
+import { WorkDocType } from "../db";
 import { z } from "../utils";
+import { workUpdateDto } from "../work";
 
 export const fhsSubmitTallyZ = workUpdateDto("FhsSubmitTallyT", {
   [WorkDocType.FHS_TALLY_KMZ]: z.string(),

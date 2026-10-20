@@ -1,6 +1,6 @@
-import { workBriefP, workBriefZ } from "#/work";
 import type { Prisma } from "../db";
 import { type Same, z, zObject, zStr } from "../utils";
+import { workBriefP, workBriefZ } from "../work";
 
 export const ftthSurveyBriefS = {
   id: true,

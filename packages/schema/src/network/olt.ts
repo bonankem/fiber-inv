@@ -1,6 +1,6 @@
-import { idKeyNameP, idKeyNameZ } from "#/common";
-import { localityP, localityZ } from "#/geo";
+import { idKeyNameP, idKeyNameZ } from "../common";
 import type { Prisma } from "../db";
+import { localityP, localityZ } from "../geo";
 import { type Same, type z, zObject, zStr, zStrNul } from "../utils";
 
 export const oltS = {

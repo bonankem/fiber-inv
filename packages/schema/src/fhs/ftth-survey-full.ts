@@ -1,6 +1,6 @@
-import { workFullP, workFullZ } from "#/work/work-full";
 import type { Prisma } from "../db";
 import { type Same, z, zObject, zStr } from "../utils";
+import { workFullP, workFullZ } from "../work/work-full";
 import { fhsQuantityP, fhsQuantityZ } from "./fhs-quantity";
 
 export const ftthSurveyFullS = {

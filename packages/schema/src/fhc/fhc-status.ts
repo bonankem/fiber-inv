@@ -1,6 +1,6 @@
-import { WorkStatus } from "#/db";
-import { workUpdateDto } from "#/work";
+import { WorkStatus } from "../db";
 import { z } from "../utils";
+import { workUpdateDto } from "../work";
 
 export const fhcNextPhases = [
   WorkStatus.INSTALLATION,

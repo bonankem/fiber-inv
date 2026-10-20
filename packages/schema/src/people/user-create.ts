@@ -1,4 +1,4 @@
-import { StaffRole } from "#/db";
+import { StaffRole } from "../db";
 import { z, zObject } from "../utils";
 
 export const userCreateZ = zObject("UserCreateT", {

@@ -1,6 +1,6 @@
-import { WorkDocType } from "#/db";
-import { workUpdateDto } from "#/work";
+import { WorkDocType } from "../db";
 import { enumWithPrefix, z, zStr } from "../utils";
+import { workUpdateDto } from "../work";
 
 export const fhpImageTypes = enumWithPrefix(WorkDocType, "FHP_");
 export type FhpImageType = (typeof fhpImageTypes)[number];

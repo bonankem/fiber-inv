@@ -1,5 +1,5 @@
-import { workUpdateDto } from "#/work";
 import { type z, zStr, zStrOpt } from "../utils";
+import { workUpdateDto } from "../work";
 
 export const fhpAssignZ = workUpdateDto("FhpAssignT", {
   userId: zStr("The ID of the engineer to assign"),

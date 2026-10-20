@@ -79,7 +79,6 @@ function resolve<T, When, Who>(
   ) {
     if (!a?.length || !f) return null;
     const result = a.some((w) => f(t, w, user));
-    console.log("some", a, result);
     return result;
   }
 

@@ -1,6 +1,6 @@
-import { workUpdateDto } from "#/work";
 import { WorkDocType as Doc } from "../db";
 import { z, zStr } from "../utils";
+import { workUpdateDto } from "../work";
 
 export const fhpSubmitZ = workUpdateDto("FhpSubmitT", {
   xBoxes: z.int("Number of X boxes"),

@@ -17,7 +17,8 @@
     "rewriteRelativeImportExtensions": true,
     "noUncheckedSideEffectImports": true,
     "skipLibCheck": true,
-    "paths": { "#/*": ["./src/*"] }
+    "paths": { "#/*": ["./src/*"] },
+    "customConditions": ["development"]
   },
   "tsc-alias": {
     "resolveFullPaths": true

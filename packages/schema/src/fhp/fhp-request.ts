@@ -1,4 +1,4 @@
-import { coordsZ } from "#/geo";
+import { coordsZ } from "../geo";
 import { z, zObject } from "../utils";
 
 export const fhpRequestZ = zObject("FhpRequestT", {

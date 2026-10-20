@@ -2,8 +2,8 @@
   "name": "backend",
   "type": "module",
   "scripts": {
-    "dev": "tsx --watch src/main.ts",
-    "dev:expose": "tsx --watch src/main.ts --host",
+    "dev": "tsx --conditions=development --watch src/main.ts",
+    "dev:expose": "tsx --conditions=development --watch src/main.ts --host",
     "build": "node ../../scripts/build.mjs",
     "start": "node --enable-source-maps dist/main.js"
   },

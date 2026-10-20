@@ -1,7 +1,7 @@
 import z from "zod";
-import { BoxType, WorkDocType } from "#/db";
-import { coordsZ } from "#/geo";
-import { zObject, zStr } from "#/utils";
+import { BoxType, WorkDocType } from "../../db";
+import { coordsZ } from "../../geo";
+import { zObject, zStr } from "../../utils";
 
 export const upFhsBoxZ = z.object({
   name: zStr("The name of this element"),

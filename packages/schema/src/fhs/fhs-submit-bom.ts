@@ -1,6 +1,6 @@
-import { WorkDocType } from "#/db";
-import { workUpdateDto } from "#/work";
+import { WorkDocType } from "../db";
 import { z } from "../utils";
+import { workUpdateDto } from "../work";
 
 export const fhsSubmitBomZ = workUpdateDto("FhsSubmitBomT", {
   [WorkDocType.FHS_BOM]: z.string(),

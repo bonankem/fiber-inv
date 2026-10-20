@@ -3,9 +3,9 @@ import {
   type FhcCostCategory,
   FhcMode,
   WorkDocType,
-} from "#/db";
-import { workUpdateDto } from "#/work";
+} from "../db";
 import { z } from "../utils";
+import { workUpdateDto } from "../work";
 import type { FtthConnectionT } from ".";
 
 export const fhcImageTypes = Object.values(WorkDocType).filter((t) =>
