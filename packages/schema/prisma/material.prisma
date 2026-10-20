@@ -6,7 +6,9 @@ model Equipment {
 
     name String
 
-    mtnCode String
+    description String
+
+    mtnCode String @unique
 
     ifsCode String
 
@@ -14,7 +16,7 @@ model Equipment {
 
     available Int @default(0)
 
-    dateSynced String?
+    dateSynced String
 
     emrfItems EmrfItem[]
 }
@@ -28,6 +30,8 @@ model Emrf {
     status EmrfStatus
 
     items EmrfItem[]
+
+    orderNumber String?
 }
 
 model EmrfItem {
@@ -39,17 +43,21 @@ model EmrfItem {
     emrf   Emrf   @relation(fields: [emrfId], references: [id])
     emrfId String @db.Uuid
 
+    segment String
+
     equipment   Equipment @relation(fields: [equipmentId], references: [id])
     equipmentId String    @db.Uuid
 
-    quantity Int @default(0)
-
     position Int @default(0)
+
+    requestedQty Int
+
+    collectedQty Int @default(0)
 }
 
 enum EmrfStatus {
     REQUESTED
-    CANCELLED
-    SHIPPED
+    ORDERED
     COLLECTED
+    CANCELLED
 }
