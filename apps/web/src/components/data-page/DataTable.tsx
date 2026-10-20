@@ -25,7 +25,13 @@ export default function DataTable<T extends { id: string } | { tn: string }>(
       columns={columns}
       pagination={false}
       classNames={{
-        body: { cell: twJoin(textClass, "one-line", props.cellClassName) },
+        body: {
+          cell: twJoin(
+            textClass,
+            !props.multiLine && "one-line",
+            props.cellClassName,
+          ),
+        },
         header: { cell: textClass, wrapper: "sticky top-0 z-100" },
       }}
       bordered={props.bordered}

@@ -146,7 +146,7 @@
   "locality": "Locality",
   "locked_until": "Locked until {date}",
   "log_assign": "Assigned",
-  "log_comment": "Commented",
+  "log_comment": "Added Comment",
   "log_configuration": "Configured",
   "log_decline": "Declined",
   "log_fail_field_atp": "Field ATP Failed",

@@ -16,6 +16,7 @@ export default function WorkLogsTab({ id }: { id: string }) {
   return (
     <DataTable
       bordered
+      multiLine
       data={query.data}
       loading={query.isLoading}
       columns={workLogColumns}
@@ -33,7 +34,7 @@ const workLogColumns: DtColumn<WorkLogT>[] = [
   {
     key: "action",
     title: "Action",
-    width: 250,
+    width: 200,
     render: (l) => (
       <WithCaption
         title={workLogTitles[l.action]}
@@ -44,13 +45,14 @@ const workLogColumns: DtColumn<WorkLogT>[] = [
   {
     key: "status",
     title: m.status(),
-    width: 200,
+    width: 180,
     render: (l) => l.newStatus && <StatusBadge smaller status={l.newStatus} />,
   },
   {
     key: "comment",
     title: m.comments_attachments(),
-    width: 200,
+    width: 250,
+    className: "pr-2! whitespace-pre-line",
     render: (l) => l.comment,
   },
 ];
@@ -64,8 +66,8 @@ function LogCaption(props: { log: WorkLogT }) {
     <p>
       {from && <span className="text-gray-400">par </span>}
       {from && <span>{shortName(from.name, 15)} </span>}
-      {to && <span className="text-gray-400">à </span>}
-      {to && <span>{shortName(to, 15)}</span>}
+      {/* {to && <span className="text-gray-400">à </span>}
+      {to && <span>{shortName(to, 15)}</span>} */}
     </p>
   );
 }
