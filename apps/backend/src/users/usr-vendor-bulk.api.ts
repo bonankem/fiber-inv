@@ -35,29 +35,32 @@ async function createVendorBulk(req: RequestWith<VendorBulkT>) {
     return { newVendors, newUsers };
   }
 
-  const result = await prisma.$transaction(async (tx) => {
-    await tx.vendor.createMany({ data: newVendors });
+  const result = await prisma.$transaction(
+    async (tx) => {
+      await tx.vendor.createMany({ data: newVendors });
 
-    const output = [] as { name: string; email: string; password: string }[];
-    for (const u of newUsers) {
-      const password = randomBytes(9).toString("base64");
-      const hashed = hashSync(password);
-      await tx.user.create({
-        data: {
-          key: makeKey(u.name),
-          name: u.name,
-          email: u.email,
-          isAdmin: false,
-          staffRole: null,
-          vendor: { connect: { key: makeKey(u.vendor) } },
-          password: { create: { hashed, history: [hashed] } },
-        },
-        select: userS,
-      });
-      output.push({ name: u.name, email: u.email, password });
-    }
-    return output;
-  });
+      const output = [] as { name: string; email: string; password: string }[];
+      for (const u of newUsers) {
+        const password = randomBytes(9).toString("base64");
+        const hashed = hashSync(password);
+        await tx.user.create({
+          data: {
+            key: makeKey(u.name),
+            name: u.name,
+            email: u.email,
+            isAdmin: false,
+            staffRole: null,
+            vendor: { connect: { key: makeKey(u.vendor) } },
+            password: { create: { hashed, history: [hashed] } },
+          },
+          select: userS,
+        });
+        output.push({ name: u.name, email: u.email, password });
+      }
+      return output;
+    },
+    { timeout: 60000 },
+  );
 
   const logs = result.map((r) => authLog(AuthAction.ADD_USER, req, r.email));
   await Promise.all(logs).catch(() => {});
