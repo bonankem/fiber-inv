@@ -10,3 +10,16 @@ export const userCreateZ = zObject("UserCreateT", {
 });
 
 export type UserCreateT = z.infer<typeof userCreateZ>;
+
+export const vendorBulkItemZ = zObject("VendorBulkItemT", {
+  name: z.string(),
+  email: z.string(),
+  vendor: z.string(),
+});
+
+export const vendorBulkZ = zObject("VendorBulkT", {
+  commit: z.boolean().optional(),
+  items: vendorBulkItemZ.array(),
+});
+
+export type VendorBulkT = z.infer<typeof vendorBulkZ>;
