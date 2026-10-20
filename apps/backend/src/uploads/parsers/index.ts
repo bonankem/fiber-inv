@@ -7,7 +7,7 @@ import type { ParserFunc, ParserInput } from "./utils";
 type Parsers = { [t in WorkDocType]?: ParserFunc };
 
 const parsers: Parsers = {
-  AREA_KMZ: parseUpAreaKmz,
+  FHS_AREA_KMZ: parseUpAreaKmz,
   FHS_SIZING_KMZ: parseUpFhsSizingKmz,
   FHS_COORDINATES: parseUpFhsCoords,
 };

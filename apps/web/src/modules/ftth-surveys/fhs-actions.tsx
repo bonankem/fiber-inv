@@ -18,6 +18,7 @@ import FhsAssignForm from "./forms/FhsAssignForm";
 import FhsDeclineForm from "./forms/FhsDeclineForm";
 import FhsInitiateForm from "./forms/FhsInitiateForm";
 import FhsRejectForm from "./forms/FhsRejectForm";
+import FhsSubmitBomForm from "./forms/FhsSubmitBomForm";
 import FhsSubmitPartingForm from "./forms/FhsSubmitPartingForm";
 import FhsSubmitSizingForm from "./forms/FhsSubmitSizingForm";
 import FhsSubmitTallyForm from "./forms/FhsSubmitTallyForm";
@@ -98,6 +99,14 @@ export const fhsActions = buildActions(isWhen, isWhom, [
     when: [When.SIZING, When.SIZING_REJECTED],
     whom: [Whom.VENDOR],
     form: FhsSubmitSizingForm,
+    main: true,
+  },
+  {
+    name: m.action_submit(),
+    icon: SendOutlined,
+    when: [When.BOM, When.BOM_REJECTED],
+    whom: [Whom.VENDOR],
+    form: FhsSubmitBomForm,
     main: true,
   },
   {

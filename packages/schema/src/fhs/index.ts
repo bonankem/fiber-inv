@@ -5,7 +5,7 @@ export * from "./fhs-initiate";
 export * from "./fhs-quantity";
 export * from "./fhs-request";
 export * from "./fhs-review";
-export * from "./fhs-submit";
+export * from "./fhs-submit-bom";
 export * from "./fhs-submit-parting";
 export * from "./fhs-submit-sizing";
 export * from "./fhs-submit-tally";

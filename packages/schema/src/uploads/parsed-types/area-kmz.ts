@@ -4,7 +4,7 @@ import { boundingBoxZ, coordsZ, linearRingZ } from "#/geo";
 import { zObject } from "#/utils";
 
 export const upAreaKmzZ = zObject("UpAreaKmzT", {
-  type: z.literal(WorkDocType.AREA_KMZ),
+  type: z.literal(WorkDocType.FHS_AREA_KMZ),
   localityId: z.uuid().optional(),
   name: z.string().optional(),
   coords: coordsZ,

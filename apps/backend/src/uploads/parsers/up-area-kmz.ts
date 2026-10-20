@@ -54,7 +54,7 @@ export async function parseUpAreaKmz({
   const match = boundaries.find((b) => isInsideRing(coords, b.ring));
 
   return {
-    type: WorkDocType.AREA_KMZ,
+    type: WorkDocType.FHS_AREA_KMZ,
     name,
     bbox,
     coords,

@@ -22,7 +22,7 @@ export const upOdnKmzIssueZ = z.object({
 export const upOdnKmzItemsZ = z.array(upOdnKmzItemZ);
 
 export const upOdnKmzZ = zObject("UpOdnKmzT", {
-  type: z.literal(WorkDocType.FHS_SIZING_KMZ),
+  type: z.enum([WorkDocType.FHS_SIZING_KMZ, WorkDocType.FHP_ODN_KMZ]),
   boxes: z.array(upFhsBoxZ),
   cables: upOdnKmzItemsZ,
   metalPoles: upOdnKmzItemsZ,

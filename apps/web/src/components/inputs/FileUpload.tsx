@@ -22,8 +22,7 @@ type Props<T> = {
 };
 
 const defaultAccept: { [key in WorkDocType]?: string } = {
-  BOQ: ".xlsx,.xls",
-  BOM: ".xlsx,.xls",
+  FHS_BOM: ".xlsx,.xls",
   FHS_COORDINATES: ".xlsx,.xls",
 };
 

@@ -9,6 +9,7 @@ import { assoc } from "schema/utils";
 import { useApiGet } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import type { Parsed } from "#/components/inputs/FileUpload";
+import FormFooter from "#/components/inputs/FormFooter";
 import IntInput from "#/components/inputs/IntInput";
 import WorkDocInput from "#/components/inputs/WorkDocInput";
 import useOnceReady from "#/hooks/useOnceReady";
@@ -31,7 +32,7 @@ export default function FhsSubmitSizingForm(props: FhsFormProps) {
     );
 
     const kmz = docs[Doc.FHS_SIZING_KMZ];
-    const coords = docs[Doc.COORDINATES];
+    const coords = docs[Doc.FHS_COORDINATES];
     setKmz(kmz?.parsed as UpOdnKmzT);
     setCoords(coords?.parsed as UpFhsCoordsT);
 
@@ -131,6 +132,8 @@ export default function FhsSubmitSizingForm(props: FhsFormProps) {
         {qtyInput("concretePoles", m.concrete_poles())}
         {qtyInput("metalPoles", m.metal_poles())}
         {qtyInput("manholes", m.manholes())}
+
+        <FormFooter comment={{ rows: 1 }} />
       </div>
     </FormModal>
   );

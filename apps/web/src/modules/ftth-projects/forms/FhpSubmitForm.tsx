@@ -1,7 +1,7 @@
 import { Form, message } from "antd";
 import { m } from "i18n/messages";
 import { countBy } from "remeda";
-import type { WorkDocType } from "schema/enums";
+import { WorkDocType } from "schema/enums";
 import type { FhpSubmitT, FtthProjectT } from "schema/fhp";
 import type { UpFhsBoxT, UpOdnKmzT } from "schema/uploads";
 import { apiCall, useApiPost } from "#/api/helpers";
@@ -87,8 +87,7 @@ export default function FhpSubmitForm(props: FhpFormProps) {
     >
       <div className="flex flex-col gap-2">
         <h2 className="font-medium">{m.files()}</h2>
-        {fileInput("ODN_KMZ", "As-Built KMZ", onParseKmz)}
-        {fileInput("BOQ", "As-Built BOQ")}
+        {fileInput(WorkDocType.FHP_ODN_KMZ, "As-Built KMZ", onParseKmz)}
 
         <h2 className="font-medium">{m.quantities()}</h2>
         {qtyInput("xBoxes", m.field_x_boxes())}

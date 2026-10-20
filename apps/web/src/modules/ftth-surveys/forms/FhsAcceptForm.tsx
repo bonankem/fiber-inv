@@ -1,8 +1,9 @@
-import { Form, Input, message } from "antd";
+import { message } from "antd";
 import { m } from "i18n/messages";
 import type { FhsReviewT, FtthSurveyT } from "schema/fhs";
 import { apiCall, useApiPost } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
+import FormFooter from "#/components/inputs/FormFooter";
 import type { FhsFormProps } from "../fhs-types";
 
 export default function FhsAcceptForm(props: FhsFormProps) {
@@ -23,13 +24,7 @@ export default function FhsAcceptForm(props: FhsFormProps) {
       state={props.state}
       onSubmit={onSubmit}
     >
-      <Form.Item name="comment" label={m.comment()}>
-        <Input.TextArea
-          rows={3}
-          className="resize-none!"
-          placeholder={m.optional()}
-        />
-      </Form.Item>
+      <FormFooter />
     </FormModal>
   );
 }

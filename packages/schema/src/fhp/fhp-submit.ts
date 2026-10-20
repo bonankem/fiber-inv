@@ -14,7 +14,6 @@ export const fhpSubmitZ = workUpdateDto("FhpSubmitT", {
   distMetres: z.int("Total distribution cable length in metres"),
 
   [Doc.FHP_ODN_KMZ]: zStr("KMZ upload ID"),
-  [Doc.BOQ]: zStr("BOQ upload ID"),
 });
 
 export type FhpSubmitT = z.infer<typeof fhpSubmitZ>;

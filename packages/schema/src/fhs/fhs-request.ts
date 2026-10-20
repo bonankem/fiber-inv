@@ -8,7 +8,7 @@ export const ftthAreaCodeZ = z
   .describe("The five letter FTTH area code");
 
 export const fhsRequestZ = zFormObject("FhsRequestT", {
-  AREA_KMZ: z.uuid(),
+  FHS_AREA_KMZ: z.uuid(),
   name: z.string(),
   localityId: z.string(),
   area: z.string().min(5).max(6).describe("The FTTH area code"),

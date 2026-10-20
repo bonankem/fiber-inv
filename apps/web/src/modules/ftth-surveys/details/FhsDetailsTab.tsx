@@ -68,7 +68,7 @@ export default function FhsDetailsTab(props: FhsTabProps) {
       />
       <DetailsCard
         items={[
-          doc(WorkDocType.AREA_KMZ, m.area_kmz()),
+          doc(WorkDocType.FHS_AREA_KMZ, m.area_kmz()),
           doc(WorkDocType.FHS_TALLY_KMZ, m.fhs_tally_kmz()),
           doc(WorkDocType.FHS_TALLY_TABLE, m.fhs_tally_excel()),
           doc(WorkDocType.FHS_PARTING_KMZ, m.parting_kmz()),
