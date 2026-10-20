@@ -12,7 +12,7 @@ export const fhpSubmitApi = postRoute({
 });
 
 async function fhpSubmit(dto: FhpSubmitT) {
-  const { id, comment, uploads, BOQ, FHP_ODN_KMZ, ...fields } = dto;
+  const { id, comment, uploads, FHP_ODN_KMZ, ...fields } = dto;
   const { s } = await fhpCheck({
     workId: id,
     status: [WorkStatus.INSTALLATION, WorkStatus.FAILED_REVIEW],
@@ -36,7 +36,7 @@ async function fhpSubmit(dto: FhpSubmitT) {
         action,
         status: WorkStatus.REVIEW,
         logTo: fhpWorker(s)?.name,
-        docs: { BOQ, FHP_ODN_KMZ },
+        docs: { FHP_ODN_KMZ },
       }),
     },
   });
