@@ -47,7 +47,7 @@ export const fhcActions = buildActions(isWhen, isWhom<What>, [
     icon: SendOutlined,
     form: FhcSubmitForm,
     when: [When.INSTALLATION, When.FAILED_REVIEW],
-    whom: [HOME_INTERNET],
+    whom: [VENDOR],
     main: true,
   },
   {
