@@ -47,7 +47,7 @@ async function fhcPbUpdate(req: FhcPbUpdateT) {
       else if (c === OnConflict.FAIL) bad(Err.ALREADY_EXISTS, ref);
     }
     nameEn = nameEn || nameFr || bad(Err.FIELD_REQUIRED, "nameEn");
-    nameFr = nameEn || nameFr || bad(Err.FIELD_REQUIRED, "nameFr");
+    nameFr = nameFr || nameEn || bad(Err.FIELD_REQUIRED, "nameFr");
     nameEn = nameEn.trim().replace(/ +/g, " ");
     nameFr = nameFr.trim().replace(/ +/g, " ");
 
