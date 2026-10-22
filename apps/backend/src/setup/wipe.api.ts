@@ -1,7 +1,10 @@
+import dayjs from "dayjs";
 import type { PrismaClient, PrismaPromise } from "schema/db/client";
+import { bad, Err } from "schema/errors";
 import { zFormObject } from "schema/utils";
 import z from "zod";
 import { prisma } from "#/db";
+import { appEnv } from "#/env";
 import { postRoute } from "#/utils/routing";
 import { Allow } from "../auth/guard";
 import { filterTruthy } from "../utils/queries";
@@ -9,6 +12,8 @@ import { filterTruthy } from "../utils/queries";
 const wipeQueryZ = zFormObject("ResetT", {
   commit: z.boolean().optional(),
   what: z.string(),
+  when: z.string(),
+  key: z.string(),
 }).nullable();
 
 export const wipeApi = postRoute({
@@ -27,6 +32,13 @@ type DelName = {
 
 async function wipeDb(q: WipeQueryT) {
   if (!q?.commit) return { commit: false };
+
+  const key = appEnv.WIPE_KEY;
+  if (!key) bad(Err.ACCESS_DENIED, "WIPE_KEY is not set");
+  if (q.key !== key) bad(Err.ACCESS_DENIED, "Wrong key");
+
+  const now = dayjs().format("YYYY-MM-DD HH");
+  if (!q.when?.startsWith(now)) bad(Err.ACCESS_DENIED, "Wrong time");
 
   const p = prisma;
   const all = q.what === "all";

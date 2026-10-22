@@ -312,5 +312,13 @@
   "view_on_google_maps": "Afficher sur Google Maps",
   "welcome": "Bienvenue, {name}!",
   "with_pole": "Avec poteau",
-  "yes": "Oui"
+  "yes": "Oui",
+  "fhc_cable_at_fat": "Câble au FAT",
+  "fhc_cable_at_customer": "Câble chez le client",
+  "fhc_fat_power_test": "Test de puissance FAT",
+  "fhc_atb_power_test": "Test de puissance ATB",
+  "fhc_ont_indicators": "Indicateurs ONT",
+  "fhc_ont_nameplate": "Plaque ONT",
+  "fhc_speed_test": "Test de vitesse",
+  "fhc_pole": "Poteau"
 }

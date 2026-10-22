@@ -314,5 +314,13 @@
   "view_on_google_maps": "View on Google Maps",
   "welcome": "Welcome, {name}!",
   "with_pole": "With Pole",
-  "yes": "Yes"
+  "yes": "Yes",
+  "fhc_cable_at_fat": "Cable At FAT",
+  "fhc_cable_at_customer": "Cable At Customer",
+  "fhc_fat_power_test": "FAT Power Test",
+  "fhc_atb_power_test": "ATB Power Test",
+  "fhc_ont_indicators": "ONT Indicators",
+  "fhc_ont_nameplate": "ONT Nameplate",
+  "fhc_speed_test": "Speed Test",
+  "fhc_pole": "Pole"
 }

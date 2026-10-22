@@ -1,8 +1,9 @@
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Form, Input, InputNumber, message, Select, Space } from "antd";
 import { m } from "i18n/messages";
+import { SortDesc } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { indexBy } from "remeda";
+import { indexBy, isShallowEqual, partition } from "remeda";
 import { WorkDocType as Doc, FhcCostCategory, FhcMode } from "schema/enums";
 import {
   type FhcSubmitT,
@@ -11,9 +12,9 @@ import {
   fhcPbItemZ,
 } from "schema/fhc";
 import { fatZ } from "schema/network";
+import { filterTruthy } from "schema/utils";
 import { workDocZ } from "schema/work";
-import { twMerge } from "tailwind-merge";
-import { apiCall, useApiGet, useApiPost } from "#/api/helpers";
+import { apiCall, showAppError, useApiGet, useApiPost } from "#/api/helpers";
 import DataTable from "#/components/data-page/DataTable";
 import FormModal from "#/components/FormModal";
 import ImageUpload from "#/components/inputs/ImageUpload";
@@ -23,20 +24,34 @@ import FhcPbNameView from "../components/FchPbNameView";
 import { type FhcFormProps, fhcModeSelect, yesNoSelect } from "../fhc-types";
 
 export default function FhcSubmitForm({ item, state }: FhcFormProps) {
+  const [form] = Form.useForm<FhcSubmitT>();
+
   const pricebookQ = useApiGet("/fhc/pricebook", fhcPbItemZ.array());
+  const [topItems, setTopItems] = useState<string[]>([]);
+
+  const reorderedPb = useMemo(() => {
+    const list = pricebookQ.data ?? [];
+    if (!topItems?.length) return list;
+
+    const [head, tail] = partition(list, (item) => topItems.includes(item.ref));
+    return [...head, ...tail];
+  }, [pricebookQ.data, topItems]);
+
+  const togglePbSort = () => {
+    const qs = form.getFieldValue("quantities");
+    if (!qs) return;
+    const newTop = Object.keys(qs).filter((k) => qs[k]);
+    setTopItems((top) => (isShallowEqual(top, newTop) ? [] : newTop));
+  };
 
   const fatQ = useApiGet("/network/fat", fatZ.array());
   const send = useApiPost<FhcSubmitT, FtthConnectionT>("/fhc/submit");
-
-  const [form] = Form.useForm<FhcSubmitT>();
-  const [onCost, setOnCost] = useState(false);
 
   const mode = Form.useWatch("mode", form);
   const distance = Form.useWatch("distance", form);
   const withPole = Form.useWatch("withPole", form);
   const category = fhcCostCategoryOf({ mode, distance, withPole });
-  const isPricebook = category === FhcCostCategory.PRICE_BOOK;
-  const willSubmit = onCost || !isPricebook;
+  const usesPb = category === FhcCostCategory.PRICE_BOOK;
 
   const initialValues = useMemo(
     (): Partial<FhcSubmitT> => ({
@@ -51,25 +66,15 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
     [item],
   );
 
-  const onBack = () => {
-    if (!onCost) return false;
-    setOnCost(false);
-    return true;
-  };
-
-  const goToCost = async (data: FhcSubmitT) => {
-    const cat = fhcCostCategoryOf(data);
-    if (cat === FhcCostCategory.PRICE_BOOK) {
-      form.setFieldValue("quantities", {});
-      setOnCost(true);
-    } else {
-      console.log(cat);
-      await onSubmit(data);
-    }
-  };
-
   const onSubmit = apiCall(async (data: FhcSubmitT) => {
     data.id = item.id;
+    if (!usesPb) {
+      data.quantities = undefined;
+    } else {
+      const values = filterTruthy(Object.values(data.quantities ?? {}));
+      if (!values.some(Boolean)) return showAppError("No quantities");
+    }
+
     const result = await send.mutateAsync(data);
     message.success(`Submitted ${result.work.sid}`);
     state.close();
@@ -79,8 +84,6 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
   useEffect(() => {
     if (isCabledBuilding) {
       form.setFieldsValue({ distance: 0, withPole: false });
-    } else {
-      form.setFieldsValue({ distance: undefined, withPole: undefined });
     }
   }, [form, isCabledBuilding]);
 
@@ -117,32 +120,27 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
     <FormModal
       form={form}
       state={state}
-      width={onCost ? 800 : 720}
+      width={800}
       title={m.fhc_form_submit()}
       subtitle={`${item.tn}: ${item.work.name}`}
-      onBack={onBack}
-      onSubmit={onCost ? onSubmit : goToCost}
-      okText={willSubmit ? m.send() : "Price book →"}
+      onSubmit={onSubmit}
+      okText={m.send()}
       submitting={send.isPending}
-      checkbox={willSubmit}
       initialValues={initialValues}
     >
       <section
         id="submit-part-1"
-        className={twMerge(
-          "grid md:grid-cols-[3fr_2fr] gap-x-6",
-          onCost && "hidden",
-        )}
+        className="grid md:grid-cols-[3fr_2fr] gap-x-6"
       >
         <section className="grid md:grid-cols-2 gap-x-2">
-          {img(Doc.FHC_CABLE_AT_FAT, "Drop Cable at FAT")}
-          {img(Doc.FHC_FAT_POWER_TEST, "FAT Power Test")}
-          {img(Doc.FHC_CABLE_AT_CUSTOMER, "Cable at Customer")}
-          {img(Doc.FHC_ATB_POWER_TEST, "ATB Power Test")}
-          {img(Doc.FHC_ONT_INDICATORS, "ONT Indicators")}
-          {img(Doc.FHC_ONT_NAMEPLATE, "ONT Nameplate")}
-          {img(Doc.FHC_SPEED_TEST, "Speed Test")}
-          {img(Doc.FHC_POLE, "Pole")}
+          {img(Doc.FHC_CABLE_AT_FAT, m.fhc_cable_at_fat())}
+          {img(Doc.FHC_FAT_POWER_TEST, m.fhc_fat_power_test())}
+          {img(Doc.FHC_CABLE_AT_CUSTOMER, m.fhc_cable_at_customer())}
+          {img(Doc.FHC_ATB_POWER_TEST, m.fhc_atb_power_test())}
+          {img(Doc.FHC_ONT_INDICATORS, m.fhc_ont_indicators())}
+          {img(Doc.FHC_ONT_NAMEPLATE, m.fhc_ont_nameplate())}
+          {img(Doc.FHC_SPEED_TEST, m.fhc_speed_test())}
+          {img(Doc.FHC_POLE, m.fhc_pole())}
         </section>
 
         <section className="flex flex-col">
@@ -195,38 +193,47 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
         </section>
       </section>
 
-      <section id="submit-part-1" className={twMerge(!onCost && "hidden")}>
-        <DataTable
-          data={pricebookQ.data}
-          smallerText
-          cellClassName="my-0! py-0!"
-          columns={[
-            {
-              key: "ref",
-              title: "Ref",
-              render: (p) => p.ref,
-              width: 120,
-            },
-            {
-              key: "quantity",
-              title: m.qty(),
-              render: ({ ref }) => (
-                <Form.Item name={["quantities", ref]} noStyle>
-                  <PbQtyInput />
-                </Form.Item>
-              ),
-              className: "flex! items-center!",
-              width: 120,
-            },
-            {
-              key: "name",
-              title: m.name(),
-              render: (p) => <FhcPbNameView item={p} />,
-              width: 500,
-            },
-          ]}
-        />
-      </section>
+      {usesPb && (
+        <section id="submit-part-1">
+          <DataTable
+            data={reorderedPb}
+            smallerText
+            cellClassName="my-0! py-0!"
+            columns={[
+              {
+                key: "ref",
+                title: "Ref",
+                render: (p) => p.ref,
+                width: 150,
+              },
+              {
+                key: "quantity",
+                title: (
+                  <div className="w-full flex justify-between items-center">
+                    {m.qty()}
+                    <button type="button">
+                      <SortDesc size={16} onClick={togglePbSort} />
+                    </button>
+                  </div>
+                ),
+                render: ({ ref }) => (
+                  <Form.Item name={["quantities", ref]} noStyle>
+                    <PbQtyInput />
+                  </Form.Item>
+                ),
+                className: "flex! items-center!",
+                width: 100,
+              },
+              {
+                key: "name",
+                title: m.name(),
+                render: (p) => <FhcPbNameView item={p} />,
+                width: 400,
+              },
+            ]}
+          />
+        </section>
+      )}
     </FormModal>
   );
 }
