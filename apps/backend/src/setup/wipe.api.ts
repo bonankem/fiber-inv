@@ -4,7 +4,7 @@ import { bad, Err } from "schema/errors";
 import { zFormObject } from "schema/utils";
 import z from "zod";
 import { prisma } from "#/db";
-import { appEnv } from "#/env";
+import { appEnv, isDev } from "#/env";
 import { postRoute } from "#/utils/routing";
 import { Allow } from "../auth/guard";
 import { filterTruthy } from "../utils/queries";
@@ -14,7 +14,7 @@ const wipeQueryZ = zFormObject("ResetT", {
   what: z.string(),
   when: z.string(),
   key: z.string(),
-}).nullable();
+});
 
 export const wipeApi = postRoute({
   url: "/setup/wipe",
@@ -31,8 +31,6 @@ type DelName = {
 }[keyof PrismaClient];
 
 async function wipeDb(q: WipeQueryT) {
-  if (!q?.commit) return { commit: false };
-
   const key = appEnv.WIPE_KEY;
   if (!key) bad(Err.ACCESS_DENIED, "WIPE_KEY is not set");
   if (q.key !== key) bad(Err.ACCESS_DENIED, "Wrong key");
@@ -69,8 +67,17 @@ async function wipeDb(q: WipeQueryT) {
     user && "authLog",
   ]);
 
-  const results = await p.$transaction(
+  if (!q.commit) {
+    return { commit: false, tables };
+  }
+
+  if (!isDev && !appEnv.WIPE_ALLOWED_IN_PROD) {
+    bad(Err.ACCESS_DENIED);
+  }
+
+  const done = await p.$transaction(
     tables.map((t) => (p[t] as Deletable).deleteMany()),
   );
-  return Object.fromEntries(results.map((r, i) => [tables[i], r.count]));
+  const results = Object.fromEntries(done.map((r, i) => [tables[i], r.count]));
+  return { commit: true, results };
 }

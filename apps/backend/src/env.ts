@@ -19,7 +19,9 @@ const schema = z.object({
   JWT_SECRET: z.string().optional(),
   CRYPTO_KEY: z.string().optional(),
   TURNSTILE_SECRET: z.string().optional(),
+
   WIPE_KEY: z.string().optional(),
+  WIPE_ALLOWED_IN_PROD: z.preprocess(isTrue, z.boolean()).optional(),
 
   DATABASE_URL: z.url({ protocol: /postgres/, error: "Invalid URL" }),
   DB_SSL: z.preprocess(isTrue, z.boolean()),
