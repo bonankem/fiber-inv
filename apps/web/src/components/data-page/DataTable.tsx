@@ -8,7 +8,7 @@ export default function DataTable<T extends { id: string } | { tn: string }>(
   props: DataTableProps<T>,
 ) {
   const { columns, scrollX, maxHeight } = useResolvedColumns(props);
-  const hasFooter = props.onExport;
+  const hasFooter = props.footer || props.onExport;
   const textClass = props.smallerText ? "text-xs!" : "text-sm!";
 
   return (
@@ -41,6 +41,7 @@ export default function DataTable<T extends { id: string } | { tn: string }>(
           ? () => (
               <footer className="flex items-center justify-between">
                 <div>
+                  {props.footer && <div>{props.footer}</div>}
                   {props.onExport && <ExportButton onClick={props.onExport} />}
                 </div>
 

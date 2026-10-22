@@ -10,17 +10,18 @@ import FhcDetailsTab from "./FhcDetailsTab";
 import FhcImagesTab from "./FhcImagesTab";
 import FhcQuantitiesTab from "./FhcQuantitiesTab";
 
-const hasImages: WorkStatus[] = [
-  WorkStatus.REVIEW,
-  WorkStatus.FAILED_REVIEW,
-  WorkStatus.CLOSED,
+const noImages: WorkStatus[] = [
+  WorkStatus.SURVEY,
+  WorkStatus.BUILDING_CABLING,
+  WorkStatus.DESATURATION,
+  WorkStatus.INSTALLATION,
 ];
 
 export default function FhcDetailsModal({ item, state }: FhcFormProps) {
   const costQ = useApiGet(["fhc", item.id, "cost"], fhcCostZ);
   const cost = costQ.data;
   const status = item.work.status;
-  const hasImg = hasImages.includes(status);
+  const hasImg = !noImages.includes(status);
 
   return (
     <Modal

@@ -34,6 +34,7 @@ export type DataTableProps<T> = {
   modal?: ModalItemFC<T>;
   bordered?: boolean;
   multiLine?: boolean;
+  footer?: ReactNode;
 
   virtual?: boolean;
   smallerText?: boolean;

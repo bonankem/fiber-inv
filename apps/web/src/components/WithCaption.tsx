@@ -8,6 +8,7 @@ type Props = {
   caption?: ReactNode | Maybe<string>[];
   smallCaption?: boolean;
   titleClass?: string;
+  className?: string;
 };
 
 function captionNode(props: Props) {
@@ -29,7 +30,7 @@ function captionNode(props: Props) {
 
 export default function WithCaption(props: Props) {
   return (
-    <div>
+    <div className={props.className}>
       <div className={props.titleClass}>{props.title}</div>
       {props.caption && (
         <div

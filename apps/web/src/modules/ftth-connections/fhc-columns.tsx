@@ -50,6 +50,9 @@ export const fhcColumns: FhcColumn[] = [
           INSTALLATION: "VENDOR",
           REVIEW: "HOME_INTERNET",
           FAILED_REVIEW: "VENDOR",
+          CONFIGURATION: "HOME_INTERNET",
+          FIELD_ATP: "HOME_INTERNET",
+          FAILED_FIELD_ATP: "VENDOR",
         }}
       />
     ),

@@ -1,48 +1,26 @@
-import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, InputNumber, message, Select, Space } from "antd";
+import { Form, Input, message, Select } from "antd";
 import { m } from "i18n/messages";
-import { SortDesc } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { indexBy, isShallowEqual, partition } from "remeda";
+import { useEffect, useMemo } from "react";
+import { indexBy } from "remeda";
 import { WorkDocType as Doc, FhcCostCategory, FhcMode } from "schema/enums";
 import {
   type FhcSubmitT,
   type FtthConnectionT,
   fhcCostCategoryOf,
-  fhcPbItemZ,
 } from "schema/fhc";
 import { fatZ } from "schema/network";
 import { filterTruthy } from "schema/utils";
 import { workDocZ } from "schema/work";
 import { apiCall, showAppError, useApiGet, useApiPost } from "#/api/helpers";
-import DataTable from "#/components/data-page/DataTable";
 import FormModal from "#/components/FormModal";
 import ImageUpload from "#/components/inputs/ImageUpload";
 import IntInput from "#/components/inputs/IntInput";
 import { req } from "#/utils/form";
-import FhcPbNameView from "../components/FchPbNameView";
 import { type FhcFormProps, fhcModeSelect, yesNoSelect } from "../fhc-types";
+import FhcPbInput from "./FhcPbInput";
 
 export default function FhcSubmitForm({ item, state }: FhcFormProps) {
   const [form] = Form.useForm<FhcSubmitT>();
-
-  const pricebookQ = useApiGet("/fhc/pricebook", fhcPbItemZ.array());
-  const [topItems, setTopItems] = useState<string[]>([]);
-
-  const reorderedPb = useMemo(() => {
-    const list = pricebookQ.data ?? [];
-    if (!topItems?.length) return list;
-
-    const [head, tail] = partition(list, (item) => topItems.includes(item.ref));
-    return [...head, ...tail];
-  }, [pricebookQ.data, topItems]);
-
-  const togglePbSort = () => {
-    const qs = form.getFieldValue("quantities");
-    if (!qs) return;
-    const newTop = Object.keys(qs).filter((k) => qs[k]);
-    setTopItems((top) => (isShallowEqual(top, newTop) ? [] : newTop));
-  };
 
   const fatQ = useApiGet("/network/fat", fatZ.array());
   const send = useApiPost<FhcSubmitT, FtthConnectionT>("/fhc/submit");
@@ -194,79 +172,10 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
       </section>
 
       {usesPb && (
-        <section id="submit-part-1">
-          <DataTable
-            data={reorderedPb}
-            smallerText
-            cellClassName="my-0! py-0!"
-            columns={[
-              {
-                key: "ref",
-                title: "Ref",
-                render: (p) => p.ref,
-                width: 150,
-              },
-              {
-                key: "quantity",
-                title: (
-                  <div className="w-full flex justify-between items-center">
-                    {m.qty()}
-                    <button type="button">
-                      <SortDesc size={16} onClick={togglePbSort} />
-                    </button>
-                  </div>
-                ),
-                render: ({ ref }) => (
-                  <Form.Item name={["quantities", ref]} noStyle>
-                    <PbQtyInput />
-                  </Form.Item>
-                ),
-                className: "flex! items-center!",
-                width: 100,
-              },
-              {
-                key: "name",
-                title: m.name(),
-                render: (p) => <FhcPbNameView item={p} />,
-                width: 400,
-              },
-            ]}
-          />
-        </section>
+        <Form.Item name="quantities" label={m.quantities()}>
+          <FhcPbInput />
+        </Form.Item>
       )}
     </FormModal>
-  );
-}
-
-function PbQtyInput(props: {
-  value?: number | null;
-  onChange?: (value: number | null) => void;
-}) {
-  return (
-    <Space.Compact>
-      <Button
-        className="h-6! *:text-xs!"
-        size="small"
-        tabIndex={-1}
-        onClick={() => props.onChange?.(props.value ? null : 1)}
-        icon={
-          props.value ? (
-            <CloseOutlined className="text-red-700!" />
-          ) : (
-            <PlusOutlined />
-          )
-        }
-      />
-      <InputNumber
-        controls={false}
-        value={props.value}
-        onChange={props.onChange}
-        className="text-xs! h-6!"
-        classNames={{ input: "text-right! pr-3!" }}
-        size="small"
-        min={0}
-        precision={0}
-      />
-    </Space.Compact>
   );
 }
