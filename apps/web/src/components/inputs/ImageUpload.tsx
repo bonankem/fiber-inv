@@ -72,7 +72,7 @@ export default function ImageUpload<T extends WorkDocType>({
 
   return (
     <Spin spinning={sending}>
-      <div className="group relative block w-full min-w-30 h-20!">
+      <div className="group relative block w-full min-w-30 h-18!">
         {url ? (
           <a
             href={url}

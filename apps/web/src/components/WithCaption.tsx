@@ -35,11 +35,13 @@ export default function WithCaption(props: Props) {
       {props.caption && (
         <div
           className={twJoin(
-            "text-yellow-600 leading-tight",
+            "text-yellow-600 leading-tight flex",
             props.smallCaption && "text-sm",
           )}
         >
-          {captionNode(props)}
+          <div className="w-0 overflow-hidden text-ellipsis grow">
+            {captionNode(props)}
+          </div>
         </div>
       )}
     </div>

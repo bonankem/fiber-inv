@@ -14,9 +14,11 @@ import {
   FhcCostCategory,
   type Prisma,
   prisma,
+  StaffRole,
   WorkAction,
   WorkStatus,
 } from "#/db";
+import { sendMail, toMtn } from "#/mail/send";
 import { maybeConnect, maybeIdOrKey } from "#/utils/ids";
 import { postRoute } from "#/utils/routing";
 import { updateWork } from "#/utils/work";
@@ -67,7 +69,7 @@ async function fhcSubmit(dto: FhcSubmitT, from: UserFullT) {
     bad(Err.PRICE_BOOK_NOT_APPLICABLE);
   }
 
-  return prisma.ftthConnection.update({
+  const result = await prisma.ftthConnection.update({
     select: ftthConnectionS,
     where: { id: workId },
     data: {
@@ -99,6 +101,19 @@ async function fhcSubmit(dto: FhcSubmitT, from: UserFullT) {
       }),
     },
   });
+
+  sendMail({
+    to: [toMtn(StaffRole.HOME_INTERNET), from.email],
+    subject: `Installation HC effectuée`,
+    body: [`L'installation HC a été effectuée pour la TN ${result.tn}`],
+    button: "/ftth-connections",
+    fields: [
+      ["TN", result.tn],
+      ["Nom", result.work.name],
+      ["Localité", result.work.locality?.name],
+    ],
+  });
+  return result;
 }
 
 type Where = Prisma.FtthConnectionWhereUniqueInput;

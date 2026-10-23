@@ -19,7 +19,7 @@ import { initSyslogServer } from "./admin/adm-syslog.api";
 import api from "./api";
 import { appEnv, corsOrigin } from "./env";
 import { appErrorHandler } from "./error";
-import { verifyMail } from "./mail";
+import { verifyMail } from "./mail/transport";
 import { appSocket } from "./socket";
 
 const app = fastify({

@@ -30,9 +30,9 @@ function getDefaultAccept(type: WorkDocType) {
   const accept = defaultAccept[type];
   if (accept) return accept;
 
-  if (/KMZ/.test(type)) return ".kml,.kmz";
+  if (/KMZ/.test(type)) return ".kml,.kmz,.rar,.zip";
   if (/EXCEL|TABLE/.test(type)) return ".xlsx,.xls";
-  if (/DIAGRAM/.test(type)) return ".dwg,.pdf";
+  if (/DIAGRAM/.test(type)) return ".dwg,.pdf,.rar,.zip";
   return undefined;
 }
 

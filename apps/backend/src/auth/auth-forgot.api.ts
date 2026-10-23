@@ -6,7 +6,7 @@ import { bad, Err } from "schema/errors";
 import type { Maybe } from "schema/utils";
 import { prisma } from "#/db";
 import { appEnv, isDev } from "#/env";
-import { sendMail } from "#/mail";
+import { sendMail } from "#/mail/send";
 import { type AppLog, postRoute, type RequestWith } from "#/utils/routing";
 
 export const forgotApi = postRoute({
@@ -55,7 +55,7 @@ async function forgot(req: RequestWith<AuthForgotReqT>, log: AppLog) {
   sendMail({
     to: [email],
     subject: "Reset your password",
-    lines: ["Click the button below to reset your ServiceX password."],
+    body: ["Click the button below to reset your ServiceX password."],
     button: ["Reset Password", `/reset/${code}`],
   });
 

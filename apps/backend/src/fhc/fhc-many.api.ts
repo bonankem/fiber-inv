@@ -1,8 +1,10 @@
 import { randomUUID } from "node:crypto";
-import { uniqueBy } from "remeda";
+import { groupBy, uniqueBy } from "remeda";
 import { type FhcRequestManyT, fhcRequestManyZ } from "schema/fhc";
 import type { UserFullT } from "schema/people";
-import { prisma, WorkAction, WorkStatus } from "#/db";
+import { workP } from "schema/work";
+import { prisma, StaffRole, WorkAction, WorkStatus } from "#/db";
+import { sendMail, toMtn, toVendor } from "#/mail/send";
 import { createCoords, getCoordsId, makeKey, nextIds } from "#/utils/queries";
 import { postRoute } from "#/utils/routing";
 
@@ -59,6 +61,28 @@ async function fhcRequestMany({ items }: FhcRequestManyT, from: UserFullT) {
       })),
     });
     await Promise.all([addCoords, addWork, addFhc, addLogs]);
+  });
+
+  const done = await prisma.ftthConnection.findMany({
+    where: { tn: { in: items.map((i) => i.tn) } },
+    select: { tn: true, work: workP },
+  });
+
+  const byVendor = Object.values(groupBy(done, (r) => r.work.vendor?.id));
+
+  byVendor.map((jobs) => {
+    const n = jobs.length;
+    const vendor = jobs[0].work.vendor;
+    return sendMail({
+      to: [toMtn(StaffRole.HOME_INTERNET), toVendor(vendor?.id)],
+      subject: `Nouvelles demandes HC`,
+      body: [`${n} demandes HC ont été envoyées à ${vendor?.name}.`],
+      fields: jobs.map((j) => [
+        j.tn,
+        `${j.work.name} (${j.work.locality?.name ?? "-"})`,
+      ]),
+      button: "/ftth-connections",
+    });
   });
 
   return { success: true };

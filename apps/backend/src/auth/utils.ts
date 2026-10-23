@@ -16,7 +16,7 @@ import z from "zod";
 import { authLog } from "#/admin/adm-syslog.api";
 import { AuthAction, MfaMode, OtpReason, type Prisma, prisma } from "#/db";
 import { isDev } from "#/env";
-import { sendMail } from "#/mail";
+import { sendMail } from "#/mail/send";
 import { newUuid } from "#/utils/ids";
 import type { AnyRequest, App } from "#/utils/routing";
 import { decrypt, encrypt } from "../utils/encryption";
@@ -57,7 +57,7 @@ export function sendUserOtp(user: OtpUserT, mode: MfaMode, otp: string) {
     sendMail({
       to: [user.email],
       subject: "Verify OTP",
-      lines: [`Your OTP is ${otp}`],
+      body: [`Your OTP is ${otp}`],
     });
   }
 }

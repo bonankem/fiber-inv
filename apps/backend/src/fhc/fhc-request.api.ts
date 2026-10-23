@@ -1,6 +1,7 @@
 import { type FhcRequestT, fhcRequestZ, ftthConnectionS } from "schema/fhc";
 import type { UserFullT } from "schema/people";
-import { prisma, WorkAction, WorkStatus } from "#/db";
+import { prisma, StaffRole, WorkAction, WorkStatus } from "#/db";
+import { sendMail, toMtn, toVendor } from "#/mail/send";
 import { connectId, maybeIdOrKey } from "#/utils/ids";
 import { addLog, create, makeKey, nextId, setCoords } from "#/utils/queries";
 import { postRoute } from "#/utils/routing";
@@ -15,7 +16,7 @@ async function fhcRequest(dto: FhcRequestT, from: UserFullT) {
   const status = WorkStatus.SURVEY;
   const action = WorkAction.REQUEST;
 
-  return prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx) => {
     const { sid, requestDate } = await nextId(tx, "FHC");
     return tx.ftthConnection.create({
       select: ftthConnectionS,
@@ -40,4 +41,18 @@ async function fhcRequest(dto: FhcRequestT, from: UserFullT) {
       },
     });
   });
+
+  const vendor = result.work.vendor;
+  sendMail({
+    to: [toMtn(StaffRole.HOME_INTERNET), toVendor(vendor)],
+    subject: `Nouvelle demande HC: ${dto.tn}`,
+    body: [`Une nouvelle demande HC a été soumise à ${vendor?.name}`],
+    button: "/ftth-connections",
+    fields: [
+      ["TN", result.tn],
+      ["Nom", result.work.name],
+      ["Localité", result.work.locality?.name],
+    ],
+  });
+  return result;
 }

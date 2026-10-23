@@ -98,7 +98,7 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
     <FormModal
       form={form}
       state={state}
-      width={800}
+      width={720}
       title={m.fhc_form_submit()}
       subtitle={`${item.tn}: ${item.work.name}`}
       onSubmit={onSubmit}
@@ -115,13 +115,21 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
           {img(Doc.FHC_FAT_POWER_TEST, m.fhc_fat_power_test())}
           {img(Doc.FHC_CABLE_AT_CUSTOMER, m.fhc_cable_at_customer())}
           {img(Doc.FHC_ATB_POWER_TEST, m.fhc_atb_power_test())}
-          {img(Doc.FHC_ONT_INDICATORS, m.fhc_ont_indicators())}
           {img(Doc.FHC_ONT_NAMEPLATE, m.fhc_ont_nameplate())}
+          {img(Doc.FHC_ONT_INDICATORS, m.fhc_ont_indicators())}
           {img(Doc.FHC_SPEED_TEST, m.fhc_speed_test())}
           {img(Doc.FHC_POLE, m.fhc_pole())}
         </section>
 
         <section className="flex flex-col">
+          <Form.Item name="ontSerial" label={m.ont_serial_number()} required>
+            <Input
+              required
+              minLength={8}
+              onChange={(e) => guessOem(e.target.value)}
+            />
+          </Form.Item>
+
           <Form.Item name="fatId" label={m.fat()} {...req}>
             <Select
               showSearch={{ optionFilterProp: "label" }}
@@ -129,9 +137,20 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
             />
           </Form.Item>
 
-          <Form.Item name="fatPort" label={m.fat_port()} required>
-            <IntInput required controls={false} min={1} max={8} />
-          </Form.Item>
+          <div className="grid grid-cols-2 gap-x-2">
+            <Form.Item name="fatPort" label={m.fat_port()} required>
+              <IntInput required controls={false} min={1} max={8} />
+            </Form.Item>
+
+            <Form.Item name="ontOem" label="ONT OEM" required>
+              <Select
+                options={[
+                  { value: "huawei", label: "Huawei" },
+                  { value: "zte", label: "ZTE" },
+                ]}
+              />
+            </Form.Item>
+          </div>
 
           <Form.Item name="mode" label={m.mode_of_cabling()} {...req}>
             <Select options={fhcModeSelect} />
@@ -151,23 +170,6 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
               />
             </Form.Item>
           </div>
-
-          <Form.Item name="ontSerial" label={m.ont_serial_number()} required>
-            <Input
-              required
-              minLength={8}
-              onChange={(e) => guessOem(e.target.value)}
-            />
-          </Form.Item>
-
-          <Form.Item name="ontOem" label="ONT OEM" required>
-            <Select
-              options={[
-                { value: "huawei", label: "Huawei" },
-                { value: "zte", label: "ZTE" },
-              ]}
-            />
-          </Form.Item>
         </section>
       </section>
 

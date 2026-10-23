@@ -19,18 +19,25 @@ const wipeQueryZ = zFormObject("ResetT", {
 export const wipeApi = postRoute({
   url: "/setup/wipe",
   schema: wipeQueryZ,
-  handler: (req) => wipeDb(req.body),
+  handler: (req) =>
+    wipeDb(
+      req.body,
+      (req.headers["x-forwarded-host"] as string) || req.hostname,
+    ),
   allow: Allow.PUBLIC,
 });
 
 type WipeQueryT = z.infer<typeof wipeQueryZ>;
 
-type Deletable = { deleteMany(): PrismaPromise<{ count: number }> };
+type Deletable = {
+  deleteMany(): PrismaPromise<{ count: number }>;
+  count(): PrismaPromise<number>;
+};
 type DelName = {
   [K in keyof PrismaClient]: PrismaClient[K] extends Deletable ? K : never;
 }[keyof PrismaClient];
 
-async function wipeDb(q: WipeQueryT) {
+async function wipeDb(q: WipeQueryT, url: string) {
   const key = appEnv.WIPE_KEY;
   if (!key) bad(Err.ACCESS_DENIED, "WIPE_KEY is not set");
   if (q.key !== key) bad(Err.ACCESS_DENIED, "Wrong key");
@@ -68,7 +75,11 @@ async function wipeDb(q: WipeQueryT) {
   ]);
 
   if (!q.commit) {
-    return { commit: false, tables };
+    const counts = await Promise.all(
+      tables.map((t) => (p[t] as Deletable).count()),
+    );
+    const todo = Object.fromEntries(counts.map((c, i) => [tables[i], c]));
+    return { commit: false, url, todo };
   }
 
   if (!isDev && !appEnv.WIPE_ALLOWED_IN_PROD) {
@@ -79,5 +90,5 @@ async function wipeDb(q: WipeQueryT) {
     tables.map((t) => (p[t] as Deletable).deleteMany()),
   );
   const results = Object.fromEntries(done.map((r, i) => [tables[i], r.count]));
-  return { commit: true, results };
+  return { commit: true, url, results };
 }

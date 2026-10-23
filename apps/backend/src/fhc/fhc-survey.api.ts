@@ -1,10 +1,11 @@
-import { WorkAction } from "schema/enums";
+import { StaffRole, WorkAction } from "schema/enums";
 import { bad, Err } from "schema/errors";
 import { type FhcSurveyT, fhcSurveyZ, ftthConnectionS } from "schema/fhc";
 import type { UserT } from "schema/people";
 import { workFullP } from "schema/work";
 import { prisma } from "#/db";
 import { postRoute } from "#/utils/routing";
+import { sendMail, toMtn } from "../mail/send";
 import { updateWork } from "../utils/work";
 
 export const fhcSurveyApi = postRoute({
@@ -21,7 +22,7 @@ async function fhcSurvey(dto: FhcSurveyT, from: UserT) {
   });
   if (!fhc) bad(Err.NOT_FOUND);
 
-  return prisma.ftthConnection.update({
+  const result = await prisma.ftthConnection.update({
     select: ftthConnectionS,
     where: { id },
     data: {
@@ -37,4 +38,17 @@ async function fhcSurvey(dto: FhcSurveyT, from: UserT) {
       }),
     },
   });
+
+  sendMail({
+    to: [toMtn(StaffRole.HOME_INTERNET), from.email],
+    subject: `Étude HC terminée`,
+    body: [`L'étude HC a été réalisée pour la TN ${result.tn}`],
+    button: "/ftth-connections",
+    fields: [
+      ["TN", result.tn],
+      ["Nom", result.work.name],
+      ["Localité", result.work.locality?.name],
+    ],
+  });
+  return result;
 }

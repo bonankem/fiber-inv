@@ -5,7 +5,7 @@ import { userS, type VendorBulkT, vendorBulkZ } from "schema/people";
 import { authLog } from "#/admin/adm-syslog.api";
 import { Allow } from "#/auth/guard";
 import { AuthAction, prisma } from "#/db";
-import { sendMail } from "#/mail";
+import { sendMail } from "#/mail/send";
 import { makeKey } from "#/utils/queries";
 import { postRoute, type RequestWith } from "#/utils/routing";
 
@@ -69,7 +69,7 @@ async function createVendorBulk(req: RequestWith<VendorBulkT>) {
     sendMail({
       subject: "Welcome to ServiceX",
       to: [user.email],
-      lines: [
+      body: [
         "Un compte a été créé pour vous sur MTN CI ServiceX.",
         "Vos identifiants de connexion sont indiqués ci-dessous. Vous devrez changer votre mot de passe après vous être connecté.",
         "-",

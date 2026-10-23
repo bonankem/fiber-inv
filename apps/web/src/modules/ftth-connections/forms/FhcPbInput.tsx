@@ -98,10 +98,9 @@ export default function FhcPbInput(props: Props) {
         footer={
           <div className="flex gap-2">
             <Select
-              size="small"
-              className="w-70! h-6!"
-              popupMatchSelectWidth={false}
+              className="w-80!"
               placement="topLeft"
+              popupMatchSelectWidth={false}
               placeholder={m.select_from_price_book()}
               value={null as string | null}
               onChange={(ref) => {
@@ -132,9 +131,7 @@ export default function FhcPbInput(props: Props) {
             />
 
             <Tooltip title={m.pricebook_paste_hint()}>
-              <Button className="text-xs! h-6!" onClick={onClickPastePb}>
-                {m.paste_from_excel()}
-              </Button>
+              <Button onClick={onClickPastePb}>{m.paste_from_excel()}</Button>
             </Tooltip>
           </div>
         }
@@ -152,7 +149,7 @@ function parseText(text: string, data: Maybe<FhcPbItemT[]>) {
   const re = /^PB_DROP_FTTX_\d+$/;
   const first = table.find((row) => row.some((cell) => re.test(cell)));
   if (!first) {
-    showAppError("No items found in pasted text");
+    showAppError(m.no_items_in_paste());
     return null;
   }
 
