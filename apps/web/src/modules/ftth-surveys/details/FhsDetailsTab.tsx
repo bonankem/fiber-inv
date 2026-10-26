@@ -78,6 +78,7 @@ export default function FhsDetailsTab(props: FhsTabProps) {
           doc(WorkDocType.FHS_SYNOPTIC_TABLE, m.field_synoptic_table()),
           doc(WorkDocType.FHS_SYNOPTIC_DIAGRAM, m.field_synoptic_diag()),
           doc(WorkDocType.FHS_PLAN_DIAGRAM, m.plan_diag()),
+          doc(WorkDocType.FHS_BOM, m.bom()),
         ]}
       />
     </div>
