@@ -14,9 +14,13 @@ import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as UserRouteRouteImport } from './routes/_user/route'
 import { Route as AuthForgotRouteImport } from './routes/_auth/forgot'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
+import { Route as UserEmrfRouteImport } from './routes/_user/emrf'
+import { Route as UserFiberRouteImport } from './routes/_user/fiber'
+import { Route as UserFiberInventoryRouteImport } from './routes/_user/fiber-inventory'
 import { Route as UserFtthConnectionsRouteImport } from './routes/_user/ftth-connections'
 import { Route as UserFtthProjectsRouteImport } from './routes/_user/ftth-projects'
 import { Route as UserFtthSurveysRouteImport } from './routes/_user/ftth-surveys'
+import { Route as UserInventoryRouteImport } from './routes/_user/inventory'
 import { Route as UserOverviewRouteImport } from './routes/_user/overview'
 import { Route as UserSecurityRouteImport } from './routes/_user/security'
 import { Route as UserStaffRouteImport } from './routes/_user/staff'
@@ -46,6 +50,21 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const UserEmrfRoute = UserEmrfRouteImport.update({
+  id: '/emrf',
+  path: '/emrf',
+  getParentRoute: () => UserRouteRoute,
+} as any)
+const UserFiberRoute = UserFiberRouteImport.update({
+  id: '/fiber',
+  path: '/fiber',
+  getParentRoute: () => UserRouteRoute,
+} as any)
+const UserFiberInventoryRoute = UserFiberInventoryRouteImport.update({
+  id: '/fiber-inventory',
+  path: '/fiber-inventory',
+  getParentRoute: () => UserRouteRoute,
+} as any)
 const UserFtthConnectionsRoute = UserFtthConnectionsRouteImport.update({
   id: '/ftth-connections',
   path: '/ftth-connections',
@@ -59,6 +78,11 @@ const UserFtthProjectsRoute = UserFtthProjectsRouteImport.update({
 const UserFtthSurveysRoute = UserFtthSurveysRouteImport.update({
   id: '/ftth-surveys',
   path: '/ftth-surveys',
+  getParentRoute: () => UserRouteRoute,
+} as any)
+const UserInventoryRoute = UserInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
   getParentRoute: () => UserRouteRoute,
 } as any)
 const UserOverviewRoute = UserOverviewRouteImport.update({
@@ -91,9 +115,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/forgot': typeof AuthForgotRoute
   '/login': typeof AuthLoginRoute
+  '/emrf': typeof UserEmrfRoute
+  '/fiber': typeof UserFiberRoute
+  '/fiber-inventory': typeof UserFiberInventoryRoute
   '/ftth-connections': typeof UserFtthConnectionsRoute
   '/ftth-projects': typeof UserFtthProjectsRoute
   '/ftth-surveys': typeof UserFtthSurveysRoute
+  '/inventory': typeof UserInventoryRoute
   '/overview': typeof UserOverviewRoute
   '/security': typeof UserSecurityRoute
   '/staff': typeof UserStaffRoute
@@ -104,9 +132,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/forgot': typeof AuthForgotRoute
   '/login': typeof AuthLoginRoute
+  '/emrf': typeof UserEmrfRoute
+  '/fiber': typeof UserFiberRoute
+  '/fiber-inventory': typeof UserFiberInventoryRoute
   '/ftth-connections': typeof UserFtthConnectionsRoute
   '/ftth-projects': typeof UserFtthProjectsRoute
   '/ftth-surveys': typeof UserFtthSurveysRoute
+  '/inventory': typeof UserInventoryRoute
   '/overview': typeof UserOverviewRoute
   '/security': typeof UserSecurityRoute
   '/staff': typeof UserStaffRoute
@@ -120,9 +152,13 @@ export interface FileRoutesById {
   '/_user': typeof UserRouteRouteWithChildren
   '/_auth/forgot': typeof AuthForgotRoute
   '/_auth/login': typeof AuthLoginRoute
+  '/_user/emrf': typeof UserEmrfRoute
+  '/_user/fiber': typeof UserFiberRoute
+  '/_user/fiber-inventory': typeof UserFiberInventoryRoute
   '/_user/ftth-connections': typeof UserFtthConnectionsRoute
   '/_user/ftth-projects': typeof UserFtthProjectsRoute
   '/_user/ftth-surveys': typeof UserFtthSurveysRoute
+  '/_user/inventory': typeof UserInventoryRoute
   '/_user/overview': typeof UserOverviewRoute
   '/_user/security': typeof UserSecurityRoute
   '/_user/staff': typeof UserStaffRoute
@@ -135,9 +171,13 @@ export interface FileRouteTypes {
     | '/'
     | '/forgot'
     | '/login'
+    | '/emrf'
+    | '/fiber'
+    | '/fiber-inventory'
     | '/ftth-connections'
     | '/ftth-projects'
     | '/ftth-surveys'
+    | '/inventory'
     | '/overview'
     | '/security'
     | '/staff'
@@ -148,9 +188,13 @@ export interface FileRouteTypes {
     | '/'
     | '/forgot'
     | '/login'
+    | '/emrf'
+    | '/fiber'
+    | '/fiber-inventory'
     | '/ftth-connections'
     | '/ftth-projects'
     | '/ftth-surveys'
+    | '/inventory'
     | '/overview'
     | '/security'
     | '/staff'
@@ -163,9 +207,13 @@ export interface FileRouteTypes {
     | '/_user'
     | '/_auth/forgot'
     | '/_auth/login'
+    | '/_user/emrf'
+    | '/_user/fiber'
+    | '/_user/fiber-inventory'
     | '/_user/ftth-connections'
     | '/_user/ftth-projects'
     | '/_user/ftth-surveys'
+    | '/_user/inventory'
     | '/_user/overview'
     | '/_user/security'
     | '/_user/staff'
@@ -216,6 +264,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_user/emrf': {
+      id: '/_user/emrf'
+      path: '/emrf'
+      fullPath: '/emrf'
+      preLoaderRoute: typeof UserEmrfRouteImport
+      parentRoute: typeof UserRouteRoute
+    }
+    '/_user/fiber': {
+      id: '/_user/fiber'
+      path: '/fiber'
+      fullPath: '/fiber'
+      preLoaderRoute: typeof UserFiberRouteImport
+      parentRoute: typeof UserRouteRoute
+    }
+    '/_user/fiber-inventory': {
+      id: '/_user/fiber-inventory'
+      path: '/fiber-inventory'
+      fullPath: '/fiber-inventory'
+      preLoaderRoute: typeof UserFiberInventoryRouteImport
+      parentRoute: typeof UserRouteRoute
+    }
     '/_user/ftth-connections': {
       id: '/_user/ftth-connections'
       path: '/ftth-connections'
@@ -235,6 +304,13 @@ declare module '@tanstack/react-router' {
       path: '/ftth-surveys'
       fullPath: '/ftth-surveys'
       preLoaderRoute: typeof UserFtthSurveysRouteImport
+      parentRoute: typeof UserRouteRoute
+    }
+    '/_user/inventory': {
+      id: '/_user/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof UserInventoryRouteImport
       parentRoute: typeof UserRouteRoute
     }
     '/_user/overview': {
@@ -292,9 +368,13 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 )
 
 interface UserRouteRouteChildren {
+  UserEmrfRoute: typeof UserEmrfRoute
+  UserFiberRoute: typeof UserFiberRoute
+  UserFiberInventoryRoute: typeof UserFiberInventoryRoute
   UserFtthConnectionsRoute: typeof UserFtthConnectionsRoute
   UserFtthProjectsRoute: typeof UserFtthProjectsRoute
   UserFtthSurveysRoute: typeof UserFtthSurveysRoute
+  UserInventoryRoute: typeof UserInventoryRoute
   UserOverviewRoute: typeof UserOverviewRoute
   UserSecurityRoute: typeof UserSecurityRoute
   UserStaffRoute: typeof UserStaffRoute
@@ -302,9 +382,13 @@ interface UserRouteRouteChildren {
 }
 
 const UserRouteRouteChildren: UserRouteRouteChildren = {
+  UserEmrfRoute: UserEmrfRoute,
+  UserFiberRoute: UserFiberRoute,
+  UserFiberInventoryRoute: UserFiberInventoryRoute,
   UserFtthConnectionsRoute: UserFtthConnectionsRoute,
   UserFtthProjectsRoute: UserFtthProjectsRoute,
   UserFtthSurveysRoute: UserFtthSurveysRoute,
+  UserInventoryRoute: UserInventoryRoute,
   UserOverviewRoute: UserOverviewRoute,
   UserSecurityRoute: UserSecurityRoute,
   UserStaffRoute: UserStaffRoute,

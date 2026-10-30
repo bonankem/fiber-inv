@@ -1,3 +1,5 @@
+import { unique } from "remeda";
+import { bad, Err } from "schema/errors";
 import { type FhsSubmitBomT, fhsSubmitBomZ, ftthSurveyS } from "schema/fhs";
 import type { UserT } from "schema/people";
 import { prisma, WorkAction, WorkStatus } from "#/db";
@@ -12,14 +14,25 @@ export const fhsSubmitBomApi = postRoute({
 });
 
 async function fhsSubmitBom(dto: FhsSubmitBomT, user: UserT) {
-  const { id, FHS_BOM } = dto;
+  const { id, items, FHS_BOM } = dto;
   const { s } = await fhsCheck({
     workId: id,
     status: [WorkStatus.BOM, WorkStatus.BOM_REJECTED],
   });
+
+  const eqIds = unique(items.map((item) => item.equipmentId));
+  if (eqIds.length !== items.length) bad(Err.DUPLICATE_ENTRY, "BOM");
+
+  const found = await prisma.equipment.count({ where: { id: { in: eqIds } } });
+  if (found !== eqIds.length) bad(Err.NOT_FOUND, "Equipment");
+
   return prisma.ftthSurvey.update({
     where: { id },
     data: {
+      bom: {
+        deleteMany: {},
+        create: items.map((item, position) => ({ ...item, position })),
+      },
       work: updateWork({
         dto,
         work: s.work,

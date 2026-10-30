@@ -6,19 +6,25 @@ model Equipment {
 
     name String
 
-    description String
+    description String?
 
     mtnCode String @unique
 
-    ifsCode String
+    ifsCode String?
 
-    partNumber String
+    partNumber String?
+
+    manufacturer String?
+
+    tag String?
 
     available Int @default(0)
 
-    dateSynced String
+    dateSynced String?
 
     emrfItems EmrfItem[]
+
+    fhsBomItems FhsBomItem[]
 }
 
 model Emrf {
@@ -29,9 +35,34 @@ model Emrf {
 
     status EmrfStatus
 
+    // the closed HP Planning job the materials are for; the API requires it,
+    // but older requests made before this link existed have none
+    survey   FtthSurvey? @relation(fields: [surveyId], references: [id])
+    surveyId String?     @db.Uuid
+
     items EmrfItem[]
 
     orderNumber String?
+
+    logs EmrfLog[]
+
+    // approved by either the Planning Manager or the Project Manager
+
+    approvedAt DateTime?
+
+    approvedBy   User?   @relation("EmrfApproval", fields: [approvedById], references: [id])
+    approvedById String? @db.Uuid
+
+    // recorded once by the vendor, after the EMRF is ordered;
+
+    collectedAt DateTime?
+
+    collectedBy   User?   @relation("EmrfCollection", fields: [collectedById], references: [id])
+    collectedById String? @db.Uuid
+
+    collectionComment String?
+
+    ftthProjects FtthProject[]
 }
 
 model EmrfItem {
@@ -57,7 +88,53 @@ model EmrfItem {
 
 enum EmrfStatus {
     REQUESTED
+    PENDING
+    APPROVED
     ORDERED
     COLLECTED
     CANCELLED
+}
+
+enum EmrfLogAction {
+    CREATED
+    APPROVED
+    ORDERED
+    COLLECTED
+    CANCELLED
+    REVERTED
+}
+
+model EmrfLog {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+
+    emrf   Emrf   @relation(fields: [emrfId], references: [id], onDelete: Cascade)
+    emrfId String @db.Uuid
+
+    action EmrfLogAction
+
+    actor   User?   @relation("EmrfLogActor", fields: [actorId], references: [id])
+    actorId String? @db.Uuid
+
+    comment String?
+    uploads EmrfLogUpload[]
+
+    // Optional structured details about what changed during this action.
+    details Json?
+
+    @@index([emrfId, createdAt])
+    @@index([actorId])
+}
+
+model EmrfLogUpload {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    log   EmrfLog @relation(fields: [logId], references: [id], onDelete: Cascade)
+    logId String  @db.Uuid
+
+    upload   Upload @relation(fields: [uploadId], references: [id])
+    uploadId String @db.Uuid
+
+    @@unique([logId, uploadId])
 }

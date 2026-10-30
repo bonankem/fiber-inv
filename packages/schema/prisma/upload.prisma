@@ -19,6 +19,8 @@ model Upload {
     workLogs WorkLog[]
 
     workDocs WorkDoc[]
+
+    emrfLogs EmrfLogUpload[]
 }
 
 model UploadInDb {

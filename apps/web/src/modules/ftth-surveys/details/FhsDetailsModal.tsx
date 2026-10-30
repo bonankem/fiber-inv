@@ -5,6 +5,7 @@ import { filterTruthy } from "schema/utils";
 import { useApiGet } from "#/api/helpers";
 import WorkLogsTab from "../../../components/WorkLogsTab";
 import type { FhsFormProps } from "../fhs-types";
+import FhsBomTab from "./FhsBomTab";
 import FhsDetailsTab from "./FhsDetailsTab";
 import FhsQuantityTab from "./FhsQuantityTab";
 import type { FhsTabProps } from "./types";
@@ -40,6 +41,11 @@ export default function FhsDetailsModal(props: FhsFormProps) {
             key: "report",
             label: m.report(),
             children: <FhsQuantityTab {...tabProps} />,
+          },
+          !!fullQuery.data?.bom.length && {
+            key: "bom",
+            label: m.bom(),
+            children: <FhsBomTab {...tabProps} />,
           },
           {
             key: "logs",

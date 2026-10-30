@@ -4,6 +4,7 @@ enum StaffRole {
     PLANNING_MANAGER
     PROJECT_ENGINEER
     PROJECT_MANAGER
+    ORACLE_TEAM
 }
 
 enum UserLevel {
@@ -61,4 +62,12 @@ model User {
     works Worker[]
 
     workLogs WorkLog[]
+
+    // inventory
+
+    emrfLogs EmrfLog[] @relation("EmrfLogActor")
+
+    emrfApprovals Emrf[] @relation("EmrfApproval")
+
+    emrfCollections Emrf[] @relation("EmrfCollection")
 }

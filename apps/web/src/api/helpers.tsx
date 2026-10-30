@@ -9,7 +9,7 @@ function defaultApiUrl() {
   const base = `${protocol}//${hostname}`;
   const isMainPort = !port || port === "80" || port === "443";
   const isProduction = isMainPort || /^https/i.test(protocol);
-  return isProduction ? `${base}/api` : `${base}:3000`;
+  return isProduction ? `${base}/api` : `${base}:4000`;
 }
 
 export const apiBaseUrl: string = (

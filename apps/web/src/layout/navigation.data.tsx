@@ -1,6 +1,9 @@
 import { m } from "i18n/messages";
 import {
+  Boxes,
   BriefcaseBusiness,
+  Cable,
+  ClipboardList,
   Handshake,
   HousePlug,
   Lock,
@@ -42,6 +45,14 @@ export const navigationData: NavGroup[] = [
         path: "/ftth-connections",
         icon: HousePlug,
       },
+    ],
+  },
+  {
+    name: m.inventory_module(),
+    list: [
+      { name: m.fiber(), path: "/fiber-inventory", icon: Cable },
+      { name: m.inventory(), path: "/inventory", icon: Boxes },
+      { name: m.emrf(), path: "/emrf", icon: ClipboardList },
     ],
   },
   {

@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^6.3.2",
+    "@e965/xlsx": "^0.20.3",
     "@marsidev/react-turnstile": "^1.5.4",
     "@tailwindcss/vite": "^4.3.3",
     "@tanstack/react-devtools": "latest",
@@ -27,7 +28,9 @@
     "antd": "^6.5.3",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.21",
+    "fflate": "^0.8.3",
     "i18n": "workspace:*",
+    "jszip": "^3.10.2",
     "lucide-react": "^1.28.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",

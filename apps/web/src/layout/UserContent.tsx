@@ -2,6 +2,7 @@ import { Outlet } from "@tanstack/react-router";
 import { Layout } from "antd";
 import { useEffect } from "react";
 import CopyrightFooter from "#/components/CopyrightFooter";
+import { PageHeaderActionsProvider } from "./PageHeaderActions";
 import UserHeader from "./UserHeader";
 import type { UserLayoutProps } from "./useUserLayout";
 
@@ -18,13 +19,15 @@ export default function UserContent(props: UserLayoutProps) {
 
   return (
     <Layout>
-      <UserHeader {...props} />
+      <PageHeaderActionsProvider>
+        <UserHeader {...props} />
 
-      <Layout.Content>
-        <main className={props.contentClass}>
-          <Outlet />
-        </main>
-      </Layout.Content>
+        <Layout.Content>
+          <main className={props.contentClass}>
+            <Outlet />
+          </main>
+        </Layout.Content>
+      </PageHeaderActionsProvider>
 
       <Layout.Footer className="m-0! p-2! text-center">
         <CopyrightFooter />

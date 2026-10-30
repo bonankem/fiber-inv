@@ -17,8 +17,8 @@ export const equipmentZ = zObject("EquipmentT", {
   name: zStr(""),
   description: zStr("").nullable(),
   mtnCode: zStr(""),
-  ifsCode: zStr(""),
-  partNumber: zStr(""),
+  ifsCode: zStr("").nullable(),
+  partNumber: zStr("").nullable(),
   available: z.int(),
   dateSynced: zStr("").nullable(),
 } satisfies Record<keyof typeof equipmentS, object>);

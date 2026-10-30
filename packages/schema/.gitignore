@@ -1,1 +1,5 @@
 src/db/generated
+
+# build output belongs in dist/, never next to the sources
+src/**/*.js
+src/**/*.js.map

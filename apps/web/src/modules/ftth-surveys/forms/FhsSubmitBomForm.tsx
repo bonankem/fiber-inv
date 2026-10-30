@@ -1,28 +1,69 @@
 import { Form } from "antd";
 import { m } from "i18n/messages";
+import { useState } from "react";
 import { WorkDocType } from "schema/enums";
 import { type FhsSubmitBomT, ftthSurveyFullZ } from "schema/fhs";
 import { useApiGet } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
+import EquipmentLinesEditor, {
+  checkLines,
+  filledLines,
+  type LineRowT,
+  newLineRow,
+} from "#/components/inputs/EquipmentLinesEditor";
 import FormFooter from "#/components/inputs/FormFooter";
 import WorkDocInput from "#/components/inputs/WorkDocInput";
+import useOnceReady from "#/hooks/useOnceReady";
 import { type FhsFormProps, useFhsUpdate } from "../fhs-types";
 
 export default function FhsSubmitBomForm(props: FhsFormProps) {
-  const up = useFhsUpdate<FhsSubmitBomT>("fhs/bom", props, m.toast_submitted);
   const [form] = Form.useForm<FhsSubmitBomT>();
   const full = useApiGet(["fhs", props.item.id], ftthSurveyFullZ);
+  const [rows, setRows] = useState<LineRowT[]>([newLineRow()]);
+  const [showErrors, setShowErrors] = useState(false);
+
+  // after a rejection, start from the BOM that was sent before
+  useOnceReady(full.data, (full) => {
+    if (full.bom.length) {
+      setRows(full.bom.map((b) => newLineRow(b.equipment, b.quantity)));
+    }
+  });
+
+  const up = useFhsUpdate<FhsSubmitBomT>(
+    "fhs/bom",
+    props,
+    m.toast_submitted,
+    () => {
+      setShowErrors(true);
+      return checkLines(rows);
+    },
+  );
 
   return (
     <FormModal
       {...up}
       form={form}
-      width={320}
+      width={960}
       title={m.fhs_submit_bom()}
       state={props.state}
       subtitle={props.item.work.name}
+      preparing={full.isLoading}
+      onSubmit={(data) =>
+        up.onSubmit({
+          ...data,
+          items: filledLines(rows).map((l) => ({
+            equipmentId: l.item.id,
+            quantity: l.quantity,
+          })),
+        })
+      }
     >
       <WorkDocInput type={WorkDocType.FHS_BOM} label={m.bom()} old={full} />
+      <EquipmentLinesEditor
+        rows={rows}
+        onChange={setRows}
+        showErrors={showErrors}
+      />
 
       <FormFooter />
     </FormModal>

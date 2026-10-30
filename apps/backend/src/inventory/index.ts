@@ -1,0 +1,36 @@
+import { appPlugin } from "#/utils/routing";
+import { emrfApproveApi } from "./inv-emrf-approve.api";
+import { emrfAssignToApi } from "./inv-emrf-assign-to.api";
+import { emrfCancelApi } from "./inv-emrf-cancel.api";
+import { emrfCollectApi } from "./inv-emrf-collect.api";
+import { emrfCollectionApi } from "./inv-emrf-collection.api";
+import { emrfCountApi } from "./inv-emrf-count.api";
+import { emrfCreateApi } from "./inv-emrf-create.api";
+import { emrfGetApi } from "./inv-emrf-get.api";
+import { emrfJobsApi } from "./inv-emrf-jobs.api";
+import { emrfListApi } from "./inv-emrf-list.api";
+import { emrfOracleQueueApi } from "./inv-emrf-oracle-queue.api";
+import { equipmentCreateApi } from "./inv-equipment-create.api";
+import { equipmentGetApi } from "./inv-equipment-get.api";
+import { equipmentListApi } from "./inv-equipment-list.api";
+import { equipmentUpdateApi } from "./inv-equipment-update.api";
+import { stockAdjustApi } from "./inv-stock-adjust.api";
+
+export default appPlugin((app) => {
+  app.register(equipmentListApi);
+  app.register(equipmentGetApi);
+  app.register(equipmentCreateApi);
+  app.register(equipmentUpdateApi);
+  app.register(stockAdjustApi);
+  app.register(emrfCreateApi);
+  app.register(emrfListApi);
+  app.register(emrfGetApi);
+  app.register(emrfJobsApi);
+  app.register(emrfApproveApi);
+  app.register(emrfCancelApi);
+  app.register(emrfCountApi);
+  app.register(emrfOracleQueueApi);
+  app.register(emrfAssignToApi);
+  app.register(emrfCollectApi);
+  app.register(emrfCollectionApi);
+});

@@ -1,9 +1,11 @@
 import {
   EditOutlined,
+  EnvironmentOutlined,
   MenuOutlined,
   PlusOutlined,
   ReloadOutlined,
   UnorderedListOutlined,
+  UploadOutlined,
 } from "@ant-design/icons";
 import { useLocation } from "@tanstack/react-router";
 import { Button, Dropdown, Layout, theme } from "antd";
@@ -14,6 +16,8 @@ import { useApiGet } from "#/api/helpers";
 import { type ModalFC, useModalViewer } from "#/hooks/useModalViewer";
 import AuthLogsModal from "#/modules/admin/AuthLogsModal";
 import SyslogForm from "#/modules/admin/SyslogForm";
+import FiberSitesDrawer from "#/modules/fiber-inventory/FiberSitesDrawer";
+import FiberUploadModal from "#/modules/fiber-inventory/FiberUploadModal";
 import FhcRequestForm from "#/modules/ftth-connections/FhcRequestForm";
 import FhcRequestManyForm from "#/modules/ftth-connections/FhcRequestManyForm";
 import FhpRequestForm from "#/modules/ftth-projects/FhpRequestForm";
@@ -21,6 +25,7 @@ import FhsRequestForm from "#/modules/ftth-surveys/FhsRequestForm";
 import StaffCreateForm from "#/modules/staff/StaffCreateForm";
 import UserInfoModal from "#/modules/staff/UserInfoModal";
 import NotificationBell from "./NotificationBell";
+import { usePageHeaderActions } from "./PageHeaderActions";
 import ReportButton from "./ReportButton";
 import type { UserLayoutProps } from "./useUserLayout";
 
@@ -58,6 +63,7 @@ export default function UserHeader(props: UserLayoutProps) {
   const modal = useModalViewer();
 
   const { pathname } = useLocation();
+  const { actions: pageActions } = usePageHeaderActions();
   const pathKey = pathname.split("/")[1].toLowerCase();
   const newForm = newForms[pathKey];
   const userQ = useApiGet("session/user", userFullZ);
@@ -106,12 +112,35 @@ export default function UserHeader(props: UserLayoutProps) {
           id="header-actions-desktop"
           className="hidden lg:flex items-center gap-2"
         >
-          <Button
-            size="small"
-            icon={<ReloadOutlined className="text-[0.8em]" />}
-          >
-            {m.refresh()}
-          </Button>
+          {!pageActions && (
+            <Button
+              size="small"
+              icon={<ReloadOutlined className="text-[0.8em]" />}
+            >
+              {m.refresh()}
+            </Button>
+          )}
+
+          {pathKey === "fiber-inventory" && (
+            <Button
+              size="small"
+              icon={<EnvironmentOutlined className="text-[0.8em]" />}
+              onClick={() => modal.open(FiberSitesDrawer)}
+            >
+              Sites
+            </Button>
+          )}
+
+          {canCreate && pathKey === "fiber-inventory" && (
+            <Button
+              size="small"
+              type="primary"
+              icon={<UploadOutlined className="text-[0.8em]" />}
+              onClick={() => modal.open(FiberUploadModal)}
+            >
+              Upload KMZ / Excel
+            </Button>
+          )}
 
           {report && <ReportButton {...report} />}
 
@@ -143,14 +172,25 @@ export default function UserHeader(props: UserLayoutProps) {
               </Button>
             </Dropdown>
           )}
+          {pageActions?.desktop}
         </section>
 
         <section id="header-actions-mobile" className="mr-2 block lg:hidden">
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => modal.open(FhsRequestForm)}
-          />
+          {canCreate && pathKey === "fiber-inventory" ? (
+            <Button
+              type="primary"
+              icon={<UploadOutlined />}
+              onClick={() => modal.open(FiberUploadModal)}
+            />
+          ) : (
+            (pageActions?.mobile ?? (
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => modal.open(FhsRequestForm)}
+              />
+            ))
+          )}
         </section>
       </main>
     </Layout.Header>

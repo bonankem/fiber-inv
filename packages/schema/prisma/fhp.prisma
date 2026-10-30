@@ -11,6 +11,8 @@ model FtthProject {
     surveyId String?     @db.Uuid
 
     report FhpReport?
+
+    emrfs Emrf[]
 }
 
 model FhpReport {

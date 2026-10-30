@@ -1,10 +1,13 @@
 import { Tag, type TagProps } from "antd";
 import { m } from "i18n/messages";
-import type { WorkStatus } from "schema/enums";
+import type { EmrfStatus, WorkStatus } from "schema/enums";
 import { twJoin } from "tailwind-merge";
 
+/** Statuses of work items and of material requests (EMRFs). */
+export type AnyStatus = WorkStatus | EmrfStatus;
+
 type Props = {
-  status: WorkStatus;
+  status: AnyStatus;
   smaller?: boolean;
 };
 
@@ -17,12 +20,16 @@ export default function StatusBadge(props: Props) {
       color={colors[status] || "blue"}
       className={twJoin(props.smaller && "leading-tight!")}
     >
-      {statusNames[status]}
+      {statusName(status)}
     </Tag>
   );
 }
 
-const colors: Partial<Record<WorkStatus, TagProps["color"]>> = {
+export function statusName(status: AnyStatus) {
+  return statusNames[status];
+}
+
+const colors: Partial<Record<AnyStatus, TagProps["color"]>> = {
   ASSIGNED: "cyan",
   BUILDING_CABLING: "orange",
   CANCELLED: "red",
@@ -51,9 +58,15 @@ const colors: Partial<Record<WorkStatus, TagProps["color"]>> = {
   PARTING_REJECTED: "volcano",
   SIZING_REJECTED: "volcano",
   BOM_REJECTED: "volcano",
+
+  // EMRF
+  PENDING: "orange",
+  APPROVED: "green",
+  ORDERED: "blue",
+  COLLECTED: "green",
 };
 
-const statusNames: Record<WorkStatus, string> = {
+const statusNames: Record<AnyStatus, string> = {
   ASSIGNED: m.assigned(),
   BUILDING_CABLING: m.building_cabling(),
   CANCELLED: m.cancelled(),
@@ -83,4 +96,10 @@ const statusNames: Record<WorkStatus, string> = {
   PARTING_REJECTED: m.parting_rejected(),
   SIZING_REJECTED: m.sizing_rejected(),
   BOM_REJECTED: m.bom_rejected(),
+
+  // EMRF
+  PENDING: m.pending(),
+  APPROVED: m.approved(),
+  ORDERED: m.ordered(),
+  COLLECTED: m.collected(),
 };

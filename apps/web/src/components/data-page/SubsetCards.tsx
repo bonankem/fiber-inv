@@ -8,7 +8,12 @@ export default function SubsetCards<T extends string>(
 ) {
   const { token } = theme.useToken();
   return (
-    <nav className="grid grid-cols-5 gap-2 sm:gap-3">
+    <nav
+      className="grid gap-2 sm:gap-3"
+      style={{
+        gridTemplateColumns: `repeat(${props.items.length}, minmax(0, 1fr))`,
+      }}
+    >
       {props.items.map((c) => (
         <SubsetCard
           key={c.key}

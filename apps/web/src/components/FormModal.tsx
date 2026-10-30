@@ -29,6 +29,8 @@ export type FormModalProps<T> = {
   // return true if the modal should stay open
   onBack?: () => boolean;
   okText?: string;
+  // a red OK button, for actions that undo or cancel something
+  danger?: boolean;
   backText?: string;
   hasOk?: boolean;
   submitting?: boolean;
@@ -140,6 +142,7 @@ export default function FormModal<T>(props: FormModalProps<T>) {
               {props.hasOk !== false && (
                 <Button
                   type="primary"
+                  danger={props.danger}
                   htmlType="submit"
                   loading={props.submitting}
                 >

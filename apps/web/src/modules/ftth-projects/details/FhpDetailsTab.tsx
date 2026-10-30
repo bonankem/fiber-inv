@@ -4,6 +4,7 @@ import { workerOf } from "schema/work";
 import CoordsLink from "#/components/CoordsLink";
 import DetailsCard from "#/components/DetailsCard";
 import StatusView from "#/components/StatusView";
+import JobEmrfCard from "#/modules/inventory/JobEmrfCard";
 import type { FhpTabProps } from "./types";
 
 export default function FhpDetailsTab(props: FhpTabProps) {
@@ -27,6 +28,7 @@ export default function FhpDetailsTab(props: FhpTabProps) {
           { label: m.coords(), value: <CoordsLink coords={w.coords} /> },
         ]}
       />
+      <JobEmrfCard projectId={props.item.id} />
     </div>
   );
 }

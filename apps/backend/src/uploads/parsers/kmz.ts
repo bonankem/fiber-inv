@@ -13,6 +13,7 @@ export type KmzPlacemark = {
 type MaybePlacemark = {
   name: string | null;
   geom: CoordsT[];
+  kind: "polygon" | "line" | "point";
   path?: string[];
   oldName?: string;
 };
@@ -105,14 +106,22 @@ function parsePlacemark(value: any): MaybePlacemark | null {
   const str = ring || line || point;
   if (typeof str !== "string") return null;
 
-  const re = /(-?\d+\.\d*),(-?\d+\.\d*)(,-?\d+\.\d*)?/g;
+  const re = /(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)(?:,-?\d+(?:\.\d+)?)?/g;
   const geom = Array.from(str.matchAll(re), (p) => ({
     lat: to5dp(p[2]),
     lng: to5dp(p[1]),
   }));
   if (!geom.length) return null;
 
-  return { name, geom, path: [] };
+  const first = geom[0];
+  const last = geom[geom.length - 1];
+  const isClosedLine =
+    !!line &&
+    geom.length > 2 &&
+    first.lat === last.lat &&
+    first.lng === last.lng;
+  const kind = ring || isClosedLine ? "polygon" : line ? "line" : "point";
+  return { name, geom, kind, path: [] };
 }
 
 function flattenFolder(f: Folder, path: string[]): MaybePlacemark[] {

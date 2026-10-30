@@ -8,7 +8,7 @@ function isTrue(s: unknown) {
 }
 
 const schema = z.object({
-  PORT: z.preprocess((s) => s && Number(s), z.int().default(3000)),
+  PORT: z.preprocess((s) => s && Number(s), z.int().default(4000)),
   NODE_ENV: z.string().optional(),
   FRONTEND_URL: z.url().optional(),
   CORS_ANY: z.string().optional(),

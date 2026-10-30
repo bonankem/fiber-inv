@@ -136,7 +136,7 @@ export function useUploaderImpl(): Uploader {
 
     const cancel = (id: string | string[]) => {
       const ids = Array.isArray(id) ? id : [id];
-      ids.forEach((id) => void pending[id]?.abort);
+      ids.forEach((id) => pending[id]?.abort());
       clean.mutate({ ids });
       setPending((ps) => omit(ps, ids));
       setRecords((rs) => omit(rs, ids));

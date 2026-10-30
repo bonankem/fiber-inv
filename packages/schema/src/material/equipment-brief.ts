@@ -1,5 +1,6 @@
 import type { Prisma } from "../db";
-import { type Same, type z, zObject, zStr } from "../utils";
+import { type Same, z, zObject, zStr } from "../utils";
+
 
 export const equipmentBriefS = {
   id: true,
@@ -7,15 +8,18 @@ export const equipmentBriefS = {
   mtnCode: true,
   ifsCode: true,
   description: true,
+  available: true,
 } satisfies Prisma.EquipmentSelect;
 
 export const equipmentBriefZ = zObject("EquipmentBriefT", {
   id: zStr(""),
   name: zStr(""),
   mtnCode: zStr(""),
-  ifsCode: zStr(""),
-  description: zStr(""),
+  ifsCode: zStr("").nullable(),
+  description: zStr("").nullable(),
+  available: z.int().describe("Available stock"),
 } satisfies Record<keyof typeof equipmentBriefS, object>);
+
 
 export const equipmentBriefP = { select: equipmentBriefS };
 

@@ -1,4 +1,5 @@
 export * from "./fhs-assign";
+export * from "./fhs-bom-item";
 export * from "./fhs-codes";
 export * from "./fhs-filter";
 export * from "./fhs-initiate";
