@@ -39,4 +39,5 @@ export type DataTableProps<T> = {
   virtual?: boolean;
   smallerText?: boolean;
   cellClassName?: string;
+  className?: string;
 };

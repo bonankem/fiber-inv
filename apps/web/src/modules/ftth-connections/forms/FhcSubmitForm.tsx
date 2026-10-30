@@ -98,7 +98,7 @@ export default function FhcSubmitForm({ item, state }: FhcFormProps) {
     <FormModal
       form={form}
       state={state}
-      width={720}
+      width={800}
       title={m.fhc_form_submit()}
       subtitle={`${item.tn}: ${item.work.name}`}
       onSubmit={onSubmit}

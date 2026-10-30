@@ -46,7 +46,7 @@ export default function FhcPbInput(props: Props) {
   };
 
   return (
-    <section id="submit-part-1">
+    <section className="border rounded-md overflow-hidden">
       <DataTable
         data={data.picked}
         loading={pasting}
@@ -57,7 +57,7 @@ export default function FhcPbInput(props: Props) {
             key: "ref",
             title: "Ref",
             render: (p) => p.ref,
-            width: 150,
+            width: 120,
           },
           {
             key: "quantity",
@@ -92,13 +92,14 @@ export default function FhcPbInput(props: Props) {
             key: "name",
             title: m.name(),
             render: (p) => <FhcPbNameView item={p} />,
-            width: 400,
+            width: 360,
           },
         ]}
         footer={
           <div className="flex gap-2">
             <Select
-              className="w-80!"
+              size="small"
+              className="h-6! w-80!"
               placement="topLeft"
               popupMatchSelectWidth={false}
               placeholder={m.select_from_price_book()}
@@ -131,7 +132,9 @@ export default function FhcPbInput(props: Props) {
             />
 
             <Tooltip title={m.pricebook_paste_hint()}>
-              <Button onClick={onClickPastePb}>{m.paste_from_excel()}</Button>
+              <Button className="h-6!" onClick={onClickPastePb}>
+                {m.paste_from_excel()}
+              </Button>
             </Tooltip>
           </div>
         }

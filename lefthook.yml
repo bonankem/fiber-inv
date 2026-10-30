@@ -1,6 +1,6 @@
 output:
   - meta
-  - failures
+  - failure
   - summary
   - empty_summary
 no_tty: true

@@ -1,16 +1,15 @@
 import dayjs from "dayjs";
-import { listAndMore } from "schema/utils";
 import { AsyncTask, SimpleIntervalJob } from "toad-scheduler";
 import { authLog } from "#/admin/adm-syslog.api";
 import { AuthAction, prisma } from "#/db";
-import { type AppLog, appPlugin } from "#/utils/routing";
+import { appPlugin } from "#/utils/routing";
 
 export const authCron = appPlugin((app) => {
   const expireUsersJob = new SimpleIntervalJob(
     { minutes: 30 },
     new AsyncTask(
       "expireUsers",
-      () => expireUsers(app.log),
+      () => expireUsers(),
       (e) => app.log.error(e.message),
     ),
   );
@@ -21,7 +20,7 @@ function daysAgo(now: dayjs.Dayjs, n: number) {
   return now.subtract(Math.max(1, n), "days").toDate();
 }
 
-async function expireUsers(log: AppLog) {
+async function expireUsers() {
   const conf = await prisma.security.findFirst();
   if (!conf) return null;
 
@@ -52,8 +51,6 @@ async function expireUsers(log: AppLog) {
       data: { expiredAt: now.toDate() },
     });
 
-    const emails = users.map((u) => u.email);
-    log.info(`Expired ${users.length} users: ${listAndMore(emails, 3)}`);
     const logs = users.map((u) => authLog(AuthAction.EXPIRED, null, u.email));
     await Promise.all(logs);
   }

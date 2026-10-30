@@ -15,6 +15,7 @@ export default function DataTable<T extends { id: string } | { tn: string }>(
     <Table
       size="small"
       virtual={props.virtual}
+      className={props.className}
       dataSource={props.data ?? []}
       rowKey={(r) => ("id" in r ? r.id : r.tn)}
       scroll={{
