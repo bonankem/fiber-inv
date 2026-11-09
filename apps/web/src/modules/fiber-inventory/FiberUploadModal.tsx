@@ -1,7 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { Alert, message, Spin } from "antd";
-import { useState } from "react";
-import type { FiberInventoryT } from "schema/fiber-inventory";
+import { useMemo, useState } from "react";
+import {
+  type FiberInventoryT,
+  type FiberSiteT,
+  isNoiseLayer,
+} from "schema/fiber-inventory";
 import { showAppError, useApiUpload } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import type { ModalStateProps } from "#/hooks/useModalViewer";
@@ -14,14 +18,16 @@ import {
   parseSpreadsheetForPreview,
 } from "./utils/csv-preview";
 import { parseKmzForPreview } from "./utils/kmz-preview";
-import type { KmzPreviewData, SpreadsheetPreviewData } from "./utils/types";
+import type { KmzPreviewData } from "./utils/types";
+
+type SheetData = { fileName: string; fileSize: number; sites: FiberSiteT[] };
 
 export default function FiberUploadModal(props: ModalStateProps) {
   const [kmzFile, setKmzFile] = useState<File | null>(null);
   const [excelFile, setExcelFile] = useState<File | null>(null);
   const [kmzData, setKmzData] = useState<KmzPreviewData | null>(null);
-  const [spreadsheetData, setSpreadsheetData] =
-    useState<SpreadsheetPreviewData | null>(null);
+  const [sheet, setSheet] = useState<SheetData | null>(null);
+  const [excluded, setExcluded] = useState<Set<string>>(new Set());
   const [parsingKmz, setParsingKmz] = useState(false);
   const [parsingCsv, setParsingCsv] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -33,6 +39,30 @@ export default function FiberUploadModal(props: ModalStateProps) {
   const queryClient = useQueryClient();
   const { isDark } = useAppTheme();
 
+  // what will actually be saved: the kept layers, matched against the sites
+  const preview = useMemo(() => {
+    const items = (kmzData?.items ?? []).filter(
+      (i) => !excluded.has(i.layer ?? ""),
+    );
+    if (!sheet) return { items, spreadsheet: null };
+    const m = matchSitesToItems(sheet.sites, items);
+    return {
+      items: m.matchedItems,
+      spreadsheet: {
+        ...sheet,
+        sites: m.matchedSites,
+        matchedCount: m.matchedCount,
+        unmatchedCount: m.unmatchedCount,
+      },
+    };
+  }, [kmzData, excluded, sheet]);
+
+  const fail = (err: unknown, fallback: string) => {
+    const msg = err instanceof Error ? err.message : fallback;
+    setErrorMsg(msg);
+    message.error(msg);
+  };
+
   const handleFileProcess = async (file: File) => {
     const ext = file.name.split(".").pop()?.toLowerCase() || "";
     setErrorMsg(null);
@@ -40,31 +70,19 @@ export default function FiberUploadModal(props: ModalStateProps) {
     if (["kmz", "kml"].includes(ext)) {
       setParsingKmz(true);
       try {
-        const preview = await parseKmzForPreview(file);
-
-        // If a companion spreadsheet was already loaded, match sites in real time
-        if (spreadsheetData?.sites.length) {
-          const { matchedSites, matchedItems, matchedCount, unmatchedCount } =
-            matchSitesToItems(spreadsheetData.sites, preview.items);
-          preview.items = matchedItems;
-          setSpreadsheetData({
-            ...spreadsheetData,
-            sites: matchedSites,
-            matchedCount,
-            unmatchedCount,
-          });
-        }
-
+        const data = await parseKmzForPreview(file);
+        // drawing-only layers (hatching, legend, title block...) start unticked
+        const noise = data.layers.filter((l) => isNoiseLayer(l.name));
+        setExcluded(new Set(noise.map((l) => l.name)));
         setKmzFile(file);
-        setKmzData(preview);
+        setKmzData(data);
         message.success(
-          `Parsed ${preview.items.length} network features from ${file.name}`,
+          noise.length
+            ? `Parsed ${data.items.length} features; ${noise.length} drawing layers left out`
+            : `Parsed ${data.items.length} network features from ${file.name}`,
         );
-      } catch (err: unknown) {
-        const msg =
-          err instanceof Error ? err.message : "Failed to parse KMZ file";
-        setErrorMsg(msg);
-        message.error(msg);
+      } catch (err) {
+        fail(err, "Failed to parse KMZ file");
       } finally {
         setParsingKmz(false);
       }
@@ -72,31 +90,16 @@ export default function FiberUploadModal(props: ModalStateProps) {
       setExcelFile(file);
       setParsingCsv(true);
       try {
-        const sheetResult = await parseSpreadsheetForPreview(
-          file,
-          kmzData?.items ?? [],
-        );
-        setSpreadsheetData(sheetResult);
-
-        // Update KMZ items with newly matched site groupings
-        if (kmzData) {
-          const { matchedItems } = matchSitesToItems(
-            sheetResult.sites,
-            kmzData.items,
-          );
-          setKmzData({ ...kmzData, items: matchedItems });
-        }
-
-        message.success(
-          `Extracted ${sheetResult.sites.length} sites (${sheetResult.matchedCount} matched to network)`,
-        );
-      } catch (err: unknown) {
-        const msg =
-          err instanceof Error
-            ? err.message
-            : "Failed to parse spreadsheet file";
-        setErrorMsg(msg);
-        message.error(msg);
+        const result = await parseSpreadsheetForPreview(file, []);
+        setSheet({
+          fileName: result.fileName,
+          fileSize: result.fileSize,
+          sites: result.sites,
+        });
+        message.success(`Extracted ${result.sites.length} sites`);
+      } catch (err) {
+        setExcelFile(null);
+        fail(err, "Failed to parse spreadsheet file");
       } finally {
         setParsingCsv(false);
       }
@@ -110,30 +113,12 @@ export default function FiberUploadModal(props: ModalStateProps) {
   const handleClearKmz = () => {
     setKmzFile(null);
     setKmzData(null);
-    if (spreadsheetData) {
-      setSpreadsheetData({
-        ...spreadsheetData,
-        sites: spreadsheetData.sites.map((s) => ({
-          ...s,
-          matchedFeature: null,
-          matchedKind: null,
-          matchedDistance: null,
-        })),
-        matchedCount: 0,
-        unmatchedCount: spreadsheetData.sites.length,
-      });
-    }
+    setExcluded(new Set());
   };
 
   const handleClearExcel = () => {
     setExcelFile(null);
-    setSpreadsheetData(null);
-    if (kmzData) {
-      setKmzData({
-        ...kmzData,
-        items: kmzData.items.map((i) => ({ ...i, sites: [] })),
-      });
-    }
+    setSheet(null);
   };
 
   const onSubmit = async () => {
@@ -141,17 +126,28 @@ export default function FiberUploadModal(props: ModalStateProps) {
       message.warning("Please upload at least one KMZ or Excel file");
       return;
     }
+    if (kmzFile && !preview.items.length) {
+      message.warning("Tick at least one layer to save");
+      return;
+    }
 
     setUploading(true);
     try {
+      let updated: FiberInventoryT | undefined;
       if (kmzFile) {
-        await inventoryUpload.mutateAsync(kmzFile);
+        const options = { excludedLayers: [...excluded] };
+        updated = await inventoryUpload.mutateAsync({
+          file: kmzFile,
+          fields: { options: JSON.stringify(options) },
+        });
       }
       if (excelFile) {
-        await inventoryUpload.mutateAsync(excelFile);
+        updated = await inventoryUpload.mutateAsync(excelFile);
       }
+      // The upload already returns the rebuilt inventory; don't download it again.
+      await queryClient.cancelQueries({ queryKey: ["fiber-inventory"] });
+      if (updated) queryClient.setQueryData(["fiber-inventory"], updated);
       message.success("Fiber inventory uploaded successfully");
-      queryClient.invalidateQueries({ queryKey: ["fiber-inventory"] });
       props.state.close();
     } catch (e) {
       showAppError(e);
@@ -162,11 +158,11 @@ export default function FiberUploadModal(props: ModalStateProps) {
 
   return (
     <FormModal
-      width={kmzData ? 900 : 480}
+      width={kmzData ? 960 : 480}
       title="Upload Fiber Inventory"
       subtitle={
         kmzData
-          ? "Previewing network features & sites on map · Confirm to save"
+          ? "Pick the layers to keep, check the preview, then save"
           : "Upload KMZ network files and Excel site lists"
       }
       state={props.state}
@@ -190,27 +186,28 @@ export default function FiberUploadModal(props: ModalStateProps) {
         )}
 
         {!kmzData ? (
-          // Initial Drag & Drop Area
           <UploadDropzone
             onFileProcess={handleFileProcess}
             excelFile={excelFile}
             onClearExcel={handleClearExcel}
           />
         ) : (
-          // Split Layout: Map Preview (Left) and Upload Controls (Right)
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
             <KmzPreviewMap
-              items={kmzData.items}
-              sites={spreadsheetData?.sites}
-              matchedCount={spreadsheetData?.matchedCount}
+              items={preview.items}
+              sites={preview.spreadsheet?.sites}
+              matchedCount={preview.spreadsheet?.matchedCount}
               fileName={kmzData.fileName}
-              spreadsheetName={spreadsheetData?.fileName}
+              spreadsheetName={preview.spreadsheet?.fileName}
               isDark={isDark}
             />
 
             <UploadSidebar
               kmzData={kmzData}
-              spreadsheetData={spreadsheetData}
+              keptItems={preview.items}
+              excluded={excluded}
+              onExcludedChange={setExcluded}
+              spreadsheetData={preview.spreadsheet}
               excelFile={excelFile}
               parsingCsv={parsingCsv}
               onClearKmz={handleClearKmz}

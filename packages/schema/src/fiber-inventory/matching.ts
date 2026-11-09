@@ -3,7 +3,9 @@
  * the inventory API (backend).
  *
  * A site matches the smallest polygon containing it; otherwise the nearest
- * line (fiber route) or point (POP / manhole) within `radiusM` metres.
+ * line (fiber route) or point (POP) within `radiusM` metres. Manholes are
+ * never matched: they are civil works on a route, not a site's network
+ * attachment point.
  */
 
 type LatLng = { lat: number; lng: number };
@@ -13,12 +15,16 @@ type MatchableFeature = {
   name: string;
   kind: FeatureKind;
   geom: LatLng[];
+  category?: "manhole" | "other";
 };
 
 export type FiberSiteMatchT = {
   matchedFeature: string | null;
   matchedKind: FeatureKind | null;
   matchedDistance: number | null;
+  /** Closest network feature at any distance, for planning unmatched sites */
+  nearestFeature: string | null;
+  nearestDistance: number | null;
 };
 
 /** Default search radius around a site for lines and points, in metres. */
@@ -64,21 +70,23 @@ function ringArea(ring: LatLng[]) {
 function distanceTo(p: LatLng, geom: LatLng[]) {
   const kx = M_PER_DEG_LNG * Math.cos((p.lat * Math.PI) / 180);
   const ky = M_PER_DEG_LAT;
-  const xy = (c: LatLng) => [(c.lng - p.lng) * kx, (c.lat - p.lat) * ky];
-
-  let [ax, ay] = xy(geom[0]);
-  let best = Math.hypot(ax, ay);
+  let ax = (geom[0].lng - p.lng) * kx;
+  let ay = (geom[0].lat - p.lat) * ky;
+  let bestSquared = ax * ax + ay * ay;
   for (let i = 1; i < geom.length; i++) {
-    const [bx, by] = xy(geom[i]);
+    const bx = (geom[i].lng - p.lng) * kx;
+    const by = (geom[i].lat - p.lat) * ky;
     const dx = bx - ax;
     const dy = by - ay;
     const len2 = dx * dx + dy * dy;
     const t = len2 ? Math.max(0, Math.min(1, -(ax * dx + ay * dy) / len2)) : 0;
-    best = Math.min(best, Math.hypot(ax + t * dx, ay + t * dy));
+    const x = ax + t * dx;
+    const y = ay + t * dy;
+    bestSquared = Math.min(bestSquared, x * x + y * y);
     ax = bx;
     ay = by;
   }
-  return best;
+  return Math.sqrt(bestSquared);
 }
 
 type Indexed = {
@@ -106,6 +114,119 @@ function indexFeature(feature: MatchableFeature, index: number): Indexed {
   return { index, feature, minLat, maxLat, minLng, maxLng, area };
 }
 
+/** Metres from `p` to a feature's bounding box: a lower bound on its distance */
+function boxDistance(
+  p: LatLng,
+  f: Pick<Indexed, "minLat" | "maxLat" | "minLng" | "maxLng">,
+) {
+  const kx = M_PER_DEG_LNG * Math.cos((p.lat * Math.PI) / 180);
+  const dx = Math.max(f.minLng - p.lng, 0, p.lng - f.maxLng) * kx;
+  const dy = Math.max(f.minLat - p.lat, 0, p.lat - f.maxLat) * M_PER_DEG_LAT;
+  return Math.hypot(dx, dy);
+}
+
+type SpatialNode = {
+  minLat: number;
+  maxLat: number;
+  minLng: number;
+  maxLng: number;
+  children?: [SpatialNode, SpatialNode];
+  entries?: Indexed[];
+};
+
+/** Bounding-volume tree: built once, reused by every site in this batch. */
+function spatialIndex(entries: Indexed[]): SpatialNode | null {
+  if (!entries.length) return null;
+  const node: SpatialNode = {
+    minLat: Infinity,
+    maxLat: -Infinity,
+    minLng: Infinity,
+    maxLng: -Infinity,
+  };
+  for (const entry of entries) {
+    node.minLat = Math.min(node.minLat, entry.minLat);
+    node.maxLat = Math.max(node.maxLat, entry.maxLat);
+    node.minLng = Math.min(node.minLng, entry.minLng);
+    node.maxLng = Math.max(node.maxLng, entry.maxLng);
+  }
+  if (entries.length <= 12) node.entries = entries;
+  else {
+    const latitude = node.maxLat - node.minLat > node.maxLng - node.minLng;
+    const sorted = [...entries].sort((a, b) =>
+      latitude
+        ? a.minLat + a.maxLat - (b.minLat + b.maxLat)
+        : a.minLng + a.maxLng - (b.minLng + b.maxLng),
+    );
+    const mid = Math.floor(sorted.length / 2);
+    const left = spatialIndex(sorted.slice(0, mid));
+    const right = spatialIndex(sorted.slice(mid));
+    if (left && right) node.children = [left, right];
+  }
+  return node;
+}
+
+function nearby(
+  root: SpatialNode | null,
+  p: LatLng,
+  dLat = 0,
+  dLng = 0,
+): Indexed[] {
+  const found: Indexed[] = [];
+  const intersects = (node: SpatialNode) =>
+    p.lat >= node.minLat - dLat &&
+    p.lat <= node.maxLat + dLat &&
+    p.lng >= node.minLng - dLng &&
+    p.lng <= node.maxLng + dLng;
+  const visit = (node: SpatialNode) => {
+    if (!intersects(node)) return;
+    if (node.entries) found.push(...node.entries);
+    else if (node.children) {
+      visit(node.children[0]);
+      visit(node.children[1]);
+    }
+  };
+  if (root) visit(root);
+  // Preserve source order for equally close features and equal-area polygons.
+  return found.sort((a, b) => a.index - b.index);
+}
+
+/** Closest feature at any distance, pruning whole branches of distant boxes. */
+function nearest(
+  p: LatLng,
+  root: SpatialNode | null,
+  itemCount: number,
+): { f: Indexed; distance: number } | null {
+  let best: { f: Indexed; distance: number } | null = null;
+  const rank = (f: Indexed) =>
+    f.index + (f.feature.kind === "polygon" ? 0 : itemCount);
+  const visit = (node: SpatialNode) => {
+    if (best && boxDistance(p, node) > best.distance) return;
+    if (node.entries) {
+      for (const f of node.entries) {
+        if (best && boxDistance(p, f) > best.distance) continue;
+        const distance = distanceTo(p, f.feature.geom);
+        if (
+          !best ||
+          distance < best.distance ||
+          (distance === best.distance && rank(f) < rank(best.f))
+        )
+          best = { f, distance };
+      }
+    } else if (node.children) {
+      const [a, b] = node.children;
+      if (boxDistance(p, a) <= boxDistance(p, b)) {
+        visit(a);
+        visit(b);
+      } else {
+        visit(b);
+        visit(a);
+      }
+    }
+  };
+  if (root) visit(root);
+  return best;
+}
+
 /**
  * Matches every site to a network feature. Returns the sites with their match
  * fields set, and, for each feature (same order as `items`), the indexes of
@@ -120,13 +241,20 @@ export function matchSitesToFeatures<S extends LatLng>(
     f.geom.length ? [indexFeature(f, i)] : [],
   );
   const polygons = indexed.filter((f) => f.feature.kind === "polygon");
-  const others = indexed.filter((f) => f.feature.kind !== "polygon");
+  const others = indexed.filter(
+    (f) => f.feature.kind !== "polygon" && f.feature.category !== "manhole",
+  );
   const siteIndexesByItem = items.map((): number[] => []);
+  // polygon edges count too: an unmatched site may sit just outside a zone
+  const nearestCandidates = [...polygons, ...others];
+  const polygonIndex = spatialIndex(polygons);
+  const networkIndex = spatialIndex(others);
+  const nearestIndex = spatialIndex(nearestCandidates);
 
   const matched = sites.map((site, siteIndex) => {
     let best: { f: Indexed; distance: number } | null = null;
 
-    for (const f of polygons) {
+    for (const f of nearby(polygonIndex, site)) {
       if (
         site.lat < f.minLat ||
         site.lat > f.maxLat ||
@@ -143,7 +271,7 @@ export function matchSitesToFeatures<S extends LatLng>(
       const dLat = radiusM / M_PER_DEG_LAT;
       const dLng =
         radiusM / (M_PER_DEG_LNG * Math.cos((site.lat * Math.PI) / 180));
-      for (const f of others) {
+      for (const f of nearby(networkIndex, site, dLat, dLng)) {
         if (
           site.lat < f.minLat - dLat ||
           site.lat > f.maxLat + dLat ||
@@ -152,6 +280,7 @@ export function matchSitesToFeatures<S extends LatLng>(
         ) {
           continue;
         }
+        if (best && boxDistance(site, f) >= best.distance) continue;
         const distance = distanceTo(site, f.feature.geom);
         if (distance > radiusM) continue;
         if (!best || distance < best.distance) best = { f, distance };
@@ -159,11 +288,14 @@ export function matchSitesToFeatures<S extends LatLng>(
     }
 
     if (!best) {
+      const near = nearest(site, nearestIndex, items.length);
       return {
         ...site,
         matchedFeature: null,
         matchedKind: null,
         matchedDistance: null,
+        nearestFeature: near ? featureLabel(near.f.feature) : null,
+        nearestDistance: near ? Math.round(near.distance) : null,
       };
     }
     siteIndexesByItem[best.f.index].push(siteIndex);
@@ -172,6 +304,8 @@ export function matchSitesToFeatures<S extends LatLng>(
       matchedFeature: featureLabel(best.f.feature),
       matchedKind: best.f.feature.kind,
       matchedDistance: Math.round(best.distance),
+      nearestFeature: featureLabel(best.f.feature),
+      nearestDistance: Math.round(best.distance),
     };
   });
 

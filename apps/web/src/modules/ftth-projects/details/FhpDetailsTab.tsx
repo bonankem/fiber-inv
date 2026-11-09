@@ -28,7 +28,7 @@ export default function FhpDetailsTab(props: FhpTabProps) {
           { label: m.coords(), value: <CoordsLink coords={w.coords} /> },
         ]}
       />
-      <JobEmrfCard projectId={props.item.id} />
+      <JobEmrfCard surveyId={props.item.surveyId} />
     </div>
   );
 }

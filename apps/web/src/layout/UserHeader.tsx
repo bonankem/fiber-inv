@@ -1,6 +1,6 @@
 import {
   EditOutlined,
-  EnvironmentOutlined,
+  InfoCircleOutlined,
   MenuOutlined,
   PlusOutlined,
   ReloadOutlined,
@@ -16,7 +16,7 @@ import { useApiGet } from "#/api/helpers";
 import { type ModalFC, useModalViewer } from "#/hooks/useModalViewer";
 import AuthLogsModal from "#/modules/admin/AuthLogsModal";
 import SyslogForm from "#/modules/admin/SyslogForm";
-import FiberSitesDrawer from "#/modules/fiber-inventory/FiberSitesDrawer";
+import FiberInfoDrawer from "#/modules/fiber-inventory/FiberInfoDrawer";
 import FiberUploadModal from "#/modules/fiber-inventory/FiberUploadModal";
 import FhcRequestForm from "#/modules/ftth-connections/FhcRequestForm";
 import FhcRequestManyForm from "#/modules/ftth-connections/FhcRequestManyForm";
@@ -124,10 +124,10 @@ export default function UserHeader(props: UserLayoutProps) {
           {pathKey === "fiber-inventory" && (
             <Button
               size="small"
-              icon={<EnvironmentOutlined className="text-[0.8em]" />}
-              onClick={() => modal.open(FiberSitesDrawer)}
+              icon={<InfoCircleOutlined className="text-[0.8em]" />}
+              onClick={() => modal.open(FiberInfoDrawer)}
             >
-              Sites
+              Info
             </Button>
           )}
 

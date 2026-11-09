@@ -5,10 +5,16 @@ import {
   ReloadOutlined,
 } from "@ant-design/icons";
 import { Button, Card, Space, Spin, Tag, Typography, Upload } from "antd";
+import type { FiberInventoryItemT } from "schema/fiber-inventory";
 import type { KmzPreviewData, SpreadsheetPreviewData } from "../utils/types";
+import LayerPicker from "./LayerPicker";
 
 interface UploadSidebarProps {
   kmzData: KmzPreviewData;
+  /** The features that will be saved, after leaving out layers */
+  keptItems: FiberInventoryItemT[];
+  excluded: Set<string>;
+  onExcludedChange: (excluded: Set<string>) => void;
   spreadsheetData: SpreadsheetPreviewData | null;
   excelFile: File | null;
   parsingCsv: boolean;
@@ -19,6 +25,9 @@ interface UploadSidebarProps {
 
 export default function UploadSidebar({
   kmzData,
+  keptItems,
+  excluded,
+  onExcludedChange,
   spreadsheetData,
   excelFile,
   parsingCsv,
@@ -26,6 +35,15 @@ export default function UploadSidebar({
   onClearExcel,
   onFileProcess,
 }: UploadSidebarProps) {
+  const count = (f: (i: FiberInventoryItemT) => boolean) =>
+    keptItems.filter(f).length;
+  const kept = {
+    polygons: count((i) => i.kind === "polygon"),
+    lines: count((i) => i.kind === "line"),
+    points: count((i) => i.kind === "point"),
+    manholes: count((i) => i.category === "manhole"),
+  };
+
   return (
     <div className="flex flex-col gap-3 justify-between">
       <div className="flex flex-col gap-3">
@@ -56,14 +74,19 @@ export default function UploadSidebar({
                 </Typography.Text>
                 <div className="flex flex-wrap gap-1 mt-2">
                   <Tag color="gold" className="text-[10px] m-0">
-                    {kmzData.summary.polygons} Zones
-                  </Tag>
-                  <Tag color="blue" className="text-[10px] m-0">
-                    {kmzData.summary.lines} Routes
+                    {kept.polygons} Zones
                   </Tag>
                   <Tag color="green" className="text-[10px] m-0">
-                    {kmzData.summary.points} Points
+                    {kept.lines} Routes
                   </Tag>
+                  <Tag color="default" className="text-[10px] m-0">
+                    {kept.points} Points
+                  </Tag>
+                  {kept.manholes > 0 && (
+                    <Tag color="purple" className="text-[10px] m-0">
+                      {kept.manholes} Manholes
+                    </Tag>
+                  )}
                 </div>
               </div>
             </Space>
@@ -78,6 +101,23 @@ export default function UploadSidebar({
             </Button>
           </div>
         </Card>
+
+        {kmzData.layers.length > 1 && (
+          <div className="flex flex-col gap-1.5">
+            <Typography.Text
+              strong
+              className="text-xs uppercase tracking-wider text-zinc-500"
+            >
+              Layers
+            </Typography.Text>
+            <LayerPicker
+              layers={kmzData.layers}
+              excluded={excluded}
+              onChange={onExcludedChange}
+              maxHeight={180}
+            />
+          </div>
+        )}
 
         {/* Companion Spreadsheet Section */}
         {excelFile ? (

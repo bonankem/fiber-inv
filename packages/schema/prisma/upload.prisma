@@ -21,6 +21,8 @@ model Upload {
     workDocs WorkDoc[]
 
     emrfLogs EmrfLogUpload[]
+
+    fiberSource FiberSource?
 }
 
 model UploadInDb {

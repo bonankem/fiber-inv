@@ -44,11 +44,12 @@ export default function KmzPreviewMap({
     <>
       {/* Normal Preview Panel */}
       <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+        {/* wraps in the narrow upload modal column instead of squeezing the title */}
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-2 min-w-0">
             <Typography.Text
               strong
-              className="text-xs uppercase tracking-wider text-zinc-500"
+              className="text-xs uppercase tracking-wider text-zinc-500 whitespace-nowrap"
             >
               Network Preview
             </Typography.Text>
@@ -66,7 +67,7 @@ export default function KmzPreviewMap({
             size="small"
             icon={<FullscreenOutlined />}
             onClick={() => setIsFullscreen(true)}
-            className="text-xs flex items-center gap-1.5 font-medium border-zinc-300 dark:border-zinc-700 hover:text-[#ffcb05]! hover:border-[#ffcb05]!"
+            className="shrink-0 text-xs flex items-center gap-1.5 font-medium border-zinc-300 dark:border-zinc-700 hover:text-[#ffcb05]! hover:border-[#ffcb05]!"
           >
             Expand Map
           </Button>
@@ -146,18 +147,27 @@ export default function KmzPreviewMap({
             <div className="flex items-center gap-3">
               {/* Legend */}
               <div className="hidden sm:flex items-center gap-3 px-3 py-1 bg-zinc-900 border border-zinc-800 rounded-lg text-xs text-zinc-300">
+                {/* symbols mirror KmzMapLayers */}
                 <span className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-sm bg-[#ffcb05] inline-block" />
-                  KMZ Features
+                  Zones
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-3.5 h-[3px] rounded-full bg-[#22c55e] inline-block" />
+                  Routes
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#16a34a] ring-2 ring-white/90 inline-block" />
+                  Manhole
                 </span>
                 {sites.length > 0 && (
                   <>
                     <span className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" />
+                      <span className="w-2 h-2 rotate-45 bg-[#16a34a] outline outline-white inline-block" />
                       Matched Site
                     </span>
                     <span className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block" />
+                      <span className="w-2 h-2 rotate-45 bg-[#ea580c] outline outline-white inline-block" />
                       Unmatched Site
                     </span>
                   </>

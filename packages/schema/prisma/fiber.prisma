@@ -1,0 +1,41 @@
+/// A file in the fiber inventory map: a KMZ network or an Excel site list.
+/// The file itself (and its parsed features) lives in the linked Upload.
+model FiberSource {
+    id String @id @default(uuid(7)) @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    upload   Upload @relation(fields: [uploadId], references: [id], onDelete: Cascade)
+    uploadId String @unique @db.Uuid
+
+    /// "kmz" or "sites"
+    kind String
+
+    /// sha256 of the file, to refuse the same file twice
+    hash String
+
+    /// hidden sources stay saved but are left off the map
+    visible Boolean @default(true)
+
+    /// features (kmz) or sites (spreadsheet) kept after layer filtering
+    count Int @default(0)
+
+    /// every layer in the KMZ with its feature count, [{ name, count }]
+    layers Json?
+
+    /// KMZ layers left out of the map, e.g. CAD hatching or legends
+    excludedLayers String[]
+
+    @@index([hash])
+}
+
+/// The computed map (features, sites and their matches), rebuilt whenever the
+/// sources change so loading the map doesn't redo the matching.
+model FiberSnapshot {
+    id String @id
+
+    updatedAt DateTime @updatedAt
+
+    data Json
+}

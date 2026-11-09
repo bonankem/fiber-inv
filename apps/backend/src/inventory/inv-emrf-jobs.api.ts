@@ -5,23 +5,18 @@ import { prisma } from "#/db";
 import { getRoute } from "#/utils/routing";
 import { workAccess } from "../work/filter";
 
-/** Materials are requested once a project is assigned, until it's built. */
-export const emrfProjectStatuses: WorkStatus[] = [
-  WorkStatus.ASSIGNED,
-  WorkStatus.INSTALLATION,
-];
-
-// HP Delivery projects the user may request materials for
+// Closed HP Planning jobs the user may request materials for
+// (createEmrf only accepts a closed survey)
 export const emrfJobsApi = getRoute({
   url: "/inventory/emrf/jobs",
   handler: (req) => emrfJobs(req.authUser),
 });
 
 async function emrfJobs(user: UserFullT) {
-  return prisma.ftthProject.findMany({
+  return prisma.ftthSurvey.findMany({
     where: {
       work: {
-        AND: [workAccess(user) ?? {}, { status: { in: emrfProjectStatuses } }],
+        AND: [workAccess(user) ?? {}, { status: WorkStatus.CLOSED }],
       },
     },
     select: emrfJobS,

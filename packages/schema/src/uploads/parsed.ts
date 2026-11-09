@@ -5,6 +5,7 @@ export const uploadParsedZ = z.discriminatedUnion("type", [
   p.upAreaKmzZ,
   p.upOdnKmzZ,
   p.upFhsCoordsZ,
+  p.upFhsBomZ,
 ]);
 
 export type UploadParsedT = z.infer<typeof uploadParsedZ>;

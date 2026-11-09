@@ -1,5 +1,5 @@
 import { RollbackOutlined } from "@ant-design/icons";
-import { ShoppingCart, ThumbsUp } from "lucide-react";
+import { PackageCheck, ShoppingCart, ThumbsUp } from "lucide-react";
 import { StaffRole, EmrfStatus as When } from "schema/enums";
 import type { UserFullT } from "schema/people";
 import { buildActions } from "#/components/actions/types";
@@ -8,11 +8,13 @@ import EmrfDrawer from "./EmrfDrawer";
 import type { EmrfRow as What } from "./emrf-utils";
 import EmrfApproveForm from "./forms/EmrfApproveForm";
 import EmrfAssignToForm from "./forms/EmrfAssignToForm";
+import EmrfCollectForm from "./forms/EmrfCollectForm";
 import EmrfRevertForm from "./forms/EmrfRevertForm";
 
 enum Whom {
   APPROVER = "approver",
   ORACLE = "oracle",
+  VENDOR = "vendor",
   STAFF = "staff",
   ANY = "any",
 }
@@ -38,6 +40,9 @@ function isWhom(_what: What, whom: Whom, user: UserFullT) {
   if (whom === Whom.ORACLE) {
     return user.staffRole === StaffRole.ORACLE_TEAM;
   }
+
+  // vendors only ever list their own EMRFs, and the API checks it again
+  if (whom === Whom.VENDOR) return !!user.vendor;
 
   return !!user.staffRole;
 }
@@ -68,6 +73,14 @@ export const emrfActions = buildActions(isWhen, isWhom, [
     when: [When.APPROVED],
     whom: [Whom.ORACLE],
     form: EmrfAssignToForm,
+    main: true,
+  },
+  {
+    name: "Collect",
+    icon: PackageCheck,
+    when: [When.ORDERED],
+    whom: [Whom.VENDOR],
+    form: EmrfCollectForm,
     main: true,
   },
   {

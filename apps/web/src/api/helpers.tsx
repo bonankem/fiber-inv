@@ -104,11 +104,17 @@ async function report(url: string, token?: Maybe<string>) {
   throw new Error(message);
 }
 
+/** A file, or a file with form fields sent ahead of it */
+type UploadInput = File | { file: File; fields?: Record<string, string> };
+
 export function useApiUpload<O>(path: ApiPath) {
   const url = Array.isArray(path) ? path.join("/") : path;
   const token = useAuthToken();
   return useMutation({
-    mutationFn: (file: File) => postFile<O>(url, file, token.value),
+    mutationFn: (input: UploadInput) =>
+      input instanceof File
+        ? postFile<O>(url, input, token.value)
+        : postFile<O>(url, input.file, token.value, input.fields),
   });
 }
 
@@ -152,18 +158,27 @@ export async function postFile<O>(
   url: string,
   file: File,
   token?: Maybe<string>,
+  fields?: Record<string, string>,
 ) {
   const headers: HeadersInit = {};
   if (token) headers.Authorization = `Bearer ${token}`;
 
+  // fields first: a multipart server only sees fields sent before the file
   const body = new FormData();
+  for (const [key, value] of Object.entries(fields ?? {})) {
+    body.append(key, value);
+  }
   body.append("file", file);
 
   const res = await fetch(apiUrl(url), { method: "POST", headers, body });
   const data = await res.json();
   if (res.ok) return data as O;
 
-  const message = data.message || "API error";
+  // same shape as postJson, so the reason (e.g. which file is a duplicate) shows
+  const message =
+    data.message && data.param
+      ? `${data.message}: ${data.param}`
+      : data.message || "API error";
   throw new Error(message);
 }
 

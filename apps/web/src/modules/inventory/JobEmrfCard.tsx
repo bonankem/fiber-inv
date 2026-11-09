@@ -7,9 +7,18 @@ import EmrfDrawer from "./EmrfDrawer";
 import { emrfActions } from "./emrf-actions";
 import { type EmrfRow, emrfShortId } from "./emrf-utils";
 
-/** The EMRFs raised for an HP Delivery project; each opens its details drawer. */
-export default function JobEmrfCard({ projectId }: { projectId: string }) {
-  const emrfs = useEmrfList({ projectId, page: 1, pageSize: 100 });
+/**
+ * The EMRFs raised for an HP Delivery project's planning job (EMRFs belong to
+ * the HP Planning job); each opens its details drawer.
+ */
+export default function JobEmrfCard({ surveyId }: { surveyId: string | null }) {
+  // without a planning job the list would be unfiltered, so show nothing
+  if (!surveyId) return null;
+  return <SurveyEmrfCard surveyId={surveyId} />;
+}
+
+function SurveyEmrfCard({ surveyId }: { surveyId: string }) {
+  const emrfs = useEmrfList({ surveyId, page: 1, pageSize: 100 });
   const [viewing, setViewing] = useState<EmrfRow>();
   const items = emrfs.data?.items ?? [];
   if (!items.length) return null;

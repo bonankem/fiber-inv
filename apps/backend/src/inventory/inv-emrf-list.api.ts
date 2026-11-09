@@ -7,10 +7,11 @@ export const emrfListApi = getRoute({
   url: "/inventory/emrf",
   schema: emrfListZ,
   handler: async ({ query, authUser }) => {
-    const { status,  page, pageSize } = query;
+    const { status, surveyId, page, pageSize } = query;
     const where = {
       ...emrfAccess(authUser),
       ...(status && { status }),
+      ...(surveyId && { surveyId }),
     };
 
     const [items, total] = await prisma.$transaction([

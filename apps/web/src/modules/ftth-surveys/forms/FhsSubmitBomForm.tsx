@@ -1,8 +1,9 @@
-import { Form } from "antd";
+import { Form, message } from "antd";
 import { m } from "i18n/messages";
 import { useState } from "react";
 import { WorkDocType } from "schema/enums";
 import { type FhsSubmitBomT, ftthSurveyFullZ } from "schema/fhs";
+import type { UpFhsBomT } from "schema/uploads";
 import { useApiGet } from "#/api/helpers";
 import FormModal from "#/components/FormModal";
 import EquipmentLinesEditor, {
@@ -28,6 +29,23 @@ export default function FhsSubmitBomForm(props: FhsFormProps) {
       setRows(full.bom.map((b) => newLineRow(b.equipment, b.quantity)));
     }
   });
+
+  // fill the lines from the uploaded BOQ, matched to inventory by MTN code
+  const onBoqParsed = ({ lines }: UpFhsBomT) => {
+    const matched = lines.flatMap((l) =>
+      l.equipment ? [newLineRow(l.equipment, l.quantity)] : [],
+    );
+    const missing = lines.filter((l) => !l.equipment).map((l) => l.code);
+    if (matched.length) setRows(matched);
+    if (missing.length) {
+      message.warning(
+        `Not in inventory, add these lines manually: ${missing.join(", ")}`,
+        8,
+      );
+    } else if (!matched.length) {
+      message.info("No BOQ lines found in this file");
+    }
+  };
 
   const up = useFhsUpdate<FhsSubmitBomT>(
     "fhs/bom",
@@ -58,7 +76,12 @@ export default function FhsSubmitBomForm(props: FhsFormProps) {
         })
       }
     >
-      <WorkDocInput type={WorkDocType.FHS_BOM} label={m.bom()} old={full} />
+      <WorkDocInput
+        type={WorkDocType.FHS_BOM}
+        label={m.bom()}
+        old={full}
+        onParsed={onBoqParsed}
+      />
       <EquipmentLinesEditor
         rows={rows}
         onChange={setRows}

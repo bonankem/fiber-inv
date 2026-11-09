@@ -12,7 +12,7 @@ export default function EmrfAssignToForm(props: ModalItemProps<EmrfRow>) {
 
   const onSubmit = apiCall(
     async ({ orderNumber }: Pick<EmrfAssignToT, "orderNumber">) => {
-      await assign.mutateAsync({ id: props.item.id, orderNumber });
+      await assign.mutateAsync({ id: props.item.id, orderNumber, uploads: [] });
       message.success(`TO ${orderNumber} assigned`);
       props.state.close();
     },
@@ -31,7 +31,9 @@ export default function EmrfAssignToForm(props: ModalItemProps<EmrfRow>) {
     >
       <EmrfSummary emrf={props.item} />
       {emrfVendor(props.item) && (
-        <p className="m-0 text-xs opacity-70">Vendor: {emrfVendor(props.item)}</p>
+        <p className="m-0 text-xs opacity-70">
+          Vendor: {emrfVendor(props.item)}
+        </p>
       )}
       <Form.Item<Pick<EmrfAssignToT, "orderNumber">>
         label="TO number"

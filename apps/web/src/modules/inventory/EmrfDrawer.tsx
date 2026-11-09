@@ -192,7 +192,7 @@ function EmrfDetails(props: {
   const { token } = theme.useToken();
   // reload so the status shows the result of an approval or revert
   const emrf = useEmrf(props.initial).data ?? props.initial;
-  const actions = useActions(props.actions, emrf).filter((a) => !a.top);
+  const actions = useActions(props.actions, emrf);
   const [ActionForm, setActionForm] = useState<ModalItemFC<EmrfRow>>();
   const total = emrfTotal(emrf);
   const collected = emrfCollected(emrf);

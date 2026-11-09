@@ -13,8 +13,15 @@ export const cleanupApi = postRoute({
 });
 
 type WhereId = Pick<Prisma.UploadWhereInput, "id">;
-type AllRelFields = Exclude<keyof Prisma.UploadInclude, "inDb" | "_count">;
-type AllRelations = WhereId & { [K in AllRelFields]: { none: object } };
+// one-to-one relations are filtered with null rather than { none }
+type OneRelFields = "fiberSource";
+type AllRelFields = Exclude<
+  keyof Prisma.UploadInclude,
+  "inDb" | "_count" | OneRelFields
+>;
+type AllRelations = WhereId & { [K in AllRelFields]: { none: object } } & {
+  [K in OneRelFields]: null;
+};
 
 async function cleanupUploads(ids: string[]) {
   return prisma.upload.deleteMany({
@@ -23,6 +30,7 @@ async function cleanupUploads(ids: string[]) {
       workDocs: { none: {} },
       workLogs: { none: {} },
       emrfLogs: { none: {} },
+      fiberSource: null,
     } satisfies AllRelations,
   });
 }
